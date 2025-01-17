@@ -74,7 +74,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker-compose -f docker-compose.dev.yml --env-file Gathering_be/.env.dev down || true
-            docker-compose -f docker-compose.dev.yml --env-file Gathering_be/.env.dev pull
-            docker-compose -f docker-compose.dev.yml --env-file Gathering_be/.env.dev up -d
+            docker-compose -f Gathering_be/docker-compose.dev.yml --env-file Gathering_be/.env.dev down || true
+            docker-compose -f Gathering_be/docker-compose.dev.yml --env-file Gathering_be/.env.dev pull
+            docker-compose -f Gathering_be/docker-compose.dev.yml --env-file Gathering_be/.env.dev up -d
             docker system prune -af
