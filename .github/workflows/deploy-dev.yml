@@ -54,6 +54,8 @@ jobs:
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> Gathering_be/.env.dev
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> Gathering_be/.env.dev
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> Gathering_be/.env.dev
+          echo "SPRING_REDIS_HOST=${{ secrets.SPRING_REDIS_HOST }}" >> Gathering_be/.env.dev
+          echo "SPRING_REDIS_PORT=${{ secrets.SPRING_REDIS_PORT }}" >> Gathering_be/.env.dev
           echo "SWAGGER_USERNAME=${{ secrets.SWAGGER_USERNAME }}" >> Gathering_be/.env.dev
           echo "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" >> Gathering_be/.env.dev
           echo "CORS_ALLOWED_ORIGINS=${{ secrets.DEV_CORS_ALLOWED_ORIGINS }}" >> Gathering_be/.env.dev
