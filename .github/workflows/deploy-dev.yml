@@ -3,6 +3,8 @@ name: Deploy to Development Server
 on:
   push:
     branches: [ "dev" ]
+    paths:
+      - "Gathering_be/**"  # Gathering_be 디렉터리 내 파일 변경 시에만 실행
   workflow_dispatch:
 
 env:
@@ -23,13 +25,20 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Navigate to Gathering_be
+        working-directory: Gathering_be  # Gathering_be 디렉터리로 이동
+        run: pwd
+
       - name: Grant execute permission for gradlew
+        working-directory: Gathering_be
         run: chmod +x gradlew
 
       - name: Test with Gradle
+        working-directory: Gathering_be
         run: ./gradlew test
 
       - name: Build with Gradle
+        working-directory: Gathering_be
         run: ./gradlew build -x test
 
       - name: Login to DockerHub
@@ -39,6 +48,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
+        working-directory: Gathering_be
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -48,11 +58,12 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:dev-${{ github.sha }}
 
       - name: Create .env.dev file
+        working-directory: Gathering_be
         run: |
           echo "IMAGE_TAG=dev-${{ github.sha }}" > .env.dev
-          echo "SPRING_DATASOURCE_URL"=${{ secrets.SPRING_DATASOURCE_URL }} >> .env.dev
-          echo "SPRING_DATASOURCE_USERNAME"=${{ secrets.SPRING_DATASOURCE_USERNAME }} >> .env.dev
-          echo "SPRING_DATASOURCE_PASSWORD"=${{ secrets.SPRING_DATASOURCE_PASSWORD }} >> .env.dev
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env.dev
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env.dev
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env.dev
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.dev
           echo "SWAGGER_USERNAME=${{ secrets.SWAGGER_USERNAME }}" >> .env.dev
           echo "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" >> .env.dev
@@ -61,20 +72,20 @@ jobs:
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
-            host: ${{ secrets.EC2_HOST }}
-            username: ubuntu
-            key: ${{ secrets.EC2_SSH_KEY }}
-            source: ".env.dev,docker-compose.dev.yml"
-            target: "~/"
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "Gathering_be/.env.dev,Gathering_be/docker-compose.dev.yml"
+          target: "~/"
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.EC2_HOST }}
-            username: ubuntu
-            key: ${{ secrets.EC2_SSH_KEY }}
-            script: |
-              docker-compose -f docker-compose.dev.yml --env-file .env.dev down || true
-              docker-compose -f docker-compose.dev.yml --env-file .env.dev pull
-              docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d
-              docker system prune -af
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker-compose -f docker-compose.dev.yml --env-file .env.dev down || true
+            docker-compose -f docker-compose.dev.yml --env-file .env.dev pull
+            docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d
+            docker system prune -af
