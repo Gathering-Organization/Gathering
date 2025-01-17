@@ -5,6 +5,7 @@ on:
     branches: [ "dev" ]
     paths:
       - "Gathering_be/**"  # Gathering_be 디렉터리 내 파일 변경 시에만 실행
+      - ".github/workflows/**"  # deploy 파일 변경 시에만 실행
   workflow_dispatch:
 
 env:
