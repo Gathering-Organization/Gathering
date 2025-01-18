@@ -26,6 +26,19 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Create environment-variables.yml
+        run: |
+          cd ./Gathering_be/src/main/resources
+          echo "SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}" > environment-variables.yml
+          echo "SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}" >> environment-variables.yml
+          echo "SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}" >> environment-variables.yml
+          echo "SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}" >> environment-variables.yml
+          echo "SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}" >> environment-variables.yml
+          echo "JWT_SECRET: ${JWT_SECRET}" >> environment-variables.yml
+          echo "SWAGGER_USERNAME: ${SWAGGER_USERNAME}" >> environment-variables.yml
+          echo "SWAGGER_PASSWORD: ${SWAGGER_PASSWORD}" >> environment-variables.yml
+          echo "CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}" >> environment-variables.yml
+
       - name: Grant execute permission for gradlew
         run: chmod +x Gathering_be/gradlew
 
