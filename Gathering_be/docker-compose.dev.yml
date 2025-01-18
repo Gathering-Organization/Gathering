@@ -17,6 +17,7 @@ services:
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       - SWAGGER_USERNAME=${SWAGGER_USERNAME}
       - SWAGGER_PASSWORD=${SWAGGER_PASSWORD}
+      - GOOGLE_RESOURCE_URI=${GOOGLE_RESOURCE_URI}
     depends_on:
       - mysql
       - redis
