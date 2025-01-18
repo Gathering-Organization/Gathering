@@ -19,9 +19,6 @@ spring:
       host: ${SPRING_REDIS_HOST}
       port: ${SPRING_REDIS_PORT}
 
-  config:
-    import: "classpath:environment-variables.yml"
-
 jwt:
   secret: ${JWT_SECRET}
   token-validity-in-seconds: 60
