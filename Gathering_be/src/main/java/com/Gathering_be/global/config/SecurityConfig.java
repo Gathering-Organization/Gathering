@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${swagger.user}")
+    @Value("${swagger.username}")
     private String swaggerUser;
 
     @Value("${swagger.password}")
