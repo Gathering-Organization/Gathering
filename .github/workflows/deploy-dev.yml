@@ -50,9 +50,6 @@ jobs:
       - name: Create .env.dev file
         run: |
           echo "IMAGE_TAG=dev-${{ github.sha }}" > Gathering_be/.env.dev
-          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> Gathering_be/.env.dev
-          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> Gathering_be/.env.dev
-          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> Gathering_be/.env.dev
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> Gathering_be/.env.dev
           echo "SPRING_REDIS_HOST=${{ secrets.SPRING_REDIS_HOST }}" >> Gathering_be/.env.dev
           echo "SPRING_REDIS_PORT=${{ secrets.SPRING_REDIS_PORT }}" >> Gathering_be/.env.dev

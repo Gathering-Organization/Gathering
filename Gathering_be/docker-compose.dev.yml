@@ -19,24 +19,7 @@ services:
       - SWAGGER_PASSWORD=${SWAGGER_PASSWORD}
       - GOOGLE_RESOURCE_URI=${GOOGLE_RESOURCE_URI}
     depends_on:
-      - mysql
       - redis
-    networks:
-      - gathering-network-dev
-
-  mysql:
-    image: mysql:8.0
-    container_name: gathering-mysql-dev
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gathering-db
-      MYSQL_USER: gathering
-      MYSQL_PASSWORD: gathering
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data_dev:/var/lib/mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - gathering-network-dev
 
@@ -56,5 +39,4 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data_dev:
   redis_data_dev:
