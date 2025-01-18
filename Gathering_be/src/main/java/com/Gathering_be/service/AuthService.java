@@ -56,7 +56,7 @@ public class AuthService {
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialsException::new);
 
-        if (member.getProvider() != null) {
+        if (member.getProvider() != OAuthProvider.BASIC) {
             throw new SocialMemberLoginException();
         }
 

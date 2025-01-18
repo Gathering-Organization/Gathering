@@ -41,10 +41,10 @@ public class SecurityConfig {
     };
 
     @Bean
-    @Order(1) // Swagger 관련 필터체인이 먼저 적용되도록 설정
+    @Order(1)
     public SecurityFilterChain swaggerFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/swagger-ui/**", "/v3/api-docs/**")  // Swagger 관련 경로만 처리
+                .securityMatcher("/swagger-ui/**", "/v3/api-docs/**")
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().authenticated()
                 )
@@ -62,7 +62,7 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .securityMatcher("/api/**")  // API 관련 경로만 처리
+                .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configure(httpSecurity))
                 .formLogin(AbstractHttpConfigurer::disable)
