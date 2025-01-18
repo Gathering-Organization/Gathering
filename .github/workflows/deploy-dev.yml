@@ -26,20 +26,6 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Create environment-variables.yml
-        run: |
-          cd ./Gathering_be/src/main/resources
-          echo "SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}" > environment-variables.yml
-          echo "SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> environment-variables.yml
-          echo "SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> environment-variables.yml
-          echo "SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}" >> environment-variables.yml
-          echo "SPRING_REDIS_PORT: ${{ secrets.SPRING_REDIS_PORT }}" >> environment-variables.yml
-          echo "JWT_SECRET: ${{ secrets.JWT_SECRET }}" >> environment-variables.yml
-          echo "SWAGGER_USERNAME: ${{ secrets.SWAGGER_USERNAME }}" >> environment-variables.yml
-          echo "SWAGGER_PASSWORD: ${{ secrets.SWAGGER_PASSWORD }}" >> environment-variables.yml
-          echo "CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}" >> environment-variables.yml
-          echo "GOOGLE_RESOURCE_URI: ${{ secrets.GOOGLE_RESOURCE_URI }}" >> environment-variables.yml
-
       - name: Grant execute permission for gradlew
         run: chmod +x Gathering_be/gradlew
 
@@ -73,6 +59,8 @@ jobs:
           echo "SWAGGER_USERNAME=${{ secrets.SWAGGER_USERNAME }}" >> Gathering_be/.env.dev
           echo "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" >> Gathering_be/.env.dev
           echo "CORS_ALLOWED_ORIGINS=${{ secrets.DEV_CORS_ALLOWED_ORIGINS }}" >> Gathering_be/.env.dev
+          echo "GOOGLE_RESOURCE_URI: ${{ secrets.GOOGLE_RESOURCE_URI }}" >> Gathering_be/.env.dev
+
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
