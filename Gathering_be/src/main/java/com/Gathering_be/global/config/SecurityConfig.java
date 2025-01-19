@@ -2,6 +2,7 @@ package com.Gathering_be.global.config;
 
 import com.Gathering_be.global.jwt.JwtTokenFilter;
 import com.Gathering_be.global.jwt.JwtTokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,7 +82,7 @@ public class SecurityConfig {
                             response.getWriter().write("Authentication failed");
                         })
                 )
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, new ObjectMapper()), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

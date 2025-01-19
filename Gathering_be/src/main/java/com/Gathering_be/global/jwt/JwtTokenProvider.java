@@ -1,5 +1,6 @@
 package com.Gathering_be.global.jwt;
 
+import com.Gathering_be.exception.ExpiredAccessTokenException;
 import com.Gathering_be.exception.InvalidTokenException;
 import com.Gathering_be.global.enums.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,8 +67,13 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredAccessTokenException();
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException();
         }
@@ -75,23 +81,50 @@ public class JwtTokenProvider {
 
     public String getUserId(String token) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredAccessTokenException();
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException();
         }
     }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        String userId = claims.getSubject();
-        String role = claims.get("role", String.class);
+            String userId = claims.getSubject();
+            String role = claims.get("role", String.class);
 
-        return new UsernamePasswordAuthenticationToken(userId, null,
-                Collections.singletonList(new SimpleGrantedAuthority(role)));
+            return new UsernamePasswordAuthenticationToken(userId, null,
+                    Collections.singletonList(new SimpleGrantedAuthority(role)));
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredAccessTokenException();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    public Claims getClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredAccessTokenException();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        }
     }
 }
