@@ -28,6 +28,16 @@ public enum ErrorCode {
     // Member
     MEMBER_NOT_FOUND(404, "M001", "존재하지 않는 유저입니다."),
 
+    // File Upload
+    FILE_UPLOAD_ERROR(500, "F001", "파일 업로드에 실패했습니다."),
+    FILE_DELETE_ERROR(500, "F002", "파일 삭제에 실패했습니다."),
+    INVALID_FILE_TYPE(400, "F003", "지원하지 않는 파일 형식입니다."),
+    FILE_SIZE_EXCEED(400, "F004", "파일 크기가 제한을 초과했습니다."),
+    FILE_NOT_FOUND(404, "F005", "파일을 찾을 수 없습니다."),
+
+    //Profile
+    PROFILE_NOT_FOUND(404, "P001", "존재하지 않는 프로필입니다.")
+
 
     ;
 
