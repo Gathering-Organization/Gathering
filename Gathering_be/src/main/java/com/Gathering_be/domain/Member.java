@@ -32,23 +32,27 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     @Builder(builderClassName = "OAuthMemberBuilder", builderMethodName = "oAuthBuilder")
-    public Member(String email, String name, OAuthProvider provider) {
+    public Member(String email, String name, String nickname, OAuthProvider provider) {
         this.email = email;
         this.name = name;
-        this.nickname = name;
+        this.nickname = nickname;
         this.provider = provider;
         this.role = Role.ROLE_USER;
     }
 
     @Builder(builderClassName = "LocalMemberBuilder", builderMethodName = "localBuilder")
-    public Member(String email, String name, String password) {
+    public Member(String email, String name, String nickname, String password) {
         this.email = email;
         this.name = name;
-        this.nickname = name;
+        this.nickname = nickname;
         this.password = password;
         this.provider = OAuthProvider.BASIC;
         this.role = Role.ROLE_USER;
