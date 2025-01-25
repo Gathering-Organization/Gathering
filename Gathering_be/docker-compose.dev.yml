@@ -18,6 +18,8 @@ services:
       - SWAGGER_USERNAME=${SWAGGER_USERNAME}
       - SWAGGER_PASSWORD=${SWAGGER_PASSWORD}
       - GOOGLE_RESOURCE_URI=${GOOGLE_RESOURCE_URI}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
     depends_on:
       - redis
     networks:
