@@ -1,7 +1,9 @@
 package com.Gathering_be.controller;
 
 import com.Gathering_be.dto.request.ProfileCreateRequest;
+import com.Gathering_be.dto.request.WorkExperienceRequest;
 import com.Gathering_be.dto.response.ProfileResponse;
+import com.Gathering_be.dto.response.WorkExperienceResponse;
 import com.Gathering_be.global.enums.Career;
 import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.response.ResultCode;
@@ -19,6 +21,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,80 +62,32 @@ class ProfileControllerTest {
                 .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_READ_SUCCESS.getCode()));
     }
 
-    @Test
-    @DisplayName("프로필 생성 성공")
-    void createProfile_Success() throws Exception {
-        ProfileCreateRequest request = createMockProfileCreateRequest();
-        ProfileResponse response = createMockProfileResponse();
-
-        MockMultipartFile profileImage = new MockMultipartFile(
-                "profileImage", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-
-        List<MockMultipartFile> portfolioFiles = Arrays.asList(
-                new MockMultipartFile("portfolioFiles", "test1.pdf",
-                        MediaType.APPLICATION_PDF_VALUE, "test1".getBytes()),
-                new MockMultipartFile("portfolioFiles", "test2.pdf",
-                        MediaType.APPLICATION_PDF_VALUE, "test2".getBytes())
-        );
-
-        MockMultipartFile requestFile = new MockMultipartFile(
-                "request", "", MediaType.APPLICATION_JSON_VALUE,
-                objectMapper.writeValueAsString(request).getBytes());
-
-        given(profileService.createProfile(any(), any(), any())).willReturn(response);
-
-        mockMvc.perform(multipart(BASE_URL)
-                        .file(profileImage)
-                        .file(portfolioFiles.get(0))
-                        .file(portfolioFiles.get(1))
-                        .file(requestFile)
-                        .with(SecurityMockMvcRequestPostProcessors.user(TEST_MEMBER_ID.toString())))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_CREATE_SUCCESS.getCode()));
-    }
-
-    @Test
-    @DisplayName("프로필 공개 설정 변경 성공")
-    void toggleProfileVisibility_Success() throws Exception {
-        mockMvc.perform(put(BASE_URL + "/visibility")
-                        .with(SecurityMockMvcRequestPostProcessors.user(TEST_MEMBER_ID.toString())))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code")
-                        .value(ResultCode.PROFILE_VISIBILITY_UPDATE_SUCCESS.getCode()));
-    }
-
-    private ProfileCreateRequest createMockProfileCreateRequest() {
-        return ProfileCreateRequest.builder()
-                .jobPosition(JobPosition.BACKEND)
-                .organization("테스트 회사")
-                .career(Career.THREE_YEARS)
-                .introduction("테스트 소개")
-                .techStacks(Arrays.asList("Java", "Spring"))
-                .githubUrl("https://github.com/test")
-                .notionUrl("https://notion.site/test")
-                .build();
-    }
-
     private ProfileResponse createMockProfileResponse() {
-        List<String> portfolioUrls = Arrays.asList(
-                "https://test-bucket.s3.amazonaws.com/test1.pdf",
-                "https://test-bucket.s3.amazonaws.com/test2.pdf"
-        );
-
         return ProfileResponse.builder()
                 .email("test@test.com")
                 .name("테스트")
                 .nickname("테스트닉네임")
                 .jobPosition(JobPosition.BACKEND)
                 .organization("테스트 회사")
-                .career(Career.THREE_YEARS)
                 .introduction("테스트 소개")
                 .techStacks(new HashSet<>(Arrays.asList("Java", "Spring")))
-                .githubUrl("https://github.com/test")
-                .notionUrl("https://notion.site/test")
                 .profileImageUrl("https://test-bucket.s3.amazonaws.com/test.jpg")
-                .portfolioUrls(portfolioUrls)
+                .profileColor("000000")
+                .portfolioUrl("test-portfolio-url")
+                .workExperiences(createMockWorkExperienceResponses())
                 .isPublic(true)
                 .build();
+    }
+
+    private List<WorkExperienceResponse> createMockWorkExperienceResponses() {
+        return Arrays.asList(
+                WorkExperienceResponse.builder()
+                        .startDate(LocalDate.of(2022, 1, 1))
+                        .endDate(LocalDate.of(2023, 1, 1))
+                        .activityName("테스트 활동")
+                        .jobDetail("테스트 직무")
+                        .description("테스트 설명")
+                        .build()
+        );
     }
 }

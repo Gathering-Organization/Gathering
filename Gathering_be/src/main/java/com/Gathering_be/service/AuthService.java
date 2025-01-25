@@ -1,6 +1,7 @@
 package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Member;
+import com.Gathering_be.domain.Profile;
 import com.Gathering_be.dto.request.LoginRequest;
 import com.Gathering_be.dto.request.SignUpRequest;
 import com.Gathering_be.dto.response.TokenResponse;
@@ -8,6 +9,7 @@ import com.Gathering_be.exception.*;
 import com.Gathering_be.global.enums.OAuthProvider;
 import com.Gathering_be.global.jwt.JwtTokenProvider;
 import com.Gathering_be.repository.MemberRepository;
+import com.Gathering_be.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 @Service
@@ -30,6 +34,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
+    private final ProfileRepository profileRepository;
 
     @Value("${oauth2.google.resource-uri}")
     private String googleResourceUri;
@@ -60,7 +65,44 @@ public class AuthService {
                 .password(encodedPassword)
                 .build();
 
-        memberRepository.save(member);
+        member = memberRepository.save(member);
+        createDefaultProfile(member);
+    }
+
+    @Transactional
+    public TokenResponse googleLogin(String accessToken) {
+        Map<String, Object> userInfo = getUserInfo(accessToken);
+        String email = (String) userInfo.get("email");
+        String name = (String) userInfo.get("name");
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    String uniqueNickname = generateUniqueNickname(name);
+                    Member newMember = Member.oAuthBuilder()
+                            .email(email)
+                            .name(name)
+                            .nickname(uniqueNickname)
+                            .provider(OAuthProvider.GOOGLE)
+                            .build();
+                    Member savedMember = memberRepository.save(newMember);
+                    createDefaultProfile(savedMember);
+                    return savedMember;
+                });
+
+        String jwtToken = jwtTokenProvider.createAccessToken(member.getId(), member.getRole());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+        redisService.setValues(REFRESH_TOKEN_PREFIX + member.getId(), refreshToken);
+        return new TokenResponse(jwtToken, refreshToken);
+    }
+
+    private void createDefaultProfile(Member member) {
+        Profile profile = Profile.builder()
+                .member(member)
+                .profileColor("000000")
+                .techStacks(new HashSet<>())
+                .workExperiences(new ArrayList<>())
+                .build();
+        profileRepository.save(profile);
     }
 
     @Transactional
@@ -84,31 +126,7 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
-    @Transactional
-    public TokenResponse googleLogin(String accessToken) {
-        Map<String, Object> userInfo = getUserInfo(accessToken);
-        String email = (String) userInfo.get("email");
-        String name = (String) userInfo.get("name");
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseGet(() -> {
-                    String uniqueNickname = generateUniqueNickname(name);
-                    Member newMember = Member.oAuthBuilder()
-                            .email(email)
-                            .name(name)
-                            .nickname(uniqueNickname)
-                            .provider(OAuthProvider.GOOGLE)
-                            .build();
-                    return memberRepository.save(newMember);
-                });
-
-        String jwtToken = jwtTokenProvider.createAccessToken(member.getId(), member.getRole());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-
-        redisService.setValues(REFRESH_TOKEN_PREFIX + member.getId(), refreshToken);
-
-        return new TokenResponse(jwtToken, refreshToken);
-    }
 
     private Map<String, Object> getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();

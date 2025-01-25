@@ -2,14 +2,12 @@ package com.Gathering_be.domain;
 
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.global.common.BaseTimeEntity;
-import com.Gathering_be.global.enums.Career;
 import com.Gathering_be.global.enums.JobPosition;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,9 +30,6 @@ public class Profile extends BaseTimeEntity {
 
     private String organization;
 
-    @Enumerated(EnumType.STRING)
-    private Career career;
-
     @Column(length = 1000)
     private String introduction;
 
@@ -43,48 +38,44 @@ public class Profile extends BaseTimeEntity {
             joinColumns = @JoinColumn(name = "profile_id"))
     private Set<String> techStacks = new HashSet<>();
 
-    @ElementCollection
-    @CollectionTable(name = "profile_portfolios",
-            joinColumns = @JoinColumn(name = "profile_id"))
-    private List<String> portfolioUrls = new ArrayList<>();
-
-    private String githubUrl;
-    private String notionUrl;
+    private String portfolioUrl;
     private String profileImageUrl;
+    private String profileColor = "000000";
     private boolean isPublic;
+
+    @ElementCollection
+    @CollectionTable(name = "profile_work_experiences",
+            joinColumns = @JoinColumn(name = "profile_id"))
+    private List<WorkExperience> workExperiences = new ArrayList<>();
 
     @Builder
     public Profile(Member member, JobPosition jobPosition, String organization,
-                   Career career, String introduction, Set<String> techStacks,
-                   String githubUrl, String notionUrl, String profileImageUrl,
-                   List<String> portfolioUrls) {
+                   String introduction, Set<String> techStacks,
+                   String portfolioUrl, String profileImageUrl, String profileColor,
+                   List<WorkExperience> workExperiences) {
         this.member = member;
         this.jobPosition = jobPosition;
         this.organization = organization;
-        this.career = career;
         this.introduction = introduction;
         this.techStacks = techStacks;
-        this.portfolioUrls = portfolioUrls;
-        this.githubUrl = githubUrl;
-        this.notionUrl = notionUrl;
+        this.portfolioUrl = portfolioUrl;
         this.profileImageUrl = profileImageUrl;
+        this.profileColor = profileColor != null ? profileColor : "000000";
+        this.workExperiences = workExperiences != null ? workExperiences : new ArrayList<>();
         this.isPublic = true;
     }
 
-    public void update(ProfileUpdateRequest request, String profileImageUrl, List<String> portfolioUrls) {
+    public void update(ProfileUpdateRequest request, String profileImageUrl, List<WorkExperience> workExperiences) {
         if (profileImageUrl != null) {
             this.profileImageUrl = profileImageUrl;
         }
-        if (portfolioUrls != null && !portfolioUrls.isEmpty()) {
-            this.portfolioUrls = new ArrayList<>(portfolioUrls);
-        }
         this.jobPosition = request.getJobPosition();
         this.organization = request.getOrganization();
-        this.career = request.getCareer();
         this.introduction = request.getIntroduction();
         this.techStacks = new HashSet<>(request.getTechStacks());
-        this.githubUrl = request.getGithubUrl();
-        this.notionUrl = request.getNotionUrl();
+        this.portfolioUrl = request.getPortfolioUrl();
+        this.profileColor = request.getProfileColor() != null ? request.getProfileColor() : "000000";
+        this.workExperiences = workExperiences;
     }
 
     public void togglePublic() {
