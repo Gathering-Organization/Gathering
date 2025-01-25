@@ -57,6 +57,8 @@ jobs:
           echo "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" >> Gathering_be/.env.dev
           echo "CORS_ALLOWED_ORIGINS=${{ secrets.DEV_CORS_ALLOWED_ORIGINS }}" >> Gathering_be/.env.dev
           echo "GOOGLE_RESOURCE_URI: ${{ secrets.GOOGLE_RESOURCE_URI }}" >> Gathering_be/.env.dev
+          echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> Gathering_be/.env.dev
+          echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> Gathering_be/.env.dev
 
 
       - name: Copy files to EC2

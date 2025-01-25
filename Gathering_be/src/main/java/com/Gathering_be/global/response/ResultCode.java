@@ -14,6 +14,12 @@ public enum ResultCode {
     TOKEN_ISSUED_SUCCESS(200, "AU004", "토큰 발급에 성공하였습니다."),
     TOKEN_REISSUED_SUCCESS(200, "AU005", "토큰 재발급에 성공하였습니다."),
     LOGOUT_SUCCESS(200, "AU006", "로그아웃에 성공하였습니다."),
+
+    //Profile
+    PROFILE_READ_SUCCESS(200, "P001", "프로필 조회에 성공하였습니다."),
+    PROFILE_CREATE_SUCCESS(200, "P002", "프로필 생성에 성공하였습니다."),
+    PROFILE_UPDATE_SUCCESS(200, "P003", "프로필 업데이트에 성공하였습니다."),
+    PROFILE_VISIBILITY_UPDATE_SUCCESS(200, "P004", "프로필 공개 설정이 변경되었습니다."),
     ;
 
     private final int status;

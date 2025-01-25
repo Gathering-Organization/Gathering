@@ -31,9 +31,18 @@ public class AuthService {
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
 
-
     @Value("${oauth2.google.resource-uri}")
     private String googleResourceUri;
+
+    private String generateUniqueNickname(String baseName) {
+        while (true) {
+            int randomNumber = (int) (Math.random() * 900000) + 100000;
+            String nickname = baseName + "#" + randomNumber;
+            if (!memberRepository.existsByNickname(nickname)) {
+                return nickname;
+            }
+        }
+    }
 
     @Transactional
     public void signUp(SignUpRequest request) {
@@ -41,10 +50,13 @@ public class AuthService {
             throw new DuplicateEmailException();
         }
 
+        String uniqueNickname = generateUniqueNickname(request.getName());
         String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         Member member = Member.localBuilder()
                 .email(request.getEmail())
                 .name(request.getName())
+                .nickname(uniqueNickname)
                 .password(encodedPassword)
                 .build();
 
@@ -79,13 +91,16 @@ public class AuthService {
         String name = (String) userInfo.get("name");
 
         Member member = memberRepository.findByEmail(email)
-                .orElseGet(() -> memberRepository.save(
-                        Member.oAuthBuilder()
-                                .email(email)
-                                .name(name)
-                                .provider(OAuthProvider.GOOGLE)
-                                .build()
-                ));
+                .orElseGet(() -> {
+                    String uniqueNickname = generateUniqueNickname(name);
+                    Member newMember = Member.oAuthBuilder()
+                            .email(email)
+                            .name(name)
+                            .nickname(uniqueNickname)
+                            .provider(OAuthProvider.GOOGLE)
+                            .build();
+                    return memberRepository.save(newMember);
+                });
 
         String jwtToken = jwtTokenProvider.createAccessToken(member.getId(), member.getRole());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
@@ -122,34 +137,31 @@ public class AuthService {
 
         Long memberId = Long.parseLong(jwtTokenProvider.getUserId(refreshToken));
         Member member = getMemberById(memberId);
-        String storedRefreshToken = redisService.getValues(REFRESH_TOKEN_PREFIX+member.getId());
+        String storedRefreshToken = redisService.getValues(REFRESH_TOKEN_PREFIX + member.getId());
         if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
             throw new InvalidTokenException();
         }
 
-
         String newAccessToken = jwtTokenProvider.createAccessToken(memberId, member.getRole());
         String newRefreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
-        redisService.setValues(REFRESH_TOKEN_PREFIX+member.getId(), newRefreshToken);
+        redisService.setValues(REFRESH_TOKEN_PREFIX + member.getId(), newRefreshToken);
 
         return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
     public void logout(String accessToken) {
-
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new InvalidTokenException();
         }
 
         Long memberId = Long.parseLong(jwtTokenProvider.getUserId(accessToken));
         Member member = getMemberById(memberId);
-        redisService.deleteValues(REFRESH_TOKEN_PREFIX+member.getId());
+        redisService.deleteValues(REFRESH_TOKEN_PREFIX + member.getId());
     }
 
     private Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-
     }
 }
