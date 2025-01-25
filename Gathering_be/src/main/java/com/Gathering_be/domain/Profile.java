@@ -10,7 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,34 +43,40 @@ public class Profile extends BaseTimeEntity {
             joinColumns = @JoinColumn(name = "profile_id"))
     private Set<String> techStacks = new HashSet<>();
 
+    @ElementCollection
+    @CollectionTable(name = "profile_portfolios",
+            joinColumns = @JoinColumn(name = "profile_id"))
+    private List<String> portfolioUrls = new ArrayList<>();
+
     private String githubUrl;
     private String notionUrl;
     private String profileImageUrl;
-    private String portfolioUrl;
+    private boolean isPublic;
 
     @Builder
     public Profile(Member member, JobPosition jobPosition, String organization,
                    Career career, String introduction, Set<String> techStacks,
                    String githubUrl, String notionUrl, String profileImageUrl,
-                   String portfolioUrl) {
+                   List<String> portfolioUrls) {
         this.member = member;
         this.jobPosition = jobPosition;
         this.organization = organization;
         this.career = career;
         this.introduction = introduction;
         this.techStacks = techStacks;
+        this.portfolioUrls = portfolioUrls;
         this.githubUrl = githubUrl;
         this.notionUrl = notionUrl;
         this.profileImageUrl = profileImageUrl;
-        this.portfolioUrl = portfolioUrl;
+        this.isPublic = true;
     }
 
-    public void update(ProfileUpdateRequest request, String profileImageUrl, String portfolioUrl) {
+    public void update(ProfileUpdateRequest request, String profileImageUrl, List<String> portfolioUrls) {
         if (profileImageUrl != null) {
             this.profileImageUrl = profileImageUrl;
         }
-        if (portfolioUrl != null) {
-            this.portfolioUrl = portfolioUrl;
+        if (portfolioUrls != null && !portfolioUrls.isEmpty()) {
+            this.portfolioUrls = new ArrayList<>(portfolioUrls);
         }
         this.jobPosition = request.getJobPosition();
         this.organization = request.getOrganization();
@@ -77,5 +85,9 @@ public class Profile extends BaseTimeEntity {
         this.techStacks = new HashSet<>(request.getTechStacks());
         this.githubUrl = request.getGithubUrl();
         this.notionUrl = request.getNotionUrl();
+    }
+
+    public void togglePublic() {
+        this.isPublic = !this.isPublic;
     }
 }

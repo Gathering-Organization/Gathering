@@ -19,6 +19,7 @@ public enum ResultCode {
     PROFILE_READ_SUCCESS(200, "P001", "프로필 조회에 성공하였습니다."),
     PROFILE_CREATE_SUCCESS(200, "P002", "프로필 생성에 성공하였습니다."),
     PROFILE_UPDATE_SUCCESS(200, "P003", "프로필 업데이트에 성공하였습니다."),
+    PROFILE_VISIBILITY_UPDATE_SUCCESS(200, "P004", "프로필 공개 설정이 변경되었습니다."),
     ;
 
     private final int status;

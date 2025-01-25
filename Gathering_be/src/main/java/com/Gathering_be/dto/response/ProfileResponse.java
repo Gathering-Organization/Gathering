@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,7 +27,8 @@ public class ProfileResponse {
     private String githubUrl;
     private String notionUrl;
     private String profileImageUrl;
-    private String portfolioUrl;
+    private List<String> portfolioUrls;
+    private boolean isPublic;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -35,8 +37,9 @@ public class ProfileResponse {
                            JobPosition jobPosition, String organization,
                            Career career, String introduction, Set<String> techStacks,
                            String githubUrl, String notionUrl,
-                           String profileImageUrl, String portfolioUrl,
-                           LocalDateTime createdAt, LocalDateTime updatedAt) {
+                           String profileImageUrl, List<String> portfolioUrls,
+                           boolean isPublic, LocalDateTime createdAt,
+                           LocalDateTime updatedAt) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
@@ -48,7 +51,8 @@ public class ProfileResponse {
         this.githubUrl = githubUrl;
         this.notionUrl = notionUrl;
         this.profileImageUrl = profileImageUrl;
-        this.portfolioUrl = portfolioUrl;
+        this.portfolioUrls = portfolioUrls;
+        this.isPublic = isPublic;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -66,7 +70,8 @@ public class ProfileResponse {
                 .githubUrl(profile.getGithubUrl())
                 .notionUrl(profile.getNotionUrl())
                 .profileImageUrl(profile.getProfileImageUrl())
-                .portfolioUrl(profile.getPortfolioUrl())
+                .portfolioUrls(profile.getPortfolioUrls())
+                .isPublic(profile.isPublic())
                 .createdAt(member.getCreatedAt())
                 .updatedAt(member.getUpdatedAt())
                 .build();

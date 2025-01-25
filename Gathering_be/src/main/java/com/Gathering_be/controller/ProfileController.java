@@ -14,37 +14,47 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/profile")
 @RequiredArgsConstructor
 public class ProfileController {
     private final ProfileService profileService;
-    private final S3Service s3Service;
 
     @GetMapping
-    public ResponseEntity<ResultResponse> getProfile() {
-        Long memberId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        ProfileResponse profile = profileService.getProfile(memberId);
+    public ResponseEntity<ResultResponse> getMyProfile() {
+        ProfileResponse profile = profileService.getMyProfile();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_READ_SUCCESS, profile));
+    }
+
+    @GetMapping("/{profileId}")
+    public ResponseEntity<ResultResponse> getProfile(@PathVariable Long profileId) {
+        ProfileResponse profile = profileService.getProfileById(profileId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_READ_SUCCESS, profile));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> createProfile(
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            @RequestPart(value = "portfolioFile", required = false) MultipartFile portfolioFile,
+            @RequestPart(value = "portfolioFiles", required = false) List<MultipartFile> portfolioFiles,
             @RequestPart("request") ProfileCreateRequest request) {
-        Long memberId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        ProfileResponse response = profileService.createProfile(memberId, request, profileImage, portfolioFile);
+        ProfileResponse response = profileService.createProfile(request, profileImage, portfolioFiles);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_CREATE_SUCCESS, response));
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> updateProfile(
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            @RequestPart(value = "portfolioFile", required = false) MultipartFile portfolioFile,
+            @RequestPart(value = "portfolioFiles", required = false) List<MultipartFile> portfolioFiles,
             @RequestPart("request") ProfileUpdateRequest request) {
-        Long memberId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        profileService.updateProfile(memberId, request, profileImage, portfolioFile);
+        profileService.updateProfile(request, profileImage, portfolioFiles);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_UPDATE_SUCCESS));
+    }
+
+    @PutMapping("/visibility")
+    public ResponseEntity<ResultResponse> toggleProfileVisibility() {
+        profileService.toggleProfileVisibility();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_VISIBILITY_UPDATE_SUCCESS));
     }
 }
