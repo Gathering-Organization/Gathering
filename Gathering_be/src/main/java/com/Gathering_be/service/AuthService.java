@@ -39,29 +39,17 @@ public class AuthService {
     @Value("${oauth2.google.resource-uri}")
     private String googleResourceUri;
 
-    private String generateUniqueNickname(String baseName) {
-        while (true) {
-            int randomNumber = (int) (Math.random() * 900000) + 100000;
-            String nickname = baseName + "#" + randomNumber;
-            if (!memberRepository.existsByNickname(nickname)) {
-                return nickname;
-            }
-        }
-    }
-
     @Transactional
     public void signUp(SignUpRequest request) {
         if (memberRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateEmailException();
         }
 
-        String uniqueNickname = generateUniqueNickname(request.getName());
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         Member member = Member.localBuilder()
                 .email(request.getEmail())
                 .name(request.getName())
-                .nickname(uniqueNickname)
                 .password(encodedPassword)
                 .build();
 
@@ -77,11 +65,9 @@ public class AuthService {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseGet(() -> {
-                    String uniqueNickname = generateUniqueNickname(name);
                     Member newMember = Member.oAuthBuilder()
                             .email(email)
                             .name(name)
-                            .nickname(uniqueNickname)
                             .provider(OAuthProvider.GOOGLE)
                             .build();
                     Member savedMember = memberRepository.save(newMember);
@@ -96,13 +82,28 @@ public class AuthService {
     }
 
     private void createDefaultProfile(Member member) {
+        String nickname = generateUniqueNickname(member.getName());
         Profile profile = Profile.builder()
                 .member(member)
+                .nickname(nickname)
                 .profileColor("000000")
-                .techStacks(new HashSet<>())
-                .workExperiences(new ArrayList<>())
+                .isPublic(true)
                 .build();
         profileRepository.save(profile);
+    }
+
+    private String generateUniqueNickname(String baseName) {
+        if (!profileRepository.existsByNickname(baseName)) {
+            return baseName;
+        }
+
+        while (true) {
+            int randomNumber = (int) (Math.random() * 900000) + 100000;
+            String nickname = baseName + "#" + randomNumber;
+            if (!profileRepository.existsByNickname(nickname)) {
+                return nickname;
+            }
+        }
     }
 
     @Transactional

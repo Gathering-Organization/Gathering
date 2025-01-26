@@ -20,6 +20,8 @@ public enum ResultCode {
     PROFILE_CREATE_SUCCESS(200, "P002", "프로필 생성에 성공하였습니다."),
     PROFILE_UPDATE_SUCCESS(200, "P003", "프로필 업데이트에 성공하였습니다."),
     PROFILE_VISIBILITY_UPDATE_SUCCESS(200, "P004", "프로필 공개 설정이 변경되었습니다."),
+    PORTFOLIO_UPDATE_SUCCESS(200, "P005", "포트폴리오 업데이트에 성공하였습니다."),
+    PORTFOLIO_DELETE_SUCCESS(200, "P006", "포트폴리오 삭제에 성공하였습니다."),
 
     // Project
     PROJECT_CREATE_SUCCESS(201, "PJ001", "프로젝트 생성에 성공하였습니다."),

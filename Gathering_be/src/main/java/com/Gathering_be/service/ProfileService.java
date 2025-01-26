@@ -1,17 +1,10 @@
 package com.Gathering_be.service;
 
-import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
-import com.Gathering_be.domain.WorkExperience;
-import com.Gathering_be.dto.request.ProfileCreateRequest;
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.dto.response.ProfileResponse;
-import com.Gathering_be.exception.MemberNotFoundException;
 import com.Gathering_be.exception.ProfileNotFoundException;
-import com.Gathering_be.global.exception.BusinessException;
-import com.Gathering_be.global.exception.ErrorCode;
 import com.Gathering_be.global.service.S3Service;
-import com.Gathering_be.repository.MemberRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,63 +12,78 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProfileService {
-    private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final S3Service s3Service;
 
     @Transactional
-    public void updateProfile(ProfileUpdateRequest request, MultipartFile profileImage) {
-        Long memberId = getCurrentUserId();
-        Profile profile = getProfileByMemberId(memberId);
+    public void updateProfile(ProfileUpdateRequest request) {
+        Profile profile = getProfileByMemberId(getCurrentUserId());
 
-        String profileImageUrl = null;
-        if (profileImage != null && !profileImage.isEmpty()) {
-            if (profile.getProfileImageUrl() != null) {
-                s3Service.deleteFile(profile.getProfileImageUrl());
+        if (request.getNickname() != null && !request.getNickname().equals(profile.getNickname())) {
+            if (profileRepository.existsByNickname(request.getNickname())) {
+                String baseNickname = request.getNickname();
+                String uniqueNickname = generateUniqueNickname(baseNickname);
+                request = ProfileUpdateRequest.builder()
+                        .nickname(uniqueNickname)
+                        .introduction(request.getIntroduction())
+                        .workExperiences(request.getWorkExperiences())
+                        .build();
             }
-            profileImageUrl = s3Service.uploadFile("profile", profileImage);
+        }
+        profile.update(request);
+    }
+
+    private String generateUniqueNickname(String baseNickname) {
+        while (true) {
+            int randomNumber = (int) (Math.random() * 900000) + 100000;
+            String nickname = baseNickname + "#" + randomNumber;
+            if (!profileRepository.existsByNickname(nickname)) {
+                return nickname;
+            }
+        }
+    }
+
+    @Transactional
+    public void updatePortfolio(MultipartFile file) {
+        Profile profile = getProfileByMemberId(getCurrentUserId());
+
+        if (profile.getPortfolioUrl() != null) {
+            s3Service.deleteFile(profile.getPortfolioUrl());
         }
 
-        List<WorkExperience> workExperiences = request.getWorkExperiences().stream()
-                .map(WorkExperience::from)
-                .collect(Collectors.toList());
+        String fileUrl = s3Service.uploadFile("portfolio", file);
+        profile.updatePortfolio(fileUrl);
+    }
 
-        profile.update(request, profileImageUrl, workExperiences);
+    @Transactional
+    public void deletePortfolio() {
+        Profile profile = getProfileByMemberId(getCurrentUserId());
+
+        if (profile.getPortfolioUrl() != null) {
+            s3Service.deleteFile(profile.getPortfolioUrl());
+            profile.removePortfolio();
+        }
     }
 
     @Transactional
     public void toggleProfileVisibility() {
-        Long memberId = getCurrentUserId();
-        Profile profile = getProfileByMemberId(memberId);
+        Profile profile = getProfileByMemberId(getCurrentUserId());
         profile.togglePublic();
     }
 
     public ProfileResponse getProfileById(Long profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(ProfileNotFoundException::new);
-
-        if (!profile.isPublic()) {
-            Long currentUserId = getCurrentUserId();
-            if (!profile.getMember().getId().equals(currentUserId)) {
-                throw new BusinessException(ErrorCode.PROFILE_ACCESS_DENIED);
-            }
-        }
-
-        return ProfileResponse.from(profile.getMember(), profile);
+        return ProfileResponse.from(profile, false);
     }
 
     public ProfileResponse getMyProfile() {
-        Long memberId = getCurrentUserId();
-        Profile profile = getProfileByMemberId(memberId);
-        return ProfileResponse.from(profile.getMember(), profile);
+        Profile profile = getProfileByMemberId(getCurrentUserId());
+        return ProfileResponse.from(profile, true);
     }
 
     private Profile getProfileByMemberId(Long memberId) {

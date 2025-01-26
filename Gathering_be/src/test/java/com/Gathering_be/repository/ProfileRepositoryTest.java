@@ -2,22 +2,14 @@ package com.Gathering_be.repository;
 
 import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
-import com.Gathering_be.domain.WorkExperience;
-import com.Gathering_be.global.enums.Career;
-import com.Gathering_be.global.enums.JobPosition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 
 @DataJpaTest
 class ProfileRepositoryTest {
@@ -31,45 +23,41 @@ class ProfileRepositoryTest {
     @DisplayName("회원 ID로 프로필 조회 성공")
     void findByMemberId_Success() {
         Member member = memberRepository.save(createMockMember());
-        Profile profile = profileRepository.save(createMockProfile(member));
+        Profile profile = profileRepository.save(Profile.builder()
+                .member(member)
+                .nickname("테스트닉네임")
+                .profileColor("000000")
+                .introduction("테스트 소개")
+                .isPublic(true)
+                .build());
 
         Optional<Profile> foundProfile = profileRepository.findByMemberId(member.getId());
 
         assertThat(foundProfile).isPresent();
         assertThat(foundProfile.get().getMember().getId()).isEqualTo(member.getId());
-        assertThat(foundProfile.get().getJobPosition()).isEqualTo(profile.getJobPosition());
+        assertThat(foundProfile.get().getNickname()).isEqualTo(profile.getNickname());
+    }
+
+    @Test
+    @DisplayName("닉네임으로 프로필 존재 여부 확인")
+    void existsByNickname_Success() {
+        Member member = memberRepository.save(createMockMember());
+        Profile profile = profileRepository.save(Profile.builder()
+                .member(member)
+                .nickname("테스트닉네임")
+                .profileColor("000000")
+                .isPublic(true)
+                .build());
+
+        boolean exists = profileRepository.existsByNickname("테스트닉네임");
+        assertThat(exists).isTrue();
     }
 
     private Member createMockMember() {
         return Member.localBuilder()
                 .email("test@test.com")
                 .name("테스트")
-                .nickname("테스트닉네임")
                 .password("password")
                 .build();
-    }
-
-    private Profile createMockProfile(Member member) {
-        return Profile.builder()
-                .member(member)
-                .jobPosition(JobPosition.BACKEND)
-                .organization("테스트 회사")
-                .introduction("테스트 소개")
-                .techStacks(new HashSet<>(Arrays.asList("Java", "Spring")))
-                .profileColor("000000")
-                .workExperiences(createMockWorkExperiences())
-                .build();
-    }
-
-    private List<WorkExperience> createMockWorkExperiences() {
-        return Arrays.asList(
-                WorkExperience.builder()
-                        .startDate(LocalDate.of(2022, 1, 1))
-                        .endDate(LocalDate.of(2023, 1, 1))
-                        .activityName("테스트 활동")
-                        .jobDetail("테스트 직무")
-                        .description("테스트 설명")
-                        .build()
-        );
     }
 }

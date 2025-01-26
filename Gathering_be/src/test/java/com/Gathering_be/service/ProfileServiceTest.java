@@ -2,15 +2,10 @@ package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
-import com.Gathering_be.domain.WorkExperience;
-import com.Gathering_be.dto.request.ProfileCreateRequest;
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
-import com.Gathering_be.dto.request.WorkExperienceRequest;
 import com.Gathering_be.dto.response.ProfileResponse;
-import com.Gathering_be.exception.MemberNotFoundException;
-import com.Gathering_be.global.enums.JobPosition;
+import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.global.service.S3Service;
-import com.Gathering_be.repository.MemberRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +20,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -36,16 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
     @InjectMocks
     private ProfileService profileService;
 
-    @Mock
-    private MemberRepository memberRepository;
     @Mock
     private ProfileRepository profileRepository;
     @Mock
@@ -60,108 +48,87 @@ class ProfileServiceTest {
         given(authentication.getName()).willReturn("1");
     }
 
-
     @Test
     @DisplayName("프로필 수정 성공")
     void updateProfile_Success() {
         Member member = createMockMember();
-        Profile profile = createMockProfile(member);
-        ProfileUpdateRequest request = createMockProfileUpdateRequest();
-        MockMultipartFile profileImage = new MockMultipartFile(
-                "profileImage", "test.jpg", "image/jpeg", "test".getBytes());
+        Profile profile = Profile.builder()
+                .member(member)
+                .nickname("테스트닉네임")
+                .profileColor("000000")
+                .introduction("테스트 소개")
+                .isPublic(true)
+                .build();
+
+        ProfileUpdateRequest request = ProfileUpdateRequest.builder()
+                .nickname("새닉네임")
+                .introduction("새소개")
+                .build();
 
         given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(profile));
-        given(s3Service.uploadFile(anyString(), any(MultipartFile.class)))
-                .willReturn("https://test-bucket.s3.amazonaws.com/test.jpg");
+        given(profileRepository.existsByNickname(request.getNickname())).willReturn(false);
 
-        profileService.updateProfile(request, profileImage);
+        profileService.updateProfile(request);
 
         verify(profileRepository).findByMemberId(1L);
-        verify(s3Service).uploadFile(anyString(), any(MultipartFile.class));
     }
 
     @Test
-    @DisplayName("프로필 조회 성공")
+    @DisplayName("내 프로필 조회 성공")
     void getMyProfile_Success() {
         Member member = createMockMember();
-        Profile profile = createMockProfile(member);
+        Profile profile = Profile.builder()
+                .member(member)
+                .nickname("테스트닉네임")
+                .profileColor("000000")
+                .introduction("테스트 소개")
+                .isPublic(true)
+                .build();
 
         given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(profile));
 
         ProfileResponse response = profileService.getMyProfile();
 
         assertThat(response).isNotNull();
-        assertThat(response.getJobPosition()).isEqualTo(profile.getJobPosition());
+        assertThat(response.getNickname()).isEqualTo(profile.getNickname());
+        assertThat(response.getIntroduction()).isEqualTo(profile.getIntroduction());
+    }
+
+    @Test
+    @DisplayName("포트폴리오 업로드 성공")
+    void uploadPortfolio_Success() {
+        Member member = createMockMember();
+        Profile profile = Profile.builder()
+                .member(member)
+                .nickname("테스트닉네임")
+                .profileColor("000000")
+                .build();
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "test.pdf", "application/pdf", "test".getBytes());
+
+        given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(profile));
+        given(s3Service.uploadFile(anyString(), any(MultipartFile.class)))
+                .willReturn("test-url");
+
+        profileService.updatePortfolio(file);
+
+        verify(s3Service).uploadFile(anyString(), any(MultipartFile.class));
+    }
+
+    @Test
+    @DisplayName("프로필이 없을 경우 예외 발생")
+    void getProfile_NotFound() {
+        given(profileRepository.findByMemberId(1L)).willReturn(Optional.empty());
+
+        assertThrows(ProfileNotFoundException.class, () -> profileService.getMyProfile());
     }
 
     private Member createMockMember() {
         return Member.localBuilder()
                 .email("test@test.com")
                 .name("테스트")
-                .nickname("테스트닉네임")
                 .password("password")
                 .build();
-    }
-
-    private Profile createMockProfile(Member member) {
-        return Profile.builder()
-                .member(member)
-                .jobPosition(JobPosition.BACKEND)
-                .organization("테스트 회사")
-                .introduction("테스트 소개")
-                .techStacks(new HashSet<>(Arrays.asList("Java", "Spring")))
-                .profileColor("000000")
-                .profileImageUrl("https://test-bucket.s3.amazonaws.com/test.jpg")
-                .portfolioUrl("test-portfolio-url")
-                .workExperiences(createMockWorkExperiences())
-                .build();
-    }
-
-    private List<WorkExperience> createMockWorkExperiences() {
-        return Arrays.asList(
-                WorkExperience.builder()
-                        .startDate(LocalDate.of(2022, 1, 1))
-                        .endDate(LocalDate.of(2023, 1, 1))
-                        .activityName("테스트 활동")
-                        .jobDetail("테스트 직무")
-                        .description("테스트 설명")
-                        .build()
-        );
-    }
-
-    private ProfileCreateRequest createMockProfileCreateRequest() {
-        return ProfileCreateRequest.builder()
-                .jobPosition(JobPosition.BACKEND)
-                .organization("테스트 회사")
-                .introduction("테스트 소개")
-                .techStacks(Arrays.asList("Java", "Spring"))
-                .profileColor("000000")
-                .portfolioUrl("test-portfolio-url")
-                .workExperiences(createMockWorkExperienceRequests())
-                .build();
-    }
-
-    private ProfileUpdateRequest createMockProfileUpdateRequest() {
-        return ProfileUpdateRequest.builder()
-                .jobPosition(JobPosition.BACKEND)
-                .organization("테스트 회사")
-                .introduction("테스트 소개")
-                .techStacks(Arrays.asList("Java", "Spring"))
-                .profileColor("000000")
-                .portfolioUrl("test-portfolio-url")
-                .workExperiences(createMockWorkExperienceRequests())
-                .build();
-    }
-
-    private List<WorkExperienceRequest> createMockWorkExperienceRequests() {
-        return Arrays.asList(
-                WorkExperienceRequest.builder()
-                        .startDate(LocalDate.of(2022, 1, 1))
-                        .endDate(LocalDate.of(2023, 1, 1))
-                        .activityName("테스트 활동")
-                        .jobDetail("테스트 직무")
-                        .description("테스트 설명")
-                        .build()
-        );
     }
 }

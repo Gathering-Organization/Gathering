@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,27 +31,18 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false, unique = true)
-    private String nickname;
-
-    public void changeNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     @Builder(builderClassName = "OAuthMemberBuilder", builderMethodName = "oAuthBuilder")
-    public Member(String email, String name, String nickname, OAuthProvider provider) {
+    public Member(String email, String name, OAuthProvider provider) {
         this.email = email;
         this.name = name;
-        this.nickname = nickname;
         this.provider = provider;
         this.role = Role.ROLE_USER;
     }
 
     @Builder(builderClassName = "LocalMemberBuilder", builderMethodName = "localBuilder")
-    public Member(String email, String name, String nickname, String password) {
+    public Member(String email, String name, String password) {
         this.email = email;
         this.name = name;
-        this.nickname = nickname;
         this.password = password;
         this.provider = OAuthProvider.BASIC;
         this.role = Role.ROLE_USER;

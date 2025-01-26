@@ -27,7 +27,7 @@ public class S3Service {
     private String bucket;
 
     private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
-            "image/jpeg", "image/png", "image/gif"
+            "application/pdf"
     );
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
