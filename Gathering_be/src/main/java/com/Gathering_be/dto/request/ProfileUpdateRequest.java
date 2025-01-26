@@ -1,7 +1,5 @@
 package com.Gathering_be.dto.request;
 
-import com.Gathering_be.global.enums.JobPosition;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,33 +10,17 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileUpdateRequest {
-    @NotNull(message = "직무는 필수입니다.")
-    private JobPosition jobPosition;
-
-    @Size(max = 100, message = "소속은 100자 이하여야 합니다.")
-    private String organization;
+    private String nickname;
 
     @Size(max = 1000, message = "자기소개는 1000자 이하여야 합니다.")
     private String introduction;
 
-    @Size(min = 1, message = "기술 스택은 최소 1개 이상이어야 합니다.")
-    private List<String> techStacks;
-
-    private String portfolioUrl;
-    private String profileColor = "000000";
     private List<WorkExperienceRequest> workExperiences;
 
     @Builder
-    public ProfileUpdateRequest(JobPosition jobPosition, String organization,
-                                String introduction, List<String> techStacks,
-                                String portfolioUrl, String profileColor,
-                                List<WorkExperienceRequest> workExperiences) {
-        this.jobPosition = jobPosition;
-        this.organization = organization;
+    public ProfileUpdateRequest(String nickname, String introduction, List<WorkExperienceRequest> workExperiences) {
+        this.nickname = nickname;
         this.introduction = introduction;
-        this.techStacks = techStacks;
-        this.portfolioUrl = portfolioUrl;
-        this.profileColor = profileColor != null ? profileColor : "000000";
         this.workExperiences = workExperiences;
     }
 }

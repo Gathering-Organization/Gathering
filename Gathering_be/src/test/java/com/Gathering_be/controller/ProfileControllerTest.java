@@ -1,11 +1,7 @@
 package com.Gathering_be.controller;
 
-import com.Gathering_be.dto.request.ProfileCreateRequest;
-import com.Gathering_be.dto.request.WorkExperienceRequest;
+import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.dto.response.ProfileResponse;
-import com.Gathering_be.dto.response.WorkExperienceResponse;
-import com.Gathering_be.global.enums.Career;
-import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,12 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -52,7 +42,13 @@ class ProfileControllerTest {
     @Test
     @DisplayName("내 프로필 조회 성공")
     void getMyProfile_Success() throws Exception {
-        ProfileResponse response = createMockProfileResponse();
+        ProfileResponse response = ProfileResponse.builder()
+                .profileColor("000000")
+                .nickname("테스트닉네임")
+                .introduction("테스트 소개")
+                .isPublic(true)
+                .build();
+
         given(profileService.getMyProfile()).willReturn(response);
 
         mockMvc.perform(get(BASE_URL)
@@ -62,32 +58,41 @@ class ProfileControllerTest {
                 .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_READ_SUCCESS.getCode()));
     }
 
-    private ProfileResponse createMockProfileResponse() {
-        return ProfileResponse.builder()
-                .email("test@test.com")
-                .name("테스트")
-                .nickname("테스트닉네임")
-                .jobPosition(JobPosition.BACKEND)
-                .organization("테스트 회사")
-                .introduction("테스트 소개")
-                .techStacks(new HashSet<>(Arrays.asList("Java", "Spring")))
-                .profileImageUrl("https://test-bucket.s3.amazonaws.com/test.jpg")
-                .profileColor("000000")
-                .portfolioUrl("test-portfolio-url")
-                .workExperiences(createMockWorkExperienceResponses())
-                .isPublic(true)
+    @Test
+    @DisplayName("프로필 수정 성공")
+    void updateProfile_Success() throws Exception {
+        ProfileUpdateRequest request = ProfileUpdateRequest.builder()
+                .nickname("새닉네임")
+                .introduction("새소개")
                 .build();
+
+        mockMvc.perform(put(BASE_URL)
+                        .with(SecurityMockMvcRequestPostProcessors.user(TEST_MEMBER_ID.toString()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_UPDATE_SUCCESS.getCode()));
     }
 
-    private List<WorkExperienceResponse> createMockWorkExperienceResponses() {
-        return Arrays.asList(
-                WorkExperienceResponse.builder()
-                        .startDate(LocalDate.of(2022, 1, 1))
-                        .endDate(LocalDate.of(2023, 1, 1))
-                        .activityName("테스트 활동")
-                        .jobDetail("테스트 직무")
-                        .description("테스트 설명")
-                        .build()
-        );
+    @Test
+    @DisplayName("포트폴리오 업로드 성공")
+    void uploadPortfolio_Success() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "test.pdf", "application/pdf", "test".getBytes());
+
+        mockMvc.perform(multipart(HttpMethod.POST, BASE_URL + "/portfolio")
+                        .file(file)
+                        .with(SecurityMockMvcRequestPostProcessors.user(TEST_MEMBER_ID.toString())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(ResultCode.PORTFOLIO_UPDATE_SUCCESS.getCode()));
+    }
+
+    @Test
+    @DisplayName("프로필 공개 여부 토글 성공")
+    void toggleProfileVisibility_Success() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/visibility")
+                        .with(SecurityMockMvcRequestPostProcessors.user(TEST_MEMBER_ID.toString())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_VISIBILITY_UPDATE_SUCCESS.getCode()));
     }
 }
