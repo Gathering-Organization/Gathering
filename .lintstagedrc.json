@@ -1,10 +1,7 @@
 {
-  "frontend/**/*.{js,jsx,ts,tsx}": [
-    "eslint --fix",
-    "prettier --write"
+  "Gathering_fe/**/*.{js,jsx,ts,tsx}": [
+    "eslint --config ./Gathering_fe/eslint.config.js --fix",
+    "prettier --config ./Gathering_fe/.prettierrc --write"
   ],
-  "**/*.{json,md,css,scss}": [
-    "prettier --write"
-  ]
+  "**/*.{json,md,css,scss}": ["prettier --config ./Gathering_fe/.prettierrc --write"]
 }
-  
