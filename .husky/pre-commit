@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd Gathering_fe || exit 1
+npx lint-staged
