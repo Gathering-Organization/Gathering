@@ -1,40 +1,33 @@
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import LoginModal from '@/components/LoginModal';
 import SignupModal from '@/components/SignupModal';
 import LogoutButton from '@/components/LogoutButton';
-import { test } from '@/services/authApi';
 
 const Header: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
   const [cookies] = useCookies(['accessToken']);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoggedIn(!!cookies.accessToken);
   }, [cookies.accessToken]);
 
-  const handleRefresh = async () => {
-    try {
-      const result = await test();
-
-      if (result?.success) {
-        alert('테스트 성공!');
-      } else {
-        alert(result?.message || '테스트에 실패했습니다.');
-      }
-    } catch {
-      alert('테스트 중 오류가 발생했습니다. 다시 시도해주세요.');
-    }
-  };
-
   return (
-    <div>
-      {isLoggedIn ? (
-        <LogoutButton />
-      ) : (
-        <button onClick={() => setActiveModal('login')}>로그인</button>
-      )}
+    <header>
+      <Link to="/">Gathering</Link>
+
+      <div>
+        {isLoggedIn && <button onClick={() => navigate('/profile')}>프로필</button>}
+
+        {isLoggedIn ? (
+          <LogoutButton />
+        ) : (
+          <button onClick={() => setActiveModal('login')}>로그인</button>
+        )}
+      </div>
 
       <LoginModal
         isOpen={activeModal === 'login'}
@@ -47,9 +40,7 @@ const Header: React.FC = () => {
         onClose={() => setActiveModal(null)}
         onLoginClick={() => setActiveModal('login')}
       />
-
-      <button onClick={handleRefresh}>refresh 테스트 버튼</button>
-    </div>
+    </header>
   );
 };
 
