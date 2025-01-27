@@ -29,15 +29,16 @@ public class Profile extends BaseTimeEntity {
 
     private String profileColor = "000000";
     private String introduction;
-    private String portfolioUrl;
-    private boolean isPublic;
 
+    @Embedded
+    private Portfolio portfolio;
+
+    private boolean isPublic;
     private String organization;
 
     @ElementCollection
     @CollectionTable(name = "tech_stacks", joinColumns = @JoinColumn(name = "profile_id"))
     private Set<String> techStacks = new HashSet<>();
-
 
     @ElementCollection
     @CollectionTable(name = "work_experiences", joinColumns = @JoinColumn(name = "profile_id"))
@@ -45,12 +46,12 @@ public class Profile extends BaseTimeEntity {
 
     @Builder
     public Profile(Member member, String nickname, String profileColor,
-                   String introduction, String portfolioUrl, boolean isPublic) {
+                   String introduction, Portfolio portfolio, boolean isPublic) {
         this.member = member;
         this.nickname = nickname;
         this.profileColor = profileColor != null ? profileColor : "000000";
         this.introduction = introduction;
-        this.portfolioUrl = portfolioUrl;
+        this.portfolio = portfolio;
         this.isPublic = isPublic;
     }
 
@@ -76,12 +77,15 @@ public class Profile extends BaseTimeEntity {
         }
     }
 
-    public void updatePortfolio(String portfolioUrl) {
-        this.portfolioUrl = portfolioUrl;
+    public void updatePortfolio(String url, String fileName) {
+        this.portfolio = Portfolio.builder()
+                .url(url)
+                .fileName(fileName)
+                .build();
     }
 
     public void removePortfolio() {
-        this.portfolioUrl = null;
+        this.portfolio = null;
     }
 
     public void togglePublic() {

@@ -1,5 +1,6 @@
 package com.Gathering_be.controller;
 
+import com.Gathering_be.domain.Portfolio;
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.dto.response.ProfileResponse;
 import com.Gathering_be.global.response.ResultCode;
@@ -42,10 +43,16 @@ class ProfileControllerTest {
     @Test
     @DisplayName("내 프로필 조회 성공")
     void getMyProfile_Success() throws Exception {
+        Portfolio portfolio = Portfolio.builder()
+                .url("test-url")
+                .fileName("test.pdf")
+                .build();
+
         ProfileResponse response = ProfileResponse.builder()
                 .profileColor("000000")
                 .nickname("테스트닉네임")
                 .introduction("테스트 소개")
+                .portfolio(portfolio)
                 .isPublic(true)
                 .build();
 
@@ -55,8 +62,11 @@ class ProfileControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user(TEST_MEMBER_ID.toString())))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_READ_SUCCESS.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultCode.PROFILE_READ_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.portfolio.url").value(portfolio.getUrl()))
+                .andExpect(jsonPath("$.data.portfolio.fileName").value(portfolio.getFileName()));
     }
+
 
     @Test
     @DisplayName("프로필 수정 성공")
