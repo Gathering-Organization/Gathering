@@ -8,8 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
-
     Optional<Profile> findByMemberId(Long memberId);
-
+    Optional<Profile> findByNickname(String nickname);
     boolean existsByNickname(String nickname);
 }

@@ -94,4 +94,10 @@ public class ProfileService {
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
     }
+
+    public ProfileResponse getProfileByNickname(String nickname) {
+        Profile profile = profileRepository.findByNickname(nickname)
+                .orElseThrow(ProfileNotFoundException::new);
+        return ProfileResponse.from(profile, false);
+    }
 }

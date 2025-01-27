@@ -7,6 +7,7 @@ import com.Gathering_be.global.response.ResultResponse;
 import com.Gathering_be.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +24,9 @@ public class ProfileController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_READ_SUCCESS, profile));
     }
 
-    @GetMapping("/{profileId}")
-    public ResponseEntity<ResultResponse> getProfile(@PathVariable Long profileId) {
-        ProfileResponse profile = profileService.getProfileById(profileId);
+    @GetMapping("/nickname/{nickname}")
+    public ResponseEntity<ResultResponse> getProfileByNickname(@PathVariable String nickname) {
+        ProfileResponse profile = profileService.getProfileByNickname(nickname);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_READ_SUCCESS, profile));
     }
 
@@ -35,7 +36,7 @@ public class ProfileController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROFILE_UPDATE_SUCCESS));
     }
 
-    @PostMapping("/portfolio")
+    @PostMapping(value = "/portfolio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> updatePortfolio(@RequestParam("file") MultipartFile file) {
         profileService.updatePortfolio(file);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PORTFOLIO_UPDATE_SUCCESS));
