@@ -1,6 +1,7 @@
 package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Member;
+import com.Gathering_be.domain.Portfolio;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.dto.response.ProfileResponse;
@@ -77,11 +78,17 @@ class ProfileServiceTest {
     @DisplayName("내 프로필 조회 성공")
     void getMyProfile_Success() {
         Member member = createMockMember();
+        Portfolio portfolio = Portfolio.builder()
+                .url("test-url")
+                .fileName("test.pdf")
+                .build();
+
         Profile profile = Profile.builder()
                 .member(member)
                 .nickname("테스트닉네임")
                 .profileColor("000000")
                 .introduction("테스트 소개")
+                .portfolio(portfolio)
                 .isPublic(true)
                 .build();
 
@@ -92,6 +99,8 @@ class ProfileServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getNickname()).isEqualTo(profile.getNickname());
         assertThat(response.getIntroduction()).isEqualTo(profile.getIntroduction());
+        assertThat(response.getPortfolio().getUrl()).isEqualTo(portfolio.getUrl());
+        assertThat(response.getPortfolio().getFileName()).isEqualTo(portfolio.getFileName());
     }
 
     @Test
@@ -114,6 +123,32 @@ class ProfileServiceTest {
         profileService.updatePortfolio(file);
 
         verify(s3Service).uploadFile(anyString(), any(MultipartFile.class));
+        assertThat(profile.getPortfolio().getUrl()).isEqualTo("test-url");
+        assertThat(profile.getPortfolio().getFileName()).isEqualTo("test.pdf");
+    }
+
+    @Test
+    @DisplayName("포트폴리오 삭제 성공")
+    void deletePortfolio_Success() {
+        Member member = createMockMember();
+        Portfolio portfolio = Portfolio.builder()
+                .url("test-url")
+                .fileName("test.pdf")
+                .build();
+
+        Profile profile = Profile.builder()
+                .member(member)
+                .nickname("테스트닉네임")
+                .profileColor("000000")
+                .portfolio(portfolio)
+                .build();
+
+        given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(profile));
+
+        profileService.deletePortfolio();
+
+        verify(s3Service).deleteFile("test-url");
+        assertThat(profile.getPortfolio()).isNull();
     }
 
     @Test
