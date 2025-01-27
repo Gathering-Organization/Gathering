@@ -30,6 +30,8 @@ public class ProfileService {
                 request = ProfileUpdateRequest.builder()
                         .nickname(uniqueNickname)
                         .introduction(request.getIntroduction())
+                        .organization(request.getOrganization())
+                        .techStacks(request.getTechStacks())
                         .workExperiences(request.getWorkExperiences())
                         .build();
             }
@@ -37,34 +39,24 @@ public class ProfileService {
         profile.update(request);
     }
 
-    private String generateUniqueNickname(String baseNickname) {
-        while (true) {
-            int randomNumber = (int) (Math.random() * 900000) + 100000;
-            String nickname = baseNickname + "#" + randomNumber;
-            if (!profileRepository.existsByNickname(nickname)) {
-                return nickname;
-            }
-        }
-    }
-
     @Transactional
     public void updatePortfolio(MultipartFile file) {
         Profile profile = getProfileByMemberId(getCurrentUserId());
 
-        if (profile.getPortfolioUrl() != null) {
-            s3Service.deleteFile(profile.getPortfolioUrl());
+        if (profile.getPortfolio() != null) {
+            s3Service.deleteFile(profile.getPortfolio().getUrl());
         }
 
         String fileUrl = s3Service.uploadFile("portfolio", file);
-        profile.updatePortfolio(fileUrl);
+        profile.updatePortfolio(fileUrl, file.getOriginalFilename());
     }
 
     @Transactional
     public void deletePortfolio() {
         Profile profile = getProfileByMemberId(getCurrentUserId());
 
-        if (profile.getPortfolioUrl() != null) {
-            s3Service.deleteFile(profile.getPortfolioUrl());
+        if (profile.getPortfolio() != null) {
+            s3Service.deleteFile(profile.getPortfolio().getUrl());
             profile.removePortfolio();
         }
     }
@@ -99,5 +91,15 @@ public class ProfileService {
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
         return ProfileResponse.from(profile, false);
+    }
+
+    private String generateUniqueNickname(String baseNickname) {
+        while (true) {
+            int randomNumber = (int) (Math.random() * 900000) + 100000;
+            String nickname = baseNickname + "#" + randomNumber;
+            if (!profileRepository.existsByNickname(nickname)) {
+                return nickname;
+            }
+        }
     }
 }

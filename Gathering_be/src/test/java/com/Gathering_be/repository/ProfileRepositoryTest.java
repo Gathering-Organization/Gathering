@@ -1,6 +1,7 @@
 package com.Gathering_be.repository;
 
 import com.Gathering_be.domain.Member;
+import com.Gathering_be.domain.Portfolio;
 import com.Gathering_be.domain.Profile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +24,17 @@ class ProfileRepositoryTest {
     @DisplayName("회원 ID로 프로필 조회 성공")
     void findByMemberId_Success() {
         Member member = memberRepository.save(createMockMember());
+        Portfolio portfolio = Portfolio.builder()
+                .url("test-url")
+                .fileName("test.pdf")
+                .build();
+
         Profile profile = profileRepository.save(Profile.builder()
                 .member(member)
                 .nickname("테스트닉네임")
                 .profileColor("000000")
                 .introduction("테스트 소개")
+                .portfolio(portfolio)
                 .isPublic(true)
                 .build());
 
@@ -36,6 +43,8 @@ class ProfileRepositoryTest {
         assertThat(foundProfile).isPresent();
         assertThat(foundProfile.get().getMember().getId()).isEqualTo(member.getId());
         assertThat(foundProfile.get().getNickname()).isEqualTo(profile.getNickname());
+        assertThat(foundProfile.get().getPortfolio().getUrl()).isEqualTo(portfolio.getUrl());
+        assertThat(foundProfile.get().getPortfolio().getFileName()).isEqualTo(portfolio.getFileName());
     }
 
     @Test
