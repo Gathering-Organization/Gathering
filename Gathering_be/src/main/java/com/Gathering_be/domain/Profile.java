@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,6 +32,13 @@ public class Profile extends BaseTimeEntity {
     private String portfolioUrl;
     private boolean isPublic;
 
+    private String organization;
+
+    @ElementCollection
+    @CollectionTable(name = "tech_stacks", joinColumns = @JoinColumn(name = "profile_id"))
+    private Set<String> techStacks = new HashSet<>();
+
+
     @ElementCollection
     @CollectionTable(name = "work_experiences", joinColumns = @JoinColumn(name = "profile_id"))
     private List<WorkExperience> workExperiences = new ArrayList<>();
@@ -49,7 +58,16 @@ public class Profile extends BaseTimeEntity {
         if (request.getNickname() != null) {
             this.nickname = request.getNickname();
         }
+        if (request.getProfileColor() != null) {
+            this.profileColor = request.getProfileColor();
+        }
         this.introduction = request.getIntroduction();
+        this.organization = request.getOrganization();
+
+        if (request.getTechStacks() != null) {
+            this.techStacks.clear();
+            this.techStacks.addAll(request.getTechStacks());
+        }
 
         if (request.getWorkExperiences() != null) {
             this.workExperiences.clear();
