@@ -26,8 +26,8 @@ public class Project extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     private String title;
     private String description;
@@ -38,8 +38,6 @@ public class Project extends BaseTimeEntity {
     private LocalDate startDate;        // 시작 예정일
     private boolean isClosed;           // 모집 마감
 
-    // private 팀원 태그
-    
     @Enumerated(EnumType.STRING)
     private ProjectType projectType;    // 모집 구분 (헤커톤, 스터디 등)
 
@@ -48,18 +46,29 @@ public class Project extends BaseTimeEntity {
 
     @ElementCollection
     @CollectionTable(name = "project_positions", joinColumns = @JoinColumn(name = "project_id"))
+    @Column(name = "positions")
     private List<String> requiredPositions = new ArrayList<>(); // 필요 포지션 목록 (JSON)
+
+    @OneToMany
+    @JoinTable(
+            name = "project_teams", // 조인 테이블 이름
+            joinColumns = @JoinColumn(name = "project_id"), // Project 테이블의 외래 키
+            inverseJoinColumns = @JoinColumn(name = "profile_id") // Profile 테이블의 외래 키
+    )
+    private Set<Profile> teams = new HashSet<>();   // 팀원 (OneToMany)
 
     @ElementCollection
     @CollectionTable(name = "project_tech_stacks", joinColumns = @JoinColumn(name = "project_id"))
+    @Column(name = "tech_stacks")
     private Set<String> techStacks = new HashSet<>(); // 필요 기술 스택
 
     @Builder
-    public Project(Member member, String title, String description, String kakaoUrl,
+    public Project(Profile profile, String title, String description, String kakaoUrl,
                    LocalDateTime deadline, int totalMembers, String duration,
                    LocalDate startDate, ProjectType projectType, ProjectMode projectMode,
-                   List<String> requiredPositions, Set<String> techStacks) {
-        this.member = member;
+                   List<String> requiredPositions, Set<String> techStacks,
+                   Set<Profile> teams) {
+        this.profile = profile;
         this.title = title;
         this.description = description;
         this.kakaoUrl = kakaoUrl;
@@ -72,6 +81,7 @@ public class Project extends BaseTimeEntity {
         this.projectMode = projectMode;
         this.requiredPositions = requiredPositions != null ? requiredPositions : new ArrayList<>();
         this.techStacks = techStacks;
+        this.teams = teams;
     }
 
     public void update(ProjectUpdateRequest request) {
@@ -86,5 +96,15 @@ public class Project extends BaseTimeEntity {
         this.techStacks = request.getTechStacks();
         this.requiredPositions = request.getRequiredPositions();
         this.isClosed = request.isClosed();
+        this.teams = request.getTeams();
     }
+
+//    // 팀원 관리 메서드
+//    public boolean addTeamMember(Profile member) {
+//        return teams.add(member);  // 이미 존재하면 false 반환
+//    }
+//
+//    public boolean hasTeamMember(Profile member) {
+//        return teams.contains(member);
+//    }
 }
