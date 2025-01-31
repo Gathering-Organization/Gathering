@@ -27,15 +27,31 @@ public class ProjectSimpleResponse {
     private boolean isClosed;
 
     @Builder
-    public ProjectSimpleResponse(Project project) {
-        this.projectType = project.getProjectType();
-        this.createdAt = project.getCreatedAt();
-        this.updatedAt = project.getUpdatedAt();
-        this.deadline = project.getDeadline();
-        this.title = project.getTitle();
-        this.authorNickname = project.getProfile().getNickname();
-        this.requiredPositions = project.getRequiredPositions();
-        this.techStacks = project.getTechStacks();
-        this.isClosed = project.isClosed();
+    public ProjectSimpleResponse(ProjectType projectType, LocalDateTime createdAt, LocalDateTime updatedAt,
+                                 LocalDateTime deadline, String title, String authorNickname, List<String> requiredPositions,
+                                 Set<String> techStacks, boolean isClosed) {
+        this.projectType = projectType;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deadline = deadline;
+        this.title = title;
+        this.authorNickname = authorNickname;
+        this.requiredPositions = requiredPositions;
+        this.techStacks = techStacks;
+        this.isClosed = isClosed;
+    }
+
+    public static ProjectSimpleResponse from(Project project) {
+        return ProjectSimpleResponse.builder()
+                .projectType(project.getProjectType())
+                .createdAt(project.getCreatedAt())
+                .updatedAt(project.getUpdatedAt())
+                .deadline(project.getDeadline())
+                .title(project.getTitle())
+                .authorNickname(project.getProfile().getNickname())
+                .requiredPositions(project.getRequiredPositions())
+                .techStacks(project.getTechStacks())
+                .isClosed(project.isClosed())
+                .build();
     }
 }
