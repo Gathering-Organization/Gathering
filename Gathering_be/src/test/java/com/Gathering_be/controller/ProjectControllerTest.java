@@ -93,6 +93,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser(username = "testUser", roles = "USER")
+    @DisplayName("프로젝트 생성 성공")
     void createProject() throws Exception {
         ProjectDetailResponse projectDetailResponse = ProjectDetailResponse.builder()
                 .title(createRequest.getTitle())
@@ -132,6 +133,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser(username = "testUser", roles = "USER")
+    @DisplayName("단일 프로젝트 상세 보기 성공")
     void getProjectById() throws Exception {
         Long projectId = 1L;
         ProjectDetailResponse projectDetailResponse = ProjectDetailResponse.builder()
@@ -171,6 +173,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser(username = "testUser", roles = "USER")
+    @DisplayName("프로젝트 수정 성공")
     void updateProject() throws Exception {
         Long projectId = 1L;
         ProjectUpdateRequest updateRequest = ProjectUpdateRequest.builder()
@@ -198,6 +201,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser(username = "testUser", roles = "USER")
+    @DisplayName("프로젝트 삭제 성공")
     void deleteProject() throws Exception {
         Long projectId = 1L;
 
@@ -211,6 +215,7 @@ class ProjectControllerTest {
 
     @Test
     @WithMockUser(username = "testUser", roles = "USER")
+    @DisplayName("모든 프로젝트 조회 성공")
     void getAllProjects() throws Exception {
         ProjectSimpleResponse project1 = ProjectSimpleResponse.builder()
                 .title("Test Project 1")
