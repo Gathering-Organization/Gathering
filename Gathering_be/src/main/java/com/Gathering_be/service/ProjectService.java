@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +26,12 @@ public class ProjectService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
 
-    // 프로젝트 생성
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
         Long memberId = getCurrentUserId();
         Profile profile = findProfileByMemberId(memberId);
+
+        Set<Profile> teams = findProfilesByIds(request.getTeams());
 
         Project project = Project.builder()
                 .profile(profile)
@@ -42,7 +45,7 @@ public class ProjectService {
                 .deadline(request.getDeadline())
                 .startDate(request.getStartDate())
                 .techStacks(request.getTechStacks())
-                .teams(request.getTeams())
+                .teams(teams)
                 .requiredPositions(request.getRequiredPositions())
                 .build();
 
@@ -51,25 +54,25 @@ public class ProjectService {
         return ProjectDetailResponse.from(savedProject);
     }
 
-    // 프로젝트 수정
     @Transactional
     public void updateProject(Long projectId, ProjectUpdateRequest request) {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
+        Set<Profile> teams = findProfilesByIds(request.getTeams());
+
         project.update(request);
+        project.setTeams(teams);
     }
 
-    // 프로젝트 삭제
     @Transactional
     public void deleteProject(Long projectId) {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
-        projectRepository.delete(project);
+        projectRepository.deleteById(projectId);
     }
 
-    // 프로젝트 단일 조회
     public ProjectDetailResponse getProjectById(Long projectId) {
         Project project =  projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
@@ -77,17 +80,15 @@ public class ProjectService {
         return ProjectDetailResponse.from(project);
     }
 
-    // 모든 프로젝트 목록 조회
     public List<ProjectSimpleResponse> getAllProjects() {
         List<ProjectSimpleResponse> projects = projectRepository.findAll()
                 .stream()
-                .map(ProjectSimpleResponse::new)
+                .map(ProjectSimpleResponse::from)
                 .toList();
 
         return projects;
     }
 
-    ///////////// 편의성 메서드 ////////////
     private void validateMemberAccess(Project project) {
         Long currentUserId = getCurrentUserId();
         if (!project.getProfile().getMember().getId().equals(currentUserId)) {
@@ -103,6 +104,13 @@ public class ProjectService {
     private Profile findProfileByMemberId(Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(ProfileNotFoundException::new);
+    }
+
+    private Set<Profile> findProfilesByIds(Set<Profile> teams) {
+        return teams.stream()
+                .map(profile -> profileRepository.findById(profile.getId())
+                        .orElseThrow(ProfileNotFoundException::new))
+                .collect(Collectors.toSet());
     }
 
     private Long getCurrentUserId() {
