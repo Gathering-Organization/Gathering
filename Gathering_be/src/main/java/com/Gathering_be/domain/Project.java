@@ -5,10 +5,7 @@ import com.Gathering_be.global.common.BaseTimeEntity;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +16,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project extends BaseTimeEntity {
     @Id
@@ -31,36 +29,36 @@ public class Project extends BaseTimeEntity {
 
     private String title;
     private String description;
-    private String kakaoUrl;            // 카카오톡 URL
-    private LocalDateTime deadline;     // 모집 데드라인
-    private int totalMembers;           // 모집 인원
-    private String duration;            // 예상 진행 기간 (예: "3개월", "6주")
-    private LocalDate startDate;        // 시작 예정일
-    private boolean isClosed;           // 모집 마감
+    private String kakaoUrl;
+    private LocalDateTime deadline;
+    private int totalMembers;
+    private String duration;
+    private LocalDate startDate;
+    private boolean isClosed;
 
     @Enumerated(EnumType.STRING)
-    private ProjectType projectType;    // 모집 구분 (헤커톤, 스터디 등)
+    private ProjectType projectType;
 
     @Enumerated(EnumType.STRING)
-    private ProjectMode projectMode;    // 프로젝트 진행 방식(온라인/오프라인)
+    private ProjectMode projectMode;
 
     @ElementCollection
     @CollectionTable(name = "project_positions", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "positions")
-    private List<String> requiredPositions = new ArrayList<>(); // 필요 포지션 목록 (JSON)
+    private List<String> requiredPositions = new ArrayList<>();
 
     @OneToMany
     @JoinTable(
-            name = "project_teams", // 조인 테이블 이름
-            joinColumns = @JoinColumn(name = "project_id"), // Project 테이블의 외래 키
-            inverseJoinColumns = @JoinColumn(name = "profile_id") // Profile 테이블의 외래 키
+            name = "project_teams",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "profile_id")
     )
-    private Set<Profile> teams = new HashSet<>();   // 팀원 (OneToMany)
+    private Set<Profile> teams = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(name = "project_tech_stacks", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "tech_stacks")
-    private Set<String> techStacks = new HashSet<>(); // 필요 기술 스택
+    private Set<String> techStacks = new HashSet<>();
 
     @Builder
     public Project(Profile profile, String title, String description, String kakaoUrl,
@@ -80,8 +78,8 @@ public class Project extends BaseTimeEntity {
         this.projectType = projectType;
         this.projectMode = projectMode;
         this.requiredPositions = requiredPositions != null ? requiredPositions : new ArrayList<>();
-        this.techStacks = techStacks;
-        this.teams = teams;
+        this.techStacks = techStacks != null ? techStacks : new HashSet<>();
+        this.teams = teams != null ? teams : new HashSet<>();
     }
 
     public void update(ProjectUpdateRequest request) {
@@ -97,14 +95,6 @@ public class Project extends BaseTimeEntity {
         this.requiredPositions = request.getRequiredPositions();
         this.isClosed = request.isClosed();
         this.teams = request.getTeams();
+        this.projectMode = request.getProjectMode();
     }
-
-//    // 팀원 관리 메서드
-//    public boolean addTeamMember(Profile member) {
-//        return teams.add(member);  // 이미 존재하면 false 반환
-//    }
-//
-//    public boolean hasTeamMember(Profile member) {
-//        return teams.contains(member);
-//    }
 }
