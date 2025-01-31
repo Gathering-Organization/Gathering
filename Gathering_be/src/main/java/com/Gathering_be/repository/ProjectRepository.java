@@ -8,6 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    Optional<Project> findByProfileId(Long profileId);
     List<Project> findProjectsByProfileId(Long profileId);
 }
