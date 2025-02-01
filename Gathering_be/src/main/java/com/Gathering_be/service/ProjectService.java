@@ -81,12 +81,10 @@ public class ProjectService {
     }
 
     public List<ProjectSimpleResponse> getAllProjects() {
-        List<ProjectSimpleResponse> projects = projectRepository.findAll()
+        return projectRepository.findAll()
                 .stream()
                 .map(ProjectSimpleResponse::from)
                 .toList();
-
-        return projects;
     }
 
     private void validateMemberAccess(Project project) {
