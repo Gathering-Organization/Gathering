@@ -202,10 +202,10 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 삭제 성공")
     void deleteProject() {
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        doNothing().when(projectRepository).delete(project);
+        doNothing().when(projectRepository).deleteById(1L);
 
         assertThatNoException().isThrownBy(() -> projectService.deleteProject(1L));
-        verify(projectRepository, times(1)).delete(project);
+        verify(projectRepository, times(1)).deleteById(1L);
     }
 
     @Test
