@@ -16,7 +16,9 @@ const PostItem: React.FC<approxPostInfo> = ({
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <section className="bg-white p-6 rounded-lg shadow mb-4">
-        <button className="block font-semibold mb-2">제목 : {title}</button>
+        <button onClick={() => nav(`/viewPost/${1}`)} className="block font-semibold mb-2">
+          제목 : {title}
+        </button>
         <label className="block font-semibold mb-2">모집완료 : {String(closed)}</label>
         <label className="block font-semibold mb-2">작성자 : {authorNickname}</label>
         <label className="block font-semibold mb-2">모집 타입: {projectType}</label>
