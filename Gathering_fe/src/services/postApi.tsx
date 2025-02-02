@@ -1,0 +1,24 @@
+import { api } from './api';
+import { PostingInfo } from '@/types/post';
+import { AxiosError } from 'axios';
+
+export const setPosting = async (postInfo: PostingInfo) => {
+  try {
+    console.log('보낼 데이터:', postInfo);
+    const response = await api.post('/project', { ...postInfo });
+
+    console.log('응답 데이터:', response.data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message, data: response.data.data };
+    }
+  } catch (error: unknown) {
+    console.error('모집글 작성 실패:', error);
+
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
