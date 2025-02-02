@@ -10,7 +10,7 @@ export const setPosting = async (postInfo: PostingInfo) => {
     console.log('응답 데이터:', response.data);
 
     if (response.data.status === 200) {
-      return { success: true, message: response.data.message, data: response.data.data };
+      return { success: true, message: response.data.message };
     }
   } catch (error: unknown) {
     console.error('모집글 작성 실패:', error);
@@ -54,6 +54,46 @@ export const getPartPosting = async (id: number) => {
     }
   } catch (error: unknown) {
     console.error('모집글 상세 조회 실패:', error);
+
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
+
+export const modifyPosting = async (id: number) => {
+  try {
+    const response = await api.put(`/project/${id}`);
+
+    console.log('응답 데이터:', response.data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error: unknown) {
+    console.error('모집글 수정 실패:', error);
+
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
+
+export const deletePosting = async (id: number) => {
+  try {
+    const response = await api.delete(`/project/${id}`);
+
+    console.log('응답 데이터:', response.data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error: unknown) {
+    console.error('모집글 삭제 실패:', error);
 
     if (error instanceof AxiosError) {
       console.error('서버 응답:', error.response?.data);

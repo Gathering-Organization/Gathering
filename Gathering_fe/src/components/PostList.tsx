@@ -1,6 +1,4 @@
 import PostItem from './PostItem';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { approxPostInfo } from './../types/post';
 
 // interface PostListProps {
