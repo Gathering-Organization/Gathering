@@ -1,4 +1,4 @@
-const PostEdit = () => {
+const PostEdit: React.FC = () => {
   return <div>PostEdit</div>;
 };
 

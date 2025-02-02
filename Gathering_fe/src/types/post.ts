@@ -15,3 +15,14 @@ export interface PostingInfo {
   updatedAt?: string; // 수정일 (옵셔널, 백엔드에서 처리 가능)
   closed?: boolean; // 모집 마감 여부 (옵셔널, 기본값 false)
 }
+
+export interface approxPostInfo {
+  authorNickname: string;
+  closed: boolean;
+  title: string;
+  projectType: string;
+  createdAt: string;
+  deadline: string;
+  techStacks: string[];
+  requiredPositions: string[];
+}

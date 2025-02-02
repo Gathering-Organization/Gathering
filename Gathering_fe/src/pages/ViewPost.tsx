@@ -1,4 +1,4 @@
-const ViewPost = () => {
+const ViewPost: React.FC = () => {
   return <div>ViewPost</div>;
 };
 
