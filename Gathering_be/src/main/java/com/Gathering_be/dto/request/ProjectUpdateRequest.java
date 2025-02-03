@@ -1,6 +1,5 @@
 package com.Gathering_be.dto.request;
 
-import com.Gathering_be.domain.Profile;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
 import lombok.AccessLevel;
@@ -30,14 +29,14 @@ public class ProjectUpdateRequest {
 
     private Set<String> techStacks;
     private List<String> requiredPositions;
-    private Set<Profile> teams;
+    private Set<String> teams;
 
     @Builder
     public ProjectUpdateRequest(String title, String description, String kakaoUrl,
                                 ProjectType projectType, int totalMembers, String duration,
                                 LocalDateTime deadline, LocalDate startDate, boolean isClosed,
                                 ProjectMode projectMode, Set<String> techStacks,
-                                List<String> requiredPositions, Set<Profile> teams) {
+                                List<String> requiredPositions, Set<String> teams) {
         this.title = title;
         this.description = description;
         this.kakaoUrl = kakaoUrl;

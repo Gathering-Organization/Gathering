@@ -31,7 +31,7 @@ public class ProjectService {
         Long memberId = getCurrentUserId();
         Profile profile = findProfileByMemberId(memberId);
 
-        Set<Profile> teams = findProfilesByIds(request.getTeams());
+        Set<Profile> teams = findProfilesByNicknames(request.getTeams());
 
         Project project = Project.builder()
                 .profile(profile)
@@ -59,7 +59,7 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
-        Set<Profile> teams = findProfilesByIds(request.getTeams());
+        Set<Profile> teams = findProfilesByNicknames(request.getTeams());
 
         project.update(request);
         project.setTeams(teams);
@@ -104,9 +104,9 @@ public class ProjectService {
                 .orElseThrow(ProfileNotFoundException::new);
     }
 
-    private Set<Profile> findProfilesByIds(Set<Profile> teams) {
+    private Set<Profile> findProfilesByNicknames(Set<String> teams) {
         return teams.stream()
-                .map(profile -> profileRepository.findById(profile.getId())
+                .map(nickname -> profileRepository.findByNickname(nickname)
                         .orElseThrow(ProfileNotFoundException::new))
                 .collect(Collectors.toSet());
     }
