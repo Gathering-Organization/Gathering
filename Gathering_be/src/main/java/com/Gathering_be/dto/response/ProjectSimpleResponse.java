@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectSimpleResponse {
-    private Long project_id;
+    private Long projectId;
     private ProjectType projectType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -28,10 +28,10 @@ public class ProjectSimpleResponse {
     private boolean isClosed;
 
     @Builder
-    public ProjectSimpleResponse(Long project_id, ProjectType projectType, LocalDateTime createdAt, LocalDateTime updatedAt,
+    public ProjectSimpleResponse(Long projectId, ProjectType projectType, LocalDateTime createdAt, LocalDateTime updatedAt,
                                  LocalDateTime deadline, String title, String authorNickname, List<String> requiredPositions,
                                  Set<String> techStacks, boolean isClosed) {
-        this.project_id = project_id;
+        this.projectId = projectId;
         this.projectType = projectType;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -45,7 +45,7 @@ public class ProjectSimpleResponse {
 
     public static ProjectSimpleResponse from(Project project) {
         return ProjectSimpleResponse.builder()
-                .project_id(project.getId())
+                .projectId(project.getId())
                 .projectType(project.getProjectType())
                 .createdAt(project.getCreatedAt())
                 .updatedAt(project.getUpdatedAt())
