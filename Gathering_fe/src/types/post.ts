@@ -17,6 +17,7 @@ export interface PostingInfo {
 }
 
 export interface approxPostInfo {
+  projectId: number; // 프로젝트 아이디 번호
   authorNickname: string;
   closed: boolean;
   title: string;
@@ -28,6 +29,7 @@ export interface approxPostInfo {
 }
 
 export interface partPostInfo {
+  projectId: number;
   authorNickname: string;
   closed: boolean;
   title: string;

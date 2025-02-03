@@ -14,7 +14,7 @@ const PostList: React.FC<approxPostProps> = ({ data }) => {
     <div>
       <div>
         {data.map(item => (
-          <PostItem key={1} {...item} />
+          <PostItem key={item.projectId} {...item} />
         ))}
       </div>
     </div>

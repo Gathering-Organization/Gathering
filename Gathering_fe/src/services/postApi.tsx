@@ -9,7 +9,7 @@ export const setPosting = async (postInfo: PostingInfo) => {
 
     console.log('응답 데이터:', response.data);
 
-    if (response.data.status === 200) {
+    if (response.data.status === 201) {
       return { success: true, message: response.data.message };
     }
   } catch (error: unknown) {
@@ -70,7 +70,7 @@ export const modifyPosting = async (id: number) => {
     console.log('응답 데이터:', response.data);
 
     if (response.data.status === 200) {
-      return { success: true, message: response.data.message };
+      return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error: unknown) {
     console.error('모집글 수정 실패:', error);

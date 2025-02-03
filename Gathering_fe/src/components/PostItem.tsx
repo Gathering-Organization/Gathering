@@ -2,6 +2,7 @@ import { approxPostInfo } from './../types/post';
 import { useNavigate } from 'react-router-dom';
 
 const PostItem: React.FC<approxPostInfo> = ({
+  projectId,
   title,
   closed,
   authorNickname,
@@ -16,7 +17,7 @@ const PostItem: React.FC<approxPostInfo> = ({
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <section className="bg-white p-6 rounded-lg shadow mb-4">
-        <button onClick={() => nav(`/viewPost/${1}`)} className="block font-semibold mb-2">
+        <button onClick={() => nav(`/viewPost/${projectId}`)} className="block font-semibold mb-2">
           제목 : {title}
         </button>
         <label className="block font-semibold mb-2">모집완료 : {String(closed)}</label>
