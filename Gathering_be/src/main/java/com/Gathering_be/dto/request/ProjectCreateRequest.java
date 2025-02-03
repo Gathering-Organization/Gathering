@@ -30,14 +30,14 @@ public class ProjectCreateRequest {
 
     private Set<String> techStacks;
     private List<String> requiredPositions;
-    private Set<Profile> teams;
+    private Set<String> teams;
 
     @Builder
     public ProjectCreateRequest(String title, String description, String kakaoUrl,
                                 ProjectType projectType, int totalMembers, String duration,
                                 LocalDateTime deadline, LocalDate startDate, ProjectMode projectMode,
                                 Set<String> techStacks, List<String> requiredPositions,
-                                Set<Profile> teams) {
+                                Set<String> teams) {
         this.title = title;
         this.description = description;
         this.kakaoUrl = kakaoUrl;

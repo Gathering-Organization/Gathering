@@ -94,7 +94,6 @@ public class Project extends BaseTimeEntity {
         this.techStacks = request.getTechStacks();
         this.requiredPositions = request.getRequiredPositions();
         this.isClosed = request.isClosed();
-        this.teams = request.getTeams();
         this.projectMode = request.getProjectMode();
     }
 }

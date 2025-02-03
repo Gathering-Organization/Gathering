@@ -92,7 +92,7 @@ class ProjectServiceTest {
                 .deadline(LocalDateTime.of(2025, 12, 31, 23, 59))
                 .startDate(LocalDate.of(2025, 1, 1))
                 .techStacks(Set.of("Java", "Spring Boot", "React"))
-                .teams(teams)
+                .teams(Set.of("team_nickname"))
                 .requiredPositions(List.of("Backend", "Frontend"))
                 .build();
 
@@ -116,7 +116,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 생성 성공")
     void createProjectTest() {
         when(profileRepository.findByMemberId(1L)).thenReturn(Optional.of(owner));
-        when(profileRepository.findById(any())).thenReturn(Optional.of(teamMember));
+        when(profileRepository.findByNickname(any())).thenReturn(Optional.of(teamMember));
         when(projectRepository.save(any())).thenReturn(project);
 
         ProjectDetailResponse response = projectService.createProject(createRequest);
