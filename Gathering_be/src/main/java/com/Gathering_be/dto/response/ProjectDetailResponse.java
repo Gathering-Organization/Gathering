@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class ProjectDetailResponse {
+    private final Long projectId;
     private final String title;
     private final String description;
     private final String authorNickname;
@@ -32,10 +33,11 @@ public class ProjectDetailResponse {
     private final LocalDateTime deadline;
 
     @Builder
-    public ProjectDetailResponse(String title, String description, String authorNickname, ProjectType projectType,
+    public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
                                  String duration, List<String> requiredPositions, Set<String> techStacks, String kakaoUrl,
                                  boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline) {
+        this.projectId = projectId;
         this.title = title;
         this.description = description;
         this.authorNickname = authorNickname;
@@ -60,6 +62,7 @@ public class ProjectDetailResponse {
                 .collect(Collectors.toSet());
 
         return ProjectDetailResponse.builder()
+                .projectId(project.getId())
                 .title(project.getTitle())
                 .description(project.getDescription())
                 .authorNickname(project.getProfile().getNickname())
