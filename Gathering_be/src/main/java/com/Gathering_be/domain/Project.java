@@ -47,7 +47,7 @@ public class Project extends BaseTimeEntity {
     @Column(name = "positions")
     private List<String> requiredPositions = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "project_teams",
             joinColumns = @JoinColumn(name = "project_id"),
