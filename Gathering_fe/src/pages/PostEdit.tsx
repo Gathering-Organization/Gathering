@@ -81,44 +81,37 @@ const PostEdit: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleMyProfile = async () => {
+    const fetchData = async () => {
       try {
-        const result = await getMyProfile();
+        const [profileResult, postResult] = await Promise.all([
+          getMyProfile(),
+          getPartPosting(Number(params.id))
+        ]);
 
-        if (result?.success) {
-          alert('내 정보 불러오기 성공!' + result.data);
-          console.log(result.data);
+        // 내 프로필 불러오기
+        if (profileResult?.success) {
+          alert('내 정보 불러오기 성공!' + profileResult.data);
+          console.log(profileResult.data);
           setInfo({
-            nickname: result.data.nickname || '',
-            introduction: result.data.introduction || '',
-            organization: result.data.organization || '',
-            techStacks: result.data.techStacks || [],
-            profileColor: result.data.profileColor || ''
+            nickname: profileResult.data.nickname || '',
+            introduction: profileResult.data.introduction || '',
+            organization: profileResult.data.organization || '',
+            techStacks: profileResult.data.techStacks || [],
+            profileColor: profileResult.data.profileColor || ''
           });
         } else {
-          alert(result?.message || '내 정보 불러오기에 실패했습니다.');
+          alert(profileResult?.message || '내 정보 불러오기에 실패했습니다.');
         }
-      } catch {
-        alert('내 정보 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    };
 
-    handleMyProfile();
-  }, []);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const postResult = await getPartPosting(Number(params.id));
-
+        // 모집글 정보 불러오기
         if (postResult?.success) {
-          console.log('찐최종:', postResult.data);
           const teamNicknames = ((postResult.data.teams as { nickname: string }[]) || []).map(
             team => team.nickname
           );
           setPost({ ...postResult.data, teams: teamNicknames });
           setSelectedPositions(postResult.data.requiredPositions || []);
           setSelectedStacks(postResult.data.techStacks || []);
+
           setStartDate({
             startDate: postResult.data.startDate ? new Date(postResult.data.startDate) : null,
             endDate: null
@@ -137,11 +130,11 @@ const PostEdit: React.FC = () => {
           alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
         }
       } catch {
-        alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
+        alert('데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
       }
     };
 
-    fetchPost();
+    fetchData();
   }, []);
 
   return (
