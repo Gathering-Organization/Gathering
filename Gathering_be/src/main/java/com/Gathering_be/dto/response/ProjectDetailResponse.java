@@ -58,7 +58,7 @@ public class ProjectDetailResponse {
 
     public static ProjectDetailResponse from(Project project) {
         Set<ProfileResponse> teams = project.getTeams().stream()
-                .map(profile -> ProfileResponse.from(profile, false))
+                .map(projectTeams -> ProfileResponse.from(projectTeams.getProfile(), false))
                 .collect(Collectors.toSet());
 
         return ProjectDetailResponse.builder()

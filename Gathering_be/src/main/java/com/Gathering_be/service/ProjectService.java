@@ -2,6 +2,7 @@ package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
+import com.Gathering_be.domain.ProjectTeams;
 import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
@@ -45,12 +46,13 @@ public class ProjectService {
                 .deadline(request.getDeadline())
                 .startDate(request.getStartDate())
                 .techStacks(request.getTechStacks())
-                .teams(teams)
                 .requiredPositions(request.getRequiredPositions())
                 .build();
 
-        Project savedProject = projectRepository.save(project);
+        Set<ProjectTeams> projectTeams = createProjectTeams(project, request.getTeams());
+        project.getTeams().addAll(projectTeams);
 
+        Project savedProject = projectRepository.save(project);
         return ProjectDetailResponse.from(savedProject);
     }
 
@@ -59,10 +61,11 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
-        Set<Profile> teams = findProfilesByNicknames(request.getTeams());
-
         project.update(request);
-        project.setTeams(teams);
+
+        Set<ProjectTeams> updatedProjectTeams = createProjectTeams(project, request.getTeams());
+        project.getTeams().clear();
+        project.getTeams().addAll(updatedProjectTeams);
     }
 
     @Transactional
@@ -110,6 +113,17 @@ public class ProjectService {
                         .orElseThrow(ProfileNotFoundException::new))
                 .collect(Collectors.toSet());
     }
+
+    private Set<ProjectTeams> createProjectTeams(Project project, Set<String> teamNicknames) {
+        return teamNicknames.stream()
+                .map(nickname -> {
+                    Profile teamMember = profileRepository.findByNickname(nickname)
+                            .orElseThrow(ProfileNotFoundException::new);
+                    return ProjectTeams.builder().profile(teamMember).project(project).build();
+                })
+                .collect(Collectors.toSet());
+    }
+
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
