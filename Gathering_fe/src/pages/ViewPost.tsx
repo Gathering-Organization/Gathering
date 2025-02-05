@@ -25,37 +25,32 @@ const ViewPost: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchData = async () => {
       try {
-        const profileResult = await getMyProfile();
+        const [profileResult, postResult] = await Promise.all([
+          getMyProfile(),
+          getPartPosting(Number(params.id))
+        ]);
+
+        // 프로필 정보 설정
         if (profileResult?.success) {
           setUserNickname(profileResult.data.nickname);
         } else {
           alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
         }
-      } catch {
-        alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
-      }
-    };
 
-    fetchProfile();
-  }, []);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const postResult = await getPartPosting(Number(params.id));
+        // 모집글 정보 설정
         if (postResult?.success) {
           setPost(postResult.data);
         } else {
           alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
         }
       } catch {
-        alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
+        alert('데이터를 불러오는 중 오류가 발생했습니다.');
       }
     };
 
-    fetchPost();
+    fetchData();
   }, []);
 
   return (

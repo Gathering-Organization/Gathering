@@ -1,10 +1,6 @@
 import { partPostInfo } from '@/types/post';
 
-interface ViewerProps {
-  data: partPostInfo | null;
-}
-
-const Viewer: React.FC<ViewerProps> = ({ data }) => {
+const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   if (!data) return <p>데이터를 불러오는 중...</p>;
 
   return (
