@@ -47,13 +47,8 @@ public class Project extends BaseTimeEntity {
     @Column(name = "positions")
     private List<String> requiredPositions = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_teams",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_id")
-    )
-    private Set<Profile> teams = new HashSet<>();
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjectTeams> teams = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(name = "project_tech_stacks", joinColumns = @JoinColumn(name = "project_id"))
@@ -65,7 +60,7 @@ public class Project extends BaseTimeEntity {
                    LocalDateTime deadline, int totalMembers, String duration,
                    LocalDate startDate, ProjectType projectType, ProjectMode projectMode,
                    List<String> requiredPositions, Set<String> techStacks,
-                   Set<Profile> teams) {
+                   Set<ProjectTeams> teams) {
         this.profile = profile;
         this.title = title;
         this.description = description;

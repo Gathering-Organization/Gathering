@@ -44,6 +44,9 @@ public class Profile extends BaseTimeEntity {
     @CollectionTable(name = "work_experiences", joinColumns = @JoinColumn(name = "profile_id"))
     private List<WorkExperience> workExperiences = new ArrayList<>();
 
+    @OneToMany(mappedBy = "profile")
+    private Set<ProjectTeams> teams = new HashSet<>();
+
     @Builder
     public Profile(Member member, String nickname, String profileColor,
                    String introduction, Portfolio portfolio, boolean isPublic) {
