@@ -1,4 +1,4 @@
-import Viewer from '../components/Viewer';
+import Viewer from '@/components/Viewer';
 import { useState, useEffect } from 'react';
 import { partPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';

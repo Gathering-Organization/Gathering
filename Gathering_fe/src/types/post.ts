@@ -1,4 +1,4 @@
-import { Portfolio, WorkExperience } from './profile';
+import { Portfolio, WorkExperience } from '@/types/profile';
 
 export interface TeamInfo {
   introduction: string;

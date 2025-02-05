@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import GoogleRedirectHandler from '@/components/GoogleRedirectHandler';
-import Profile from './components/Profile';
-import Main from './components/Main';
-import Layout from './components/Layout';
-import PostHome from './pages/PostHome';
-import Posting from './pages/Posting';
-import ViewPost from './pages/ViewPost';
-import PostEdit from './pages/PostEdit';
-import Notfound from './pages/Notfound';
+import Profile from '@/components/Profile';
+import Main from '@/components/Main';
+import Layout from '@/components/Layout';
+import PostHome from '@/pages/PostHome';
+import Posting from '@/pages/Posting';
+import ViewPost from '@/pages/ViewPost';
+import PostEdit from '@/pages/PostEdit';
+import Notfound from '@/pages/Notfound';
 
 // 1. 모집글 관련 사이트
 // - "/postHome" : 모든 모집글들을 조회하는 PostHome 페이지

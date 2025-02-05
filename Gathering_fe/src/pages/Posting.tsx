@@ -1,8 +1,8 @@
-import { setPosting } from './../services/postApi';
+import { setPosting } from '@/services/postApi';
 import { useState, useEffect } from 'react';
-import { PostingInfo } from './../types/post';
+import { PostingInfo } from '@/types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
-import MultiSelection from './../components/MultiSelection';
+import MultiSelection from '@/components/MultiSelection';
 import { getMyProfile } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
 

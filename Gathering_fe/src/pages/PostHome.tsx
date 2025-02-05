@@ -1,7 +1,7 @@
 import PostList from '@/components/PostList';
-import { getAllPosting } from './../services/postApi';
+import { getAllPosting } from '@/services/postApi';
 import { useState, useEffect } from 'react';
-import { approxPostInfo } from './../types/post';
+import { approxPostInfo } from '@/types/post';
 
 const PostHome: React.FC = () => {
   const [post, setPost] = useState<approxPostInfo[]>([]);

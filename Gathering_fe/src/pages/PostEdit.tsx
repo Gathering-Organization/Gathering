@@ -1,10 +1,10 @@
 // 추후 useReducer를 이용하여 Posting CREATE/UPDATE/DELETE로 통합 예정
-import { getPartPosting, modifyPosting, setPosting } from './../services/postApi';
+import { getPartPosting, modifyPosting, setPosting } from '@/services/postApi';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PostingInfo, GetPostingInfo } from './../types/post';
+import { PostingInfo, GetPostingInfo } from '@/types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
-import MultiSelection from './../components/MultiSelection';
+import MultiSelection from '@/components/MultiSelection';
 import { getMyProfile } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
 

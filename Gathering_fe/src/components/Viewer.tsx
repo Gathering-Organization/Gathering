@@ -1,4 +1,4 @@
-import { partPostInfo } from './../types/post';
+import { partPostInfo } from '@/types/post';
 
 interface ViewerProps {
   data: partPostInfo | null;

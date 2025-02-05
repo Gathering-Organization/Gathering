@@ -1,4 +1,4 @@
-import { approxPostInfo } from './../types/post';
+import { approxPostInfo } from '@/types/post';
 import { useNavigate } from 'react-router-dom';
 
 const PostItem: React.FC<approxPostInfo> = ({

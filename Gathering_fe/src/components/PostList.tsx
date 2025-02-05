@@ -1,5 +1,5 @@
-import PostItem from './PostItem';
-import { approxPostInfo } from './../types/post';
+import PostItem from '@/components/PostItem';
+import { approxPostInfo } from '@/types/post';
 
 // interface PostListProps {
 //   data: approxPostInfo[];
