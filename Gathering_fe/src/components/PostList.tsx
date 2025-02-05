@@ -1,15 +1,7 @@
 import PostItem from '@/components/PostItem';
 import { approxPostInfo } from '@/types/post';
 
-// interface PostListProps {
-//   data: approxPostInfo[];
-// }
-
-type approxPostProps = {
-  data: approxPostInfo[];
-};
-
-const PostList: React.FC<approxPostProps> = ({ data }) => {
+const PostList: React.FC<{ data: approxPostInfo[] }> = ({ data }) => {
   return (
     <div>
       <div>

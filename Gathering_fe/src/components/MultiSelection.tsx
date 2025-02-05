@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { MultiSelectionProps } from '@/types/multi_selection';
+
+interface MultiSelectionProps {
+  options: string[];
+  selectedOptions: string[];
+  setSelectedOptions: (selected: string[]) => void;
+}
 
 const MultiSelection: React.FC<MultiSelectionProps> = ({
   options,
