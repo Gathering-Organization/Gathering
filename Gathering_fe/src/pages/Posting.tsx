@@ -5,7 +5,8 @@ import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from './../components/MultiSelection';
 import { getMyProfile } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
-export const Posting: React.FC = () => {
+
+const Posting: React.FC = () => {
   const [startDate, setStartDate] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
     endDate: null
@@ -60,10 +61,7 @@ export const Posting: React.FC = () => {
         duration: post.duration,
         deadline: new Date(post.deadline).toISOString(),
         techStacks: post.techStacks,
-        teams: post.teams.map((nickname, index) => ({
-          id: index + 1,
-          nickname: typeof nickname === 'string' ? nickname : nickname.nickname
-        })),
+        teams: post.teams,
         requiredPositions: post.requiredPositions
       };
 
@@ -132,14 +130,13 @@ export const Posting: React.FC = () => {
         >
           <option selected>모집 구분</option>
           <option value="PROJECT">프로젝트</option>
-          <option value="HACKATHON">해커톤</option>
+          <option value="CONTEST">대회</option>
           <option value="STUDY">스터디</option>
-          <option value="CONTEST">공모전</option>
           <option value="OTHER">기타</option>
         </select>
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
-        <label className="block font-semibold mb-2">진행방식</label>
+        <label className="block font-semibold mb-2">진행 방식</label>
         <select
           onChange={e => setPost({ ...post, projectMode: e.target.value })}
           id="countries"
@@ -148,6 +145,7 @@ export const Posting: React.FC = () => {
           <option selected>진행 방식</option>
           <option value="ONLINE">온라인</option>
           <option value="OFFLINE">오프라인</option>
+          <option value="BLENDED">온+오프라인</option>
         </select>
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
@@ -203,15 +201,10 @@ export const Posting: React.FC = () => {
         <input
           onChange={e => {
             const teamNicknames = e.target.value.split(',').map(nickname => nickname.trim());
-            const teamsFormatted = teamNicknames.map((nickname, index) => ({
-              id: index + 1,
-              nickname
-            }));
-
-            setPost(prev => ({ ...prev, teams: teamsFormatted }));
+            setPost({ ...post, teams: teamNicknames });
           }}
           type="text"
-          name="title"
+          name="teams"
           className="border rounded w-full p-2"
         />
       </section>

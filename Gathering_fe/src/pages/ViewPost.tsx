@@ -20,12 +20,11 @@ const ViewPost: React.FC = () => {
 
   const onClickUpdate = () => {
     if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
-      modifyPosting(Number(params.id));
+      nav(`/postEdit/${params.id}`);
     }
   };
 
   useEffect(() => {
-    console.log(params.id);
     const fetchProfile = async () => {
       try {
         const profileResult = await getMyProfile();

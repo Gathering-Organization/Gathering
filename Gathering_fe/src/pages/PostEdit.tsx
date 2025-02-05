@@ -1,12 +1,15 @@
-// 나중에 useReducer로 case 구분하여 Posting CREATE/UPDATE/DELETE 합칠 예정
-import { setPosting } from './../services/postApi';
+// 추후 useReducer를 이용하여 Posting CREATE/UPDATE/DELETE로 통합 예정
+import { getPartPosting, modifyPosting, setPosting } from './../services/postApi';
 import { useState, useEffect } from 'react';
-import { PostingInfo } from './../types/post';
+import { useNavigate, useParams } from 'react-router-dom';
+import { PostingInfo, GetPostingInfo } from './../types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from './../components/MultiSelection';
 import { getMyProfile } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
-export const Posting: React.FC = () => {
+
+const PostEdit: React.FC = () => {
+  const nav = useNavigate();
   const [startDate, setStartDate] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
     endDate: null
@@ -15,6 +18,7 @@ export const Posting: React.FC = () => {
     startDate: null,
     endDate: null
   });
+  const params = useParams();
   const [positionList] = useState<string[]>(['프론트엔드', '백엔드', '디자이너']);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const [stackList] = useState<string[]>(['React', 'Spring', 'TypeScript']);
@@ -42,13 +46,8 @@ export const Posting: React.FC = () => {
     profileColor: ''
   });
 
-  // const onChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  //   const { name, value } = e.target;
-  //   setPost(prev => ({ ...prev, [name]: value }));
-  // };
-
-  const onCreate = async () => {
-    console.log('최종 저장 데이터: ', post);
+  const onUpdate = async () => {
+    console.log('최종 저장 닉네임: ', post.teams);
     try {
       const postInfo = {
         title: post.title,
@@ -61,24 +60,22 @@ export const Posting: React.FC = () => {
         duration: post.duration,
         deadline: new Date(post.deadline).toISOString(),
         techStacks: post.techStacks,
-        teams: post.teams.map((nickname, index) => ({
-          id: index + 1,
-          nickname: typeof nickname === 'string' ? nickname : nickname.nickname
-        })),
+        teams: post.teams,
         requiredPositions: post.requiredPositions
       };
 
       console.log('변환된 데이터: ', postInfo);
 
-      const result = await setPosting(postInfo);
+      const result = await modifyPosting(Number(params.id), postInfo);
 
       if (result?.success) {
-        alert('모집글 작성이 완료되었습니다.');
+        alert('모집글 수정이 완료되었습니다.');
+        nav('/', { replace: true });
       } else {
-        alert(result?.message || '모집글 작성 중 오류가 발생했습니다.');
+        alert(result?.message || '모집글 수정 중 오류가 발생했습니다.');
       }
     } catch (error) {
-      alert('모집글 작성 중 오류가 발생했습니다.');
+      alert('모집글 수정 중 오류가 발생했습니다.');
       console.error(error);
     }
   };
@@ -108,6 +105,45 @@ export const Posting: React.FC = () => {
 
     handleMyProfile();
   }, []);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const postResult = await getPartPosting(Number(params.id));
+
+        if (postResult?.success) {
+          console.log('찐최종:', postResult.data);
+          const teamNicknames = ((postResult.data.teams as { nickname: string }[]) || []).map(
+            team => team.nickname
+          );
+          setPost({ ...postResult.data, teams: teamNicknames });
+          setSelectedPositions(postResult.data.requiredPositions || []);
+          setSelectedStacks(postResult.data.techStacks || []);
+          setStartDate({
+            startDate: postResult.data.startDate ? new Date(postResult.data.startDate) : null,
+            endDate: null
+          });
+
+          setDeadline({
+            startDate: null,
+            endDate: postResult.data.deadline ? new Date(postResult.data.deadline) : null
+          });
+
+          console.log('불러온 날짜:', {
+            startDate: postResult.data.startDate,
+            deadline: postResult.data.deadline
+          });
+        } else {
+          alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
+        }
+      } catch {
+        alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
+      }
+    };
+
+    fetchPost();
+  }, []);
+
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <section className="bg-white p-6 rounded-lg shadow mb-4">
@@ -119,6 +155,7 @@ export const Posting: React.FC = () => {
         <label className="block font-semibold mb-2">제목</label>
         <input
           onChange={e => setPost({ ...post, title: e.target.value })}
+          value={post.title}
           type="text"
           name="title"
           className="border rounded w-full p-2"
@@ -127,21 +164,22 @@ export const Posting: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">모집 구분</label>
         <select
+          value={post.projectType}
           onChange={e => setPost({ ...post, projectType: e.target.value })}
           id="countries"
           className="bg-white dark:bg-[#1E2028] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
         >
           <option selected>모집 구분</option>
           <option value="PROJECT">프로젝트</option>
-          <option value="HACKATHON">해커톤</option>
+          <option value="CONTEST">대회</option>
           <option value="STUDY">스터디</option>
-          <option value="CONTEST">공모전</option>
           <option value="OTHER">기타</option>
         </select>
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
-        <label className="block font-semibold mb-2">진행방식</label>
+        <label className="block font-semibold mb-2">진행 방식</label>
         <select
+          value={post.projectMode}
           onChange={e => setPost({ ...post, projectMode: e.target.value })}
           id="countries"
           className="bg-white dark:bg-[#1E2028] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
@@ -149,11 +187,13 @@ export const Posting: React.FC = () => {
           <option selected>진행 방식</option>
           <option value="ONLINE">온라인</option>
           <option value="OFFLINE">오프라인</option>
+          <option value="BLENDED">온+오프라인</option>
         </select>
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">모집 인원</label>
         <input
+          value={post.totalMembers}
           onChange={e => setPost({ ...post, totalMembers: Number(e.target.value) })}
           type="text"
           name="title"
@@ -193,6 +233,7 @@ export const Posting: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">카카오톡 오픈채팅 URL</label>
         <input
+          value={post.kakaoUrl}
           onChange={e => setPost({ ...post, kakaoUrl: e.target.value })}
           type="text"
           name="kakaoUrl"
@@ -202,20 +243,25 @@ export const Posting: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">팀원 태그</label>
         <input
+          value={post.teams.join(', ')}
           onChange={e => {
-            const teamNicknames = e.target.value.split(',').map(nickname => nickname.trim());
-            const teamsFormatted = teamNicknames.map((nickname, index) => ({
-              id: index + 1,
-              nickname
+            setPost({
+              ...post,
+              teams: e.target.value.split(', ').map(nickname => nickname.trim())
+            });
+          }}
+          onBlur={() => {
+            setPost(prev => ({
+              ...prev,
+              teams: prev.teams.filter(nickname => nickname !== '') // 포커스를 벗어나면 빈 값 삭제
             }));
-
-            setPost(prev => ({ ...prev, teams: teamsFormatted }));
           }}
           type="text"
-          name="title"
+          name="teams"
           className="border rounded w-full p-2"
         />
       </section>
+
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">예상 기간</label>
         <select
@@ -254,6 +300,7 @@ export const Posting: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">모집 소개</label>
         <input
+          value={post.description}
           onChange={e => setPost({ ...post, description: e.target.value })}
           type="text"
           name="title"
@@ -262,12 +309,12 @@ export const Posting: React.FC = () => {
       </section>
       <button
         className="bg-blue-500 p-10 text-white w-full rounded hover:bg-blue-600"
-        onClick={onCreate}
+        onClick={onUpdate}
       >
-        작성하기
+        수정하기
       </button>
     </div>
   );
 };
 
-export default Posting;
+export default PostEdit;

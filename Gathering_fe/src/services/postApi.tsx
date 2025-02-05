@@ -63,13 +63,14 @@ export const getPartPosting = async (id: number) => {
   }
 };
 
-export const modifyPosting = async (id: number) => {
+export const modifyPosting = async (id: number, postInfo: PostingInfo) => {
   try {
-    const response = await api.put(`/project/${id}`);
+    const response = await api.put(`/project/${id}`, { ...postInfo });
 
     console.log('응답 데이터:', response.data);
 
     if (response.data.status === 200) {
+      console.log('모디파이:', response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error: unknown) {
