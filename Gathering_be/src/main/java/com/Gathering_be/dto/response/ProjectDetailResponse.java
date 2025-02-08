@@ -31,12 +31,14 @@ public class ProjectDetailResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     private final LocalDateTime deadline;
+    private final boolean isInterested;
 
     @Builder
     public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
                                  String duration, List<String> requiredPositions, Set<String> techStacks, String kakaoUrl,
-                                 boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline) {
+                                 boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline,
+                                 boolean isInterested) {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
@@ -54,9 +56,10 @@ public class ProjectDetailResponse {
         this.updatedAt = updatedAt;
         this.deadline = deadline;
         this.kakaoUrl = kakaoUrl;
+        this.isInterested = isInterested;
     }
 
-    public static ProjectDetailResponse from(Project project) {
+    public static ProjectDetailResponse from(Project project, boolean isInterested) {
         Set<ProfileResponse> teams = project.getTeams().stream()
                 .map(projectTeams -> ProfileResponse.from(projectTeams.getProfile(), false))
                 .collect(Collectors.toSet());
@@ -79,6 +82,7 @@ public class ProjectDetailResponse {
                 .updatedAt(project.getUpdatedAt())
                 .deadline(project.getDeadline())
                 .kakaoUrl(project.getKakaoUrl())
+                .isInterested(isInterested)
                 .build();
     }
 }
