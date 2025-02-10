@@ -10,6 +10,7 @@ import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.exception.UnauthorizedAccessException;
+import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
+    private final InterestProjectRepository interestProjectRepository;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
@@ -53,7 +55,7 @@ public class ProjectService {
         project.getTeams().addAll(projectTeams);
 
         Project savedProject = projectRepository.save(project);
-        return ProjectDetailResponse.from(savedProject);
+        return ProjectDetailResponse.from(savedProject, false);
     }
 
     @Transactional
@@ -80,14 +82,18 @@ public class ProjectService {
         Project project =  projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
 
-        return ProjectDetailResponse.from(project);
+        boolean isInterested = isUserInterestedInProject(projectId);
+        return ProjectDetailResponse.from(project, isInterested);
     }
 
     public List<ProjectSimpleResponse> getAllProjects() {
-        return projectRepository.findAll()
-                .stream()
-                .map(ProjectSimpleResponse::from)
-                .toList();
+        List<Project> projects = projectRepository.findAll();
+        return projects.stream()
+                .map(project -> {
+                    boolean isInterested = isUserInterestedInProject(project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested);
+                })
+                .collect(Collectors.toList());
     }
 
     private void validateMemberAccess(Project project) {
@@ -124,8 +130,18 @@ public class ProjectService {
                 .collect(Collectors.toSet());
     }
 
+    private boolean isUserInterestedInProject(Long projectId) {
+        Long profileId = getProfileIdByMemberId(getCurrentUserId());
+        return interestProjectRepository.existsByProfileIdAndProjectId(profileId, projectId);
+    }
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    private Long getProfileIdByMemberId(Long memberId) {
+        Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(ProfileNotFoundException::new);
+        return profile.getId();
     }
 }

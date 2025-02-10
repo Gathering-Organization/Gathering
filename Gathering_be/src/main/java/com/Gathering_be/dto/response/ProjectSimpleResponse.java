@@ -26,11 +26,12 @@ public class ProjectSimpleResponse {
     private List<String> requiredPositions;
     private Set<String> techStacks;
     private boolean isClosed;
+    private boolean isInterested;
 
     @Builder
     public ProjectSimpleResponse(Long projectId, ProjectType projectType, LocalDateTime createdAt, LocalDateTime updatedAt,
                                  LocalDateTime deadline, String title, String authorNickname, List<String> requiredPositions,
-                                 Set<String> techStacks, boolean isClosed) {
+                                 Set<String> techStacks, boolean isClosed, boolean isInterested) {
         this.projectId = projectId;
         this.projectType = projectType;
         this.createdAt = createdAt;
@@ -41,9 +42,10 @@ public class ProjectSimpleResponse {
         this.requiredPositions = requiredPositions;
         this.techStacks = techStacks;
         this.isClosed = isClosed;
+        this.isInterested = isInterested;
     }
 
-    public static ProjectSimpleResponse from(Project project) {
+    public static ProjectSimpleResponse from(Project project, boolean isInterested) {
         return ProjectSimpleResponse.builder()
                 .projectId(project.getId())
                 .projectType(project.getProjectType())
@@ -55,6 +57,7 @@ public class ProjectSimpleResponse {
                 .requiredPositions(project.getRequiredPositions())
                 .techStacks(project.getTechStacks())
                 .isClosed(project.isClosed())
+                .isInterested(isInterested)
                 .build();
     }
 }
