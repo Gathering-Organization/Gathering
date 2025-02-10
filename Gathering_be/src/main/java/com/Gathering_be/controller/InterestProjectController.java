@@ -34,11 +34,9 @@ public class InterestProjectController {
 //        return ResultResponse.of(ResultCode.INTEREST_PROJECT_REMOVE_SUCCESS);
 //    }
 
-    @GetMapping
-    public ResultResponse getInterestProjects(Long profileId) {
-        List<InterestProjectResponse> projects = interestProjectService.getInterestProjects(profileId);
+    @GetMapping("/{nickname}")
+    public ResultResponse getInterestProjects(@PathVariable String nickname) {
+        List<InterestProjectResponse> projects = interestProjectService.getInterestProjects(nickname);
         return ResultResponse.of(ResultCode.INTEREST_PROJECT_GET_SUCCESS, projects);
     }
-
-
 }

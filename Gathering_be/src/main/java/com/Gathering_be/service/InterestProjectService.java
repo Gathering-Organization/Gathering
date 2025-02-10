@@ -26,7 +26,9 @@ public class InterestProjectService {
 
     @Transactional
     public boolean toggleInterestProject(InterestProjectRequest request) {
-        Long profileId = request.getProfileId();
+        Profile profile = getProfileByNickname(request.getNickname());
+
+        Long profileId = profile.getId();
         Long projectId = request.getProjectId();
         validateMemberAccess(profileId);
 
@@ -38,7 +40,7 @@ public class InterestProjectService {
         }
         else {
             InterestProject interestProject = InterestProject.builder()
-                    .profile(getProfileById(profileId))
+                    .profile(profile)
                     .project(getProjectById(projectId))
                     .build();
             interestProjectRepository.save(interestProject);
@@ -63,10 +65,11 @@ public class InterestProjectService {
 //    }
 
     @Transactional(readOnly = true)
-    public List<InterestProjectResponse> getInterestProjects(Long profileId) {
+    public List<InterestProjectResponse> getInterestProjects(String nickname) {
+        Long profileId = getProfileByNickname(nickname).getId();
         validateMemberAccess(profileId);
 
-        List<InterestProject> interestProjects = interestProjectRepository.findByProfileId(profileId);
+        List<InterestProject> interestProjects = interestProjectRepository.findByNickname(nickname);
         return interestProjects.stream()
                 .map(InterestProjectResponse::from)
                 .collect(Collectors.toList());
@@ -84,6 +87,11 @@ public class InterestProjectService {
 
     private Profile getProfileById(Long id) {
         return profileRepository.findById(id)
+                .orElseThrow(ProfileNotFoundException::new);
+    }
+
+    private Profile getProfileByNickname(String nickname) {
+        return profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
     }
 

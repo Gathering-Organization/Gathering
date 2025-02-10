@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class InterestProjectRequest {
-    private Long profileId;
+    private String nickname;
     private Long projectId;
 
     @Builder
-    public InterestProjectRequest(Long profileId, Long projectId) {
-        this.profileId = profileId;
+    public InterestProjectRequest(String nickname, Long projectId) {
+        this.nickname = nickname;
         this.projectId = projectId;
     }
 }

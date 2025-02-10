@@ -7,20 +7,20 @@ import lombok.Getter;
 @Getter
 public class InterestProjectResponse {
     private Long id;
-    private Long profileId;
+    private String nickname;
     private Long projectId;
 
     @Builder
-    public InterestProjectResponse(Long id, Long profileId, Long projectId) {
+    public InterestProjectResponse(Long id, String nickname, Long projectId) {
         this.id = id;
-        this.profileId = profileId;
+        this.nickname = nickname;
         this.projectId = projectId;
     }
 
     public static InterestProjectResponse from(InterestProject interestProject) {
         return InterestProjectResponse.builder()
                 .id(interestProject.getId())
-                .profileId(interestProject.getProfile().getId())
+                .nickname(interestProject.getProfile().getNickname())
                 .projectId(interestProject.getProject().getId())
                 .build();
     }
