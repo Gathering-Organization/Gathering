@@ -86,13 +86,6 @@ public class ProjectService {
         return ProjectDetailResponse.from(project, isInterested);
     }
 
-//    public List<ProjectSimpleResponse> getAllProjects() {
-//        return projectRepository.findAll()
-//                .stream()
-//                .map(ProjectSimpleResponse::from)
-//                .toList();
-//    }
-
     public List<ProjectSimpleResponse> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
         return projects.stream()

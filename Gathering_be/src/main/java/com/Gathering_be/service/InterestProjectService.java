@@ -48,22 +48,6 @@ public class InterestProjectService {
         }
     }
 
-//    @Transactional
-//    public void addInterestProject(Long profileId, InterestProjectRequest request) {
-//        validateMemberAccess(profileId);
-//
-//        if (interestProjectRepository.existsByProfileIdAndProjectId(profileId, request.getProjectId())) {
-//            throw new DuplicateInterestProjectException();
-//        }
-//
-//        InterestProject interestProject = InterestProject.builder()
-//                .profile(getProfileById(profileId))
-//                .project(getProjectById(request.getProjectId()))
-//                .build();
-//
-//        interestProjectRepository.save(interestProject);
-//    }
-
     @Transactional(readOnly = true)
     public List<InterestProjectResponse> getInterestProjects(String nickname) {
         Long profileId = getProfileByNickname(nickname).getId();
@@ -74,16 +58,6 @@ public class InterestProjectService {
                 .map(InterestProjectResponse::from)
                 .collect(Collectors.toList());
     }
-
-//    @Transactional
-//    public void removeInterestProject(Long profileId, Long projectId) {
-//        validateMemberAccess(profileId);
-//
-//        if (!interestProjectRepository.existsByProfileIdAndProjectId(profileId, projectId)) {
-//            throw new InterestProjectNotFoundException();
-//        }
-//        interestProjectRepository.deleteByProfileIdAndProjectId(profileId, projectId);
-//    }
 
     private Profile getProfileById(Long id) {
         return profileRepository.findById(id)

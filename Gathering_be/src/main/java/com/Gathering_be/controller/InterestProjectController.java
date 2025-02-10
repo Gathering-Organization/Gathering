@@ -22,18 +22,6 @@ public class InterestProjectController {
         return ResultResponse.of(ResultCode.INTEREST_PROJECT_TOGGLE_SUCCESS, isInterest);
     }
 
-//    @PostMapping
-//    public ResultResponse addInterestProject(Long profileId, @RequestBody InterestProjectRequest request) {
-//        interestProjectService.addInterestProject(profileId, request);
-//        return ResultResponse.of(ResultCode.INSERT_PROJECT_ADD_SUCCESS);
-//    }
-//
-//    @DeleteMapping("/{projectId}")
-//    public ResultResponse removeInterestProject(Long profileId, @PathVariable Long projectId) {
-//        interestProjectService.removeInterestProject(profileId, projectId);
-//        return ResultResponse.of(ResultCode.INTEREST_PROJECT_REMOVE_SUCCESS);
-//    }
-
     @GetMapping("/{nickname}")
     public ResultResponse getInterestProjects(@PathVariable String nickname) {
         List<InterestProjectResponse> projects = interestProjectService.getInterestProjects(nickname);
