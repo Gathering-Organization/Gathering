@@ -1,8 +1,10 @@
 package com.Gathering_be.dto.response;
 
 import com.Gathering_be.domain.Project;
+import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
+import com.Gathering_be.global.enums.TechStack;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,8 +27,8 @@ public class ProjectDetailResponse {
     private final LocalDate startDate;
     private final Set<ProfileResponse> teams;
     private final String duration;
-    private final List<String> requiredPositions;
-    private final Set<String> techStacks;
+    private final List<JobPosition> requiredPositions;
+    private final Set<TechStack> techStacks;
     private final boolean isClosed;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
@@ -36,7 +38,7 @@ public class ProjectDetailResponse {
     @Builder
     public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
-                                 String duration, List<String> requiredPositions, Set<String> techStacks, String kakaoUrl,
+                                 String duration, List<JobPosition> requiredPositions, Set<TechStack> techStacks, String kakaoUrl,
                                  boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline,
                                  boolean isInterested) {
         this.projectId = projectId;
