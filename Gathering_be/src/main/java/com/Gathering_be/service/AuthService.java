@@ -35,12 +35,17 @@ public class AuthService {
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
     private final ProfileRepository profileRepository;
+    private final EmailVerificationService emailVerificationService;
 
     @Value("${oauth2.google.resource-uri}")
     private String googleResourceUri;
 
     @Transactional
-    public void signUp(SignUpRequest request) {
+    public void verifyCodeAndSignUp(SignUpRequest request) {
+        if (!emailVerificationService.verifyCode(request.getEmail(), request.getCode())) {
+            throw new InvalidVerificationCodeException();
+        }
+
         if (memberRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateEmailException();
         }
