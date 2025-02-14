@@ -1,5 +1,6 @@
 package com.Gathering_be.dto.request;
 
+import com.Gathering_be.global.enums.TechStack;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -18,7 +19,7 @@ public class ProfileUpdateRequest {
     private String introduction;
 
     private String organization;
-    private Set<String> techStacks;
+    private Set<TechStack> techStacks;
     private List<WorkExperienceRequest> workExperiences;
 
     @Pattern(regexp = "^[0-9A-Fa-f]{6}$", message = "색상 코드는 000000-FFFFFF 범위의 16진수여야 합니다.")
@@ -26,7 +27,7 @@ public class ProfileUpdateRequest {
 
     @Builder
     public ProfileUpdateRequest(String nickname, String introduction,
-                                String organization, Set<String> techStacks,
+                                String organization, Set<TechStack> techStacks,
                                 List<WorkExperienceRequest> workExperiences) {
         this.nickname = nickname;
         this.introduction = introduction;
