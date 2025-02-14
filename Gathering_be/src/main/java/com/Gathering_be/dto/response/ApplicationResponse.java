@@ -9,16 +9,16 @@ import lombok.Getter;
 @Getter
 public class ApplicationResponse {
     private Long id;
-    private Profile profile;
+    private String nickname;
     private Long projectId;
     private String position;
     private String message;
     private ApplyStatus status;
 
     @Builder
-    public ApplicationResponse(Long id, Profile profile, Long projectId, String position, String message, ApplyStatus status) {
+    public ApplicationResponse(Long id, String nickname, Long projectId, String position, String message, ApplyStatus status) {
         this.id = id;
-        this.profile = profile;
+        this.nickname = nickname;
         this.projectId = projectId;
         this.position = position;
         this.message = message;
@@ -28,7 +28,7 @@ public class ApplicationResponse {
     public static ApplicationResponse from(Application application) {
         return ApplicationResponse.builder()
                 .id(application.getId())
-                .profile(application.getProfile())
+                .nickname(application.getProfile().getNickname())
                 .projectId(application.getProject().getId())
                 .position(application.getPosition())
                 .message(application.getMessage())

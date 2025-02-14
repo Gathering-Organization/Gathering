@@ -29,9 +29,9 @@ public class ApplicationController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 
-    @GetMapping("/profile/{profileId}")
-    public ResponseEntity<ResultResponse> getApplicationsByProfile(@PathVariable Long profileId) {
-        List<ApplicationResponse> applications = applicationService.getApplicationsByProfile(profileId);
+    @GetMapping("/{nickname}")
+    public ResponseEntity<ResultResponse> getApplicationsByProfile(@PathVariable String nickname) {
+        List<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 }

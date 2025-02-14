@@ -49,6 +49,7 @@ public enum ErrorCode {
 
     // Application
     APPLICATION_ALREADY_EXISTS(400, "AP001", "이미 존재하는 지원서입니다."),
+    SELF_APPLICATION_NOT_ALLOWED(400, "AP002", "자신이 만든 프로젝트에는 지원할 수 없습니다."),
     ;
 
     private final int status;
