@@ -26,7 +26,9 @@ public class InterestProjectService {
 
     @Transactional
     public boolean toggleInterestProject(InterestProjectRequest request) {
-        Profile profile = getProfileByNickname(request.getNickname());
+        Long currentUserId = getCurrentUserId();
+        Profile profile = profileRepository.findByMemberId(currentUserId)
+                .orElseThrow(ProfileNotFoundException::new);
 
         Long profileId = profile.getId();
         Long projectId = request.getProjectId();
