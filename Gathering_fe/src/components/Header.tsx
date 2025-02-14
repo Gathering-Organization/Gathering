@@ -11,6 +11,16 @@ const Header: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  const onClickPostHomeButton = () => {
+    navigate('/postHome');
+  };
+  const onClickPostingButton = () => {
+    navigate('/posting');
+  };
+  const onClickViewPostButton = () => {
+    navigate('/viewPost');
+  };
+
   useEffect(() => {
     setIsLoggedIn(!!cookies.accessToken);
   }, [cookies.accessToken]);
@@ -18,7 +28,11 @@ const Header: React.FC = () => {
   return (
     <header>
       <Link to="/">Gathering</Link>
-
+      <div>
+        <button onClick={onClickPostHomeButton}>모집글 홈 |</button>
+        <button onClick={onClickPostingButton}> 모집글 작성하기 |</button>
+        <button onClick={onClickViewPostButton}> 모집글 보기</button>
+      </div>
       <div>
         {isLoggedIn && <button onClick={() => navigate('/profile')}>프로필</button>}
 
