@@ -2,6 +2,7 @@ package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
+import com.Gathering_be.domain.ProjectTeams;
 import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
@@ -9,6 +10,7 @@ import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.exception.UnauthorizedAccessException;
+import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +27,14 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
+    private final InterestProjectRepository interestProjectRepository;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
         Long memberId = getCurrentUserId();
         Profile profile = findProfileByMemberId(memberId);
 
-        Set<Profile> teams = findProfilesByIds(request.getTeams());
+        Set<Profile> teams = findProfilesByNicknames(request.getTeams());
 
         Project project = Project.builder()
                 .profile(profile)
@@ -45,13 +48,14 @@ public class ProjectService {
                 .deadline(request.getDeadline())
                 .startDate(request.getStartDate())
                 .techStacks(request.getTechStacks())
-                .teams(teams)
                 .requiredPositions(request.getRequiredPositions())
                 .build();
 
-        Project savedProject = projectRepository.save(project);
+        Set<ProjectTeams> projectTeams = createProjectTeams(project, request.getTeams());
+        project.getTeams().addAll(projectTeams);
 
-        return ProjectDetailResponse.from(savedProject);
+        Project savedProject = projectRepository.save(project);
+        return ProjectDetailResponse.from(savedProject, false);
     }
 
     @Transactional
@@ -59,10 +63,11 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
-        Set<Profile> teams = findProfilesByIds(request.getTeams());
-
         project.update(request);
-        project.setTeams(teams);
+
+        Set<ProjectTeams> updatedProjectTeams = createProjectTeams(project, request.getTeams());
+        project.getTeams().clear();
+        project.getTeams().addAll(updatedProjectTeams);
     }
 
     @Transactional
@@ -77,14 +82,18 @@ public class ProjectService {
         Project project =  projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
 
-        return ProjectDetailResponse.from(project);
+        boolean isInterested = isUserInterestedInProject(projectId);
+        return ProjectDetailResponse.from(project, isInterested);
     }
 
     public List<ProjectSimpleResponse> getAllProjects() {
-        return projectRepository.findAll()
-                .stream()
-                .map(ProjectSimpleResponse::from)
-                .toList();
+        List<Project> projects = projectRepository.findAll();
+        return projects.stream()
+                .map(project -> {
+                    boolean isInterested = isUserInterestedInProject(project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested);
+                })
+                .collect(Collectors.toList());
     }
 
     private void validateMemberAccess(Project project) {
@@ -104,14 +113,35 @@ public class ProjectService {
                 .orElseThrow(ProfileNotFoundException::new);
     }
 
-    private Set<Profile> findProfilesByIds(Set<Profile> teams) {
+    private Set<Profile> findProfilesByNicknames(Set<String> teams) {
         return teams.stream()
-                .map(profile -> profileRepository.findById(profile.getId())
+                .map(nickname -> profileRepository.findByNickname(nickname)
                         .orElseThrow(ProfileNotFoundException::new))
                 .collect(Collectors.toSet());
     }
 
+    private Set<ProjectTeams> createProjectTeams(Project project, Set<String> teamNicknames) {
+        return teamNicknames.stream()
+                .map(nickname -> {
+                    Profile teamMember = profileRepository.findByNickname(nickname)
+                            .orElseThrow(ProfileNotFoundException::new);
+                    return ProjectTeams.builder().profile(teamMember).project(project).build();
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private boolean isUserInterestedInProject(Long projectId) {
+        Long profileId = getProfileIdByMemberId(getCurrentUserId());
+        return interestProjectRepository.existsByProfileIdAndProjectId(profileId, projectId);
+    }
+
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    private Long getProfileIdByMemberId(Long memberId) {
+        Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(ProfileNotFoundException::new);
+        return profile.getId();
     }
 }

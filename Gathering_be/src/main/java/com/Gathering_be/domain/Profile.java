@@ -2,6 +2,7 @@ package com.Gathering_be.domain;
 
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.global.common.BaseTimeEntity;
+import com.Gathering_be.global.enums.TechStack;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,13 +37,17 @@ public class Profile extends BaseTimeEntity {
     private boolean isPublic;
     private String organization;
 
-    @ElementCollection
+    @ElementCollection(targetClass = TechStack.class)
+    @Enumerated(EnumType.STRING)
     @CollectionTable(name = "tech_stacks", joinColumns = @JoinColumn(name = "profile_id"))
-    private Set<String> techStacks = new HashSet<>();
+    private Set<TechStack> techStacks = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(name = "work_experiences", joinColumns = @JoinColumn(name = "profile_id"))
     private List<WorkExperience> workExperiences = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile")
+    private Set<ProjectTeams> teams = new HashSet<>();
 
     @Builder
     public Profile(Member member, String nickname, String profileColor,

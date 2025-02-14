@@ -1,13 +1,11 @@
 package com.Gathering_be.service;
 
-import com.Gathering_be.domain.Member;
-import com.Gathering_be.domain.Portfolio;
-import com.Gathering_be.domain.Profile;
-import com.Gathering_be.domain.Project;
+import com.Gathering_be.domain.*;
 import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
@@ -29,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -64,7 +63,6 @@ class ProjectServiceTest {
         owner = createMockProfile("owner@test.com", "프로젝트생성자", "owner_nickname", 1L);
         teamMember = createMockProfile("team@test.com", "팀원", "team_nickname", 2L);
 
-        Set<Profile> teams = Set.of(teamMember);
         project = Project.builder()
                 .profile(owner)
                 .title("Test Project")
@@ -77,7 +75,6 @@ class ProjectServiceTest {
                 .deadline(LocalDateTime.of(2025, 12, 31, 23, 59))
                 .startDate(LocalDate.of(2025, 1, 1))
                 .techStacks(Set.of("Java", "Spring Boot", "React"))
-                .teams(teams)
                 .requiredPositions(List.of("Backend", "Frontend"))
                 .build();
 
@@ -92,9 +89,12 @@ class ProjectServiceTest {
                 .deadline(LocalDateTime.of(2025, 12, 31, 23, 59))
                 .startDate(LocalDate.of(2025, 1, 1))
                 .techStacks(Set.of("Java", "Spring Boot", "React"))
-                .teams(teams)
+                .teams(Set.of("team_nickname"))
                 .requiredPositions(List.of("Backend", "Frontend"))
                 .build();
+
+        Set<ProjectTeams> teams = createProjectTeams(project, createRequest.getTeams());
+        project.getTeams().addAll(teams);
 
         updateRequest = ProjectUpdateRequest.builder()
                 .title("Updated Project")
@@ -116,7 +116,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 생성 성공")
     void createProjectTest() {
         when(profileRepository.findByMemberId(1L)).thenReturn(Optional.of(owner));
-        when(profileRepository.findById(any())).thenReturn(Optional.of(teamMember));
+        when(profileRepository.findByNickname(any())).thenReturn(Optional.of(teamMember));
         when(projectRepository.save(any())).thenReturn(project);
 
         ProjectDetailResponse response = projectService.createProject(createRequest);
@@ -242,6 +242,17 @@ class ProjectServiceTest {
         return profile;
     }
 
+    private Set<ProjectTeams> createProjectTeams(Project project, Set<String> teamNicknames) {
+        when(profileRepository.findByNickname(any())).thenReturn(Optional.of(teamMember));
+
+        return teamNicknames.stream()
+                .map(nickname -> {
+                    Profile teamMember = profileRepository.findByNickname(nickname)
+                            .orElseThrow(ProfileNotFoundException::new);
+                    return ProjectTeams.builder().profile(teamMember).project(project).build();
+                })
+                .collect(Collectors.toSet());
+    }
 
 }
 

@@ -43,8 +43,12 @@ public enum ErrorCode {
     // Project
     PROJECT_NOT_FOUND(404, "PJ001", "존재하지 않는 프로젝트입니다."),
 
+    // Interest Project
+    INTEREST_PROJECT_NOT_FOUND(404, "IP001", "관심 프로젝트를 찾을 수 없습니다."),
+    DUPLICATE_INTEREST_PROJECT(400, "IP002", "이미 관심 프로젝트로 등록되었습니다."),
+
     // Application
-    APPLICATION_ALREADY_EXISTS(400, "AP001", "이미 존재하는 지원서입니다.")
+    APPLICATION_ALREADY_EXISTS(400, "AP001", "이미 존재하는 지원서입니다."),
     ;
 
     private final int status;
