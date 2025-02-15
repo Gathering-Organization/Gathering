@@ -6,6 +6,7 @@ import com.Gathering_be.domain.Project;
 import com.Gathering_be.dto.request.ApplicationRequest;
 import com.Gathering_be.dto.response.ApplicationResponse;
 import com.Gathering_be.exception.*;
+import com.Gathering_be.global.enums.ApplyStatus;
 import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
@@ -79,6 +80,44 @@ public class ApplicationService {
                 .stream()
                 .map(ApplicationResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteApplication(Long applicationId) {
+        Long currentUserId = getCurrentUserId();
+
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(ApplicationNotFoundException::new);
+
+        if (!application.getProfile().getMember().getId().equals(currentUserId)) {
+            throw new UnauthorizedAccessException();
+        }
+
+        if (application.getStatus() != ApplyStatus.PENDING) {
+            throw new ApplicationAlreadyProcessedException();
+        }
+
+        applicationRepository.delete(application);
+    }
+
+    @Transactional
+    public void updateApplicationStatus(Long applicationId, ApplyStatus newStatus) {
+        Long currentUserId = getCurrentUserId();
+
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(ApplicationNotFoundException::new);
+
+        Project project = application.getProject();
+
+        if (!project.getProfile().getMember().getId().equals(currentUserId)) {
+            throw new UnauthorizedAccessException();
+        }
+
+        if (application.getStatus() != ApplyStatus.PENDING) {
+            throw new ApplicationAlreadyProcessedException();
+        }
+
+        application.updateStatus(newStatus);
     }
 
     private Project findProjectById(Long projectId) {

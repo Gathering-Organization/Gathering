@@ -36,6 +36,8 @@ public enum ResultCode {
     // Application
     APPLICATION_CREATE_SUCCESS(201, "AP001", "지원서 생성에 성공하였습니다."),
     APPLICATION_READ_SUCCESS(200, "AP002", "지원서 조회에 성공하였습니다."),
+    APPLICATION_DELETE_SUCCESS(200, "AP003", "지원서 삭제에 성공하였습니다."),
+    APPLICATION_STATUS_UPDATED(200, "AP004", "지원자의 지원서 상태를 변경하였습니다."),
     ;
 
     private final int status;

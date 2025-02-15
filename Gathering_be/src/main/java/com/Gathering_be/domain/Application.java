@@ -38,4 +38,8 @@ public class Application {
         this.message = message;
         this.status = ApplyStatus.PENDING;
     }
+
+    public void updateStatus(ApplyStatus newStatus) {
+        this.status = newStatus;
+    }
 }
