@@ -14,7 +14,9 @@ interface Position {
   title: string;
 }
 
-const PostItem: React.FC<approxPostInfo> = ({
+const PostItem: React.FC<
+  approxPostInfo & { onInterestToggle?: (projectId: number, newValue: boolean) => void }
+> = ({
   projectId,
   title,
   closed,
@@ -24,6 +26,7 @@ const PostItem: React.FC<approxPostInfo> = ({
   createdAt,
   deadline,
   techStacks,
+  onInterestToggle,
   requiredPositions
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
@@ -66,17 +69,32 @@ const PostItem: React.FC<approxPostInfo> = ({
     fetchUserData();
   }, []);
 
-  const onClickHeart = async () => {
+  // const onClickHeart = async () => {
+  //   if (!projectId) return;
+
+  //   try {
+  //     await setInterest(Number(projectId));
+  //     setIsInterested(prev => !prev);
+  //   } catch (error) {
+  //     alert('관심글 설정에 실패했습니다.');
+  //   }
+  // };
+  const onClickHeart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!projectId) return;
 
+    const prevState = isInterested;
     try {
+      setIsInterested(!prevState);
+      if (onInterestToggle) onInterestToggle(projectId, !prevState);
+
       await setInterest(Number(projectId));
-      setIsInterested(prev => !prev);
     } catch (error) {
+      setIsInterested(prevState);
+      if (onInterestToggle) onInterestToggle(projectId, prevState);
       alert('관심글 설정에 실패했습니다.');
     }
   };
-
   return (
     <div
       onClick={() => nav(`/viewPost/${projectId}`)}
