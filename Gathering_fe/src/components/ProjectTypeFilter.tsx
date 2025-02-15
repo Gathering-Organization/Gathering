@@ -1,9 +1,12 @@
 import { projectType } from '@/utils/project-type';
 import { useState } from 'react';
 
-const ProjecTypeFilter: React.FC = () => {
-  const [selectedType, setSelectedType] = useState<string>('ALL');
+type ProjecTypeFilterProps = {
+  selectedType: string;
+  setSelectedType: (type: string) => void;
+};
 
+const ProjecTypeFilter: React.FC<ProjecTypeFilterProps> = ({ selectedType, setSelectedType }) => {
   return (
     <div className="text-[24px] font-bold space-x-8 flex">
       {projectType.map(item => (

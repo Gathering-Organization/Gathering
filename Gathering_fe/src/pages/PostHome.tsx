@@ -48,7 +48,7 @@ const PostHome: React.FC = () => {
   return (
     <div className="mx-24 space-y-6">
       <div className="flex justify-between items-center">
-        <ProjecTypeFilter />
+        <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
         <div className="flex justify-end">
           <SearchBar />
         </div>
