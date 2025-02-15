@@ -1,6 +1,7 @@
 package com.Gathering_be.domain;
 
 import com.Gathering_be.global.enums.ApplyStatus;
+import com.Gathering_be.global.enums.JobPosition;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,17 +23,19 @@ public class Application {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    private String position;
+    @Enumerated(EnumType.STRING)
+    private JobPosition position;
     private String message;
 
     @Enumerated(EnumType.STRING)
     private ApplyStatus status;
 
     @Builder
-    public Application(Profile profile, Project project, String position, String message) {
+    public Application(Profile profile, Project project, JobPosition position, String message) {
         this.profile = profile;
         this.project = project;
         this.position = position;
         this.message = message;
+        this.status = ApplyStatus.PENDING;
     }
 }

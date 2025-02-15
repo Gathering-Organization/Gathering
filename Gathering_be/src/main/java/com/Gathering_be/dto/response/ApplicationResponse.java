@@ -3,6 +3,7 @@ package com.Gathering_be.dto.response;
 import com.Gathering_be.domain.Application;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.global.enums.ApplyStatus;
+import com.Gathering_be.global.enums.JobPosition;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,12 +12,13 @@ public class ApplicationResponse {
     private Long id;
     private String nickname;
     private Long projectId;
-    private String position;
+    private JobPosition position;
     private String message;
     private ApplyStatus status;
 
     @Builder
-    public ApplicationResponse(Long id, String nickname, Long projectId, String position, String message, ApplyStatus status) {
+    public ApplicationResponse(Long id, String nickname, Long projectId, JobPosition position,
+                               String message, ApplyStatus status) {
         this.id = id;
         this.nickname = nickname;
         this.projectId = projectId;
