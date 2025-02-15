@@ -48,6 +48,7 @@ export interface GetPostingInfo {
 
 export interface approxPostInfo {
   projectId: number; // 프로젝트 아이디 번호
+  profileColor: string;
   authorNickname: string;
   closed: boolean;
   title: string;

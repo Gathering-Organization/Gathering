@@ -4,43 +4,34 @@ import { useCookies } from 'react-cookie';
 import LoginModal from '@/components/LoginModal';
 import SignupModal from '@/components/SignupModal';
 import LogoutButton from '@/components/LogoutButton';
+import gatheringLogo from '/gathering_home.svg';
 
 const Header: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
   const [cookies] = useCookies(['accessToken']);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
-
-  const onClickPostHomeButton = () => {
-    navigate('/postHome');
-  };
+  const nav = useNavigate();
   const onClickPostingButton = () => {
-    navigate('/posting');
+    nav('/posting');
   };
-  const onClickViewPostButton = () => {
-    navigate('/viewPost');
-  };
-
   useEffect(() => {
     setIsLoggedIn(!!cookies.accessToken);
   }, [cookies.accessToken]);
 
   return (
-    <header>
-      <Link to="/">Gathering</Link>
-      <div>
-        <button onClick={onClickPostHomeButton}>모집글 홈 |</button>
-        <button onClick={onClickPostingButton}> 모집글 작성하기 |</button>
-        <button onClick={onClickViewPostButton}> 모집글 보기</button>
-      </div>
-      <div>
-        {isLoggedIn && <button onClick={() => navigate('/profile')}>프로필</button>}
+    <header className="px-24 pb-10">
+      <div className="flex justify-between py-4 items-center">
+        <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/postHome')} />
 
-        {isLoggedIn ? (
-          <LogoutButton />
-        ) : (
-          <button onClick={() => setActiveModal('login')}>로그인</button>
-        )}
+        <section className="text-[18px] font-bold space-x-8">
+          <button onClick={onClickPostingButton}>모집글 작성하기</button>
+          {isLoggedIn && <button onClick={() => nav('/profile')}>프로필</button>}
+          {isLoggedIn ? (
+            <LogoutButton />
+          ) : (
+            <button onClick={() => setActiveModal('login')}>로그인</button>
+          )}
+        </section>
       </div>
 
       <LoginModal
