@@ -9,14 +9,22 @@ import SearchBar from '@/components/SearchBar';
 import MultiLevelDropdown from '@/components/MultiLevelDropdown';
 import { stackData } from '@/utils/stack-data';
 import { positionData } from '@/utils/position-data';
+import FilteringButton from '@/components/FilteringButton';
 
 const PostHome: React.FC = () => {
   const [post, setPost] = useState<approxPostInfo[]>([]);
   const [selectedType, setSelectedType] = useState<string>('ALL');
+  const [showInterested, setShowInterested] = useState<boolean>(false);
+  const [hideClosed, setHideClosed] = useState<boolean>(false);
   const nav = useNavigate();
 
-  const filteredPosts =
-    selectedType === 'ALL' ? post : post.filter(p => p.projectType === selectedType);
+  const filteredPosts = post.filter(p => {
+    if (selectedType !== 'ALL' && p.projectType !== selectedType) return false;
+    if (showInterested && !p.interested) return false;
+    if (hideClosed && p.closed) return false;
+
+    return true;
+  });
 
   useEffect(() => {
     const getAllPost = async () => {
@@ -26,7 +34,7 @@ const PostHome: React.FC = () => {
         if (result?.success) {
           alert('전체 모집글 조회가 완료되었습니다.');
           console.log(result.data);
-          setPost(result.data); // 배열로 저장
+          setPost(result.data);
         } else {
           alert(result?.message || '전체 모집글 조회 중 오류가 발생했습니다.');
         }
@@ -41,18 +49,6 @@ const PostHome: React.FC = () => {
     <div className="mx-24 space-y-6">
       <div className="flex justify-between items-center">
         <ProjecTypeFilter />
-        {/* <section className="text-[24px] font-bold space-x-8 flex">
-          {projectType.map(item => (
-            <button
-              onClick={() => setSelectedType(item.projectType)}
-              key={item.projectTypeId}
-              className={`${selectedType === item.projectType ? 'text-black' : 'text-[#B4B4B4]'}`}
-            >
-              {item.projectTypeName}
-            </button>
-          ))}
-        </section> */}
-
         <div className="flex justify-end">
           <SearchBar />
         </div>
@@ -71,8 +67,16 @@ const PostHome: React.FC = () => {
             align="left"
             buttonClassName="custom-button-class"
           />
-          <button>관심글 모아보기</button>
-          <button>모집완료 제외하기</button>
+          <FilteringButton
+            title="관심글 모아보기"
+            option={showInterested}
+            onClick={() => setShowInterested(prev => !prev)}
+          />
+          <FilteringButton
+            title="모집완료 제외하기"
+            option={hideClosed}
+            onClick={() => setHideClosed(prev => !prev)}
+          />
         </section>
         <section>최신순</section>
       </div>

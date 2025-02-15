@@ -29,6 +29,8 @@ export interface PostingInfo {
 }
 
 export interface GetPostingInfo {
+  projectId: number; // 프로젝트 ID
+  interested: boolean; // 관심 체크 여부
   title: string; // 제목
   description: string; // 설명
   kakaoUrl: string; // 카카오톡 오픈채팅 URL
@@ -51,6 +53,7 @@ export interface approxPostInfo {
   profileColor: string;
   authorNickname: string;
   closed: boolean;
+  interested: boolean;
   title: string;
   projectType: string;
   createdAt: string;
@@ -63,6 +66,7 @@ export interface partPostInfo {
   projectId: number;
   authorNickname: string;
   closed: boolean;
+  interested: boolean;
   title: string;
   description: string;
   projectMode: string;

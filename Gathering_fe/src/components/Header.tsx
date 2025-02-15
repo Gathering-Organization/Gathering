@@ -24,7 +24,12 @@ const Header: React.FC = () => {
         <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/postHome')} />
 
         <section className="text-[18px] font-bold space-x-8">
-          <button onClick={onClickPostingButton}>모집글 작성하기</button>
+          <button
+            className="bordor-[#000000] border-solid rounded-[20px] border-2 px-4 py-1"
+            onClick={onClickPostingButton}
+          >
+            모집글 작성하기
+          </button>
           {isLoggedIn && <button onClick={() => nav('/profile')}>프로필</button>}
           {isLoggedIn ? (
             <LogoutButton />

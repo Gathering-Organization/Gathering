@@ -1,4 +1,4 @@
-const SearchBar = () => {
+const SearchBar: React.FC = () => {
   return (
     <form className="max-w-md w-96">
       <label

@@ -2,7 +2,7 @@
 import { getPartPosting, modifyPosting, setPosting } from '@/services/postApi';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PostingInfo, GetPostingInfo } from '@/types/post';
+import { PostingInfo } from '@/types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { getMyProfile } from '@/services/profileApi';

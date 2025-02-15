@@ -1,7 +1,7 @@
 import { projectType } from '@/utils/project-type';
 import { useState } from 'react';
 
-const ProjecTypeFilter = () => {
+const ProjecTypeFilter: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('ALL');
 
   return (
