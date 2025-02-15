@@ -2,8 +2,10 @@ package com.Gathering_be.domain;
 
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.global.common.BaseTimeEntity;
+import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
+import com.Gathering_be.global.enums.TechStack;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,30 +44,27 @@ public class Project extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ProjectMode projectMode;
 
-    @ElementCollection
+    @ElementCollection(targetClass = JobPosition.class)
     @CollectionTable(name = "project_positions", joinColumns = @JoinColumn(name = "project_id"))
+    @Enumerated(EnumType.STRING)
     @Column(name = "positions")
-    private List<String> requiredPositions = new ArrayList<>();
+    private List<JobPosition> requiredPositions = new ArrayList<>();
 
-    @OneToMany
-    @JoinTable(
-            name = "project_teams",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_id")
-    )
-    private Set<Profile> teams = new HashSet<>();
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjectTeams> teams = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(targetClass = TechStack.class)
     @CollectionTable(name = "project_tech_stacks", joinColumns = @JoinColumn(name = "project_id"))
+    @Enumerated(EnumType.STRING)
     @Column(name = "tech_stacks")
-    private Set<String> techStacks = new HashSet<>();
+    private Set<TechStack> techStacks = new HashSet<>();
 
     @Builder
     public Project(Profile profile, String title, String description, String kakaoUrl,
                    LocalDateTime deadline, int totalMembers, String duration,
                    LocalDate startDate, ProjectType projectType, ProjectMode projectMode,
-                   List<String> requiredPositions, Set<String> techStacks,
-                   Set<Profile> teams) {
+                   List<JobPosition> requiredPositions, Set<TechStack> techStacks,
+                   Set<ProjectTeams> teams) {
         this.profile = profile;
         this.title = title;
         this.description = description;
@@ -94,7 +93,6 @@ public class Project extends BaseTimeEntity {
         this.techStacks = request.getTechStacks();
         this.requiredPositions = request.getRequiredPositions();
         this.isClosed = request.isClosed();
-        this.teams = request.getTeams();
         this.projectMode = request.getProjectMode();
     }
 }

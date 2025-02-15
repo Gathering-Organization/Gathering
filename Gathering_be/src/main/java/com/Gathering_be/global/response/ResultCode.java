@@ -27,7 +27,17 @@ public enum ResultCode {
     PROJECT_CREATE_SUCCESS(201, "PJ001", "프로젝트 생성에 성공하였습니다."),
     PROJECT_READ_SUCCESS(200, "PJ002", "프로젝트 조회에 성공하였습니다."),
     PROJECT_UPDATE_SUCCESS(200, "PJ003", "프로젝트 업데이트에 성공하였습니다."),
-    PROJECT_DELETE_SUCCESS(200, "PJ004", "프로젝트 삭제에 성공하였습니다.")
+    PROJECT_DELETE_SUCCESS(200, "PJ004", "프로젝트 삭제에 성공하였습니다."),
+
+    // Interest Project
+    INTEREST_PROJECT_TOGGLE_SUCCESS(200, "IP001", "관심 프로젝트 등록/삭제 에 성공하였습니다."),
+    INTEREST_PROJECT_GET_SUCCESS(200, "IP002", "관심 프로젝트 조회에 성공하였습니다."),
+
+    // Application
+    APPLICATION_CREATE_SUCCESS(201, "AP001", "지원서 생성에 성공하였습니다."),
+    APPLICATION_READ_SUCCESS(200, "AP002", "지원서 조회에 성공하였습니다."),
+    APPLICATION_DELETE_SUCCESS(200, "AP003", "지원서 삭제에 성공하였습니다."),
+    APPLICATION_STATUS_UPDATED(200, "AP004", "지원자의 지원서 상태를 변경하였습니다."),
     ;
 
     private final int status;

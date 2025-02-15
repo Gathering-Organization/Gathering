@@ -2,6 +2,7 @@ package com.Gathering_be.dto.response;
 
 import com.Gathering_be.domain.Portfolio;
 import com.Gathering_be.domain.Profile;
+import com.Gathering_be.global.enums.TechStack;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,13 +19,13 @@ public class ProfileResponse {
     private String introduction;
     private boolean isPublic;
     private String organization;
-    private Set<String> techStacks;
+    private Set<TechStack> techStacks;
     private Portfolio portfolio;
     private List<WorkExperienceResponse> workExperiences;
 
     @Builder
     public ProfileResponse(String profileColor, String nickname, String introduction,
-                           boolean isPublic, String organization, Set<String> techStacks,
+                           boolean isPublic, String organization, Set<TechStack> techStacks,
                            Portfolio portfolio, List<WorkExperienceResponse> workExperiences) {
         this.profileColor = profileColor;
         this.nickname = nickname;
