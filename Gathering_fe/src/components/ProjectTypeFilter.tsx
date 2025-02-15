@@ -1,5 +1,4 @@
 import { projectType } from '@/utils/project-type';
-import { useState } from 'react';
 
 type ProjecTypeFilterProps = {
   selectedType: string;

@@ -3,7 +3,6 @@ import { getAllPosting } from '@/services/postApi';
 import { useState, useEffect } from 'react';
 import { approxPostInfo } from '@/types/post';
 import { useNavigate } from 'react-router-dom';
-import { projectType } from '@/utils/project-type';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import SearchBar from '@/components/SearchBar';
 import MultiLevelDropdown from '@/components/MultiLevelDropdown';
@@ -30,7 +29,6 @@ const PostHome: React.FC = () => {
     const getAllPost = async () => {
       try {
         const result = await getAllPosting();
-
         if (result?.success) {
           alert('전체 모집글 조회가 완료되었습니다.');
           console.log(result.data);

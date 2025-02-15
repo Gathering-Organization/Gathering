@@ -7,16 +7,8 @@ import { useEffect, useState } from 'react';
 import { ProfileInfo } from '@/types/profile';
 import { projectType as projectEachType } from '@/utils/project-type';
 import { positionData } from '@/utils/position-data';
+import { setInterest } from '@/services/interestApi';
 
-// function changeDate(date: string) {
-//   const newDate = new Date(date);
-//   const year = newDate.getFullYear();
-//   const month = ('0' + newDate.getMonth()).slice(-2);
-//   const day = ('0' + newDate.getDate()).slice(-2);
-//   const dateStr = `${year}-${month}-${day}`;
-
-//   return dateStr;
-// }
 interface Position {
   id: string;
   title: string;
@@ -26,6 +18,7 @@ const PostItem: React.FC<approxPostInfo> = ({
   projectId,
   title,
   closed,
+  interested: initialInterested,
   authorNickname,
   projectType,
   createdAt,
@@ -34,6 +27,11 @@ const PostItem: React.FC<approxPostInfo> = ({
   requiredPositions
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
+  const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
+
+  useEffect(() => {
+    setIsInterested(initialInterested);
+  }, [initialInterested]);
 
   const nav = useNavigate();
   const [info, setInfo] = useState<ProfileInfo>({
@@ -68,6 +66,17 @@ const PostItem: React.FC<approxPostInfo> = ({
     fetchUserData();
   }, []);
 
+  const onClickHeart = async () => {
+    if (!projectId) return;
+
+    try {
+      await setInterest(Number(projectId));
+      setIsInterested(prev => !prev);
+    } catch (error) {
+      alert('관심글 설정에 실패했습니다.');
+    }
+  };
+
   return (
     <div
       onClick={() => nav(`/viewPost/${projectId}`)}
@@ -79,9 +88,18 @@ const PostItem: React.FC<approxPostInfo> = ({
           className="absolute right-6 top-4 cursor-pointer"
           onClick={e => e.stopPropagation()} // 부모 div의 onClick 이벤트 전파 방지
         >
-          <input type="checkbox" hidden className="peer" />
+          <input
+            type="checkbox"
+            onClick={onClickHeart}
+            hidden
+            checked={isInterested}
+            readOnly
+            onChange={() => {}}
+          />
           <svg
-            className="w-8 h-10 transition-all duration-200 ease-in-out fill-gray-300 peer-checked:fill-red-500 peer-checked:scale-110"
+            className={`w-8 h-10 transition-all duration-200 ease-in-out ${
+              isInterested ? 'fill-red-500 scale-110' : 'fill-gray-300'
+            }`} // 클래스 동적 제어
             viewBox="0 0 1024 1024"
             xmlns="http://www.w3.org/2000/svg"
           >
