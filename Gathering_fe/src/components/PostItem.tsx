@@ -6,6 +6,7 @@ import { getUserProfile } from '@/services/profileApi';
 import { useEffect, useState } from 'react';
 import { ProfileInfo } from '@/types/profile';
 import { projectType as projectEachType } from '@/utils/project-type';
+import { positionData } from '@/utils/position-data';
 
 // function changeDate(date: string) {
 //   const newDate = new Date(date);
@@ -16,6 +17,10 @@ import { projectType as projectEachType } from '@/utils/project-type';
 
 //   return dateStr;
 // }
+interface Position {
+  id: string;
+  title: string;
+}
 
 const PostItem: React.FC<approxPostInfo> = ({
   projectId,
@@ -28,6 +33,8 @@ const PostItem: React.FC<approxPostInfo> = ({
   techStacks,
   requiredPositions
 }) => {
+  const [positionList] = useState<Position[]>([...positionData]);
+
   const nav = useNavigate();
   const [info, setInfo] = useState<ProfileInfo>({
     nickname: '',
@@ -100,14 +107,19 @@ const PostItem: React.FC<approxPostInfo> = ({
             {title}
           </div>
           <div className="flex flex-wrap gap-2">
-            {requiredPositions.map((position, index) => (
-              <div
-                key={index}
-                className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
-              >
-                {position}
-              </div>
-            ))}
+            {requiredPositions.map((positionId, index) => {
+              const positionTitle =
+                positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
+
+              return (
+                <div
+                  key={index}
+                  className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
+                >
+                  {positionTitle}
+                </div>
+              );
+            })}
           </div>
           {/* <div className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline">
             {requiredPositions.map(item => item)}

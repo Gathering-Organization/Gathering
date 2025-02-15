@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { approxPostInfo } from '@/types/post';
 import { useNavigate } from 'react-router-dom';
 import { projectType } from '@/utils/project-type';
+import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import SearchBar from '@/components/SearchBar';
 import MultiLevelDropdown from '@/components/MultiLevelDropdown';
 import { stackData } from '@/utils/stack-data';
@@ -39,7 +40,8 @@ const PostHome: React.FC = () => {
   return (
     <div className="mx-24 space-y-6">
       <div className="flex justify-between items-center">
-        <section className="text-[24px] font-bold space-x-8 flex">
+        <ProjecTypeFilter />
+        {/* <section className="text-[24px] font-bold space-x-8 flex">
           {projectType.map(item => (
             <button
               onClick={() => setSelectedType(item.projectType)}
@@ -49,7 +51,7 @@ const PostHome: React.FC = () => {
               {item.projectTypeName}
             </button>
           ))}
-        </section>
+        </section> */}
 
         <div className="flex justify-end">
           <SearchBar />

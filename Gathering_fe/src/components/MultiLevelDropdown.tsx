@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import SubmenuLevel1 from '@/components/SubMenuLevel1';
+import SubmenuLevel1 from '@/components/SubmenuLevel1';
 import { MultiLevelDropdownProps } from '@/types/menu';
 
 const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({

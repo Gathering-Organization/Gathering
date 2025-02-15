@@ -7,6 +7,18 @@ import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { getMyProfile } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
+import { positionData } from '@/utils/position-data';
+import { techStacks } from '@/utils/tech-stacks';
+
+interface Position {
+  id: string;
+  title: string;
+}
+
+interface TechStack {
+  id: string;
+  title: string;
+}
 
 const PostEdit: React.FC = () => {
   const nav = useNavigate();
@@ -19,9 +31,9 @@ const PostEdit: React.FC = () => {
     endDate: null
   });
   const params = useParams();
-  const [positionList] = useState<string[]>(['프론트엔드', '백엔드', '디자이너']);
+  const [positionList] = useState<Position[]>([...positionData]);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
-  const [stackList] = useState<string[]>(['React', 'Spring', 'TypeScript']);
+  const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
   const [post, setPost] = useState<PostingInfo>({
     title: '',
@@ -271,22 +283,33 @@ const PostEdit: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">모집 분야</label>
         <MultiSelection
-          options={positionList}
-          selectedOptions={selectedPositions}
-          setSelectedOptions={selectedOptions => {
-            setSelectedPositions(selectedOptions);
-            setPost({ ...post, requiredPositions: selectedOptions });
+          options={positionList.map(pos => pos.title)}
+          selectedOptions={selectedPositions.map(
+            id => positionList.find(pos => pos.id === id)?.title || ''
+          )}
+          setSelectedOptions={selectedTitles => {
+            const selectedIds = positionList
+              .filter(pos => selectedTitles.includes(pos.title))
+              .map(pos => pos.id);
+
+            setSelectedPositions(selectedIds);
+            setPost({ ...post, requiredPositions: selectedIds });
           }}
         />
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">사용 스택</label>
         <MultiSelection
-          options={stackList}
-          selectedOptions={selectedStacks}
-          setSelectedOptions={selectedOptions => {
-            setSelectedStacks(selectedOptions);
-            setPost({ ...post, techStacks: selectedOptions });
+          options={stackList.map(tech => tech.title)}
+          selectedOptions={selectedStacks.map(
+            id => stackList.find(tech => tech.id === id)?.title || ''
+          )}
+          setSelectedOptions={selectedTechs => {
+            const selectedIds = stackList
+              .filter(tech => selectedTechs.includes(tech.title))
+              .map(tech => tech.id);
+            setSelectedStacks(selectedIds);
+            setPost({ ...post, techStacks: selectedIds });
           }}
         />
       </section>
