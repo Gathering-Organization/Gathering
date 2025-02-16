@@ -2,7 +2,6 @@ import PostList from '@/components/PostList';
 import { getAllPosting } from '@/services/postApi';
 import { useState, useEffect, useRef } from 'react';
 import { approxPostInfo } from '@/types/post';
-import { useNavigate } from 'react-router-dom';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import SearchBar from '@/components/SearchBar';
 import MultiLevelDropdown from '@/components/MultiLevelDropdown';
@@ -15,12 +14,9 @@ const PostHome: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('ALL');
   const [showInterested, setShowInterested] = useState<boolean>(false);
   const [hideClosed, setHideClosed] = useState<boolean>(false);
-  const interestRef = useRef(false);
-  const nav = useNavigate();
 
   const filteredPosts = post.filter(p => {
     if (selectedType !== 'ALL' && p.projectType !== selectedType) return false;
-    console.log(p.interested);
     if (showInterested && !p.interested) return false;
     if (hideClosed && p.closed) return false;
 

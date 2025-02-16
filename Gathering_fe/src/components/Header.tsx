@@ -14,6 +14,7 @@ const Header: React.FC = () => {
   const onClickPostingButton = () => {
     nav('/posting');
   };
+
   useEffect(() => {
     setIsLoggedIn(!!cookies.accessToken);
   }, [cookies.accessToken]);
@@ -25,7 +26,7 @@ const Header: React.FC = () => {
 
         <section className="text-[18px] font-bold space-x-8">
           <button
-            className="bordor-[#000000] border-solid rounded-[20px] border-2 px-4 py-1"
+            className="bordor-[#000000] border-solid rounded-[20px] border-2 px-4 py-1 hover:bg-[#B4B4B4]/30"
             onClick={onClickPostingButton}
           >
             모집글 작성하기

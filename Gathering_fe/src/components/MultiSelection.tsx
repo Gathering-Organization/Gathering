@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 
 interface MultiSelectionProps {
+  title: string;
   options: string[];
   selectedOptions: string[];
   setSelectedOptions: (selected: string[]) => void;
 }
 
 const MultiSelection: React.FC<MultiSelectionProps> = ({
+  title,
   options,
   selectedOptions,
   setSelectedOptions
@@ -55,17 +57,15 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
   }, []);
 
   return (
-    <div className="relative w-72" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="relative w-full text-left bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2.5 focus:outline-none"
+        className="relative w-full text-left bg-white dark:bg-[#1E2028] p-3 px-6 border border-[#000000]/20 rounded-[18px] dark:border-gray-700 rounded-[20px] px-4 py-2.5 focus:outline-none"
         onClick={toggleDropdown}
       >
         <div className="flex flex-wrap gap-1 min-h-6">
           {selectedOptions.length === 0 ? (
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              모집 분야를 선택하세요.
-            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{title}</span>
           ) : (
             selectedOptions.map(option => (
               <span

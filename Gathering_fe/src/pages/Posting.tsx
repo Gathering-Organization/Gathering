@@ -1,9 +1,9 @@
 import { setPosting } from '@/services/postApi';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { PostingInfo } from '@/types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
-import { getMyProfile } from '@/services/profileApi';
+import { useProfile } from '@/hooks/ProfileStateContext';
 import { ProfileInfo } from '@/types/profile';
 import { positionData } from '@/utils/position-data';
 import { techStacks } from '@/utils/tech-stacks';
@@ -47,14 +47,6 @@ const Posting: React.FC = () => {
     requiredPositions: []
   });
 
-  const [info, setInfo] = useState<ProfileInfo>({
-    nickname: '',
-    introduction: '',
-    organization: '',
-    techStacks: [],
-    profileColor: ''
-  });
-
   // const onChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   //   const { name, value } = e.target;
   //   setPost(prev => ({ ...prev, [name]: value }));
@@ -93,36 +85,15 @@ const Posting: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const handleMyProfile = async () => {
-      try {
-        const result = await getMyProfile();
+  const { profile, isLoading } = useProfile();
 
-        if (result?.success) {
-          alert('내 정보 불러오기 성공!' + result.data);
-          console.log(result.data);
-          setInfo({
-            nickname: result.data.nickname || '',
-            introduction: result.data.introduction || '',
-            organization: result.data.organization || '',
-            techStacks: result.data.techStacks || [],
-            profileColor: result.data.profileColor || ''
-          });
-        } else {
-          alert(result?.message || '내 정보 불러오기에 실패했습니다.');
-        }
-      } catch {
-        alert('내 정보 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    };
+  if (isLoading) return <div>로딩 중...</div>;
 
-    handleMyProfile();
-  }, []);
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">
-          #{info.profileColor} {info.nickname}
+          #{profile.profileColor} {profile.nickname}
         </label>
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
@@ -235,8 +206,9 @@ const Posting: React.FC = () => {
         </select>
       </section>
       <section className="bg-white p-6 rounded-lg shadow mb-4">
-        <label className="block font-semibold mb-2">모집 분야</label>
+        <label className="block font-semibold mb-2">모집 포지션</label>
         <MultiSelection
+          title="모집 포지션을 선택하세요."
           options={positionList.map(pos => pos.title)}
           selectedOptions={selectedPositions.map(
             id => positionList.find(pos => pos.id === id)?.title || ''
@@ -254,6 +226,7 @@ const Posting: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">사용 스택</label>
         <MultiSelection
+          title="사용 스택을 선택하세요."
           options={stackList.map(tech => tech.title)}
           selectedOptions={selectedStacks.map(
             id => stackList.find(tech => tech.id === id)?.title || ''

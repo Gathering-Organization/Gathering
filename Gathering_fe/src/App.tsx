@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ProfileProvider } from './hooks/ProfileStateContext';
 import GoogleRedirectHandler from '@/components/GoogleRedirectHandler';
 import Profile from '@/components/Profile';
 import Main from '@/components/Main';
@@ -19,18 +20,20 @@ const App: React.FC = () => {
   return (
     <>
       <Router>
-        <Routes>
-          <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
-          <Route element={<Layout />}>
-            <Route path="/" element={<Main />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/postHome" element={<PostHome />} />
-            <Route path="/posting" element={<Posting />} />
-            <Route path="/viewPost/:id" element={<ViewPost />} />
-            <Route path="/postEdit/:id" element={<PostEdit />} />
-            <Route path="*" element={<Notfound />} />
-          </Route>
-        </Routes>
+        <ProfileProvider>
+          <Routes>
+            <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
+            <Route element={<Layout />}>
+              <Route path="/" element={<Main />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/postHome" element={<PostHome />} />
+              <Route path="/posting" element={<Posting />} />
+              <Route path="/viewPost/:id" element={<ViewPost />} />
+              <Route path="/postEdit/:id" element={<PostEdit />} />
+              <Route path="*" element={<Notfound />} />
+            </Route>
+          </Routes>
+        </ProfileProvider>
       </Router>
     </>
   );
