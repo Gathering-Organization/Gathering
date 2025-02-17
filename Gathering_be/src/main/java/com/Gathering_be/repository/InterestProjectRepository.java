@@ -13,4 +13,5 @@ public interface InterestProjectRepository extends JpaRepository<InterestProject
     List<InterestProject> findByNickname(@Param("nickname") String nickname);
     boolean existsByProfileIdAndProjectId(Long profileId, Long projectId);
     void deleteByProfileIdAndProjectId(Long profileId, Long projectId);
+    List<InterestProject> findAllByProfileId(Long profileId);
 }

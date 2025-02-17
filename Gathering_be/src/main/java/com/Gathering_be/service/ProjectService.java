@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,12 +88,16 @@ public class ProjectService {
     }
 
     public List<ProjectSimpleResponse> getAllProjects() {
-        List<Project> projects = projectRepository.findAll();
-        return projects.stream()
-                .map(project -> {
-                    boolean isInterested = isUserInterestedInProject(project.getId());
-                    return ProjectSimpleResponse.from(project, isInterested);
-                })
+        Long currentUserId = getCurrentUserId();
+        Set<Long> interestedProjectIds = (currentUserId != null)
+                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
+                .stream()
+                .map(interest -> interest.getProject().getId())
+                .collect(Collectors.toSet())
+                : Set.of();
+
+        return projectRepository.findAll().stream()
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -113,30 +118,41 @@ public class ProjectService {
                 .orElseThrow(ProfileNotFoundException::new);
     }
 
-    private Set<Profile> findProfilesByNicknames(Set<String> teams) {
-        return teams.stream()
-                .map(nickname -> profileRepository.findByNickname(nickname)
-                        .orElseThrow(ProfileNotFoundException::new))
-                .collect(Collectors.toSet());
+    private Set<Profile> findProfilesByNicknames(Set<String> teamNicknames) {
+        List<Profile> profiles = profileRepository.findAllByNicknameIn(teamNicknames);
+        if (profiles.size() != teamNicknames.size()) {
+            throw new ProfileNotFoundException();
+        }
+        return new HashSet<>(profiles);
     }
 
     private Set<ProjectTeams> createProjectTeams(Project project, Set<String> teamNicknames) {
-        return teamNicknames.stream()
-                .map(nickname -> {
-                    Profile teamMember = profileRepository.findByNickname(nickname)
-                            .orElseThrow(ProfileNotFoundException::new);
-                    return ProjectTeams.builder().profile(teamMember).project(project).build();
-                })
+        Set<Profile> teamProfiles = findProfilesByNicknames(teamNicknames);
+
+        return teamProfiles.stream()
+                .map(profile -> ProjectTeams.builder().profile(profile).project(project).build())
                 .collect(Collectors.toSet());
     }
 
     private boolean isUserInterestedInProject(Long projectId) {
-        Long profileId = getProfileIdByMemberId(getCurrentUserId());
-        return interestProjectRepository.existsByProfileIdAndProjectId(profileId, projectId);
+        return isUserInterestedInProject(getCurrentUserId(), projectId);
+    }
+
+    private boolean isUserInterestedInProject(Long userId, Long projectId) {
+        if (userId == null) {
+            return false;
+        }
+        Profile profile = profileRepository.findByMemberId(userId)
+                .orElseThrow(ProfileNotFoundException::new);
+        return interestProjectRepository.existsByProfileIdAndProjectId(profile.getId(), projectId);
     }
 
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+        if ("anonymousUser".equals(principal)) {
+            return null;
+        }
+        return Long.parseLong(principal);
     }
 
     private Long getProfileIdByMemberId(Long memberId) {
