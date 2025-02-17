@@ -35,8 +35,6 @@ public class ProjectService {
         Long memberId = getCurrentUserId();
         Profile profile = findProfileByMemberId(memberId);
 
-        Set<Profile> teams = findProfilesByNicknames(request.getTeams());
-
         Project project = Project.builder()
                 .profile(profile)
                 .title(request.getTitle())
