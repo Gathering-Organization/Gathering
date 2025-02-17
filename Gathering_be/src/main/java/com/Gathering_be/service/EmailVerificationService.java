@@ -10,12 +10,11 @@ import java.time.Duration;
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationService {
-
     private final RedisService redisService;
     private final JavaMailSender javaMailSender;
 
-    private final String VERIFICATION_PREFIX = "email:verification:"; // Redis 키 prefix
-    private final Duration EXPIRATION_TIME = Duration.ofMinutes(5); // 5분 만료
+    private final String VERIFICATION_PREFIX = "email:verification:";
+    private final Duration EXPIRATION_TIME = Duration.ofMinutes(5);
 
     public void sendVerificationCode(String email) {
         String verificationCode = generateCode();
