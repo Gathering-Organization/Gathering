@@ -12,6 +12,7 @@ import { techStacks } from '@/utils/tech-stacks';
 import MultiSelection from '@/components/MultiSelection';
 import penSquared from '@/assets/otherIcons/Pen Squared.png';
 import changeMark from '@/assets/otherIcons/Change Mark.png';
+import NicknameModal from '@/components/NicknameModal';
 
 interface TechStack {
   id: string;
@@ -260,14 +261,7 @@ const Profile: React.FC = () => {
           >
             <img src={changeMark} alt="Edit" className="w-8 h-8 absolute bottom-1 right-1" />
           </div>
-          <button className="text-[24px] font-bold mb-8 relative left-3 inline-block">
-            <span className="pr-8">{info.nickname || ''}</span>
-            <img
-              src={penSquared}
-              alt="Edit"
-              className="w-6 h-6 absolute right-0 top-1/2 -translate-y-1/2"
-            />
-          </button>
+          <NicknameModal nickname={info.nickname || ''} />
 
           {/* <input
             type="text"
