@@ -1,6 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import SubmenuLevel1 from '@/components/SubmenuLevel1';
 import { MultiLevelDropdownProps } from '@/types/menu';
+import { DropdownDispatchContext } from '@/pages/PostHome';
+import { positionData, Position } from '@/utils/position-data';
+import { techStacks, TechStack } from '@/utils/tech-stacks';
 
 const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
   menuData,
@@ -11,6 +14,13 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState(label);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownContext = useContext(DropdownDispatchContext);
+
+  if (!dropdownContext) {
+    throw new Error('DropdownDispatchContext가 제공되지 않았습니다.');
+  }
+
+  const { setSelectedStack, setSelectedPosition } = dropdownContext;
 
   const toggleMainDropdown = () => {
     setIsMainDropdownOpen(!isMainDropdownOpen);
@@ -30,6 +40,29 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
   const handleItemClick = (newLabel: string) => {
     setSelectedLabel(newLabel);
     setIsMainDropdownOpen(false);
+
+    let selectedItem: TechStack | Position | undefined;
+
+    if (newLabel !== '전체') {
+      if (label === '기술 스택') {
+        selectedItem = techStacks.find(item => item.title === newLabel);
+      } else if (label === '포지션') {
+        selectedItem = positionData.find(item => item.title === newLabel);
+      }
+      if (selectedItem) {
+        if (label === '기술 스택') {
+          setSelectedStack(selectedItem.id);
+        } else if (label === '포지션') {
+          setSelectedPosition(selectedItem.id);
+        }
+      }
+    } else if (newLabel === '전체') {
+      if (label === '기술 스택') {
+        setSelectedStack('전체');
+      } else if (label === '포지션') {
+        setSelectedPosition('전체');
+      }
+    }
   };
 
   return (
@@ -61,7 +94,9 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
           <div className="py-1">
             <a
               href="#"
-              onClick={() => handleItemClick('전체')}
+              onClick={() => {
+                handleItemClick('전체');
+              }}
               className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               전체
@@ -72,7 +107,9 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
                   <a
                     key={item.id}
                     href="#"
-                    onClick={() => handleItemClick(item.title)}
+                    onClick={() => {
+                      handleItemClick(item.title);
+                    }}
                     className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     {item.title}

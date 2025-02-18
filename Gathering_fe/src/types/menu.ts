@@ -15,4 +15,5 @@ export interface MultiLevelDropdownProps {
   label?: string;
   buttonClassName?: string;
   align?: 'left' | 'right';
+  // onItemClick: (value: string) => void;
 }

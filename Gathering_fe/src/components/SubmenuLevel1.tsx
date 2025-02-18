@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import SubmenuLevel2 from '@/components/SubmenuLevel2';
+import { DropdownDispatchContext } from '@/pages/PostHome';
 
 interface SubmenuLevel1Props {
   title: string;
@@ -37,7 +38,10 @@ const SubmenuLevel1: React.FC<SubmenuLevel1Props> = ({ title, items, onItemClick
                 <a
                   key={item.id}
                   href="#"
-                  onClick={() => onItemClick(item.label)} // 클릭 시 label 변경
+                  onClick={() => {
+                    console.log(item.id);
+                    onItemClick(item.label);
+                  }} // 클릭 시 label 변경
                   className="flex items-center px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {item.label}

@@ -3,7 +3,6 @@ import { AxiosError } from 'axios';
 
 export const setInterest = async (projectId: number) => {
   try {
-    console.log('보낼 데이터:', projectId);
     const response = await api.post('/project/interest', { projectId });
 
     console.log('응답 데이터:', response.data);

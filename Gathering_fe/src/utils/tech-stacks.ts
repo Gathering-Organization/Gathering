@@ -1,4 +1,4 @@
-interface TechStack {
+export interface TechStack {
   id: string;
   title: string;
 }

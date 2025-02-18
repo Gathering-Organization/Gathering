@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 import { useProfile } from '@/hooks/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
 import MultiSelection from '@/components/MultiSelection';
+import penSquared from '@/assets/otherIcons/Pen Squared.png';
+import changeMark from '@/assets/otherIcons/Change Mark.png';
 
 interface TechStack {
   id: string;
@@ -94,14 +96,52 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert('파일을 선택해주세요.');
-      return;
+  // const handleUpload = async () => {
+  //   if (!selectedFile) {
+  //     alert('파일을 선택해주세요.');
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append('file', selectedFile);
+
+  //   try {
+  //     const result = await uploadPortfolio(formData);
+
+  //     if (result?.success) {
+  //       alert('파일 업로드 성공!');
+
+  //       const profileResult = await getMyProfile();
+
+  //       if (profileResult?.success) {
+  //         alert('프로필 갱신 성공' + profileResult.data);
+  //         setUploadedFile(profileResult.data.portfolio);
+  //       } else {
+  //         alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
+  //       }
+  //     }
+  //   } catch {
+  //     alert('파일 업로드 중 오류가 발생했습니다.');
+  //   }
+  // };
+
+  const handleFileSelect = () => {
+    document.getElementById('fileInput')?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      setSelectedFile(file);
+      await handleUpload(file); // 파일 선택 후 바로 업로드 실행
     }
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!file) return;
 
     const formData = new FormData();
-    formData.append('file', selectedFile);
+    formData.append('file', file);
 
     try {
       const result = await uploadPortfolio(formData);
@@ -110,9 +150,7 @@ const Profile: React.FC = () => {
         alert('파일 업로드 성공!');
 
         const profileResult = await getMyProfile();
-
         if (profileResult?.success) {
-          alert('프로필 갱신 성공' + profileResult.data);
           setUploadedFile(profileResult.data.portfolio);
         } else {
           alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
@@ -203,37 +241,34 @@ const Profile: React.FC = () => {
   };
 
   const { profile, isLoading } = useProfile();
-
   useEffect(() => {
     if (profile) {
       setInfo(profile);
     }
-  }, [profile]);
+  }, [profile, isPublic]);
 
   if (isLoading) return <div>로딩 중...</div>;
 
   return (
     <div className="mx-60 space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
-        <div className="flex items-center space-x-4 mb-6">
-          <input
-            type="checkbox"
-            id="profile-toggle"
-            className="toggle-input"
-            checked={isPublic}
-            onChange={handleToggle}
-          />
-          <label htmlFor="profile-toggle" className="cursor-pointer">
-            {isPublic ? '공개' : '비공개'}
-          </label>
-        </div>
         <section className="p-6 flex flex-col items-center text-center">
           <h1 className="text-[30px] font-bold mb-8">기본 프로필</h1>
           <div
-            className="w-[100px] h-[100px] rounded-full mb-8"
+            className="w-[100px] h-[100px] rounded-full mb-8 relative"
             style={{ backgroundColor: `#${info.profileColor}` }}
-          ></div>
-          <button className="text-[24px] font-bold mb-8">{info.nickname || ''}</button>
+          >
+            <img src={changeMark} alt="Edit" className="w-8 h-8 absolute bottom-1 right-1" />
+          </div>
+          <button className="text-[24px] font-bold mb-8 relative left-3 inline-block">
+            <span className="pr-8">{info.nickname || ''}</span>
+            <img
+              src={penSquared}
+              alt="Edit"
+              className="w-6 h-6 absolute right-0 top-1/2 -translate-y-1/2"
+            />
+          </button>
+
           {/* <input
             type="text"
             name="nickname"
@@ -398,23 +433,68 @@ const Profile: React.FC = () => {
             className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24"
           ></textarea>
         </section>
-
-        <section className="bg-white p-6 rounded-lg shadow">
+        <section className="bg-white p-6">
           <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
-          <div className="space-y-2">
+          <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
+            <div className="w-[600px]">
+              {uploadedFile ? (
+                <a
+                  href={uploadedFile.url}
+                  download={uploadedFile.fileName}
+                  className="font-semibold text-blue-500 hover:underline ml-4"
+                >
+                  {uploadedFile.fileName}
+                </a>
+              ) : (
+                <span className="text-gray-500 ml-4">선택된 파일 없음</span>
+              )}
+            </div>
+            <input
+              id="fileInput"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            <div className="flex space-x-4">
+              <button
+                onClick={handleFileSelect}
+                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600"
+              >
+                업로드
+              </button>
+
+              <button
+                onClick={handleDelete}
+                disabled={!uploadedFile}
+                className={`text-[12px] font-bold px-6 py-2 rounded-[20px] ${
+                  uploadedFile
+                    ? 'bg-[#F24E1E] text-white hover:bg-red-600'
+                    : 'bg-gray-300 text-gray-500'
+                }`}
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </section>
+        {/* <section className="bg-white p-6">
+          <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
+          <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
             <input
               type="file"
               accept=".pdf"
               onChange={e => setSelectedFile(e.target.files?.[0] || null)}
-              className="block w-full"
+              className="block w-[640px]"
             />
             <div className="flex space-x-2">
               <button
                 onClick={handleUpload}
                 disabled={!selectedFile}
-                className={`px-4 py-2 rounded ${
+                className={`text-[10px] font-bold px-4 py-2 rounded-[20px] ${
                   selectedFile
-                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    ? 'bg-[#3387E5] text-white hover:bg-blue-600'
                     : 'bg-gray-300 text-gray-500'
                 }`}
               >
@@ -423,9 +503,9 @@ const Profile: React.FC = () => {
               <button
                 onClick={handleDelete}
                 disabled={!uploadedFile}
-                className={`px-4 py-2 rounded ${
+                className={`text-[10px] font-bold px-4 rounded-[20px] ${
                   uploadedFile
-                    ? 'bg-red-500 text-white hover:bg-red-600'
+                    ? 'bg-[#F24E1E] text-white hover:bg-red-600'
                     : 'bg-gray-300 text-gray-500'
                 }`}
               >
@@ -441,6 +521,89 @@ const Profile: React.FC = () => {
                 {uploadedFile.fileName}
               </a>
             )}
+          </div>
+        </section> */}
+        <section className="mt-20 p-6 flex flex-col items-center text-center">
+          <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
+
+          <div className="self-end space-x-2 inline-flex items-center cursor-pointer">
+            <span className="ms-3 text-sm font-semibold text-[#B4B4B4] dark:text-gray-300">
+              상세 프로필 공개 여부
+            </span>
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={handleToggle}
+                value=""
+                className="sr-only peer"
+              />
+              <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+            </label>
+            {/* <input
+              type="checkbox"
+              id="profile-toggle"
+              className="sr-only peer"
+              checked={isPublic}
+              onChange={handleToggle}
+            />
+            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div> */}
+
+            {/* <label htmlFor="profile-toggle" className="cursor-pointer">
+              상세 프로필 공개 여부
+            </label> */}
+          </div>
+        </section>
+        <section className="bg-white p-6">
+          <h3 className="text-lg font-semibold mb-4">모집 현황</h3>
+          <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px]">16</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
+            </div>
+
+            <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px]">10</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
+            </div>
+
+            <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px]">6</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
+            </div>
+          </div>
+        </section>
+        <section className="bg-white p-6">
+          <h3 className="text-lg font-semibold mb-4">지원 현황</h3>
+          <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px]">16</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
+            </div>
+
+            <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px]">10</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
+            </div>
+
+            <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px] text-[#3387E5]">6</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">승인</div>
+            </div>
+            <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-[20px] text-[#F24E1E]">6</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">거절</div>
+            </div>
           </div>
         </section>
       </div>
