@@ -93,10 +93,6 @@ public class AuthService {
     }
 
     private String generateUniqueNickname(String baseName) {
-        if (!profileRepository.existsByNickname(baseName)) {
-            return baseName;
-        }
-
         while (true) {
             int randomNumber = (int) (Math.random() * 900000) + 100000;
             String nickname = baseName + "#" + randomNumber;
