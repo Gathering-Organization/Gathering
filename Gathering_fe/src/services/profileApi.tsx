@@ -6,6 +6,7 @@ export const getMyProfile = async () => {
     const response = await api.get('/profile');
 
     if (response.data.status === 200) {
+      console.log(response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error) {
@@ -30,6 +31,32 @@ export const getUserProfile = async (nickname: string) => {
 export const setMyProfile = async (profileData: ProfileInfo, workExperiences: WorkExperience[]) => {
   try {
     const response = await api.put('/profile', { ...profileData, workExperiences });
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error) {
+    console.error('프로필 수정 API 요청 실패:', error);
+    throw error;
+  }
+};
+
+export const setMyNickname = async (nickname: string) => {
+  try {
+    const response = await api.put('/profile', { nickname });
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error) {
+    console.error('프로필 수정 API 요청 실패:', error);
+    throw error;
+  }
+};
+
+export const setMyProfileColor = async (profileColor: string) => {
+  try {
+    const response = await api.put('/profile', { profileColor });
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };

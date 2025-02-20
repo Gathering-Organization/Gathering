@@ -13,6 +13,7 @@ import MultiSelection from '@/components/MultiSelection';
 import penSquared from '@/assets/otherIcons/Pen Squared.png';
 import changeMark from '@/assets/otherIcons/Change Mark.png';
 import NicknameModal from '@/components/NicknameModal';
+import ProfileColorModal from '@/components/ProfileColorModal';
 
 interface TechStack {
   id: string;
@@ -245,32 +246,25 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (profile) {
       setInfo(profile);
+      setIsPublic(profile.public);
     }
   }, [profile, isPublic]);
 
   if (isLoading) return <div>로딩 중...</div>;
-
   return (
     <div className="mx-60 space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
         <section className="p-6 flex flex-col items-center text-center">
           <h1 className="text-[30px] font-bold mb-8">기본 프로필</h1>
-          <div
+          <ProfileColorModal profileColor={info.profileColor} />
+          {/* <div
             className="w-[100px] h-[100px] rounded-full mb-8 relative"
             style={{ backgroundColor: `#${info.profileColor}` }}
           >
             <img src={changeMark} alt="Edit" className="w-8 h-8 absolute bottom-1 right-1" />
-          </div>
-          <NicknameModal nickname={info.nickname || ''} />
+          </div> */}
 
-          {/* <input
-            type="text"
-            name="nickname"
-            value={info.nickname || ''}
-            disabled={!info}
-            onChange={e => setInfo({ ...info, nickname: e.target.value })}
-            className="text-[24px] font-bold mb-8"
-          /> */}
+          <NicknameModal nickname={info.nickname || ''} />
           <button
             onClick={handleUpdateProfile}
             className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
@@ -532,6 +526,7 @@ const Profile: React.FC = () => {
                 value=""
                 className="sr-only peer"
               />
+
               <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
             </label>
             {/* <input

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ProfileProvider } from './hooks/ProfileStateContext';
 import GoogleRedirectHandler from '@/components/GoogleRedirectHandler';
-import Profile from '@/components/Profile';
+import Profile from '@/pages/Profile';
 import Main from '@/components/Main';
 import Layout from '@/components/Layout';
 import PostHome from '@/pages/PostHome';

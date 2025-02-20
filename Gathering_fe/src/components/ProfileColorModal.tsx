@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import penSquared from '@/assets/otherIcons/Pen Squared.png';
-import { setMyNickname } from '@/services/profileApi';
+import changeMark from '@/assets/otherIcons/Change Mark.png';
+import { setMyProfileColor } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
 import { useProfile } from '@/hooks/ProfileStateContext';
+import { profileColorCollection } from '@/utils/profile-color';
 
-interface NicknameModalProps {
-  nickname: string;
+interface ProfileColorModalProps {
+  profileColor: string;
 }
 
-const NicknameModal = ({ nickname }: NicknameModalProps) => {
+const ProfileColorModal = ({ profileColor }: ProfileColorModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newNickname, setNewNickname] = useState(nickname);
   const { profile, updateProfileData } = useProfile();
+  const [selectedColor, setSelectedColor] = useState(profileColor);
 
   const openModal = () => {
+    setSelectedColor(profileColor);
     setIsModalOpen(true);
   };
 
@@ -21,59 +23,28 @@ const NicknameModal = ({ nickname }: NicknameModalProps) => {
     setIsModalOpen(false);
   };
 
-  const handleUpdateNickname = async () => {
+  const handleUpdateProfileColor = async () => {
     try {
-      const result = await setMyNickname(newNickname);
+      const result = await setMyProfileColor(selectedColor);
       if (result?.success) {
-        console.log(nickname);
-        updateProfileData({ nickname: newNickname });
-        alert('닉네임이 성공적으로 변경되었습니다!');
-        closeModal();
+        updateProfileData({ profileColor: selectedColor });
+        alert('프로필 컬러가 성공적으로 변경되었습니다!');
       } else {
-        alert(result?.message || '닉네임 변경 중 문제가 발생했습니다.');
+        alert(result?.message || '프로필 컬러 변경 중 문제가 발생했습니다.');
       }
     } catch {
-      alert('닉네임 변경 중 오류가 발생했습니다.');
+      alert('프로필 컬러 변경 중 오류가 발생했습니다.');
     }
   };
-
-  // const handleUpdateNickname = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!nicknameInfo.trim()) {
-  //     alert('닉네임을 입력해주세요.');
-  //     return;
-  //   }
-
-  //   try {
-  //     const result = await setMyNickname(nickname);
-
-  //     if (result?.success) {
-  //       alert('닉네임 저장 성공!');
-  //     } else {
-  //       alert(result?.message || '닉네임 저장 중 문제가 발생했습니다.');
-  //     }
-  //   } catch {
-  //     alert('닉네임 저장 중 오류가 발생했습니다.');
-  //   }
-  // };
-
-  const parts = nickname.split(/(#\d+)/);
 
   return (
     <div>
       <button
-        className="text-[24px] font-bold mb-8 relative left-4 inline-block"
+        className="w-[100px] h-[100px] rounded-full mb-8 relative"
         onClick={openModal}
+        style={{ backgroundColor: `#${profileColor}` }}
       >
-        <span className="pr-8">
-          {parts[0]}
-          <span className="text-[#B4B4B4]">{parts[1]}</span>
-        </span>
-        <img
-          src={penSquared}
-          alt="Edit"
-          className="w-6 h-6 absolute right-0 top-1/2 -translate-y-1/2"
-        />
+        <img src={changeMark} alt="Edit" className="w-8 h-8 absolute bottom-1 right-1" />
       </button>
 
       {isModalOpen && (
@@ -83,7 +54,9 @@ const NicknameModal = ({ nickname }: NicknameModalProps) => {
         >
           <div className="relative p-4 w-full max-w-md max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">닉네임 변경</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                프로필 컬러 변경
+              </h3>
               <button
                 type="button"
                 className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -109,19 +82,24 @@ const NicknameModal = ({ nickname }: NicknameModalProps) => {
             </div>
             <div className="p-4 md:p-5">
               <form className="space-y-4" action="#">
-                <div>
-                  <input
-                    type="text"
-                    name="nickname"
-                    id="nickname"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder={parts[0]}
-                    onChange={e => setNewNickname(e.target.value)}
-                    required
-                  />
+                <div className="p-4 grid grid-cols-5 gap-4">
+                  {profileColorCollection.map(color => (
+                    <button
+                      key={color.id}
+                      type="button"
+                      className={`w-14 h-14 rounded-full relative flex items-center justify-center 
+        ${selectedColor === color.color ? 'outline outline-4 outline-[#3387E5] outline-offset-2' : ''}`}
+                      style={{ backgroundColor: `#${color.color}` }}
+                      onClick={e => {
+                        e.preventDefault();
+                        setSelectedColor(color.color);
+                      }}
+                    />
+                  ))}
                 </div>
+
                 <button
-                  onClick={handleUpdateNickname}
+                  onClick={handleUpdateProfileColor}
                   type="submit"
                   className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
@@ -136,4 +114,4 @@ const NicknameModal = ({ nickname }: NicknameModalProps) => {
   );
 };
 
-export default NicknameModal;
+export default ProfileColorModal;
