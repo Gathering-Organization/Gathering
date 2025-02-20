@@ -42,6 +42,7 @@ public enum ErrorCode {
 
     // Project
     PROJECT_NOT_FOUND(404, "PJ001", "존재하지 않는 프로젝트입니다."),
+    INVALID_SEARCH_TYPE(400, "PJ002", "잘못된 검색 타입입니다."),
 
     // Interest Project
     INTEREST_PROJECT_NOT_FOUND(404, "IP001", "관심 프로젝트를 찾을 수 없습니다."),

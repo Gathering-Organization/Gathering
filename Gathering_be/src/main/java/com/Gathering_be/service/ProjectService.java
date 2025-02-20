@@ -1,5 +1,6 @@
 package com.Gathering_be.service;
 
+import com.Gathering_be.domain.InterestProject;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
 import com.Gathering_be.domain.ProjectTeams;
@@ -7,9 +8,11 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.exception.InvalidSearchTypeException;
 import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.exception.UnauthorizedAccessException;
+import com.Gathering_be.global.enums.SearchType;
 import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
@@ -98,6 +101,33 @@ public class ProjectService {
                 .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
+
+    public List<ProjectSimpleResponse> searchProjects(SearchType searchType, String keyword) {
+        Long currentUserId = getCurrentUserId();
+        List<Project> projects;
+
+        switch (searchType) {
+            case TITLE:
+                projects = projectRepository.findByTitleContaining(keyword);
+                break;
+            case CONTENT:
+                projects = projectRepository.findByDescriptionContaining(keyword);
+                break;
+            case TITLE_CONTENT:
+                projects = projectRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
+                break;
+            default:
+                throw new InvalidSearchTypeException();
+        }
+
+        return projects.stream()
+                .map(project -> {
+                    boolean isInterested = (currentUserId != null) && isUserInterestedInProject(currentUserId, project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested);
+                })
+                .collect(Collectors.toList());
+    }
+
 
     private void validateMemberAccess(Project project) {
         Long currentUserId = getCurrentUserId();
