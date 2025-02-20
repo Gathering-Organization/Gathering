@@ -24,17 +24,15 @@ public class ProfileService {
         Profile profile = getProfileByMemberId(getCurrentUserId());
 
         if (request.getNickname() != null && !request.getNickname().equals(profile.getNickname())) {
-            if (profileRepository.existsByNickname(request.getNickname())) {
-                String baseNickname = request.getNickname();
-                String uniqueNickname = generateUniqueNickname(baseNickname);
-                request = ProfileUpdateRequest.builder()
-                        .nickname(uniqueNickname)
-                        .introduction(request.getIntroduction())
-                        .organization(request.getOrganization())
-                        .techStacks(request.getTechStacks())
-                        .workExperiences(request.getWorkExperiences())
-                        .build();
-            }
+            String baseNickname = request.getNickname();
+            String uniqueNickname = generateUniqueNickname(baseNickname);
+            request = ProfileUpdateRequest.builder()
+                    .nickname(uniqueNickname)
+                    .introduction(request.getIntroduction())
+                    .organization(request.getOrganization())
+                    .techStacks(request.getTechStacks())
+                    .workExperiences(request.getWorkExperiences())
+                    .build();
         }
         profile.update(request);
     }
