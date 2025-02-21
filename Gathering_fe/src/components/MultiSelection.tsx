@@ -60,7 +60,7 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
     <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="relative w-full text-left bg-white dark:bg-[#1E2028] p-3 px-6 border border-[#000000]/20 rounded-[18px] dark:border-gray-700 rounded-[20px] px-4 py-2.5 focus:outline-none"
+        className="relative w-full text-left bg-gray-50 dark:bg-[#1E2028] p-3 px-6 border border-[#000000]/20 rounded-[30px] dark:border-gray-700 rounded-[20px] px-4 py-2.5 focus:outline-none"
         onClick={toggleDropdown}
       >
         <div className="flex flex-wrap gap-1 min-h-6">

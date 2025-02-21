@@ -2,8 +2,8 @@ export interface WorkExperience {
   startDate: string;
   endDate: string;
   activityName: string;
-  jobDetail: string;
   description: string;
+  techStacks: string[];
 }
 
 export interface ProfileInfo {

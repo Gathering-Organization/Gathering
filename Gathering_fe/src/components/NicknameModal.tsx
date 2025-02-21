@@ -8,17 +8,19 @@ interface NicknameModalProps {
   nickname: string;
 }
 
-const NicknameModal = ({ nickname }: NicknameModalProps) => {
+const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNickname, setNewNickname] = useState(nickname);
   const { profile, updateProfileData } = useProfile();
 
   const openModal = () => {
     setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    document.body.style.overflow = 'auto';
   };
 
   const handleUpdateNickname = async () => {

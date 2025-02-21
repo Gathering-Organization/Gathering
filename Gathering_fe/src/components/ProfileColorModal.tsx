@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import changeMark from '@/assets/otherIcons/Change Mark.png';
 import { setMyProfileColor } from '@/services/profileApi';
-import { ProfileInfo } from '@/types/profile';
 import { useProfile } from '@/hooks/ProfileStateContext';
 import { profileColorCollection } from '@/utils/profile-color';
 
@@ -9,7 +8,7 @@ interface ProfileColorModalProps {
   profileColor: string;
 }
 
-const ProfileColorModal = ({ profileColor }: ProfileColorModalProps) => {
+const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { profile, updateProfileData } = useProfile();
   const [selectedColor, setSelectedColor] = useState(profileColor);
@@ -17,10 +16,12 @@ const ProfileColorModal = ({ profileColor }: ProfileColorModalProps) => {
   const openModal = () => {
     setSelectedColor(profileColor);
     setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    document.body.style.overflow = 'auto';
   };
 
   const handleUpdateProfileColor = async () => {

@@ -10,8 +10,7 @@ import { useEffect, useState } from 'react';
 import { useProfile } from '@/hooks/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
 import MultiSelection from '@/components/MultiSelection';
-import penSquared from '@/assets/otherIcons/Pen Squared.png';
-import changeMark from '@/assets/otherIcons/Change Mark.png';
+import WorkExperienceModal from '@/components/WorkExperienceModal';
 import NicknameModal from '@/components/NicknameModal';
 import ProfileColorModal from '@/components/ProfileColorModal';
 
@@ -38,8 +37,8 @@ const Profile: React.FC = () => {
     activityName: '',
     startDate: '',
     endDate: '',
-    jobDetail: '',
-    description: ''
+    description: '',
+    techStacks: []
   });
   const stacks = [...techStacks];
   const filteredStacks = stacks.filter(stack => !info.techStacks.includes(stack.title));
@@ -221,7 +220,6 @@ const Profile: React.FC = () => {
       !newExperience.activityName ||
       !newExperience.startDate ||
       !newExperience.endDate ||
-      !newExperience.jobDetail ||
       !newExperience.description
     ) {
       alert('모든 필드를 입력해주세요.');
@@ -233,8 +231,8 @@ const Profile: React.FC = () => {
       activityName: '',
       startDate: '',
       endDate: '',
-      jobDetail: '',
-      description: ''
+      description: '',
+      techStacks: []
     });
   };
 
@@ -284,7 +282,7 @@ const Profile: React.FC = () => {
               value={info.organization || ''}
               placeholder="소속을 입력해주세요. ex) OO회사 OO 부서, OO대학교 OO학과"
               onChange={e => setInfo({ ...info, organization: e.target.value })}
-              className="self-end w-[650px] p-3 px-6 border border-[#000000]/20 rounded-[18px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-[#000000]/20 rounded-[30px] focus:outline-none"
             />
           </div>
 
@@ -347,12 +345,13 @@ const Profile: React.FC = () => {
         <section className="bg-white p-6 mb-4">
           <div className="flex items-center justify-between mb-10">
             <h3 className="text-lg font-semibold">활동 경력</h3>
-            <button
+            <WorkExperienceModal />
+            {/* <button
               onClick={handleAddExperience}
               className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
             >
               활동 경력 입력하기
-            </button>
+            </button> */}
           </div>
 
           <div className="space-y-4">
@@ -397,13 +396,6 @@ const Profile: React.FC = () => {
             </div>
             <input
               type="text"
-              placeholder="직무"
-              value={newExperience.jobDetail}
-              onChange={e => setNewExperience({ ...newExperience, jobDetail: e.target.value })}
-              className="border rounded w-full p-2"
-            />
-            <input
-              type="text"
               placeholder="세부설명"
               value={newExperience.description}
               onChange={e => setNewExperience({ ...newExperience, description: e.target.value })}
@@ -418,7 +410,7 @@ const Profile: React.FC = () => {
             value={info.introduction || ''}
             placeholder="300자 이내로 자신을 소개해 보세요!"
             onChange={e => setInfo({ ...info, introduction: e.target.value })}
-            className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24"
+            className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none"
           ></textarea>
         </section>
         <section className="bg-white p-6">
