@@ -24,7 +24,7 @@ const Header: React.FC = () => {
       <div className="flex justify-between py-4 items-center">
         <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/postHome')} />
 
-        <section className="text-[18px] font-bold space-x-8">
+        <section className="flex items-center text-[18px] font-bold space-x-8">
           <button
             className="bordor-[#000000] border-solid rounded-[20px] border-2 px-4 py-1 hover:bg-[#B4B4B4]/30"
             onClick={onClickPostingButton}
@@ -35,16 +35,14 @@ const Header: React.FC = () => {
           {isLoggedIn ? (
             <LogoutButton />
           ) : (
-            <button onClick={() => setActiveModal('login')}>로그인</button>
+            <LoginModal
+              isOpen={activeModal === 'login'}
+              onClose={() => setActiveModal(null)}
+              onSignupClick={() => setActiveModal('signup')}
+            />
           )}
         </section>
       </div>
-
-      <LoginModal
-        isOpen={activeModal === 'login'}
-        onClose={() => setActiveModal(null)}
-        onSignupClick={() => setActiveModal('signup')}
-      />
 
       <SignupModal
         isOpen={activeModal === 'signup'}
