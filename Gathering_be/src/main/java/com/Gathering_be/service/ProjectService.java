@@ -1,6 +1,5 @@
 package com.Gathering_be.service;
 
-import com.Gathering_be.domain.InterestProject;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
 import com.Gathering_be.domain.ProjectTeams;
@@ -21,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +32,7 @@ public class ProjectService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
     private final InterestProjectRepository interestProjectRepository;
+    private final RedisService redisService;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
@@ -81,6 +82,9 @@ public class ProjectService {
     }
 
     public ProjectDetailResponse getProjectById(Long projectId) {
+        Long memberId = getCurrentUserId();
+        incrementViewCount(projectId, memberId);
+
         Project project =  projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
 
@@ -187,5 +191,19 @@ public class ProjectService {
         Profile profile = profileRepository.findByMemberId(memberId)
                 .orElseThrow(ProfileNotFoundException::new);
         return profile.getId();
+    }
+
+    @Transactional
+    private void incrementViewCount(Long projectId, Long memberId) {
+        String redisKey = "project:view:" + projectId + ":" + memberId;
+        if (redisService.getValues(redisKey) == null) {
+            Project project = projectRepository.findById(projectId)
+                    .orElseThrow(ProjectNotFoundException::new);
+
+            project.incrementViewCount();
+            projectRepository.save(project);
+
+            redisService.setValuesWithTTL(redisKey, "viewed", Duration.ofSeconds(1));
+        }
     }
 }
