@@ -59,7 +59,8 @@ jobs:
           echo "GOOGLE_RESOURCE_URI= ${{ secrets.GOOGLE_RESOURCE_URI }}" >> Gathering_be/.env.dev
           echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> Gathering_be/.env.dev
           echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> Gathering_be/.env.dev
-
+          echo "GATHERING_GMAIL_USERNAME=${{ secrets.GATHERING_GMAIL_USERNAME }}" >> Gathering_be/.end.dev
+          echo "GATHERING_GMAIL_PASSWORD=${{ secrets.GATHERING_GMAIL_PASSWORD }}" >> Gathering_be/.end.dev
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
