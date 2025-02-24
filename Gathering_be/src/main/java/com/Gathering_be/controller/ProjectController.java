@@ -4,6 +4,7 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.global.enums.SearchType;
 import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.global.response.ResultResponse;
 import com.Gathering_be.service.ProjectService;
@@ -48,5 +49,11 @@ public class ProjectController {
     public ResponseEntity<ResultResponse> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_DELETE_SUCCESS));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResultResponse> searchProjects(@RequestParam SearchType searchType, @RequestParam String keyword) {
+        List<ProjectSimpleResponse> projects = projectService.searchProjects(searchType, keyword);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_SERACH_SUCCESS, projects));
     }
 }

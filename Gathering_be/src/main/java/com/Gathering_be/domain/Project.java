@@ -37,6 +37,7 @@ public class Project extends BaseTimeEntity {
     private String duration;
     private LocalDate startDate;
     private boolean isClosed;
+    private Long viewCount = 0L;
 
     @Enumerated(EnumType.STRING)
     private ProjectType projectType;
@@ -79,6 +80,7 @@ public class Project extends BaseTimeEntity {
         this.requiredPositions = requiredPositions != null ? requiredPositions : new ArrayList<>();
         this.techStacks = techStacks != null ? techStacks : new HashSet<>();
         this.teams = teams != null ? teams : new HashSet<>();
+        this.viewCount = 0L;
     }
 
     public void update(ProjectUpdateRequest request) {
@@ -94,5 +96,9 @@ public class Project extends BaseTimeEntity {
         this.requiredPositions = request.getRequiredPositions();
         this.isClosed = request.isClosed();
         this.projectMode = request.getProjectMode();
+    }
+
+    public void incrementViewCount() {
+        this.viewCount += 1;
     }
 }

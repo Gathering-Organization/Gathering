@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -45,14 +45,14 @@ class ProjectRepositoryTest {
 
         project1 = projectRepository.save(Project.builder()
                 .profile(owner)
-                .title("Test Project 1")
+                .title("Test Project 1 입니다")
                 .description("첫 번째 테스트 프로젝트")
                 .build());
 
         project2 = projectRepository.save(Project.builder()
                 .profile(owner)
                 .title("Test Project 2")
-                .description("두 번째 테스트 프로젝트")
+                .description("두 번째 테스트 프로젝트 입니다")
                 .build());
     }
 
@@ -61,7 +61,35 @@ class ProjectRepositoryTest {
     void findProjectsByProfileIdTest() {
         List<Project> projects = projectRepository.findProjectsByProfileId(owner.getId());
 
-        assertEquals(2, projects.size());
+        assertThat(projects.size()).isEqualTo(2);
+        assertThat(projects.contains(project1)).isTrue();
+        assertThat(projects.contains(project2)).isTrue();
+    }
+
+    @Test
+    @DisplayName("제목에 키워드가 포함된 프로젝트 검색 성공")
+    void findByTitleContainingTest() {
+        List<Project> projects = projectRepository.findByTitleContaining("Test Project 1");
+
+        assertThat(projects.size()).isEqualTo(1);
+        assertTrue(projects.contains(project1));
+    }
+
+    @Test
+    @DisplayName("설명에 키워드가 포함된 프로젝트 검색 성공")
+    void findByDescriptionContainingTest() {
+        List<Project> projects = projectRepository.findByDescriptionContaining("두 번째");
+
+        assertThat(projects.size()).isEqualTo(1);
+        assertTrue(projects.contains(project2));
+    }
+
+    @Test
+    @DisplayName("제목 또는 설명에 키워드가 포함된 프로젝트 검색 성공")
+    void findByTitleContainingOrDescriptionContainingTest() {
+        List<Project> projects = projectRepository.findByTitleContainingOrDescriptionContaining("입니다", "입니다");
+
+        assertThat(projects.size()).isEqualTo(2);
         assertTrue(projects.contains(project1));
         assertTrue(projects.contains(project2));
     }

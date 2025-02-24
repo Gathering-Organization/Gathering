@@ -34,13 +34,14 @@ public class ProjectDetailResponse {
     private final LocalDateTime updatedAt;
     private final LocalDateTime deadline;
     private final boolean isInterested;
+    private final Long viewCount;
 
     @Builder
     public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
                                  String duration, List<JobPosition> requiredPositions, Set<TechStack> techStacks, String kakaoUrl,
                                  boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline,
-                                 boolean isInterested) {
+                                 boolean isInterested, Long viewCount) {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
@@ -59,6 +60,7 @@ public class ProjectDetailResponse {
         this.deadline = deadline;
         this.kakaoUrl = kakaoUrl;
         this.isInterested = isInterested;
+        this.viewCount = viewCount;
     }
 
     public static ProjectDetailResponse from(Project project, boolean isInterested) {
@@ -85,6 +87,7 @@ public class ProjectDetailResponse {
                 .deadline(project.getDeadline())
                 .kakaoUrl(project.getKakaoUrl())
                 .isInterested(isInterested)
+                .viewCount(project.getViewCount())
                 .build();
     }
 }

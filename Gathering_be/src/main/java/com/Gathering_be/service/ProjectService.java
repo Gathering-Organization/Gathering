@@ -7,9 +7,11 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.exception.InvalidSearchTypeException;
 import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.exception.UnauthorizedAccessException;
+import com.Gathering_be.global.enums.SearchType;
 import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +32,7 @@ public class ProjectService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
     private final InterestProjectRepository interestProjectRepository;
+    private final RedisService redisService;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
@@ -78,6 +82,9 @@ public class ProjectService {
     }
 
     public ProjectDetailResponse getProjectById(Long projectId) {
+        Long memberId = getCurrentUserId();
+        incrementViewCount(projectId, memberId);
+
         Project project =  projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
 
@@ -98,6 +105,37 @@ public class ProjectService {
                 .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
+
+    public List<ProjectSimpleResponse> searchProjects(SearchType searchType, String keyword) {
+        Long currentUserId = getCurrentUserId();
+        List<Project> projects;
+
+        if (searchType == null) {
+            throw new InvalidSearchTypeException();
+        }
+
+        switch (searchType) {
+            case TITLE:
+                projects = projectRepository.findByTitleContaining(keyword);
+                break;
+            case CONTENT:
+                projects = projectRepository.findByDescriptionContaining(keyword);
+                break;
+            case TITLE_CONTENT:
+                projects = projectRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
+                break;
+            default:
+                throw new InvalidSearchTypeException();
+        }
+
+        return projects.stream()
+                .map(project -> {
+                    boolean isInterested = (currentUserId != null) && isUserInterestedInProject(currentUserId, project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested);
+                })
+                .collect(Collectors.toList());
+    }
+
 
     private void validateMemberAccess(Project project) {
         Long currentUserId = getCurrentUserId();
@@ -157,5 +195,19 @@ public class ProjectService {
         Profile profile = profileRepository.findByMemberId(memberId)
                 .orElseThrow(ProfileNotFoundException::new);
         return profile.getId();
+    }
+
+    @Transactional
+    private void incrementViewCount(Long projectId, Long memberId) {
+        String redisKey = "project:view:" + projectId + ":" + memberId;
+        if (redisService.getValues(redisKey) == null) {
+            Project project = projectRepository.findById(projectId)
+                    .orElseThrow(ProjectNotFoundException::new);
+
+            project.incrementViewCount();
+            projectRepository.save(project);
+
+            redisService.setValues(redisKey, "viewed", Duration.ofSeconds(1));
+        }
     }
 }
