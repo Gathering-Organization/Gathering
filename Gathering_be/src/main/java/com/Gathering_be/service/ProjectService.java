@@ -203,7 +203,7 @@ public class ProjectService {
             project.incrementViewCount();
             projectRepository.save(project);
 
-            redisService.setValuesWithTTL(redisKey, "viewed", Duration.ofSeconds(1));
+            redisService.setValues(redisKey, "viewed", Duration.ofSeconds(1));
         }
     }
 }

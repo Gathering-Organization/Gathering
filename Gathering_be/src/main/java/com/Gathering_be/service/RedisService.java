@@ -22,7 +22,7 @@ public class RedisService {
         values.set(key, data, Duration.ofDays(14));
     }
 
-    public void setValuesWithTTL(String key, String data, Duration duration) {
+    public void setValues(String key, String data, Duration duration) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         values.set(key, data, duration);
     }
