@@ -110,6 +110,10 @@ public class ProjectService {
         Long currentUserId = getCurrentUserId();
         List<Project> projects;
 
+        if (searchType == null) {
+            throw new InvalidSearchTypeException();
+        }
+
         switch (searchType) {
             case TITLE:
                 projects = projectRepository.findByTitleContaining(keyword);
