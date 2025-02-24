@@ -22,6 +22,11 @@ public class RedisService {
         values.set(key, data, Duration.ofDays(14));
     }
 
+    public void setValues(String key, String data, Duration duration) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.set(key, data, duration);
+    }
+
     public String getValues(String key) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         return values.get(key);
