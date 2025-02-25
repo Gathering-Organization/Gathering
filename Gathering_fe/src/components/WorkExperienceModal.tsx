@@ -9,13 +9,26 @@ interface TechStack {
   title: string;
 }
 
-const WorkExperienceModal: React.FC = () => {
+interface WorkExperienceModalProps {
+  onSave: (experience: WorkExperience) => void;
+}
+
+interface DateRange {
+  startDate: string | null;
+  endDate: string | null;
+}
+
+const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => {
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
   const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
     endDate: null
   });
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({ startDate: '', endDate: '' });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,21 +40,42 @@ const WorkExperienceModal: React.FC = () => {
     description: '',
     techStacks: []
   });
+  const handleDateChange = (newValue: DateRange) => {
+    const startDate = newValue.startDate
+      ? new Date(newValue.startDate).toISOString().split('T')[0]
+      : '';
+    const endDate = newValue.endDate ? new Date(newValue.endDate).toISOString().split('T')[0] : '';
+
+    setDateRange({ startDate, endDate });
+    setNewExperience(prev => ({
+      ...prev,
+      startDate,
+      endDate
+    }));
+  };
 
   const handleAddExperience = () => {
+    console.log('저장된 경험:', newExperience);
     if (
       !newExperience.activityName ||
       !newExperience.startDate ||
       !newExperience.endDate ||
-      !newExperience.description ||
-      !newExperience.techStacks
+      !newExperience.description
     ) {
       console.log(newExperience);
       alert('모든 필드를 입력해주세요.');
       return;
     }
-    console.log(newExperience);
-    setWorkExperiences(prev => [...prev, newExperience]);
+
+    onSave({
+      ...newExperience,
+      techStacks: selectedStacks
+    });
+    closeModal();
+    resetForm();
+  };
+
+  const resetForm = () => {
     setNewExperience({
       activityName: '',
       startDate: '',
@@ -49,8 +83,20 @@ const WorkExperienceModal: React.FC = () => {
       description: '',
       techStacks: []
     });
-    closeModal();
+    setSelectedStacks([]);
+    setDateRange({ startDate: '', endDate: '' });
   };
+  //   console.log(newExperience);
+  //   setWorkExperiences(prev => [...prev, newExperience]);
+  //   setNewExperience({
+  //     activityName: '',
+  //     startDate: '',
+  //     endDate: '',
+  //     description: '',
+  //     techStacks: []
+  //   });
+  //   closeModal();
+  // };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -105,12 +151,21 @@ const WorkExperienceModal: React.FC = () => {
               </button>
             </div>
             <div className="p-6 md:p-7">
-              <form className="space-y-6">
+              <form
+                className="space-y-6"
+                onSubmit={e => {
+                  e.preventDefault();
+                  handleAddExperience();
+                }}
+              >
                 <div className="flex items-center gap-4">
                   <label className="w-36 font-semibold text-gray-700 dark:text-white">활동명</label>
                   <input
                     onChange={e =>
-                      setNewExperience({ ...newExperience, activityName: e.target.value })
+                      setNewExperience(prev => ({
+                        ...prev,
+                        activityName: e.target.value
+                      }))
                     }
                     type="text"
                     name="nickname"
@@ -131,13 +186,29 @@ const WorkExperienceModal: React.FC = () => {
                       onChange={newValue => {
                         if (newValue) {
                           setValue(newValue);
-                          setNewExperience({
-                            ...newExperience,
-                            startDate: new Date(newValue.startDate || '').toISOString(),
-                            endDate: new Date(newValue.endDate || '').toISOString()
-                          });
+                          const startDate = newValue.startDate
+                            ? new Date(newValue.startDate).toISOString().split('T')[0]
+                            : '';
+                          const endDate = newValue.endDate
+                            ? new Date(newValue.endDate).toISOString().split('T')[0]
+                            : '';
+                          setNewExperience(prev => ({
+                            ...prev,
+                            startDate,
+                            endDate
+                          }));
                         }
                       }}
+                      // onChange={newValue => {
+                      //   if (newValue) {
+                      //     setValue(newValue);
+                      //     setNewExperience({
+                      //       ...newExperience,
+                      //       startDate: new Date(newValue.startDate || '').toISOString(),
+                      //       endDate: new Date(newValue.endDate || '').toISOString()
+                      //     });
+                      //   }
+                      // }}
                     />
                   </div>
                 </div>

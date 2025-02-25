@@ -5,7 +5,7 @@ import {
   toggleProfileVisibility,
   uploadPortfolio
 } from '@/services/profileApi';
-import { Portfolio, ProfileInfo, WorkExperience } from '@/types/profile';
+import { Portfolio, ProfileAllInfo, WorkExperience } from '@/types/profile';
 import { useEffect, useState } from 'react';
 import { useProfile } from '@/hooks/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
@@ -13,6 +13,7 @@ import MultiSelection from '@/components/MultiSelection';
 import WorkExperienceModal from '@/components/WorkExperienceModal';
 import NicknameModal from '@/components/NicknameModal';
 import ProfileColorModal from '@/components/ProfileColorModal';
+import WorkExperienceItem from '@/components/WorkExperienceItem';
 
 interface TechStack {
   id: string;
@@ -25,12 +26,15 @@ const Profile: React.FC = () => {
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
-  const [info, setInfo] = useState<ProfileInfo>({
+  const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',
     organization: '',
     techStacks: [],
-    profileColor: ''
+    profileColor: '',
+    public: false,
+    portfolio: null,
+    workExperiences: []
   });
   const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
   const [newExperience, setNewExperience] = useState<WorkExperience>({
@@ -215,26 +219,43 @@ const Profile: React.FC = () => {
     }));
   };
 
-  const handleAddExperience = () => {
+  const handleAddExperience = (experience: WorkExperience) => {
     if (
-      !newExperience.activityName ||
-      !newExperience.startDate ||
-      !newExperience.endDate ||
-      !newExperience.description
+      !experience.activityName ||
+      !experience.startDate ||
+      !experience.endDate ||
+      !experience.description
     ) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
 
-    setWorkExperiences(prev => [...prev, newExperience]);
-    setNewExperience({
-      activityName: '',
-      startDate: '',
-      endDate: '',
-      description: '',
-      techStacks: []
-    });
+    setWorkExperiences(prev => [...prev, experience]);
   };
+  // const handleAddExperience = () => {
+
+  //   if (
+  //     !newExperience.activityName ||
+  //     !newExperience.startDate ||
+  //     !newExperience.endDate ||
+  //     !newExperience.description ||
+  //     newExperience.techStacks.length === 0
+  //   ) {
+  //     alert('모든 필드를 입력해주세요.');
+  //     return;
+  //   }
+
+  //   setWorkExperiences(prev => [...prev, newExperience]);
+
+  //   setNewExperience({
+  //     activityName: '',
+  //     startDate: '',
+  //     endDate: '',
+  //     description: '',
+  //     techStacks: []
+  //   });
+
+  // };
 
   const handleDeleteExperience = (index: number) => {
     setWorkExperiences(prev => prev.filter((_, i) => i !== index));
@@ -345,7 +366,7 @@ const Profile: React.FC = () => {
         <section className="bg-white p-6 mb-4">
           <div className="flex items-center justify-between mb-10">
             <h3 className="text-lg font-semibold">활동 경력</h3>
-            <WorkExperienceModal />
+            <WorkExperienceModal onSave={handleAddExperience} />
             {/* <button
               onClick={handleAddExperience}
               className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
@@ -353,8 +374,16 @@ const Profile: React.FC = () => {
               활동 경력 입력하기
             </button> */}
           </div>
-
           <div className="space-y-4">
+            {workExperiences.map((experience, index) => (
+              <WorkExperienceItem key={`new-${index}`} {...experience} />
+            ))}
+            {info.workExperiences.map((experience, index) => (
+              <WorkExperienceItem key={`info-${index}`} {...experience} />
+            ))}
+          </div>
+
+          {/* <div className="space-y-4">
             {workExperiences.map((experience, index) => (
               <div key={index} className="flex justify-between items-center border-b pb-2">
                 <div>
@@ -401,7 +430,7 @@ const Profile: React.FC = () => {
               onChange={e => setNewExperience({ ...newExperience, description: e.target.value })}
               className="border rounded w-full p-2"
             />
-          </div>
+          </div> */}
         </section>
 
         <section className="bg-white p-6 mb-4">
