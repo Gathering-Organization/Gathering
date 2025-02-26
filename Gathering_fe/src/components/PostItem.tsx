@@ -95,6 +95,7 @@ const PostItem: React.FC<
       alert('관심글 설정에 실패했습니다.');
     }
   };
+  const parts = authorNickname.split(/(#\d+)/);
   return (
     <div
       onClick={() => nav(`/viewPost/${projectId}`)}
@@ -181,7 +182,7 @@ const PostItem: React.FC<
               className="w-8 h-8 rounded-[30px]"
               style={{ backgroundColor: `#${info.profileColor}` }}
             ></div>
-            <div>{authorNickname}</div>
+            <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>
           <div className="font-semibold p-4">클릭수</div>
         </section>
