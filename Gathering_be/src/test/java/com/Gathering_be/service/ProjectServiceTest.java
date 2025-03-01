@@ -22,6 +22,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -173,12 +175,12 @@ class ProjectServiceTest {
                     .build();
 
             given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
-            given(projectRepository.findAll()).willReturn(List.of(testData.getProject(), anotherProject));
+            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject(), anotherProject)));
             given(interestProjectRepository.findAllByProfileId(testData.getOwner().getId()))
                     .willReturn(List.of(interest));
 
             // when
-            List<ProjectSimpleResponse> results = projectService.getAllProjects();
+            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
 
             // then
             assertThat(results).hasSize(2);
@@ -191,12 +193,12 @@ class ProjectServiceTest {
         void getAllProjects_WithLoginNoInterest_Success() {
             // given
             given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
-            given(projectRepository.findAll()).willReturn(List.of(testData.getProject()));
+            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject())));
             given(interestProjectRepository.findAllByProfileId(testData.getOwner().getId()))
                     .willReturn(List.of());
 
             // when
-            List<ProjectSimpleResponse> results = projectService.getAllProjects();
+            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
 
             // then
             assertThat(results).hasSize(1);
@@ -213,10 +215,10 @@ class ProjectServiceTest {
             given(securityContext.getAuthentication()).willReturn(authentication);
             given(authentication.getName()).willReturn("anonymousUser");
 
-            given(projectRepository.findAll()).willReturn(List.of(testData.getProject()));
+            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject())));
 
             // when
-            List<ProjectSimpleResponse> results = projectService.getAllProjects();
+            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
 
             // then
             assertThat(results).hasSize(1);

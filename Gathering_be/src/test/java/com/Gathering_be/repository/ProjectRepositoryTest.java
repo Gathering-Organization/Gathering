@@ -8,6 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -54,6 +58,20 @@ class ProjectRepositoryTest {
                 .title("Test Project 2")
                 .description("두 번째 테스트 프로젝트 입니다")
                 .build());
+    }
+
+    @Test
+    @DisplayName("프로젝트 조회 (Repository - 페이징)")
+    void findAllWithPaginationTest() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        Page<Project> result = projectRepository.findAll(pageable);
+
+        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Project 1 입니다");
+        assertThat(result.getContent().get(1).getTitle()).isEqualTo("Test Project 2");
     }
 
     @Test

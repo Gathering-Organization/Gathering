@@ -172,9 +172,11 @@ class ProjectControllerTest {
                 ProjectSimpleResponse.builder().title("Project 2").build()
         );
 
-        given(projectService.getAllProjects()).willReturn(responses);
+        given(projectService.getAllProjects(1, 20)).willReturn(responses);
 
-        mockMvc.perform(get("/api/project"))
+        mockMvc.perform(get("/api/project")
+                        .param("page", "1")
+                        .param("size", "20"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].title").value("Project 1"))
