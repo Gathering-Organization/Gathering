@@ -244,6 +244,23 @@ class ProjectServiceTest {
             Project updatedProject = testData.getProject();
             assertProjectUpdated(updatedProject, testData.getUpdateRequest());
         }
+
+        @Test
+        @DisplayName("모집 상태 토글 성공")
+        void toggleProjectRecruitment_Success() {
+            // given
+            Long projectId = 1L;
+            Project project = testData.getProject();
+            boolean currentStatus = project.isClosed();
+            given(projectRepository.findById(projectId)).willReturn(Optional.of(testData.getProject()));
+
+            // when
+            projectService.toggleProjectRecruitment(projectId);
+
+            // then
+            Project updatedProject = projectRepository.findById(projectId).orElseThrow();
+            assertThat(updatedProject.isClosed()).isNotEqualTo(currentStatus);
+        }
     }
 
     @Nested
@@ -415,7 +432,6 @@ class ProjectServiceTest {
                     assertThat(p.getTechStacks()).isEqualTo(request.getTechStacks());
                     assertThat(p.getTeams()).isEqualTo(request.getTeams());
                     assertThat(p.getRequiredPositions()).isEqualTo(request.getRequiredPositions());
-                    assertThat(p.isClosed()).isEqualTo(request.isClosed());
                 });
     }
 
