@@ -55,7 +55,7 @@ public class InterestProjectService {
         Long profileId = getProfileByNickname(nickname).getId();
         validateMemberAccess(profileId);
 
-        List<InterestProject> interestProjects = interestProjectRepository.findByNickname(nickname);
+        List<InterestProject> interestProjects = interestProjectRepository.findByProfileNickname(nickname);
         return interestProjects.stream()
                 .map(InterestProjectResponse::from)
                 .collect(Collectors.toList());
