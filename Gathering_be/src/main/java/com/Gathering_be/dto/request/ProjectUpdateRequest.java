@@ -26,7 +26,6 @@ public class ProjectUpdateRequest {
     private String duration;
     private LocalDateTime deadline;
     private LocalDate startDate;
-    private boolean isClosed;
     private ProjectMode projectMode;
 
     private Set<TechStack> techStacks;
@@ -36,7 +35,7 @@ public class ProjectUpdateRequest {
     @Builder
     public ProjectUpdateRequest(String title, String description, String kakaoUrl,
                                 ProjectType projectType, int totalMembers, String duration,
-                                LocalDateTime deadline, LocalDate startDate, boolean isClosed,
+                                LocalDateTime deadline, LocalDate startDate,
                                 ProjectMode projectMode, Set<TechStack> techStacks,
                                 List<JobPosition> requiredPositions, Set<String> teams) {
         this.title = title;
@@ -49,7 +48,6 @@ public class ProjectUpdateRequest {
         this.startDate = startDate;
         this.techStacks = techStacks;
         this.requiredPositions = requiredPositions;
-        this.isClosed = isClosed;
         this.projectMode = projectMode;
         this.teams = teams;
     }
