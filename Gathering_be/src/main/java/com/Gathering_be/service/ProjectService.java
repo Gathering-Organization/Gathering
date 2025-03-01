@@ -155,6 +155,14 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void toggleProjectRecruitment(Long projectId) {
+        Project project = findProjectById(projectId);
+        validateMemberAccess(project);
+
+        project.toggleIsClosed();
+    }
+
 
     private void validateMemberAccess(Project project) {
         Long currentUserId = getCurrentUserId();

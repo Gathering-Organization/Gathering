@@ -51,6 +51,12 @@ public class ProjectController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_UPDATE_SUCCESS));
     }
 
+    @PutMapping("/recruitment/{id}")
+    public ResponseEntity<ResultResponse> toggleProfileVisibility(@PathVariable Long id) {
+        projectService.toggleProjectRecruitment(id);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_VISIBILITY_UPDATE_SUCCESS));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ResultResponse> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
@@ -60,6 +66,6 @@ public class ProjectController {
     @GetMapping("/search")
     public ResponseEntity<ResultResponse> searchProjects(@RequestParam SearchType searchType, @RequestParam String keyword) {
         List<ProjectSimpleResponse> projects = projectService.searchProjects(searchType, keyword);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_SERACH_SUCCESS, projects));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_SEARCH_SUCCESS, projects));
     }
 }

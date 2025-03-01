@@ -94,11 +94,14 @@ public class Project extends BaseTimeEntity {
         this.startDate = request.getStartDate();
         this.techStacks = request.getTechStacks();
         this.requiredPositions = request.getRequiredPositions();
-        this.isClosed = request.isClosed();
         this.projectMode = request.getProjectMode();
     }
 
     public void incrementViewCount() {
         this.viewCount += 1;
+    }
+
+    public void toggleIsClosed() {
+        this.isClosed = !this.isClosed;
     }
 }

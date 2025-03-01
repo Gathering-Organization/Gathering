@@ -29,7 +29,8 @@ public enum ResultCode {
     PROJECT_READ_SUCCESS(200, "PJ002", "프로젝트 조회에 성공하였습니다."),
     PROJECT_UPDATE_SUCCESS(200, "PJ003", "프로젝트 업데이트에 성공하였습니다."),
     PROJECT_DELETE_SUCCESS(200, "PJ004", "프로젝트 삭제에 성공하였습니다."),
-    PROJECT_SERACH_SUCCESS(200, "PJ005", "프로젝트 검색에 성공하였습니다."),
+    PROJECT_SEARCH_SUCCESS(200, "PJ005", "프로젝트 검색에 성공하였습니다."),
+    PROJECT_VISIBILITY_UPDATE_SUCCESS(200, "PJ006", "프로젝트 모집 여부가 변경되었습니다."),
 
     // Interest Project
     INTEREST_PROJECT_TOGGLE_SUCCESS(200, "IP001", "관심 프로젝트 등록/삭제 에 성공하였습니다."),
