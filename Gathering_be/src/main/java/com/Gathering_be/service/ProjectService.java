@@ -16,6 +16,9 @@ import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,8 +95,12 @@ public class ProjectService {
         return ProjectDetailResponse.from(project, isInterested);
     }
 
-    public List<ProjectSimpleResponse> getAllProjects() {
+    public List<ProjectSimpleResponse> getAllProjects(int page, int size) {
         Long currentUserId = getCurrentUserId();
+
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Project> projectPage = projectRepository.findAll(pageable);
+
         Set<Long> interestedProjectIds = (currentUserId != null)
                 ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
                 .stream()
@@ -101,7 +108,7 @@ public class ProjectService {
                 .collect(Collectors.toSet())
                 : Set.of();
 
-        return projectRepository.findAll().stream()
+        return projectPage.getContent().stream()
                 .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
