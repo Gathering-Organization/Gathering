@@ -35,23 +35,16 @@ public class AuthService {
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
     private final ProfileRepository profileRepository;
-    private final EmailVerificationService emailVerificationService;
 
     @Value("${oauth2.google.resource-uri}")
     private String googleResourceUri;
 
     @Transactional
-    public void verifyCodeAndSignUp(SignUpRequest request) {
-        if (!emailVerificationService.verifyCode(request.getEmail(), request.getCode())) {
-            throw new InvalidVerificationCodeException();
-        }
-
-        if (memberRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateEmailException();
-        }
+    public void signUp(SignUpRequest request) {
+        String verified = redisService.getValues("verified:" + request.getEmail() + request.getCode());
+        if (verified == null) { throw new EmailNotVerified(); }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-
         Member member = Member.localBuilder()
                 .email(request.getEmail())
                 .name(request.getName())
