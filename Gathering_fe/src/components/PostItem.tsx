@@ -8,6 +8,7 @@ import { ProfileInfo } from '@/types/profile';
 import { projectType as projectEachType } from '@/utils/project-type';
 import { positionData } from '@/utils/position-data';
 import { setInterest } from '@/services/interestApi';
+import eye from '@/assets/otherIcons/eye.png';
 
 interface Position {
   id: string;
@@ -27,7 +28,8 @@ const PostItem: React.FC<
   deadline,
   techStacks,
   onInterestToggle,
-  requiredPositions
+  requiredPositions,
+  viewCount
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
@@ -187,7 +189,12 @@ const PostItem: React.FC<
             ></div>
             <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>
-          <div className="font-semibold p-4">클릭수</div>
+          <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4">
+            <div>
+              <img src={eye} alt="watched" className="w-[24px] h-[24px]" />
+            </div>
+            <div>{viewCount}</div>
+          </div>
         </section>
       </section>
     </div>

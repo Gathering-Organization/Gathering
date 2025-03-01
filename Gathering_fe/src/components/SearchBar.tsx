@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { searchPosting, getAllPosting } from '@/services/postApi';
 import { approxPostInfo } from '@/types/post';
 
@@ -13,6 +13,7 @@ const searchOptions = [
 ];
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [keyword, setKeyword] = useState('');
   const [searchType, setSearchType] = useState('TITLE');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -42,13 +43,29 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     return () => clearTimeout(delayDebounceFn);
   }, [keyword, searchType, onSearch]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <form className="max-w-lg w-full">
       <div className="flex">
         {/* 드롭다운 버튼 */}
         <button
           type="button"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          onClick={e => {
+            e.stopPropagation();
+            setIsDropdownOpen(!isDropdownOpen);
+          }}
           className="shrink-0 z-10 w-[120px] inline-flex items-center justify-between py-2.5 px-4 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
         >
           {searchOptions.find(option => option.value === searchType)?.label || '옵션 선택'}
@@ -70,7 +87,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
         {/* 드롭다운 메뉴 */}
         {isDropdownOpen && (
-          <div className="absolute mt-12 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-10">
+          <div
+            ref={dropdownRef}
+            className="absolute mt-12 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-10"
+          >
             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
               {searchOptions.map((option, index) => (
                 <li key={index}>
