@@ -8,6 +8,8 @@ import MultiLevelDropdown from '@/components/MultiLevelDropdown';
 import { stackData } from '@/utils/stack-data';
 import { positionData } from '@/utils/position-data';
 import FilteringButton from '@/components/FilteringButton';
+import eye from '@/assets/otherIcons/eye.png';
+import heart from '@/assets/otherIcons/heart.png';
 
 interface DropdownDispatchContextType {
   setSelectedStack: (value: string) => void;
@@ -99,7 +101,7 @@ const PostHome: React.FC = () => {
 
   return (
     <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
-      <div className="mx-24 space-y-6">
+      <div className="mx-28 space-y-6">
         <div className="flex justify-between items-center">
           <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
           <div className="flex justify-end w-[600px]">
@@ -107,7 +109,7 @@ const PostHome: React.FC = () => {
           </div>
         </div>
         <div className="flex justify-between items-center relative">
-          <section className="text-[16px] font-bold space-x-8 text-[#B4B4B4] pb-4 z-10">
+          <section className="flex text-[16px] font-bold space-x-8 text-[#B4B4B4] pb-4 z-10">
             <MultiLevelDropdown
               menuData={stackData}
               label="기술 스택"
@@ -124,11 +126,13 @@ const PostHome: React.FC = () => {
               title="관심글 모아보기"
               option={showInterested}
               onClick={() => setShowInterested(prev => !prev)}
+              icon={<img src={heart} alt="Heart" className="w-5 h-5" />}
             />
             <FilteringButton
               title="모집완료 제외하기"
               option={hideClosed}
               onClick={() => setHideClosed(prev => !prev)}
+              icon={<img src={eye} alt="Eye" className="w-5 h-5" />}
             />
           </section>
           {/* 드롭다운 버튼 */}
