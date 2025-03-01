@@ -106,6 +106,18 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProjectSimpleResponse> getProjectsByNickname(String nickname) {
+        Long currentUserId = getCurrentUserId();
+        List<Project> projects = projectRepository.findAllByProfileNickname(nickname);
+
+        return projects.stream()
+                .map(project -> {
+                    boolean isInterested = (currentUserId != null) && isUserInterestedInProject(currentUserId, project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested);
+                })
+                .collect(Collectors.toList());
+    }
+
     public List<ProjectSimpleResponse> searchProjects(SearchType searchType, String keyword) {
         Long currentUserId = getCurrentUserId();
         List<Project> projects;

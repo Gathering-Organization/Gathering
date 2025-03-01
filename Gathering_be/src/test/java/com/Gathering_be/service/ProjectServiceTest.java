@@ -124,6 +124,25 @@ class ProjectServiceTest {
         }
 
         @Test
+        @DisplayName("닉네임으로 프로젝트 목록 조회 성공")
+        void getProjectsByNickname_Success() {
+            // given
+            String nickname = "owner_nickname";
+            given(projectRepository.findAllByProfileNickname(nickname)).willReturn(List.of(testData.getProject()));
+            given(interestProjectRepository.existsByProfileIdAndProjectId(testData.owner.getId(), testData.getProject().getId()))
+                    .willReturn(true);
+            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.owner));
+
+            // when
+            List<ProjectSimpleResponse> result = projectService.getProjectsByNickname(nickname);
+
+            // then
+            assertThat(result).hasSize(1);
+            assertThat(result.get(0).getTitle()).isEqualTo("Test Project");
+            assertThat(result.get(0).isInterested()).isTrue();
+        }
+
+        @Test
         @DisplayName("존재하지 않는 프로젝트 조회시 예외 발생")
         void getProjectById_NotFound_ThrowsException() {
             // given

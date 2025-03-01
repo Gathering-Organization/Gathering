@@ -57,9 +57,9 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    @DisplayName("프로필 id로 등록한 모든 프로젝트들 조회 성공.")
-    void findProjectsByProfileIdTest() {
-        List<Project> projects = projectRepository.findProjectsByProfileId(owner.getId());
+    @DisplayName("프로필 닉네임으로 등록한 모든 프로젝트들 조회 성공.")
+    void findAllByProfileNicknameTest() {
+        List<Project> projects = projectRepository.findAllByProfileNickname(owner.getNickname());
 
         assertThat(projects.size()).isEqualTo(2);
         assertThat(projects.contains(project1)).isTrue();
