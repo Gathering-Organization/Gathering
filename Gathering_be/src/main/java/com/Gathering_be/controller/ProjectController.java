@@ -33,8 +33,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<ResultResponse> getAllProjects() {
-        List<ProjectSimpleResponse> projects = projectService.getAllProjects();
+    public ResponseEntity<ResultResponse> getAllProjects(@RequestParam(defaultValue = "1") int page) {
+        List<ProjectSimpleResponse> projects = projectService.getAllProjects(page, 20);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
