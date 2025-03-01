@@ -38,6 +38,12 @@ public class ProjectController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
+    @GetMapping("/nickname/{nickname}")
+    public ResponseEntity<ResultResponse> getProjectsByNickname(@PathVariable String nickname) {
+        List<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ResultResponse> updateProject(@PathVariable Long id,
                                                         @RequestBody ProjectUpdateRequest request) {
