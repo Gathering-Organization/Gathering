@@ -26,6 +26,7 @@ public enum ErrorCode {
     SOCIAL_MEMBER_LOGIN(400, "AU006", "소셜 로그인으로 가입된 계정입니다. 해당 소셜 로그인을 이용해주세요."),
     UNAUTHORIZED_ACCESS(403, "AU007", "해당 리소스에 대한 접근 권한이 없습니다."),
     INVALID_VERIFICATION_CODE(400, "AU008", "올바르지 않은 인증 코드입니다."),
+    EMAIL_NOT_VERIFIED(400, "AU009", "이메일 인증이 완료되지 않았습니다."),
 
     // Member
     MEMBER_NOT_FOUND(404, "M001", "존재하지 않는 유저입니다."),

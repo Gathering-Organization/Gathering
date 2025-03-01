@@ -39,14 +39,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ResultResponse> signUp(@Valid @RequestBody SignUpRequest request) {
-        authService.verifyCodeAndSignUp(request);
+        authService.signUp(request);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SIGNUP_SUCCESS));
-    }
-
-    @PostMapping("/verify/send")
-    public ResponseEntity<ResultResponse> sendVerification(@RequestParam String email) {
-        emailVerificationService.sendVerificationCode(email);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.EMAIL_SENT_SUCCESS));
     }
 
     @PostMapping("/login")

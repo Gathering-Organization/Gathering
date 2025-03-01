@@ -1,5 +1,8 @@
 package com.Gathering_be.service;
 
+import com.Gathering_be.exception.DuplicateEmailException;
+import com.Gathering_be.exception.InvalidVerificationCodeException;
+import com.Gathering_be.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,6 +13,7 @@ import java.time.Duration;
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationService {
+    private final MemberRepository memberRepository;
     private final RedisService redisService;
     private final JavaMailSender javaMailSender;
 
@@ -17,6 +21,10 @@ public class EmailVerificationService {
     private final Duration EXPIRATION_TIME = Duration.ofMinutes(5);
 
     public void sendVerificationCode(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException();
+        }
+
         String verificationCode = generateCode();
         redisService.setValues(VERIFICATION_PREFIX + email, verificationCode, EXPIRATION_TIME);
         sendEmail(email, verificationCode);
@@ -24,7 +32,11 @@ public class EmailVerificationService {
 
     public boolean verifyCode(String email, String code) {
         String storedCode = redisService.getValues(VERIFICATION_PREFIX + email);
-        return storedCode != null && storedCode.equals(code);
+        if (storedCode == null || !storedCode.equals(code)) {
+            throw new InvalidVerificationCodeException();
+        }
+        redisService.setValues("verified:" + email + code, "true", Duration.ofMinutes(10));
+        return true;
     }
 
     private String generateCode() {
