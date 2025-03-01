@@ -5,6 +5,7 @@ import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.global.enums.*;
+import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.service.ProjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,6 +110,25 @@ class ProjectControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.title").value("Sample Project"));
+    }
+
+    @Test
+    @DisplayName("닉네임으로 프로젝트 목록 조회 성공")
+    void getProjectsByNickname_Success() throws Exception {
+        String nickname = "최보근";
+        List<ProjectSimpleResponse> responses = List.of(
+                ProjectSimpleResponse.builder().title("Project 1").build(),
+                ProjectSimpleResponse.builder().title("Project 2").build()
+        );
+
+        given(projectService.getProjectsByNickname(nickname)).willReturn(responses);
+
+                mockMvc.perform(get("/api/project/nickname/{nickname}", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(ResultCode.PROJECT_READ_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.message").value(ResultCode.PROJECT_READ_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.data").isArray());
     }
 
     @Test
