@@ -4,6 +4,7 @@ import { partPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
+import Spinner from '@/components/Spinner';
 
 const ViewPost: React.FC = () => {
   const [post, setPost] = useState<partPostInfo | null>(null);
@@ -32,14 +33,12 @@ const ViewPost: React.FC = () => {
           getPartPosting(Number(params.id))
         ]);
 
-        // 프로필 정보 설정
         if (profileResult?.success) {
           setUserNickname(profileResult.data.nickname);
         } else {
           alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
         }
 
-        // 모집글 정보 설정
         if (postResult?.success) {
           setPost(postResult.data);
         } else {
@@ -51,13 +50,21 @@ const ViewPost: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [params.id]);
 
   return (
-    <div className="pb-10">
-      {post ? <Viewer data={post} /> : <p>로딩 중...</p>}
+    <div className="flex flex-col min-h-screen pb-10">
+      <div className="flex-grow">
+        {post ? (
+          <Viewer data={post} />
+        ) : (
+          <div className="min-h-[600px] flex items-center justify-center">
+            <Spinner />
+          </div>
+        )}
+      </div>
       {post?.authorNickname === userNickname && (
-        <section className="grid grid-cols-2 gap-4">
+        <section className="grid grid-cols-2 gap-4 mt-4">
           <button
             onClick={onClickUpdate}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
