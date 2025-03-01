@@ -1,11 +1,16 @@
 import { partPostInfo } from '@/types/post';
 import { getStringedDate } from '@/utils/get-stringed-date';
 import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { positionData } from '@/utils/position-data';
 import { getStackImage } from '@/utils/get-stack-image';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import OtherUserProfileModal from './OtherUserProfileModal';
 import { getUserProfile } from '@/services/profileApi';
+import deleteButton from '@/assets/otherIcons/post_delete_button.png';
+import editButton from '@/assets/otherIcons/post_edit_button.png';
+import { useProfile } from '@/hooks/ProfileStateContext';
+import { deletePosting } from '@/services/postApi';
 
 interface Position {
   id: string;
@@ -13,6 +18,10 @@ interface Position {
 }
 
 const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
+  const { myProfile, isMyProfileLoading } = useProfile();
+  const params = useParams();
+  const nav = useNavigate();
+  const userNickname = myProfile?.nickname;
   const [positionList] = useState<Position[]>([...positionData]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { profile, isLoading, error } = useOtherProfile(data?.authorNickname ?? null);
@@ -55,6 +64,19 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
+  const onClickDelete = () => {
+    if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
+      deletePosting(Number(params.id));
+      nav('/', { replace: true });
+    }
+  };
+
+  const onClickUpdate = () => {
+    if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
+      nav(`/postEdit/${params.id}`);
+    }
+  };
+
   const openTeamMemberModal = (nickname: string) => {
     setSelectedTeamMember(nickname);
   };
@@ -64,7 +86,6 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
 
   if (!data) return <p>데이터를 불러오는 중...</p>;
 
-  // if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   const parts = data.authorNickname.split(/(#\d+)/);
@@ -72,8 +93,24 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   return (
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
-        <div className="flex items-center">
+        <div className="flex items-center justify-between">
           <button className="block text-[36px] font-[1000] mb-20 px-6">{data.title}</button>
+          {data?.authorNickname === userNickname && (
+            <section className="flex gap-4 mb-20 items-center px-6">
+              <button
+                onClick={onClickUpdate}
+                className="w-[50px] h-[50px] duration-200 ease-in-out hover:scale-110"
+              >
+                <img src={editButton} alt="edit" className="" />
+              </button>
+              <button
+                onClick={onClickDelete}
+                className="w-[50px] h-[50px] duration-200 ease-in-out hover:scale-110"
+              >
+                <img src={deleteButton} alt="delete" className="" />
+              </button>
+            </section>
+          )}
         </div>
 
         <div className="flex items-center justify-between p-4 mb-4">
@@ -139,8 +176,6 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
                 </button>
               ))}
             </div>
-            {/* <div className="w-28">팀원 태그</div>
-            <label className="block text-[#000000]/50">{data.teams.join(', ')}</label> */}
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">예상 기간</div>

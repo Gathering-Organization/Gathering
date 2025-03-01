@@ -283,6 +283,7 @@ const PostEdit: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">모집 분야</label>
         <MultiSelection
+          title="포지션 선택"
           options={positionList.map(pos => pos.title)}
           selectedOptions={selectedPositions.map(
             id => positionList.find(pos => pos.id === id)?.title || ''
@@ -300,6 +301,7 @@ const PostEdit: React.FC = () => {
       <section className="bg-white p-6 rounded-lg shadow mb-4">
         <label className="block font-semibold mb-2">사용 스택</label>
         <MultiSelection
+          title="사용 스택 선택"
           options={stackList.map(tech => tech.title)}
           selectedOptions={selectedStacks.map(
             id => stackList.find(tech => tech.id === id)?.title || ''

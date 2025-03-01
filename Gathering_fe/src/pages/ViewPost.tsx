@@ -5,6 +5,8 @@ import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
 import Spinner from '@/components/Spinner';
+import deleteButton from '@/assets/otherIcons/post_delete_button.png';
+import editButton from '@/assets/otherIcons/post_edit_button.png';
 
 const ViewPost: React.FC = () => {
   const [post, setPost] = useState<partPostInfo | null>(null);
@@ -63,22 +65,16 @@ const ViewPost: React.FC = () => {
           </div>
         )}
       </div>
-      {post?.authorNickname === userNickname && (
-        <section className="grid grid-cols-2 gap-4 mt-4">
-          <button
-            onClick={onClickUpdate}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            수정하기
+      {/* {post?.authorNickname === userNickname && (
+        <section className="flex gap-4 mt-4 justify-center">
+          <button onClick={onClickUpdate} className="duration-200 ease-in-out hover:scale-110">
+            <img src={editButton} alt="edit" className="" />
           </button>
-          <button
-            onClick={onClickDelete}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            삭제하기
+          <button onClick={onClickDelete} className="duration-200 ease-in-out hover:scale-110">
+            <img src={deleteButton} alt="delete" className="" />
           </button>
         </section>
-      )}
+      )} */}
     </div>
   );
 };

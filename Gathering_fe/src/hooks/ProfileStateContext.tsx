@@ -5,15 +5,15 @@ import { Portfolio } from '@/types/profile';
 import { WorkExperience } from '@/types/profile';
 
 interface ProfileContextType {
-  profile: ProfileAllInfo;
-  isLoading: boolean;
+  myProfile: ProfileAllInfo;
+  isMyProfileLoading: boolean;
   updateProfileData: (updatedData: Partial<ProfileAllInfo>) => void;
 }
 
 export const ProfileStateContext = createContext<ProfileContextType | null>(null);
 
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [profile, setProfile] = useState<ProfileAllInfo>({
+  const [myProfile, setProfile] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',
     organization: '',
@@ -23,7 +23,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     portfolio: null,
     workExperiences: []
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isMyProfileLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchProfile = async () => {
     try {
@@ -57,8 +57,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const value = useMemo(
-    () => ({ profile, isLoading, updateProfileData }),
-    [profile, isLoading, updateProfileData]
+    () => ({ myProfile, isMyProfileLoading, updateProfileData }),
+    [myProfile, isMyProfileLoading, updateProfileData]
   );
 
   return <ProfileStateContext.Provider value={value}>{children}</ProfileStateContext.Provider>;
