@@ -1,6 +1,6 @@
+import { useCallback, useState, useEffect, createContext } from 'react';
 import PostList from '@/components/PostList';
 import { getAllPosting } from '@/services/postApi';
-import { useState, useEffect, createContext } from 'react';
 import { approxPostInfo } from '@/types/post';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import SearchBar from '@/components/SearchBar';
@@ -31,7 +31,6 @@ const PostHome: React.FC = () => {
       return false;
     if (showInterested && !p.interested) return false;
     if (hideClosed && p.closed) return false;
-
     return true;
   });
 
@@ -61,13 +60,17 @@ const PostHome: React.FC = () => {
     getAllPost();
   }, []);
 
+  const handleSearch = useCallback((data: approxPostInfo[]) => {
+    setPost(data);
+  }, []);
+
   return (
     <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
       <div className="mx-24 space-y-6">
         <div className="flex justify-between items-center">
           <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
-          <div className="flex justify-end">
-            <SearchBar />
+          <div className="flex justify-end w-[600px]">
+            <SearchBar onSearch={handleSearch} />
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -84,7 +87,6 @@ const PostHome: React.FC = () => {
               align="left"
               buttonClassName="custom-button-class"
             />
-
             <FilteringButton
               title="관심글 모아보기"
               option={showInterested}

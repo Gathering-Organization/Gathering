@@ -128,7 +128,10 @@ const PostItem: React.FC<
 
         <section className="px-8">
           <div className="w-[110px] bg-[#3387E5] rounded-b-[20px] justify-items-center">
-            <div className="font-semibold py-2 text-[#FFFFFF] items-center text-[20px]">
+            <div
+              className="font-semibold py-2 text-[#FFFFFF] items-center text-[20px]"
+              style={{ willChange: 'transform' }}
+            >
               {projectEachType.map(item =>
                 item.projectType === projectType ? item.projectTypeName : ''
               )}
