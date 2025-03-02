@@ -4,6 +4,7 @@ import { partPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
+import ApplyModal from '@/components/ApplyModal';
 
 const ViewPost: React.FC = () => {
   const [post, setPost] = useState<partPostInfo | null>(null);
@@ -56,7 +57,8 @@ const ViewPost: React.FC = () => {
   return (
     <div className="pb-10">
       {post ? <Viewer data={post} /> : <p>로딩 중...</p>}
-      {post?.authorNickname === userNickname && (
+      <ApplyModal />
+      {/* {post?.authorNickname === userNickname && (
         <section className="grid grid-cols-2 gap-4">
           <button
             onClick={onClickUpdate}
@@ -71,7 +73,7 @@ const ViewPost: React.FC = () => {
             삭제하기
           </button>
         </section>
-      )}
+      )} */}
     </div>
   );
 };
