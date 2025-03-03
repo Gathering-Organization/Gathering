@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 const ApplyModal: React.FC = () => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
     projectId: Number(params.id),
     position: '',
@@ -106,9 +107,7 @@ const ApplyModal: React.FC = () => {
               <div className="p-6 md:p-7">
                 <form className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <label className="w-36 font-semibold text-gray-700 dark:text-white">
-                      지원 포지션
-                    </label>
+                    <label className="w-36 font-semibold dark:text-white">지원 포지션</label>
                     <div className="flex-1">
                       <MultiLevelDropdown
                         menuData={positionData}
@@ -129,6 +128,21 @@ const ApplyModal: React.FC = () => {
                       className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 resize-none focus:outline-none"
                     ></textarea>
                   </section>
+                  <div className="flex items-center justify-end mb-4">
+                    <input
+                      id="default-checkbox"
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={e => setIsChecked(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label
+                      htmlFor="default-checkbox"
+                      className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >
+                      지원서를 제출한 이후에는 내용을 수정할 수 없습니다.
+                    </label>
+                  </div>
                   <button
                     onClick={handleViewApplication}
                     type="button"
@@ -139,7 +153,12 @@ const ApplyModal: React.FC = () => {
                   <button
                     onClick={handleSubmit}
                     type="button"
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    disabled={!isChecked}
+                    className={`w-full text-white font-medium rounded-lg text-sm px-6 py-3 text-center focus:ring-4 focus:outline-none ${
+                      isChecked
+                        ? 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+                        : 'bg-gray-400 cursor-not-allowed'
+                    }`}
                   >
                     제출하기
                   </button>
