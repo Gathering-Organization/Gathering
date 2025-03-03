@@ -103,3 +103,23 @@ export const deletePosting = async (id: number) => {
     throw error;
   }
 };
+
+export const getMyProject = async (nickname: string) => {
+  try {
+    const response = await api.get(`/project/nickname/${nickname}`);
+
+    console.log('응답 데이터:', response.data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message, data: response.data.data };
+    }
+  } catch (error: unknown) {
+    console.error('내 모집글 조회 실패:', error);
+
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
