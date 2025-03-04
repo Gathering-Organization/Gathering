@@ -38,6 +38,23 @@ public class ProjectController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
+    @GetMapping("/pagination")
+    public ResponseEntity<ResultResponse> getAllProjects(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "createdAt") String sort,
+                                                         @RequestParam(defaultValue = "ALL") String position,
+                                                         @RequestParam(defaultValue = "") String techStack,
+                                                         @RequestParam(defaultValue = "ALL") String type,
+                                                         @RequestParam(defaultValue = "ALL") String mode,
+                                                         @RequestParam(defaultValue = "false") boolean isClosed,
+                                                         @RequestParam(required = false) SearchType searchType,
+                                                         @RequestParam(required = false, defaultValue = "") String keyword
+    ) {
+        List<ProjectSimpleResponse> projects = projectService.searchProjectsWithFilters(page, 20, sort, position, techStack, type, mode, isClosed, searchType, keyword);
+
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
+    }
+
+
     @GetMapping("/nickname/{nickname}")
     public ResponseEntity<ResultResponse> getProjectsByNickname(@PathVariable String nickname) {
         List<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname);
@@ -51,7 +68,7 @@ public class ProjectController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_UPDATE_SUCCESS));
     }
 
-    @PutMapping("/recruitment/{id}")
+    @PutMapping("/toggle/recruitment/{id}")
     public ResponseEntity<ResultResponse> toggleProfileVisibility(@PathVariable Long id) {
         projectService.toggleProjectRecruitment(id);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_VISIBILITY_UPDATE_SUCCESS));

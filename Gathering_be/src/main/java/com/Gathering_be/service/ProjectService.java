@@ -7,11 +7,8 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
-import com.Gathering_be.exception.InvalidSearchTypeException;
-import com.Gathering_be.exception.ProfileNotFoundException;
-import com.Gathering_be.exception.ProjectNotFoundException;
-import com.Gathering_be.exception.UnauthorizedAccessException;
-import com.Gathering_be.global.enums.SearchType;
+import com.Gathering_be.exception.*;
+import com.Gathering_be.global.enums.*;
 import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
@@ -19,11 +16,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,6 +111,39 @@ public class ProjectService {
                 .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
+
+    //////////////////////////
+    public List<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,
+                                                                 String techStack, String type, String mode, boolean isClosed,
+                                                                 SearchType searchType, String keyword) {
+        Long currentUserId = getCurrentUserId();
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(
+                sort.equals("-createdAt") ? Sort.Order.desc("createdAt") : Sort.Order.asc("viewCount")
+        ));
+
+        JobPosition positionEnum = parseEnum(JobPosition.class, position);
+        ProjectType typeEnum = parseEnum(ProjectType.class, type);
+        ProjectMode modeEnum = parseEnum(ProjectMode.class, mode);
+        List<TechStack> techStacks = (techStack != null && !techStack.isEmpty())
+                ? Arrays.stream(techStack.split(",")).map(TechStack::valueOf).collect(Collectors.toList())
+                : null;
+
+        Page<Project> projectPage = projectRepository.searchProjectsWithFilters(pageable, positionEnum, techStacks,
+                typeEnum, modeEnum, isClosed, searchType, keyword);
+
+        Set<Long> interestedProjectIds = (currentUserId != null)
+                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
+                .stream()
+                .map(interest -> interest.getProject().getId())
+                .collect(Collectors.toSet())
+                : Set.of();
+
+        return projectPage.getContent().stream()
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
+                .collect(Collectors.toList());
+    }
+    //////////////////////////
 
     public List<ProjectSimpleResponse> getProjectsByNickname(String nickname) {
         Long currentUserId = getCurrentUserId();
@@ -235,6 +267,17 @@ public class ProjectService {
             projectRepository.save(project);
 
             redisService.setValues(redisKey, "viewed", Duration.ofSeconds(1));
+        }
+    }
+
+    private <E extends Enum<E>> E parseEnum(Class<E> enumClass, String value) {
+        if (value == null || "ALL".equalsIgnoreCase(value)) {
+            return null;
+        }
+        try {
+            return Enum.valueOf(enumClass, value);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidEnumValue();
         }
     }
 }
