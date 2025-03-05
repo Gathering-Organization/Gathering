@@ -261,15 +261,15 @@ const Profile: React.FC = () => {
     setWorkExperiences(prev => prev.filter((_, i) => i !== index));
   };
 
-  const { profile, isLoading } = useProfile();
+  const { myProfile, isMyProfileLoading } = useProfile();
   useEffect(() => {
-    if (profile) {
-      setInfo(profile);
-      setIsPublic(profile.public);
+    if (myProfile) {
+      setInfo(myProfile);
+      setIsPublic(myProfile.public);
     }
-  }, [profile, isPublic]);
+  }, [myProfile, isPublic]);
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isMyProfileLoading) return <div>로딩 중...</div>;
   return (
     <div className="mx-60 space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">

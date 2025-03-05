@@ -17,9 +17,11 @@ export const getMyProfile = async () => {
 
 export const getUserProfile = async (nickname: string) => {
   try {
-    const response = await api.get(`/profile/nickname/${nickname}`);
+    const encodedNickname = encodeURIComponent(nickname);
+    const response = await api.get(`/profile/nickname/${encodedNickname}`);
 
     if (response.data.status === 200) {
+      console.log(response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error) {

@@ -1,8 +1,16 @@
 import { partPostInfo } from '@/types/post';
 import { getStringedDate } from '@/utils/get-stringed-date';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { positionData } from '@/utils/position-data';
 import { getStackImage } from '@/utils/get-stack-image';
+import { useOtherProfile } from '@/hooks/UseOtherProfile';
+import OtherUserProfileModal from './OtherUserProfileModal';
+import { getUserProfile } from '@/services/profileApi';
+import deleteButton from '@/assets/otherIcons/post_delete_button.png';
+import editButton from '@/assets/otherIcons/post_edit_button.png';
+import { useProfile } from '@/hooks/ProfileStateContext';
+import { deletePosting } from '@/services/postApi';
 
 interface Position {
   id: string;
@@ -10,59 +18,171 @@ interface Position {
 }
 
 const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
+  const { myProfile, isMyProfileLoading } = useProfile();
+  const params = useParams();
+  const nav = useNavigate();
+  const userNickname = myProfile?.nickname;
   const [positionList] = useState<Position[]>([...positionData]);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const { profile, isLoading, error } = useOtherProfile(data?.authorNickname ?? null);
+  const [teamProfiles, setTeamProfiles] = useState<{ [key: string]: string }>({});
+  const [selectedTeamMember, setSelectedTeamMember] = useState<string | null>(null);
+  const {
+    profile: teamMemberProfile,
+    isLoading: teamMemberLoading,
+    error: teamMemberError
+  } = useOtherProfile(selectedTeamMember);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      if (!data?.teams.length) return;
+
+      setLoading(true);
+
+      try {
+        const profilesData: { [key: string]: string } = {};
+
+        const profilePromises = data.teams.map(async member => {
+          const response = await getUserProfile(member.nickname);
+          if (response?.success) {
+            profilesData[member.nickname] = response.data.profileColor;
+          }
+        });
+
+        await Promise.all(profilePromises);
+        setTeamProfiles(profilesData);
+      } catch (error) {
+        console.error('Error fetching team profiles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfiles();
+  }, [data?.teams]);
+  const openProfileModal = () => setIsProfileModalOpen(true);
+  const closeProfileModal = () => setIsProfileModalOpen(false);
+
+  const onClickDelete = () => {
+    if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
+      deletePosting(Number(params.id));
+      nav('/', { replace: true });
+    }
+  };
+
+  const onClickUpdate = () => {
+    if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
+      nav(`/postEdit/${params.id}`);
+    }
+  };
+
+  const openTeamMemberModal = (nickname: string) => {
+    setSelectedTeamMember(nickname);
+  };
+  const closeTeamMemberModal = () => {
+    setSelectedTeamMember(null);
+  };
 
   if (!data) return <p>데이터를 불러오는 중...</p>;
+
+  if (error) return <p>{error}</p>;
+
   const parts = data.authorNickname.split(/(#\d+)/);
 
   return (
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
-        <div className="flex items-center">
-          <button className="block text-[36px] font-[1000] mb-20 px-4">{data.title}</button>
+        <div className="flex items-center justify-between">
+          <button className="block text-[36px] font-[1000] mb-20 px-6">{data.title}</button>
+          {data?.authorNickname === userNickname && (
+            <section className="flex gap-4 mb-20 items-center px-6">
+              <button
+                onClick={onClickUpdate}
+                className="w-[50px] h-[50px] duration-200 ease-in-out hover:scale-110"
+              >
+                <img src={editButton} alt="edit" className="" />
+              </button>
+              <button
+                onClick={onClickDelete}
+                className="w-[50px] h-[50px] duration-200 ease-in-out hover:scale-110"
+              >
+                <img src={deleteButton} alt="delete" className="" />
+              </button>
+            </section>
+          )}
         </div>
 
-        <div className="flex items-center mb-4 px-4">
-          <label className="block font-bold text-[20px] me-6">{parts[0]}</label>
-          <div className="flex p-2 space-x-4 text-[#000000]/50">
-            <label className="block font-semibold">
-              생성일 : {getStringedDate(data.createdAt)}
-            </label>
-            <label className="block font-semibold">
-              최종 수정일 : {getStringedDate(data.updatedAt)}
-            </label>
-            <label className="block font-semibold">마감일 : {getStringedDate(data.deadline)}</label>
+        <div className="flex items-center justify-between p-4 mb-4">
+          <button
+            onClick={openProfileModal}
+            className="flex items-center space-x-4 hover:bg-gray-100 p-2 rounded-lg"
+          >
+            <div
+              className="w-[30px] h-[30px] rounded-full"
+              style={{ backgroundColor: `#${profile.profileColor}` }}
+            />
+            <span className="font-bold text-[20px] whitespace-nowrap">{parts[0]}</span>
+          </button>
+
+          <div className="flex space-x-4 text-[#000000]/50">
+            <span className="font-semibold">생성일: {getStringedDate(data.createdAt)}</span>
+            <span className="font-semibold">최종 수정일: {getStringedDate(data.updatedAt)}</span>
+            <span className="font-semibold">마감일: {getStringedDate(data.deadline)}</span>
           </div>
         </div>
+        <OtherUserProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={closeProfileModal}
+          profile={profile}
+        />
         <hr className="w-full justify-self-center border-[#000000]/60" />
 
         <div className="grid grid-cols-2 gap-6 py-10 mb-4 px-4">
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">모집 구분</div>
+            <div className="w-28">모집 구분</div>
             <label className="block text-[#000000]/50">{data.projectType}</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">진행 방식</div>
+            <div className="w-28">진행 방식</div>
             <label className="block text-[#000000]/50">{data.projectMode}</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">모집 인원</div>
+            <div className="w-28">모집 인원</div>
             <label className="block text-[#000000]/50">{data.totalMembers}</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">시작 예정</div>
+            <div className="w-28">시작 예정</div>
             <label className="block text-[#000000]/50">{data.startDate}</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">팀원 태그</div>
-            <label className="block text-[#000000]/50">{data.teams.join(', ')}</label>
+            <div className="w-28">팀원 태그</div>
+            <div className="flex flex-wrap gap-2">
+              {data.teams.map((teamNickname, index) => (
+                <button
+                  key={index}
+                  onClick={() => openTeamMemberModal(teamNickname.nickname)}
+                  className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg"
+                >
+                  <div
+                    className="w-[20px] h-[20px] rounded-full"
+                    style={{
+                      backgroundColor: `#${teamProfiles[teamNickname.nickname] || ''}`
+                    }}
+                  />
+                  <span className="font-bold text-[14px] whitespace-nowrap">
+                    {teamNickname.nickname.split(/(#\d+)/)[0]}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">예상 기간</div>
+            <div className="w-28">예상 기간</div>
             <label className="block text-[#000000]/50">{data.startDate}</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">모집 포지션</div>
+            <div className="w-28">모집 포지션</div>
             <div className="flex flex-wrap gap-2">
               {data.requiredPositions.map((positionId, index) => {
                 const positionTitle =
@@ -102,6 +222,11 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
         <hr className="w-full justify-self-center border-[#000000]/60 py-4" />
         <label className="block px-4">{data.description}</label>
       </section>
+      <OtherUserProfileModal
+        isOpen={!!selectedTeamMember}
+        onClose={closeTeamMemberModal}
+        profile={teamMemberProfile}
+      />
     </div>
   );
 };
