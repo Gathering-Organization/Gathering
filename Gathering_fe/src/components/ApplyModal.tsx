@@ -53,6 +53,7 @@ const ApplyModal: React.FC = () => {
   };
 
   const handleViewApplication = () => {
+    localStorage.setItem('applyInfo', JSON.stringify(applyInfo));
     window.open('/apply/view', '_blank');
   };
 
