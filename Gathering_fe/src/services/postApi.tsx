@@ -104,9 +104,14 @@ export const deletePosting = async (id: number) => {
   }
 };
 
-export const getMyProject = async (nickname: string) => {
+export const searchPosting = async (searchType: string, keyword: string) => {
   try {
-    const response = await api.get(`/project/nickname/${nickname}`);
+    const encodedSearchType = encodeURIComponent(searchType);
+    const encodedKeyword = encodeURIComponent(keyword);
+
+    const response = await api.get(
+      `/project/search?searchType=${encodedSearchType}&keyword=${encodedKeyword}`
+    );
 
     console.log('응답 데이터:', response.data);
 
@@ -114,7 +119,7 @@ export const getMyProject = async (nickname: string) => {
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error: unknown) {
-    console.error('내 모집글 조회 실패:', error);
+    console.error('모집글 검색 실패:', error);
 
     if (error instanceof AxiosError) {
       console.error('서버 응답:', error.response?.data);

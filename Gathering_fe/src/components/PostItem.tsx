@@ -8,6 +8,7 @@ import { ProfileInfo } from '@/types/profile';
 import { projectType as projectEachType } from '@/utils/project-type';
 import { positionData } from '@/utils/position-data';
 import { setInterest } from '@/services/interestApi';
+import eye from '@/assets/otherIcons/eye.png';
 
 interface Position {
   id: string;
@@ -27,7 +28,8 @@ const PostItem: React.FC<
   deadline,
   techStacks,
   onInterestToggle,
-  requiredPositions
+  requiredPositions,
+  viewCount
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
@@ -95,6 +97,7 @@ const PostItem: React.FC<
       alert('관심글 설정에 실패했습니다.');
     }
   };
+  const parts = authorNickname.split(/(#\d+)/);
   return (
     <div
       onClick={() => nav(`/viewPost/${projectId}`)}
@@ -127,7 +130,10 @@ const PostItem: React.FC<
 
         <section className="px-8">
           <div className="w-[110px] bg-[#3387E5] rounded-b-[20px] justify-items-center">
-            <div className="font-semibold py-2 text-[#FFFFFF] items-center text-[20px]">
+            <div
+              className="font-semibold py-2 text-[#FFFFFF] items-center text-[20px]"
+              style={{ willChange: 'transform' }}
+            >
               {projectEachType.map(item =>
                 item.projectType === projectType ? item.projectTypeName : ''
               )}
@@ -181,9 +187,14 @@ const PostItem: React.FC<
               className="w-8 h-8 rounded-[30px]"
               style={{ backgroundColor: `#${info.profileColor}` }}
             ></div>
-            <div>{authorNickname}</div>
+            <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>
-          <div className="font-semibold p-4">클릭수</div>
+          <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4">
+            <div>
+              <img src={eye} alt="watched" className="w-[24px] h-[24px]" />
+            </div>
+            <div>{viewCount}</div>
+          </div>
         </section>
       </section>
     </div>

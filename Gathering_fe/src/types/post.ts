@@ -60,6 +60,7 @@ export interface approxPostInfo {
   deadline: string;
   techStacks: string[];
   requiredPositions: string[];
+  viewCount: number;
 }
 
 export interface partPostInfo {
