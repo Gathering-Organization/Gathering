@@ -1,0 +1,504 @@
+import {
+  deletePortfolio,
+  getMyProfile,
+  setMyProfile,
+  toggleProfileVisibility,
+  uploadPortfolio
+} from '@/services/profileApi';
+import { Portfolio, ProfileAllInfo, WorkExperience } from '@/types/profile';
+import { useEffect, useState } from 'react';
+import { useProfile } from '@/hooks/ProfileStateContext';
+import { techStacks } from '@/utils/tech-stacks';
+
+interface TechStack {
+  id: string;
+  title: string;
+}
+
+const Apply: React.FC = () => {
+  const [applyInfo, setApplyInfo] = useState({ position: '', message: '' });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<Portfolio | null>(null);
+  const [isPublic, setIsPublic] = useState<boolean>(false);
+  const [stackList] = useState<TechStack[]>([...techStacks]);
+  const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
+  const [info, setInfo] = useState<ProfileAllInfo>({
+    nickname: '',
+    introduction: '',
+    organization: '',
+    techStacks: [],
+    profileColor: '',
+    portfolio: null,
+    public: true,
+    workExperiences: []
+  });
+  const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
+  const [newExperience, setNewExperience] = useState<WorkExperience>({
+    activityName: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    techStacks: []
+  });
+  const stacks = [...techStacks];
+  const filteredStacks = stacks.filter(stack => !info.techStacks.includes(stack.title));
+
+  const handleUpdateProfile = async () => {
+    try {
+      const updatedInfo = {
+        nickname: info?.nickname || '',
+        introduction: info?.introduction || '',
+        organization: info?.organization || '',
+        techStacks: info?.techStacks || [],
+        profileColor: info.profileColor,
+        public: isPublic
+      };
+      console.log(updatedInfo, workExperiences);
+      const result = await setMyProfile(updatedInfo, workExperiences);
+
+      if (result?.success) {
+        alert('프로필 저장 성공!');
+      } else {
+        alert(result?.message || '프로필 저장 중 문제가 발생했습니다.');
+      }
+    } catch {
+      alert('프로필 저장 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleFileSelect = () => {
+    document.getElementById('fileInput')?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      setSelectedFile(file);
+      await handleUpload(file); // 파일 선택 후 바로 업로드 실행
+    }
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const result = await uploadPortfolio(formData);
+
+      if (result?.success) {
+        alert('파일 업로드 성공!');
+
+        const profileResult = await getMyProfile();
+        if (profileResult?.success) {
+          setUploadedFile(profileResult.data.portfolio);
+        } else {
+          alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
+        }
+      }
+    } catch {
+      alert('파일 업로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!uploadedFile) {
+      alert('삭제할 파일이 없습니다.');
+      return;
+    }
+
+    try {
+      const result = await deletePortfolio();
+
+      if (result?.success) {
+        alert('파일 삭제 성공!');
+        setSelectedFile(null);
+        setUploadedFile(null);
+      }
+    } catch {
+      alert('파일 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleToggle = async () => {
+    try {
+      const result = await toggleProfileVisibility();
+
+      if (result?.success) {
+        setIsPublic(prev => !prev);
+      }
+    } catch {
+      alert('프로필 공개 상태 변경 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleStackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+
+    const updatedTechStacks = [...new Set([...selectedOptions, ...info.techStacks])];
+
+    setInfo(prevInfo => ({
+      ...prevInfo,
+      techStacks: updatedTechStacks
+    }));
+
+    console.log(updatedTechStacks);
+  };
+
+  const handleStackRemove = (stack: string) => {
+    const updatedTechStacks = info.techStacks.filter(tech => tech !== stack);
+
+    setInfo(prevInfo => ({
+      ...prevInfo,
+      techStacks: updatedTechStacks
+    }));
+  };
+
+  const handleAddExperience = () => {
+    if (
+      !newExperience.activityName ||
+      !newExperience.startDate ||
+      !newExperience.endDate ||
+      !newExperience.description
+    ) {
+      alert('모든 필드를 입력해주세요.');
+      return;
+    }
+
+    setWorkExperiences(prev => [...prev, newExperience]);
+    setNewExperience({
+      activityName: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+      techStacks: []
+    });
+  };
+
+  const handleDeleteExperience = (index: number) => {
+    setWorkExperiences(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const { profile, isLoading } = useProfile();
+  useEffect(() => {
+    const stored = localStorage.getItem('applyInfo');
+    if (stored) {
+      setApplyInfo(JSON.parse(stored));
+    }
+    if (profile) {
+      console.log(profile);
+      setInfo(profile);
+    }
+  }, [profile, isPublic]);
+
+  if (isLoading) return <div>로딩 중...</div>;
+  return (
+    <div className="mx-60">
+      <div className="border-[#000000]/20 border-2 rounded-xl p-10 px-20 min-h-screen">
+        <section className="flex px-8 space-x-4 items-center">
+          <div
+            className="w-[40px] h-[40px] rounded-full"
+            style={{ backgroundColor: `#${info.profileColor}` }}
+          ></div>
+          <div className="text-[24px] font-bold">{info.nickname}님의 지원서입니다.</div>
+        </section>
+
+        <div className="mt-16 px-8 text-[28px] font-black font-inter">RESUME.</div>
+        <hr className="mt-6 w-full h-[2px] bg-[#000000]/60 border-none" />
+
+        <section className="flex space-x-12 p-8 items-center font-inter">
+          <div className="font-black text-[20px] w-[200px]">지원 포지션</div>
+          <div className="">{applyInfo.position}</div>
+        </section>
+        <hr className="w-full h-[1px] bg-[#000000]/60 border-none" />
+        <div className="">
+          <section className="flex space-x-12 p-8 items-center font-inter">
+            <div className="font-black text-[20px] w-[200px]">소속</div>
+            <div className="">{info.organization}</div>
+          </section>
+          <section className="flex space-x-12 p-8 items-center font-inter">
+            <div className="font-black text-[20px] w-[200px]">사용 기술 스택</div>
+            <div className="">{info.techStacks.join(', ')}</div>
+          </section>
+          <section className="flex space-x-12 p-8 items-start font-inter">
+            <div className="font-black text-[20px] w-[200px]">활동 내역</div>
+            <div className="flex flex-col">
+              {workExperiences.map((exp, index) => (
+                <div key={index}>
+                  {index > 0 && <hr className="w-full h-[1px] bg-[#000000]/20 border-none my-8" />}
+                  <div className="font-bold text-[20px]">
+                    {exp.activityName} ({exp.startDate} ~ {exp.endDate})
+                  </div>
+                  <div className="text-[16px] text-gray-500 mt-1">{exp.techStacks.join(', ')}</div>
+                  <div className="mt-2">{exp.description}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+          {/* <hr className="w-full h-[1px] bg-[#000000]/60 border-none" /> */}
+
+          <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
+          <section className="flex space-x-12 p-8 items-center font-inter">
+            <div className="font-black text-[20px] w-[200px]">간단 자기어필</div>
+            <div className="">{applyInfo.message}</div>
+          </section>
+          <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
+          <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
+          <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
+          <section className="p-8">포트폴리오 영역</section>
+          <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
+          <section className=" justify-self-center py-10">
+            <button className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-bold">
+              확인
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+    // <div className="mx-60 space-y-6">
+    //   <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
+    //     <section className="p-6 flex flex-col items-center text-    center">
+    //       <div
+    //         className="w-[100px] h-[100px] rounded-full mb-8"
+    //         style={{ backgroundColor: `#${info.profileColor}` }}
+    //       ></div>
+    //       <div>
+    //         <button
+    //           className="w-[50px] h-[50px] rounded-full mb-8 relative"
+    //           style={{ backgroundColor: `#${info.profileColor}` }}
+    //         ></button>
+    //         <h1 className="text-[30px] font-bold mb-8">{info.nickname}님의 지원서입니다.</h1>
+    //       </div>
+    //       <div>
+    //         <div>RESUME.</div>
+    //       </div>
+    //     </section>
+    //     <hr className="w-[2px] h-12 bg-[#000000] border-none" />
+    //     <section className="bg-white p-6 mb-4">
+    //       <div className="flex items-center justify-between mb-10">
+    //         <label htmlFor="position" className="text-[18px] font-bold">
+    //           지원 포지션
+    //         </label>
+    //         <input
+    //           id="organization"
+    //           type="text"
+    //           value={info.organization || ''}
+    //           placeholder="소속을 입력해주세요. ex) OO회사 OO 부서, OO대학교 OO학과"
+    //           onChange={e => setInfo({ ...info, organization: e.target.value })}
+    //           className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-[#000000]/20 rounded-[30px] focus:outline-none"
+    //         />
+    //       </div>
+    //       <hr className="w-[1px] h-12 bg-[#000000]/60 border-none" />
+
+    //       <div className="flex items-center justify-between">
+    //         <label htmlFor="tech-stack" className="text-[18px] font-bold">
+    //           사용 기술 스택
+    //         </label>
+    //         <div className="w-[650px]">
+    //           <MultiSelection
+    //             title="기술 스택을 선택하세요."
+    //             options={stackList.map(tech => tech.title)}
+    //             selectedOptions={selectedStacks.map(
+    //               id => stackList.find(tech => tech.id === id)?.title || ''
+    //             )}
+    //             setSelectedOptions={selectedTechs => {
+    //               const selectedIds = stackList
+    //                 .filter(tech => selectedTechs.includes(tech.title))
+    //                 .map(tech => tech.id);
+    //               setSelectedStacks(selectedIds);
+    //             }}
+    //           />
+    //         </div>
+    //       </div>
+    //     </section>
+
+    //     <section className="bg-white p-6 mb-4">
+    //       <div className="flex items-center justify-between mb-10">
+    //         <h3 className="text-lg font-semibold">활동 경력</h3>
+    //         <WorkExperienceModal />
+    //       </div>
+
+    //       <div className="space-y-4">
+    //         {workExperiences.map((experience, index) => (
+    //           <div key={index} className="flex justify-between items-center border-b pb-2">
+    //             <div>
+    //               <p className="font-semibold">{experience.activityName}</p>
+    //               <p className="text-sm text-gray-600">
+    //                 활동일 | {experience.startDate} ~ {experience.endDate}
+    //               </p>
+    //             </div>
+    //             <button
+    //               onClick={() => handleDeleteExperience(index)}
+    //               className="text-red-500 hover:text-red-600"
+    //             >
+    //               삭제
+    //             </button>
+    //           </div>
+    //         ))}
+    //       </div>
+    //       <div className="mt-4 space-y-2">
+    //         <input
+    //           type="text"
+    //           placeholder="활동 제목"
+    //           value={newExperience.activityName}
+    //           onChange={e => setNewExperience({ ...newExperience, activityName: e.target.value })}
+    //           className="border rounded w-full p-2"
+    //         />
+    //         <div className="flex space-x-2">
+    //           <input
+    //             type="date"
+    //             value={newExperience.startDate}
+    //             onChange={e => setNewExperience({ ...newExperience, startDate: e.target.value })}
+    //             className="border rounded w-full p-2"
+    //           />
+    //           <input
+    //             type="date"
+    //             value={newExperience.endDate}
+    //             onChange={e => setNewExperience({ ...newExperience, endDate: e.target.value })}
+    //             className="border rounded w-full p-2"
+    //           />
+    //         </div>
+    //         <input
+    //           type="text"
+    //           placeholder="세부설명"
+    //           value={newExperience.description}
+    //           onChange={e => setNewExperience({ ...newExperience, description: e.target.value })}
+    //           className="border rounded w-full p-2"
+    //         />
+    //       </div>
+    //     </section>
+
+    //     <section className="bg-white p-6 mb-4">
+    //       <h3 className="text-lg font-semibold mb-4">간단 자기소개</h3>
+    //       <textarea
+    //         value={info.introduction || ''}
+    //         placeholder="300자 이내로 자신을 소개해 보세요!"
+    //         onChange={e => setInfo({ ...info, introduction: e.target.value })}
+    //         className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none"
+    //       ></textarea>
+    //     </section>
+    //     <section className="bg-white p-6">
+    //       <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
+    //       <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
+    //         <div className="w-[600px]">
+    //           {uploadedFile ? (
+    //             <a
+    //               href={uploadedFile.url}
+    //               download={uploadedFile.fileName}
+    //               className="font-semibold text-blue-500 hover:underline ml-4"
+    //             >
+    //               {uploadedFile.fileName}
+    //             </a>
+    //           ) : (
+    //             <span className="text-gray-500 ml-4">선택된 파일 없음</span>
+    //           )}
+    //         </div>
+    //         <input
+    //           id="fileInput"
+    //           type="file"
+    //           accept=".pdf"
+    //           onChange={handleFileChange}
+    //           className="hidden"
+    //         />
+
+    //         <div className="flex space-x-4">
+    //           <button
+    //             onClick={handleFileSelect}
+    //             className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600"
+    //           >
+    //             업로드
+    //           </button>
+
+    //           <button
+    //             onClick={handleDelete}
+    //             disabled={!uploadedFile}
+    //             className={`text-[12px] font-bold px-6 py-2 rounded-[20px] ${
+    //               uploadedFile
+    //                 ? 'bg-[#F24E1E] text-white hover:bg-red-600'
+    //                 : 'bg-gray-300 text-gray-500'
+    //             }`}
+    //           >
+    //             삭제
+    //           </button>
+    //         </div>
+    //       </div>
+    //     </section>
+    //     <section className="mt-20 p-6 flex flex-col items-center text-center">
+    //       <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
+
+    //       <div className="self-end space-x-2 inline-flex items-center cursor-pointer">
+    //         <span className="ms-3 text-sm font-semibold text-[#B4B4B4] dark:text-gray-300">
+    //           상세 프로필 공개 여부
+    //         </span>
+    //         <label className="inline-flex items-center cursor-pointer">
+    //           <input
+    //             type="checkbox"
+    //             checked={isPublic}
+    //             onChange={handleToggle}
+    //             value=""
+    //             className="sr-only peer"
+    //           />
+
+    //           <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+    //         </label>
+    //       </div>
+    //     </section>
+    //     <section className="bg-white p-6">
+    //       <h3 className="text-lg font-semibold mb-4">모집 현황</h3>
+    //       <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px]">16</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
+    //         </div>
+
+    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px]">10</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
+    //         </div>
+
+    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px]">6</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
+    //         </div>
+    //       </div>
+    //     </section>
+    //     <section className="bg-white p-6">
+    //       <h3 className="text-lg font-semibold mb-4">지원 현황</h3>
+    //       <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px]">16</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
+    //         </div>
+
+    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px]">10</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
+    //         </div>
+
+    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px] text-[#3387E5]">6</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">승인</div>
+    //         </div>
+    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
+
+    //         <div className="flex flex-col items-center">
+    //           <div className="font-bold text-[20px] text-[#F24E1E]">6</div>
+    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">거절</div>
+    //         </div>
+    //       </div>
+    //     </section>
+    //   </div>
+    // </div>
+  );
+};
+
+export default Apply;
