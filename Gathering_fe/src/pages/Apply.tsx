@@ -7,7 +7,7 @@ import {
 } from '@/services/profileApi';
 import { Portfolio, ProfileAllInfo, WorkExperience } from '@/types/profile';
 import { useEffect, useState } from 'react';
-import { useProfile } from '@/hooks/ProfileStateContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
 
 interface TechStack {

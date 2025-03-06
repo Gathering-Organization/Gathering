@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ProfileProvider } from './hooks/ProfileStateContext';
+import { ProfileProvider } from './contexts/ProfileStateContext';
 import GoogleRedirectHandler from '@/components/GoogleRedirectHandler';
 import Profile from '@/pages/Profile';
 import Main from '@/components/Main';

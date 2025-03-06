@@ -9,7 +9,7 @@ import OtherUserProfileModal from './OtherUserProfileModal';
 import { getUserProfile } from '@/services/profileApi';
 import deleteButton from '@/assets/otherIcons/post_delete_button.png';
 import editButton from '@/assets/otherIcons/post_edit_button.png';
-import { useProfile } from '@/hooks/ProfileStateContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
 import { deletePosting } from '@/services/postApi';
 
 interface Position {

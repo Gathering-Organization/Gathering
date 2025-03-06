@@ -2,9 +2,8 @@ import { approxPostInfo } from '@/types/post';
 import { useNavigate } from 'react-router-dom';
 import { getStackImage } from '@/utils/get-stack-image';
 import { getStringedDate } from '@/utils/get-stringed-date';
-import { getUserProfile } from '@/services/profileApi';
-import { useEffect, useState } from 'react';
-import { ProfileInfo } from '@/types/profile';
+import { useProfileCache } from '@/contexts/ProfileCacheContext';
+import { useState } from 'react';
 import { projectType as projectEachType } from '@/utils/project-type';
 import { positionData } from '@/utils/position-data';
 import { setInterest } from '@/services/interestApi';
@@ -33,54 +32,21 @@ const PostItem: React.FC<
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
-
-  useEffect(() => {
-    setIsInterested(initialInterested);
-  }, [initialInterested]);
-
   const nav = useNavigate();
-  const [info, setInfo] = useState<ProfileInfo>({
-    nickname: '',
+
+  const { profileCache } = useProfileCache();
+
+  const profileInfo = profileCache[authorNickname] || {
+    profileColor: 'cccccc',
+    nickname: authorNickname,
     introduction: '',
-    organization: '',
     techStacks: [],
-    profileColor: ''
-  });
+    portfolio: null,
+    public: false,
+    workExperiences: [],
+    organization: ''
+  };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const result = await getUserProfile(authorNickname);
-
-        if (result?.success) {
-          setInfo({
-            nickname: result.data.nickname || '',
-            introduction: result.data.introduction || '',
-            organization: result.data.organization || '',
-            techStacks: result.data.techStacks || [],
-            profileColor: result.data.profileColor || ''
-          });
-        } else {
-          alert(result?.message || '내 정보 불러오기에 실패했습니다.');
-        }
-      } catch {
-        alert('내 정보 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  // const onClickHeart = async () => {
-  //   if (!projectId) return;
-
-  //   try {
-  //     await setInterest(Number(projectId));
-  //     setIsInterested(prev => !prev);
-  //   } catch (error) {
-  //     alert('관심글 설정에 실패했습니다.');
-  //   }
-  // };
   const onClickHeart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!projectId) return;
@@ -89,7 +55,6 @@ const PostItem: React.FC<
     try {
       setIsInterested(!prevState);
       if (onInterestToggle) onInterestToggle(projectId, !prevState);
-
       await setInterest(Number(projectId));
     } catch (error) {
       setIsInterested(prevState);
@@ -97,6 +62,7 @@ const PostItem: React.FC<
       alert('관심글 설정에 실패했습니다.');
     }
   };
+
   const parts = authorNickname.split(/(#\d+)/);
   return (
     <div
@@ -104,11 +70,7 @@ const PostItem: React.FC<
       className="relative transform transition duration-200 ease-in-out hover:scale-105 cursor-pointer select-none w-85"
     >
       <section className="border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative">
-        {/* <div className="block font-semibold pb-2">모집완료 : {String(closed)}</div> */}
-        <label
-          className="absolute right-6 top-4 cursor-pointer"
-          onClick={e => e.stopPropagation()} // 부모 div의 onClick 이벤트 전파 방지
-        >
+        <label className="absolute right-6 top-4 cursor-pointer" onClick={e => e.stopPropagation()}>
           <input
             type="checkbox"
             onClick={onClickHeart}
@@ -120,7 +82,7 @@ const PostItem: React.FC<
           <svg
             className={`w-8 h-10 transition-all duration-200 ease-in-out ${
               isInterested ? 'fill-red-500 scale-110' : 'fill-gray-300'
-            }`} // 클래스 동적 제어
+            }`}
             viewBox="0 0 1024 1024"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -152,7 +114,6 @@ const PostItem: React.FC<
             {requiredPositions.map((positionId, index) => {
               const positionTitle =
                 positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
-
               return (
                 <div
                   key={index}
@@ -163,9 +124,6 @@ const PostItem: React.FC<
               );
             })}
           </div>
-          {/* <div className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline">
-            {requiredPositions.map(item => item)}
-          </div> */}
           <div className="font-semibold py-4">
             <div className="font-semibold py-2 flex flex-wrap gap-2">
               {techStacks
@@ -175,8 +133,6 @@ const PostItem: React.FC<
                   <img key={index} src={src!} alt={techStacks[index]} className="w-10 h-10" />
                 ))}
             </div>
-            {/* <img src={techStacks.map(item => getStackImage(item.toUpperCase()))} /> */}
-            {/* 사용 기술 스택 : {techStacks.map(item => getStackImage(item.toUpperCase()))} */}
           </div>
         </section>
 
@@ -185,7 +141,7 @@ const PostItem: React.FC<
           <div className="flex font-semibold p-4 items-center gap-4">
             <div
               className="w-8 h-8 rounded-[30px]"
-              style={{ backgroundColor: `#${info.profileColor}` }}
+              style={{ backgroundColor: `#${profileInfo.profileColor}` }}
             ></div>
             <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>

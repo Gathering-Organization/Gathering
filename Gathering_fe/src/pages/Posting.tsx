@@ -6,7 +6,7 @@ import { useState, useEffect, useContext } from 'react';
 import { PostingInfo } from '@/types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
-import { useProfile } from '@/hooks/ProfileStateContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
 import { ProfileInfo } from '@/types/profile';
 import { positionData } from '@/utils/position-data';
 import { techStacks } from '@/utils/tech-stacks';
@@ -113,9 +113,9 @@ const Posting: React.FC = () => {
     }
   };
 
-  const { profile, isLoading } = useProfile();
+  const { myProfile, isMyProfileLoading } = useProfile();
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isMyProfileLoading) return <div>로딩 중...</div>;
 
   return (
     <div className="mx-48 space-y-2">

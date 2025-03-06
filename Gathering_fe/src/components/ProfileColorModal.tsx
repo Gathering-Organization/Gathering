@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import changeMark from '@/assets/otherIcons/Change Mark.png';
 import { setMyProfileColor } from '@/services/profileApi';
-import { useProfile } from '@/hooks/ProfileStateContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
 import { profileColorCollection } from '@/utils/profile-color';
 
 interface ProfileColorModalProps {

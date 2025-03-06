@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import penSquared from '@/assets/otherIcons/Pen Squared.png';
 import { setMyNickname } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
-import { useProfile } from '@/hooks/ProfileStateContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
 
 interface NicknameModalProps {
   nickname: string;
