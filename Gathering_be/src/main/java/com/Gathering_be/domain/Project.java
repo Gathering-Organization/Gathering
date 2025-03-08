@@ -95,4 +95,6 @@ public class Project extends BaseTimeEntity {
         this.isClosed = request.isClosed();
         this.projectMode = request.getProjectMode();
     }
+
+    public void closeProject() { this.isClosed = false; }
 }
