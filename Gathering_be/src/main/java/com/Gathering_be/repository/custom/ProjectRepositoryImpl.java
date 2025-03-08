@@ -6,7 +6,6 @@ import com.Gathering_be.exception.InvalidSearchTypeException;
 import com.Gathering_be.global.enums.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                                    List<TechStack> techStacks,
                                                    ProjectType type,
                                                    ProjectMode mode,
-                                                   boolean isClosed,
+                                                   Boolean isClosed,
                                                    SearchType searchType,
                                                    String keyword) {
         QProject project = QProject.project;
@@ -74,10 +73,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         if (mode != null && !mode.equals("ALL")) {
             builder.and(project.projectMode.eq(mode));
         }
-        if (isClosed) {
-            builder.and(project.isClosed.isTrue());
-        } else {
-            builder.and(project.isClosed.isFalse());
+        if (isClosed != null) {
+            builder.and(project.isClosed.eq(isClosed));
         }
 
         QueryResults<Project> results = queryFactory

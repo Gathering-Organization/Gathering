@@ -7,7 +7,10 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
-import com.Gathering_be.exception.*;
+import com.Gathering_be.exception.InvalidEnumValue;
+import com.Gathering_be.exception.ProfileNotFoundException;
+import com.Gathering_be.exception.ProjectNotFoundException;
+import com.Gathering_be.exception.UnauthorizedAccessException;
 import com.Gathering_be.global.enums.*;
 import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
@@ -94,32 +97,13 @@ public class ProjectService {
         return ProjectDetailResponse.from(project, isInterested);
     }
 
-    public List<ProjectSimpleResponse> getAllProjects(int page, int size) {
-        Long currentUserId = getCurrentUserId();
-
-        Pageable pageable = PageRequest.of(page-1, size);
-        Page<Project> projectPage = projectRepository.findAll(pageable);
-
-        Set<Long> interestedProjectIds = (currentUserId != null)
-                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
-                .stream()
-                .map(interest -> interest.getProject().getId())
-                .collect(Collectors.toSet())
-                : Set.of();
-
-        return projectPage.getContent().stream()
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
-                .collect(Collectors.toList());
-    }
-
-    //////////////////////////
     public List<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,
-                                                                 String techStack, String type, String mode, boolean isClosed,
+                                                                 String techStack, String type, String mode, Boolean isClosed,
                                                                  SearchType searchType, String keyword) {
         Long currentUserId = getCurrentUserId();
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(
-                sort.equals("-createdAt") ? Sort.Order.desc("createdAt") : Sort.Order.asc("viewCount")
+                sort.equals("-createdAt") ? Sort.Order.desc("createdAt") : Sort.Order.desc("viewCount")
         ));
 
         JobPosition positionEnum = parseEnum(JobPosition.class, position);
@@ -129,8 +113,9 @@ public class ProjectService {
                 ? Arrays.stream(techStack.split(",")).map(TechStack::valueOf).collect(Collectors.toList())
                 : null;
 
-        Page<Project> projectPage = projectRepository.searchProjectsWithFilters(pageable, positionEnum, techStacks,
-                typeEnum, modeEnum, isClosed, searchType, keyword);
+        Page<Project> projectPage = projectRepository.searchProjectsWithFilters(
+                pageable, positionEnum, techStacks, typeEnum, modeEnum, isClosed, searchType, keyword
+        );
 
         Set<Long> interestedProjectIds = (currentUserId != null)
                 ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
@@ -143,47 +128,29 @@ public class ProjectService {
                 .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
-    //////////////////////////
 
-    public List<ProjectSimpleResponse> getProjectsByNickname(String nickname) {
+    public List<ProjectSimpleResponse> getProjectsByNickname(String nickname, int page, int size, Boolean isClosed) {
         Long currentUserId = getCurrentUserId();
-        List<Project> projects = projectRepository.findAllByProfileNickname(nickname);
+        validateMemberAccess(currentUserId, nickname);
 
-        return projects.stream()
-                .map(project -> {
-                    boolean isInterested = (currentUserId != null) && isUserInterestedInProject(currentUserId, project.getId());
-                    return ProjectSimpleResponse.from(project, isInterested);
-                })
-                .collect(Collectors.toList());
-    }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Order.desc("createdAt")));
 
-    public List<ProjectSimpleResponse> searchProjects(SearchType searchType, String keyword) {
-        Long currentUserId = getCurrentUserId();
-        List<Project> projects;
-
-        if (searchType == null) {
-            throw new InvalidSearchTypeException();
+        Page<Project> projectPage;
+        if (isClosed == null) {
+            projectPage = projectRepository.findAllByProfileNickname(nickname, pageable);
+        } else {
+            projectPage = projectRepository.findAllByProfileNicknameAndIsClosed(nickname, isClosed, pageable);
         }
 
-        switch (searchType) {
-            case TITLE:
-                projects = projectRepository.findByTitleContaining(keyword);
-                break;
-            case CONTENT:
-                projects = projectRepository.findByDescriptionContaining(keyword);
-                break;
-            case TITLE_CONTENT:
-                projects = projectRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
-                break;
-            default:
-                throw new InvalidSearchTypeException();
-        }
+        Set<Long> interestedProjectIds = (currentUserId != null)
+                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
+                .stream()
+                .map(interest -> interest.getProject().getId())
+                .collect(Collectors.toSet())
+                : Set.of();
 
-        return projects.stream()
-                .map(project -> {
-                    boolean isInterested = (currentUserId != null) && isUserInterestedInProject(currentUserId, project.getId());
-                    return ProjectSimpleResponse.from(project, isInterested);
-                })
+        return projectPage.getContent().stream()
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -199,6 +166,13 @@ public class ProjectService {
     private void validateMemberAccess(Project project) {
         Long currentUserId = getCurrentUserId();
         if (!project.getProfile().getMember().getId().equals(currentUserId)) {
+            throw new UnauthorizedAccessException();
+        }
+    }
+
+    private void validateMemberAccess(Long currentUserId, String nickname) {
+        Profile profile = findProfileByMemberId(currentUserId);
+        if (!profile.getNickname().equals(nickname)) {
             throw new UnauthorizedAccessException();
         }
     }
@@ -275,7 +249,7 @@ public class ProjectService {
             return null;
         }
         try {
-            return Enum.valueOf(enumClass, value);
+            return Enum.valueOf(enumClass, value.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new InvalidEnumValue();
         }

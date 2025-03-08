@@ -8,5 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ProjectRepositoryCustom {
-    Page<Project> searchProjectsWithFilters(Pageable pageable, JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, boolean isClosed, SearchType searchType, String keyword);
+    Page<Project> searchProjectsWithFilters(Pageable pageable, JobPosition position, List<TechStack> techStacks,
+                                            ProjectType type, ProjectMode mode, Boolean isClosed,
+                                            SearchType searchType, String keyword);
 }
