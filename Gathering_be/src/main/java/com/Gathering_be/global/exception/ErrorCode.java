@@ -55,6 +55,9 @@ public enum ErrorCode {
     SELF_APPLICATION_NOT_ALLOWED(400, "AP002", "자신이 만든 프로젝트에는 지원할 수 없습니다."),
     APPLICATION_NOT_FOUND(404, "AP003", "존재하지 않는 지원서입니다."),
     APPLICATION_ALREADY_PROCESSED(400, "AP005", "이미 처리된 지원서는 변경할 수 없습니다."),
+
+    // Enum
+    INVALID_ENUM_VALUE(400, "EN001", "잘못된 Enum 입력값입니다."),
     ;
 
     private final int status;

@@ -32,27 +32,42 @@ public class ProjectController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, project));
     }
 
-    @GetMapping
-    public ResponseEntity<ResultResponse> getAllProjects(@RequestParam(defaultValue = "1") int page) {
-        List<ProjectSimpleResponse> projects = projectService.getAllProjects(page, 20);
+    @GetMapping("/pagination")
+    public ResponseEntity<ResultResponse> getAllProjects(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "-createdAt") String sort,
+                                                         @RequestParam(defaultValue = "ALL") String position,
+                                                         @RequestParam(required = false) String techStack,
+                                                         @RequestParam(defaultValue = "ALL") String type,
+                                                         @RequestParam(defaultValue = "ALL") String mode,
+                                                         @RequestParam(required = false) Boolean isClosed,
+                                                         @RequestParam(required = false) SearchType searchType,
+                                                         @RequestParam(required = false) String keyword
+    ) {
+        List<ProjectSimpleResponse> projects = projectService.searchProjectsWithFilters(
+                page, 20, sort, position, techStack, type, mode, isClosed, searchType, keyword
+        );
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
-    @GetMapping("/nickname/{nickname}")
-    public ResponseEntity<ResultResponse> getProjectsByNickname(@PathVariable String nickname) {
-        List<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname);
+    @GetMapping("/pagination/my-project")
+    public ResponseEntity<ResultResponse> getProjectsByNickname(@RequestParam String nickname,
+                                                                @RequestParam(defaultValue = "1") int page,
+                                                                @RequestParam(required = false) Boolean isClosed
+    ) {
+        List<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname, page, 20, isClosed);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResultResponse> updateProject(@PathVariable Long id,
-                                                        @RequestBody ProjectUpdateRequest request) {
+                                                        @RequestBody ProjectUpdateRequest request
+    ) {
         projectService.updateProject(id, request);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_UPDATE_SUCCESS));
     }
 
-    @PutMapping("/recruitment/{id}")
-    public ResponseEntity<ResultResponse> toggleProfileVisibility(@PathVariable Long id) {
+    @PutMapping("/toggle/isClosed/{id}")
+    public ResponseEntity<ResultResponse> toggleIsClosed(@PathVariable Long id) {
         projectService.toggleProjectRecruitment(id);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_VISIBILITY_UPDATE_SUCCESS));
     }
@@ -61,11 +76,5 @@ public class ProjectController {
     public ResponseEntity<ResultResponse> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_DELETE_SUCCESS));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<ResultResponse> searchProjects(@RequestParam SearchType searchType, @RequestParam String keyword) {
-        List<ProjectSimpleResponse> projects = projectService.searchProjects(searchType, keyword);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_SEARCH_SUCCESS, projects));
     }
 }

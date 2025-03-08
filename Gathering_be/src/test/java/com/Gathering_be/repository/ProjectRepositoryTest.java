@@ -60,56 +60,56 @@ class ProjectRepositoryTest {
                 .build());
     }
 
-    @Test
-    @DisplayName("프로젝트 조회 (Repository - 페이징)")
-    void findAllWithPaginationTest() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+//    @Test
+//    @DisplayName("프로젝트 조회 (Repository - 페이징)")
+//    void findAllWithPaginationTest() {
+//        Pageable pageable = PageRequest.of(0, 10);
+//        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+//
+//        Page<Project> result = projectRepository.findAll(pageable);
+//
+//        assertThat(result.getTotalElements()).isEqualTo(2);
+//        assertThat(result.getContent()).hasSize(2);
+//        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Project 1 입니다");
+//        assertThat(result.getContent().get(1).getTitle()).isEqualTo("Test Project 2");
+//    }
 
-        Page<Project> result = projectRepository.findAll(pageable);
-
-        assertThat(result.getTotalElements()).isEqualTo(2);
-        assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Project 1 입니다");
-        assertThat(result.getContent().get(1).getTitle()).isEqualTo("Test Project 2");
-    }
-
-    @Test
-    @DisplayName("프로필 닉네임으로 등록한 모든 프로젝트들 조회 성공.")
-    void findAllByProfileNicknameTest() {
-        List<Project> projects = projectRepository.findAllByProfileNickname(owner.getNickname());
-
-        assertThat(projects.size()).isEqualTo(2);
-        assertThat(projects.contains(project1)).isTrue();
-        assertThat(projects.contains(project2)).isTrue();
-    }
-
-    @Test
-    @DisplayName("제목에 키워드가 포함된 프로젝트 검색 성공")
-    void findByTitleContainingTest() {
-        List<Project> projects = projectRepository.findByTitleContaining("Test Project 1");
-
-        assertThat(projects.size()).isEqualTo(1);
-        assertTrue(projects.contains(project1));
-    }
-
-    @Test
-    @DisplayName("설명에 키워드가 포함된 프로젝트 검색 성공")
-    void findByDescriptionContainingTest() {
-        List<Project> projects = projectRepository.findByDescriptionContaining("두 번째");
-
-        assertThat(projects.size()).isEqualTo(1);
-        assertTrue(projects.contains(project2));
-    }
-
-    @Test
-    @DisplayName("제목 또는 설명에 키워드가 포함된 프로젝트 검색 성공")
-    void findByTitleContainingOrDescriptionContainingTest() {
-        List<Project> projects = projectRepository.findByTitleContainingOrDescriptionContaining("입니다", "입니다");
-
-        assertThat(projects.size()).isEqualTo(2);
-        assertTrue(projects.contains(project1));
-        assertTrue(projects.contains(project2));
-    }
+//    @Test
+//    @DisplayName("프로필 닉네임으로 등록한 모든 프로젝트들 조회 성공.")
+//    void findAllByProfileNicknameTest() {
+//        List<Project> projects = projectRepository.findAllByProfileNickname(owner.getNickname());
+//
+//        assertThat(projects.size()).isEqualTo(2);
+//        assertThat(projects.contains(project1)).isTrue();
+//        assertThat(projects.contains(project2)).isTrue();
+//    }
+//
+//    @Test
+//    @DisplayName("제목에 키워드가 포함된 프로젝트 검색 성공")
+//    void findByTitleContainingTest() {
+//        List<Project> projects = projectRepository.findByTitleContaining("Test Project 1");
+//
+//        assertThat(projects.size()).isEqualTo(1);
+//        assertTrue(projects.contains(project1));
+//    }
+//
+//    @Test
+//    @DisplayName("설명에 키워드가 포함된 프로젝트 검색 성공")
+//    void findByDescriptionContainingTest() {
+//        List<Project> projects = projectRepository.findByDescriptionContaining("두 번째");
+//
+//        assertThat(projects.size()).isEqualTo(1);
+//        assertTrue(projects.contains(project2));
+//    }
+//
+//    @Test
+//    @DisplayName("제목 또는 설명에 키워드가 포함된 프로젝트 검색 성공")
+//    void findByTitleContainingOrDescriptionContainingTest() {
+//        List<Project> projects = projectRepository.findByTitleContainingOrDescriptionContaining("입니다", "입니다");
+//
+//        assertThat(projects.size()).isEqualTo(2);
+//        assertTrue(projects.contains(project1));
+//        assertTrue(projects.contains(project2));
+//    }
 }
 

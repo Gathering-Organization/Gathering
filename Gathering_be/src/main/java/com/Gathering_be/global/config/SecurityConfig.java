@@ -73,7 +73,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(PERMITTED_API_URL).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/project").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/project/pagination").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
