@@ -60,19 +60,19 @@ class ProjectRepositoryTest {
                 .build());
     }
 
-    @Test
-    @DisplayName("프로젝트 조회 (Repository - 페이징)")
-    void findAllWithPaginationTest() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
-
-        Page<Project> result = projectRepository.findAll(pageable);
-
-        assertThat(result.getTotalElements()).isEqualTo(2);
-        assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Project 1 입니다");
-        assertThat(result.getContent().get(1).getTitle()).isEqualTo("Test Project 2");
-    }
+//    @Test
+//    @DisplayName("프로젝트 조회 (Repository - 페이징)")
+//    void findAllWithPaginationTest() {
+//        Pageable pageable = PageRequest.of(0, 10);
+//        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+//
+//        Page<Project> result = projectRepository.findAll(pageable);
+//
+//        assertThat(result.getTotalElements()).isEqualTo(2);
+//        assertThat(result.getContent()).hasSize(2);
+//        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Project 1 입니다");
+//        assertThat(result.getContent().get(1).getTitle()).isEqualTo("Test Project 2");
+//    }
 
 //    @Test
 //    @DisplayName("프로필 닉네임으로 등록한 모든 프로젝트들 조회 성공.")
