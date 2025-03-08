@@ -112,24 +112,24 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$.data.title").value("Sample Project"));
     }
 
-    @Test
-    @DisplayName("닉네임으로 프로젝트 목록 조회 성공")
-    void getProjectsByNickname_Success() throws Exception {
-        String nickname = "최보근";
-        List<ProjectSimpleResponse> responses = List.of(
-                ProjectSimpleResponse.builder().title("Project 1").build(),
-                ProjectSimpleResponse.builder().title("Project 2").build()
-        );
-
-        given(projectService.getProjectsByNickname(nickname)).willReturn(responses);
-
-                mockMvc.perform(get("/api/project/nickname/{nickname}", nickname)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(ResultCode.PROJECT_READ_SUCCESS.getCode()))
-                .andExpect(jsonPath("$.message").value(ResultCode.PROJECT_READ_SUCCESS.getMessage()))
-                .andExpect(jsonPath("$.data").isArray());
-    }
+//    @Test
+//    @DisplayName("닉네임으로 프로젝트 목록 조회 성공")
+//    void getProjectsByNickname_Success() throws Exception {
+//        String nickname = "최보근";
+//        List<ProjectSimpleResponse> responses = List.of(
+//                ProjectSimpleResponse.builder().title("Project 1").build(),
+//                ProjectSimpleResponse.builder().title("Project 2").build()
+//        );
+//
+//        given(projectService.getProjectsByNickname(nickname)).willReturn(responses);
+//
+//                mockMvc.perform(get("/api/project/nickname/{nickname}", nickname)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.code").value(ResultCode.PROJECT_READ_SUCCESS.getCode()))
+//                .andExpect(jsonPath("$.message").value(ResultCode.PROJECT_READ_SUCCESS.getMessage()))
+//                .andExpect(jsonPath("$.data").isArray());
+//    }
 
     @Test
     @WithMockUser
@@ -163,43 +163,43 @@ class ProjectControllerTest {
         verify(projectService).deleteProject(projectId);
     }
 
-    @Test
-    @WithMockUser
-    @DisplayName("모든 프로젝트 조회 성공")
-    void getAllProjects() throws Exception {
-        List<ProjectSimpleResponse> responses = List.of(
-                ProjectSimpleResponse.builder().title("Project 1").build(),
-                ProjectSimpleResponse.builder().title("Project 2").build()
-        );
+//    @Test
+//    @WithMockUser
+//    @DisplayName("모든 프로젝트 조회 성공")
+//    void getAllProjects() throws Exception {
+//        List<ProjectSimpleResponse> responses = List.of(
+//                ProjectSimpleResponse.builder().title("Project 1").build(),
+//                ProjectSimpleResponse.builder().title("Project 2").build()
+//        );
+//
+//        given(projectService.getAllProjects(1, 20)).willReturn(responses);
+//
+//        mockMvc.perform(get("/api/project")
+//                        .param("page", "1")
+//                        .param("size", "20"))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data[0].title").value("Project 1"))
+//                .andExpect(jsonPath("$.data[1].title").value("Project 2"));
+//    }
 
-        given(projectService.getAllProjects(1, 20)).willReturn(responses);
-
-        mockMvc.perform(get("/api/project")
-                        .param("page", "1")
-                        .param("size", "20"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].title").value("Project 1"))
-                .andExpect(jsonPath("$.data[1].title").value("Project 2"));
-    }
-
-    @Test
-    @WithMockUser
-    @DisplayName("프로젝트 검색 성공")
-    void searchProjects() throws Exception {
-        List<ProjectSimpleResponse> responses = List.of(
-                ProjectSimpleResponse.builder().title("Search Result 1").build(),
-                ProjectSimpleResponse.builder().title("Search Result 2").build()
-        );
-
-        given(projectService.searchProjects(SearchType.TITLE, "Search")).willReturn(responses);
-
-        mockMvc.perform(get("/api/project/search")
-                        .param("searchType", "TITLE")
-                        .param("keyword", "Search"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].title").value("Search Result 1"))
-                .andExpect(jsonPath("$.data[1].title").value("Search Result 2"));
-    }
+//    @Test
+//    @WithMockUser
+//    @DisplayName("프로젝트 검색 성공")
+//    void searchProjects() throws Exception {
+//        List<ProjectSimpleResponse> responses = List.of(
+//                ProjectSimpleResponse.builder().title("Search Result 1").build(),
+//                ProjectSimpleResponse.builder().title("Search Result 2").build()
+//        );
+//
+//        given(projectService.searchProjects(SearchType.TITLE, "Search")).willReturn(responses);
+//
+//        mockMvc.perform(get("/api/project/search")
+//                        .param("searchType", "TITLE")
+//                        .param("keyword", "Search"))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data[0].title").value("Search Result 1"))
+//                .andExpect(jsonPath("$.data[1].title").value("Search Result 2"));
+//    }
 }

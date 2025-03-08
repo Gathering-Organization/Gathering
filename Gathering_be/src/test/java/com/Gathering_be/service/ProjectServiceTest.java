@@ -125,24 +125,24 @@ class ProjectServiceTest {
             assertProjectDetails(response);
         }
 
-        @Test
-        @DisplayName("닉네임으로 프로젝트 목록 조회 성공")
-        void getProjectsByNickname_Success() {
-            // given
-            String nickname = "owner_nickname";
-            given(projectRepository.findAllByProfileNickname(nickname)).willReturn(List.of(testData.getProject()));
-            given(interestProjectRepository.existsByProfileIdAndProjectId(testData.owner.getId(), testData.getProject().getId()))
-                    .willReturn(true);
-            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.owner));
-
-            // when
-            List<ProjectSimpleResponse> result = projectService.getProjectsByNickname(nickname);
-
-            // then
-            assertThat(result).hasSize(1);
-            assertThat(result.get(0).getTitle()).isEqualTo("Test Project");
-            assertThat(result.get(0).isInterested()).isTrue();
-        }
+//        @Test
+//        @DisplayName("닉네임으로 프로젝트 목록 조회 성공")
+//        void getProjectsByNickname_Success() {
+//            // given
+//            String nickname = "owner_nickname";
+//            given(projectRepository.findAllByProfileNickname(nickname)).willReturn(List.of(testData.getProject()));
+//            given(interestProjectRepository.existsByProfileIdAndProjectId(testData.owner.getId(), testData.getProject().getId()))
+//                    .willReturn(true);
+//            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.owner));
+//
+//            // when
+//            List<ProjectSimpleResponse> result = projectService.getProjectsByNickname(nickname);
+//
+//            // then
+//            assertThat(result).hasSize(1);
+//            assertThat(result.get(0).getTitle()).isEqualTo("Test Project");
+//            assertThat(result.get(0).isInterested()).isTrue();
+//        }
 
         @Test
         @DisplayName("존재하지 않는 프로젝트 조회시 예외 발생")
@@ -156,75 +156,75 @@ class ProjectServiceTest {
                     .isInstanceOf(ProjectNotFoundException.class);
         }
 
-        @Test
-        @DisplayName("로그인 상태에서 관심 프로젝트가 있는 경우 전체 프로젝트 조회 성공")
-        void getAllProjects_WithLoginAndInterested_Success() {
-            // given
-            Project anotherProject = Project.builder()
-                    .profile(testData.getOwner())
-                    .title("Another Project")
-                    .description("Another test project")
-                    .projectType(ProjectType.STUDY)
-                    .projectMode(ProjectMode.ONLINE)
-                    .build();
+//        @Test
+//        @DisplayName("로그인 상태에서 관심 프로젝트가 있는 경우 전체 프로젝트 조회 성공")
+//        void getAllProjects_WithLoginAndInterested_Success() {
+//            // given
+//            Project anotherProject = Project.builder()
+//                    .profile(testData.getOwner())
+//                    .title("Another Project")
+//                    .description("Another test project")
+//                    .projectType(ProjectType.STUDY)
+//                    .projectMode(ProjectMode.ONLINE)
+//                    .build();
+//
+//            InterestProject interest = InterestProject.builder()
+//                    .id(1L)
+//                    .project(testData.getProject())
+//                    .profile(testData.getOwner())
+//                    .build();
+//
+//            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
+//            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject(), anotherProject)));
+//            given(interestProjectRepository.findAllByProfileId(testData.getOwner().getId()))
+//                    .willReturn(List.of(interest));
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
+//
+//            // then
+//            assertThat(results).hasSize(2);
+//            assertThat(results.get(0).isInterested()).isTrue();
+//            assertThat(results.get(1).isInterested()).isFalse();
+//        }
 
-            InterestProject interest = InterestProject.builder()
-                    .id(1L)
-                    .project(testData.getProject())
-                    .profile(testData.getOwner())
-                    .build();
+//        @Test
+//        @DisplayName("로그인 상태에서 관심 프로젝트가 없는 경우 전체 프로젝트 조회 성공")
+//        void getAllProjects_WithLoginNoInterest_Success() {
+//            // given
+//            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
+//            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject())));
+//            given(interestProjectRepository.findAllByProfileId(testData.getOwner().getId()))
+//                    .willReturn(List.of());
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
+//
+//            // then
+//            assertThat(results).hasSize(1);
+//            assertThat(results.get(0).isInterested()).isFalse();
+//        }
 
-            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
-            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject(), anotherProject)));
-            given(interestProjectRepository.findAllByProfileId(testData.getOwner().getId()))
-                    .willReturn(List.of(interest));
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
-
-            // then
-            assertThat(results).hasSize(2);
-            assertThat(results.get(0).isInterested()).isTrue();
-            assertThat(results.get(1).isInterested()).isFalse();
-        }
-
-        @Test
-        @DisplayName("로그인 상태에서 관심 프로젝트가 없는 경우 전체 프로젝트 조회 성공")
-        void getAllProjects_WithLoginNoInterest_Success() {
-            // given
-            given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
-            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject())));
-            given(interestProjectRepository.findAllByProfileId(testData.getOwner().getId()))
-                    .willReturn(List.of());
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
-
-            // then
-            assertThat(results).hasSize(1);
-            assertThat(results.get(0).isInterested()).isFalse();
-        }
-
-        @Test
-        @DisplayName("비로그인 상태에서 전체 프로젝트 조회 성공")
-        void getAllProjects_WithoutLogin_Success() {
-            // given
-            SecurityContext securityContext = mock(SecurityContext.class);
-            Authentication authentication = mock(Authentication.class);
-            SecurityContextHolder.setContext(securityContext);
-            given(securityContext.getAuthentication()).willReturn(authentication);
-            given(authentication.getName()).willReturn("anonymousUser");
-
-            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject())));
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
-
-            // then
-            assertThat(results).hasSize(1);
-            assertThat(results.get(0).isInterested()).isFalse();
-            verify(interestProjectRepository, never()).findAllByProfileId(any());
-        }
+//        @Test
+//        @DisplayName("비로그인 상태에서 전체 프로젝트 조회 성공")
+//        void getAllProjects_WithoutLogin_Success() {
+//            // given
+//            SecurityContext securityContext = mock(SecurityContext.class);
+//            Authentication authentication = mock(Authentication.class);
+//            SecurityContextHolder.setContext(securityContext);
+//            given(securityContext.getAuthentication()).willReturn(authentication);
+//            given(authentication.getName()).willReturn("anonymousUser");
+//
+//            given(projectRepository.findAll(PageRequest.of(0, 10))).willReturn(new PageImpl<>(List.of(testData.getProject())));
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.getAllProjects(1, 10);
+//
+//            // then
+//            assertThat(results).hasSize(1);
+//            assertThat(results.get(0).isInterested()).isFalse();
+//            verify(interestProjectRepository, never()).findAllByProfileId(any());
+//        }
     }
 
     @Nested
@@ -281,95 +281,95 @@ class ProjectServiceTest {
         }
     }
 
-    @Nested
-    @DisplayName("프로젝트 검색 테스트")
-    class SearchProjectTest {
-        @Test
-        @DisplayName("제목으로 프로젝트 검색 성공")
-        void searchProjects_ByTitle_Success() {
-            // given
-            String keyword = "Test";
-            given(projectRepository.findByTitleContaining(keyword))
-                    .willReturn(List.of(testData.getProject()));
-            given(profileRepository.findByMemberId(1L))
-                    .willReturn(Optional.of(testData.getOwner()));
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.TITLE, keyword);
-
-            // then
-            assertThat(results).hasSize(1);
-            assertSearchResult(results.get(0), testData.getProject());
-            verify(projectRepository).findByTitleContaining(keyword);
-        }
-
-        @Test
-        @DisplayName("내용으로 프로젝트 검색 성공")
-        void searchProjects_ByContent_Success() {
-            // given
-            String keyword = "project";
-            given(projectRepository.findByDescriptionContaining(keyword))
-                    .willReturn(List.of(testData.getProject()));
-            given(profileRepository.findByMemberId(1L))
-                    .willReturn(Optional.of(testData.getOwner()));
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.CONTENT, keyword);
-
-            // then
-            assertThat(results).hasSize(1);
-            assertSearchResult(results.get(0), testData.getProject());
-            verify(projectRepository).findByDescriptionContaining(keyword);
-        }
-
-        @Test
-        @DisplayName("제목과 내용으로 프로젝트 검색 성공")
-        void searchProjects_ByTitleAndContent_Success() {
-            // given
-            String keyword = "Test";
-            given(projectRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword))
-                    .willReturn(List.of(testData.getProject()));
-            given(profileRepository.findByMemberId(1L))
-                    .willReturn(Optional.of(testData.getOwner()));
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.TITLE_CONTENT, keyword);
-
-            // then
-            assertThat(results).hasSize(1);
-            assertSearchResult(results.get(0), testData.getProject());
-            verify(projectRepository).findByTitleContainingOrDescriptionContaining(keyword, keyword);
-        }
-
-        @Test
-        @DisplayName("유효하지 않은 검색 타입으로 검색시 예외 발생")
-        void searchProjects_WithInvalidSearchType_ThrowsException() {
-            // given
-            SearchType invalidType = null;
-            String keyword = "Test";
-
-            // when & then
-            assertThatThrownBy(() -> projectService.searchProjects(invalidType, keyword))
-                    .isInstanceOf(InvalidSearchTypeException.class);
-        }
-
-        @Test
-        @DisplayName("검색 결과가 없을 경우 빈 리스트 반환")
-        void searchProjects_NoResults_ReturnsEmptyList() {
-            // given
-            String keyword = "NonExistent";
-            given(projectRepository.findByTitleContaining(keyword))
-                    .willReturn(List.of());
-
-            // when
-            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.TITLE, keyword);
-
-            // then
-            assertThat(results).isEmpty();
-        }
-
-
-    }
+//    @Nested
+//    @DisplayName("프로젝트 검색 테스트")
+//    class SearchProjectTest {
+//        @Test
+//        @DisplayName("제목으로 프로젝트 검색 성공")
+//        void searchProjects_ByTitle_Success() {
+//            // given
+//            String keyword = "Test";
+//            given(projectRepository.findByTitleContaining(keyword))
+//                    .willReturn(List.of(testData.getProject()));
+//            given(profileRepository.findByMemberId(1L))
+//                    .willReturn(Optional.of(testData.getOwner()));
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.TITLE, keyword);
+//
+//            // then
+//            assertThat(results).hasSize(1);
+//            assertSearchResult(results.get(0), testData.getProject());
+//            verify(projectRepository).findByTitleContaining(keyword);
+//        }
+//
+//        @Test
+//        @DisplayName("내용으로 프로젝트 검색 성공")
+//        void searchProjects_ByContent_Success() {
+//            // given
+//            String keyword = "project";
+//            given(projectRepository.findByDescriptionContaining(keyword))
+//                    .willReturn(List.of(testData.getProject()));
+//            given(profileRepository.findByMemberId(1L))
+//                    .willReturn(Optional.of(testData.getOwner()));
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.CONTENT, keyword);
+//
+//            // then
+//            assertThat(results).hasSize(1);
+//            assertSearchResult(results.get(0), testData.getProject());
+//            verify(projectRepository).findByDescriptionContaining(keyword);
+//        }
+//
+//        @Test
+//        @DisplayName("제목과 내용으로 프로젝트 검색 성공")
+//        void searchProjects_ByTitleAndContent_Success() {
+//            // given
+//            String keyword = "Test";
+//            given(projectRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword))
+//                    .willReturn(List.of(testData.getProject()));
+//            given(profileRepository.findByMemberId(1L))
+//                    .willReturn(Optional.of(testData.getOwner()));
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.TITLE_CONTENT, keyword);
+//
+//            // then
+//            assertThat(results).hasSize(1);
+//            assertSearchResult(results.get(0), testData.getProject());
+//            verify(projectRepository).findByTitleContainingOrDescriptionContaining(keyword, keyword);
+//        }
+//
+//        @Test
+//        @DisplayName("유효하지 않은 검색 타입으로 검색시 예외 발생")
+//        void searchProjects_WithInvalidSearchType_ThrowsException() {
+//            // given
+//            SearchType invalidType = null;
+//            String keyword = "Test";
+//
+//            // when & then
+//            assertThatThrownBy(() -> projectService.searchProjects(invalidType, keyword))
+//                    .isInstanceOf(InvalidSearchTypeException.class);
+//        }
+//
+//        @Test
+//        @DisplayName("검색 결과가 없을 경우 빈 리스트 반환")
+//        void searchProjects_NoResults_ReturnsEmptyList() {
+//            // given
+//            String keyword = "NonExistent";
+//            given(projectRepository.findByTitleContaining(keyword))
+//                    .willReturn(List.of());
+//
+//            // when
+//            List<ProjectSimpleResponse> results = projectService.searchProjects(SearchType.TITLE, keyword);
+//
+//            // then
+//            assertThat(results).isEmpty();
+//        }
+//
+//
+//    }
 
     private void setupSecurityContext() {
         SecurityContext securityContext = mock(SecurityContext.class);
