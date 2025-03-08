@@ -97,11 +97,7 @@ public class Project extends BaseTimeEntity {
         this.projectMode = request.getProjectMode();
     }
 
-    public void incrementViewCount() {
-        this.viewCount += 1;
-    }
-
-    public void toggleIsClosed() {
-        this.isClosed = !this.isClosed;
-    }
+    public void incrementViewCount() { this.viewCount += 1; }
+    public void toggleIsClosed() { this.isClosed = !this.isClosed }
+    public void closeProject() { this.isClosed = false; }
 }

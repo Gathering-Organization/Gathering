@@ -11,11 +11,13 @@ import com.Gathering_be.exception.InvalidSearchTypeException;
 import com.Gathering_be.exception.ProfileNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.exception.UnauthorizedAccessException;
+import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.global.enums.SearchType;
 import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +38,7 @@ public class ProjectService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
     private final InterestProjectRepository interestProjectRepository;
+    private final ApplicationRepository applicationRepository;
     private final RedisService redisService;
 
     @Transactional
@@ -123,6 +127,19 @@ public class ProjectService {
                     return ProjectSimpleResponse.from(project, isInterested);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void closeExpiredProjects() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Project> expiredProjects = projectRepository.findAllByDeadlineBeforeAndIsClosedFalse(now);
+
+        for (Project project : expiredProjects) {
+            project.closeProject();
+            applicationRepository.updatePendingApplicationsToRejected(project.getId());
+        }
     }
 
     public List<ProjectSimpleResponse> searchProjects(SearchType searchType, String keyword) {
