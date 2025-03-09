@@ -1,6 +1,7 @@
 package com.Gathering_be.service;
 
 import com.Gathering_be.exception.DuplicateEmailException;
+import com.Gathering_be.exception.InvalidEmailException;
 import com.Gathering_be.exception.InvalidVerificationCodeException;
 import com.Gathering_be.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,10 @@ public class EmailVerificationService {
     private final Duration EXPIRATION_TIME = Duration.ofMinutes(5);
 
     public void sendVerificationCode(String email) {
+        if (email == null || !isValidEmail(email)) {
+            throw new InvalidEmailException();
+        }
+
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
@@ -41,6 +46,11 @@ public class EmailVerificationService {
 
     private String generateCode() {
         return String.valueOf((int) (Math.random() * 900000) + 100000);
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        return email.matches(emailRegex);
     }
 
     private void sendEmail(String email, String code) {
