@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modal from '@/components/Modal';
 import {} from '@/services/api';
 import { LoginRequest } from '@/types/auth';
+import { useNavigate } from 'react-router-dom';
 import { login } from '@/services/authApi';
 import googleIcon from '@/assets/otherIcons/Google.png';
 import loginIcon from '@/assets/otherIcons/Login.png';
@@ -17,6 +18,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
   const [formData, setFormData] = useState<LoginRequest>({ email: '', password: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmailLogin, setIsEmailLogin] = useState(false);
+  const nav = useNavigate();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -158,7 +160,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
                     </button>
                     <button
                       type="button"
-                      onClick={onSignupClick}
+                      onClick={() => {
+                        nav('/signup');
+                        closeModal();
+                      }}
                       className="bg-[#000000]/15 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
                     >
                       회원가입
