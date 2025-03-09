@@ -30,9 +30,13 @@ public class ApplicationController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 
-    @GetMapping("/{nickname}")
-    public ResponseEntity<ResultResponse> getApplicationsByProfile(@PathVariable String nickname) {
-        List<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname);
+    @GetMapping("/my-apply")
+    public ResponseEntity<ResultResponse> getApplicationsByProfile(
+            @RequestParam String nickname,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) ApplyStatus status
+    ) {
+        List<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname, page, 20, status);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 
