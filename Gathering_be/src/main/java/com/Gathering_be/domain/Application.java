@@ -1,5 +1,6 @@
 package com.Gathering_be.domain;
 
+import com.Gathering_be.global.common.BaseTimeEntity;
 import com.Gathering_be.global.enums.ApplyStatus;
 import com.Gathering_be.global.enums.JobPosition;
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Application {
+public class Application extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -11,12 +11,17 @@ import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +56,6 @@ public class ApplicationService {
         applicationRepository.save(application);
     }
 
-
     @Transactional(readOnly = true)
     public List<ApplicationResponse> getApplicationsByProject(Long projectId) {
         Long currentUserId = getCurrentUserId();
@@ -68,7 +72,7 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationResponse> getApplicationsByNickname(String nickname) {
+    public List<ApplicationResponse> getApplicationsByNickname(String nickname, int page, int size, ApplyStatus status) {
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -76,8 +80,16 @@ public class ApplicationService {
             throw new UnauthorizedAccessException();
         }
 
-        return applicationRepository.findByNickname(profile.getNickname())
-                .stream()
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Application> applicationPage;
+
+        if (status != null) {
+            applicationPage = applicationRepository.findByProfileNicknameAndStatus(nickname, status, pageable);
+        } else {
+            applicationPage = applicationRepository.findByProfileNickname(nickname, pageable);
+        }
+
+        return applicationPage.getContent().stream()
                 .map(ApplicationResponse::from)
                 .collect(Collectors.toList());
     }
@@ -119,6 +131,7 @@ public class ApplicationService {
 
         application.updateStatus(newStatus);
     }
+
 
     private Project findProjectById(Long projectId) {
         return projectRepository.findById(projectId)
