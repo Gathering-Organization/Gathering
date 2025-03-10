@@ -3,7 +3,11 @@ import { signup, certEmail, certCode } from '@/services/authApi';
 import { SignupRequest } from '@/types/auth';
 import axios from 'axios';
 
-const SignUpCertEmail = () => {
+interface SignUpAgreeProps {
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   const [formData, setFormData] = useState<SignupRequest>({
     email: '',
     name: '',
@@ -92,6 +96,7 @@ const SignUpCertEmail = () => {
       const result = await signup(formData);
       if (result?.success) {
         alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+        setStep(3);
       } else {
         alert('회원가입 실패: ' + result?.message);
       }

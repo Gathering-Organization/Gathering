@@ -1,10 +1,20 @@
 import { useState } from 'react';
 
-const SignUpAgree = () => {
+interface SignUpAgreeProps {
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const SignUpAgree: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   const [isAgreed, setIsAgreed] = useState(false);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsAgreed(e.target.checked);
+  };
+
+  const handleNextStep = () => {
+    if (isAgreed) {
+      setStep(2);
+    }
   };
 
   return (
@@ -68,7 +78,7 @@ const SignUpAgree = () => {
           <input
             type="checkbox"
             id="agree"
-            className="mr-2"
+            className="mr-2 w-[16px] h-[16px]"
             checked={isAgreed}
             onChange={handleCheckboxChange}
           />
@@ -80,6 +90,7 @@ const SignUpAgree = () => {
       <div className="my-10">
         <button
           disabled={!isAgreed}
+          onClick={handleNextStep}
           className={`font-semibold text-[#FFFFFF] rounded-[20px] text-[18px] px-12 py-2 text-center focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 ${
             isAgreed ? 'bg-[#3387E5] hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
           }`}
