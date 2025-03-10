@@ -13,6 +13,7 @@ import heart from '@/assets/otherIcons/heart.png';
 import { getUserProfile } from '@/services/profileApi';
 import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
+import Pagination from '@/components/Pagination';
 
 interface DropdownDispatchContextType {
   setSelectedStack: (value: string) => void;
@@ -23,6 +24,7 @@ export const DropdownDispatchContext = createContext<DropdownDispatchContextType
 
 const PostHome: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
   const [sortType, setSortType] = useState('-createdAt');
   const [post, setPost] = useState<approxPostInfo[]>([]);
   const [selectedType, setSelectedType] = useState<string>('ALL');
@@ -59,7 +61,7 @@ const PostHome: React.FC = () => {
     const getAllPost = async () => {
       try {
         const result = await getAllPosting(
-          1,
+          page,
           sortType,
           selectedPosition !== '전체' ? selectedPosition : '',
           selectedStack !== '전체' ? [selectedStack] : [],
@@ -81,7 +83,16 @@ const PostHome: React.FC = () => {
       }
     };
     getAllPost();
-  }, [sortType, selectedPosition, selectedStack, selectedType, hideClosed, searchType, keyword]);
+  }, [
+    page,
+    sortType,
+    selectedPosition,
+    selectedStack,
+    selectedType,
+    hideClosed,
+    searchType,
+    keyword
+  ]);
 
   useEffect(() => {
     if (post.length > 0) {
@@ -149,6 +160,11 @@ const PostHome: React.FC = () => {
   //     }
   //   });
   // };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   const displayedPosts = filteredPosts;
 
   return (
@@ -262,6 +278,7 @@ const PostHome: React.FC = () => {
           </div>
           <div className="z-0">
             <PostList data={displayedPosts} onInterestToggle={updatePostInterest} />
+            <Pagination currentPage={page} totalPages={10} onPageChange={handlePageChange} />
           </div>
         </div>
       </DropdownDispatchContext.Provider>
