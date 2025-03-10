@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +71,7 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationResponse> getApplicationsByNickname(String nickname, int page, int size, ApplyStatus status) {
+    public Page<ApplicationResponse> getApplicationsByNickname(String nickname, int page, int size, ApplyStatus status) {
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -89,9 +88,7 @@ public class ApplicationService {
             applicationPage = applicationRepository.findByProfileNickname(nickname, pageable);
         }
 
-        return applicationPage.getContent().stream()
-                .map(ApplicationResponse::from)
-                .collect(Collectors.toList());
+        return applicationPage.map(ApplicationResponse::from);
     }
 
     @Transactional
