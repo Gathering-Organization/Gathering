@@ -41,7 +41,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
     try {
       const result = await login(formData);
       if (result?.success) {
-        alert('로그인 성공!');
+        alert('로그인 되었습니다.');
         onClose();
       } else {
         alert(result?.message || '로그인에 실패했습니다.');
