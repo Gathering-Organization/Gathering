@@ -101,7 +101,7 @@ public class ProjectService {
         return ProjectDetailResponse.from(project, isInterested);
     }
 
-    public List<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,
+    public Page<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,
                                                                  String techStack, String type, String mode, Boolean isClosed,
                                                                  SearchType searchType, String keyword) {
         Long currentUserId = getCurrentUserId();
@@ -128,12 +128,11 @@ public class ProjectService {
                 .collect(Collectors.toSet())
                 : Set.of();
 
-        return projectPage.getContent().stream()
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
-                .collect(Collectors.toList());
+        return projectPage
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())));
     }
 
-    public List<ProjectSimpleResponse> getProjectsByNickname(String nickname, int page, int size, Boolean isClosed) {
+    public Page<ProjectSimpleResponse> getProjectsByNickname(String nickname, int page, int size, Boolean isClosed) {
         Long currentUserId = getCurrentUserId();
         validateMemberAccess(currentUserId, nickname);
 
@@ -153,9 +152,8 @@ public class ProjectService {
                 .collect(Collectors.toSet())
                 : Set.of();
 
-        return projectPage.getContent().stream()
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
-                .collect(Collectors.toList());
+        return projectPage
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())));
     }
 
     @Transactional

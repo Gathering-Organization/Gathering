@@ -27,7 +27,6 @@ public class ProjectCreateRequest {
     private String duration;
     private LocalDateTime deadline;
     private LocalDate startDate;
-    private boolean isClosed;
 
     private Set<TechStack> techStacks;
     private List<JobPosition> requiredPositions;
@@ -49,7 +48,6 @@ public class ProjectCreateRequest {
         this.startDate = startDate;
         this.techStacks = techStacks;
         this.requiredPositions = requiredPositions;
-        this.isClosed = false;
         this.projectMode = projectMode;
         this.teams = teams;
     }
