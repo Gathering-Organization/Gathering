@@ -7,6 +7,7 @@ import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.global.response.ResultResponse;
 import com.Gathering_be.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class ApplicationController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) ApplyStatus status
     ) {
-        List<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname, page, 20, status);
+        Page<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname, page, 20, status);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 
