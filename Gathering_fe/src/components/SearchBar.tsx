@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchPosting, getAllPosting } from '@/services/postApi';
-import { approxPostInfo } from '@/types/post';
 
 interface SearchBarProps {
-  onSearch: (data: approxPostInfo[]) => void;
+  onSearch: (params: { searchType: string; keyword: string }) => void;
 }
-
 const searchOptions = [
   { value: 'TITLE', label: '제목' },
   { value: 'CONTENT', label: '내용' },
@@ -20,24 +17,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      const performSearch = async () => {
-        try {
-          if (keyword.trim() === '') {
-            const result = await getAllPosting();
-            if (result?.success) {
-              onSearch(result.data);
-            }
-          } else {
-            const result = await searchPosting(searchType, keyword);
-            if (result?.success) {
-              onSearch(result.data);
-            }
-          }
-        } catch (error) {
-          console.error('검색 중 오류 발생:', error);
-        }
-      };
-      performSearch();
+      onSearch({ searchType, keyword });
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
@@ -58,7 +38,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <form className="max-w-lg w-full">
-      <div className="flex">
+      <div className="flex relative">
         {/* 드롭다운 버튼 */}
         <button
           type="button"
