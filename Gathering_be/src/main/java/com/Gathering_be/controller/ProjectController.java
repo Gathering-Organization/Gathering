@@ -9,10 +9,9 @@ import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.global.response.ResultResponse;
 import com.Gathering_be.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/project")
@@ -43,7 +42,7 @@ public class ProjectController {
                                                          @RequestParam(required = false) SearchType searchType,
                                                          @RequestParam(required = false) String keyword
     ) {
-        List<ProjectSimpleResponse> projects = projectService.searchProjectsWithFilters(
+        Page<ProjectSimpleResponse> projects = projectService.searchProjectsWithFilters(
                 page, 20, sort, position, techStack, type, mode, isClosed, searchType, keyword
         );
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
@@ -54,7 +53,7 @@ public class ProjectController {
                                                                 @RequestParam(defaultValue = "1") int page,
                                                                 @RequestParam(required = false) Boolean isClosed
     ) {
-        List<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname, page, 20, isClosed);
+        Page<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname, page, 20, isClosed);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
