@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import LoginModal from '@/components/LoginModal';
 import SignupModal from '@/components/SignupModal';
@@ -20,18 +20,18 @@ const Header: React.FC = () => {
   }, [cookies.accessToken]);
 
   return (
-    <header className="px-24 pb-10">
+    <header className="px-24 pb-4">
       <div className="flex justify-between py-4 items-center">
         <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/postHome')} />
 
-        <section className="flex items-center text-[18px] font-bold space-x-8">
+        <section className="flex items-center text-[18px] font-bold space-x-20">
           <button
             className="bordor-[#000000] border-solid rounded-[20px] border-2 px-4 py-1 hover:bg-[#B4B4B4]/30"
             onClick={onClickPostingButton}
           >
             모집글 작성하기
           </button>
-          {isLoggedIn && <button onClick={() => nav('/profile')}>프로필</button>}
+          {/* {isLoggedIn && <button onClick={() => nav('/profile')}>프로필</button>} */}
           {isLoggedIn ? (
             <LogoutButton />
           ) : (

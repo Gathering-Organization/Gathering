@@ -33,6 +33,7 @@ const PostHome: React.FC = () => {
   const [showInterested, setShowInterested] = useState<boolean>(false);
   const [hideClosed, setHideClosed] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   const [searchType, setSearchType] = useState('TITLE');
   const [keyword, setKeyword] = useState('');
@@ -75,6 +76,7 @@ const PostHome: React.FC = () => {
           alert('전체 모집글 조회가 완료되었습니다.');
           console.log(result.data);
           setPost(result.data);
+          setTotalPages(result.pagination.totalPages);
         } else {
           alert(result?.message || '전체 모집글 조회 중 오류가 발생했습니다.');
         }
@@ -276,9 +278,13 @@ const PostHome: React.FC = () => {
             <option value={'most'}>인기순</option>
           </select> */}
           </div>
-          <div className="z-0">
+          <div className="z-0 space-y-24">
             <PostList data={displayedPosts} onInterestToggle={updatePostInterest} />
-            <Pagination currentPage={page} totalPages={10} onPageChange={handlePageChange} />
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </DropdownDispatchContext.Provider>
