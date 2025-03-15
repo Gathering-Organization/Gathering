@@ -108,6 +108,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
       );
     }
   };
+
   return (
     <div className="text-center">
       <div>
@@ -148,25 +149,31 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               </div>
 
               {isEmailSent && (
-                <div className="flex items-center gap-2">
-                  <div className="w-24 font-bold text-[#202123]">인증번호</div>
-                  <input
-                    type="text"
-                    name="code"
-                    id="code"
-                    value={formData.code}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
-                    placeholder="인증번호를 입력하세요."
-                  />
-                  <button
-                    onClick={handleVerifyCode}
-                    className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 py-2 rounded-[16px]"
-                  >
-                    인증
-                  </button>
-                </div>
+                <>
+                  <div className="flex items-center gap-2">
+                    <div className="w-24 font-bold text-[#202123]">인증번호</div>
+                    <input
+                      type="text"
+                      name="code"
+                      id="code"
+                      value={formData.code}
+                      onChange={handleInputChange}
+                      required
+                      className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
+                      placeholder="인증번호를 입력하세요."
+                    />
+                    <button
+                      onClick={handleVerifyCode}
+                      className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 py-2 rounded-[16px]"
+                    >
+                      인증
+                    </button>
+                  </div>
+                  {/* 타이머를 추가하여 남은 시간을 표시 */}
+                  {timer !== null && (
+                    <div className="mt-2 text-red-500 font-semibold">남은 시간: {timer}초</div>
+                  )}
+                </>
               )}
             </>
           )}
