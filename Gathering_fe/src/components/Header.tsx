@@ -22,11 +22,11 @@ const Header: React.FC = () => {
   return (
     <header className="px-24 pb-4">
       <div className="flex justify-between py-4 items-center">
-        <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/postHome')} />
+        <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/')} />
 
-        <section className="flex items-center text-[18px] font-bold space-x-20">
+        <section className="flex items-center text-[18px] font-bold space-x-4">
           <button
-            className="bordor-[#000000] border-solid rounded-[20px] border-2 px-4 py-1 hover:bg-[#B4B4B4]/30"
+            className="bordor-[#000000] border-solid rounded-[20px] px-4 py-1 hover:bg-[#B4B4B4]/30"
             onClick={onClickPostingButton}
           >
             모집글 작성하기

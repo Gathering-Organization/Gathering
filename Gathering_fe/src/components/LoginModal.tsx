@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import Modal from '@/components/Modal';
 import {} from '@/services/api';
 import { LoginRequest } from '@/types/auth';
 import { login } from '@/services/authApi';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
 
 type LoginModalProps = {
   isOpen: boolean;
@@ -17,6 +17,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  useModalBodyLock(isModalOpen);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -57,8 +58,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
 
   return (
     <div>
-      <button className="text-[20px] font-bold relative left-4 inline-block" onClick={openModal}>
-        <span className="pr-8">로그인</span>
+      <button className="text-[20px] font-bold relative inline-block" onClick={openModal}>
+        <span className="rounded-[20px] px-4 py-1 hover:bg-[#B4B4B4]/30">로그인</span>
       </button>
 
       {isModalOpen && (

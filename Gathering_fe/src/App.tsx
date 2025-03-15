@@ -28,9 +28,10 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
             <Route element={<Layout />}>
-              <Route path="/" element={<Main />} />
+              {/* <Route path="/" element={<Main />} /> */}
+              <Route path="/" element={<PostHome />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/postHome" element={<PostHome />} />
+              {/* <Route path="/postHome" element={<PostHome />} /> */}
               <Route path="/posting" element={<Posting />} />
               <Route path="/viewPost/:id" element={<ViewPost />} />
               <Route path="/postEdit/:id" element={<PostEdit />} />
