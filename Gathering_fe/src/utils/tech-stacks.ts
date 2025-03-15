@@ -4,56 +4,46 @@ export interface TechStack {
 }
 
 export const techStacks: TechStack[] = [
-  {
-    id: 'JAVASCRIPT',
-    title: '자바스크립트'
-  },
-  {
-    id: 'TYPESCRIPT',
-    title: '타입스크립트'
-  },
-  {
-    id: 'REACT',
-    title: '리액트'
-  },
-  {
-    id: 'VUE',
-    title: '뷰'
-  },
-  {
-    id: 'NEXTJS',
-    title: 'Next.js'
-  },
-  {
-    id: 'NODEJS',
-    title: 'Node.js'
-  },
-  {
-    id: 'JAVA',
-    title: '자바'
-  },
-  {
-    id: 'SPRING',
-    title: '스프링'
-  },
-  {
-    id: 'KOTLIN',
-    title: '코틀린'
-  },
-  {
-    id: 'NESTJS',
-    title: 'NestJS'
-  },
-  {
-    id: 'SWIFT',
-    title: '스위프트'
-  },
-  {
-    id: 'FLUTTER',
-    title: '플러터'
-  },
-  {
-    id: 'FIGMA',
-    title: '피그마'
-  }
+  { id: 'JAVASCRIPT', title: 'JavaScript' },
+  { id: 'TYPESCRIPT', title: 'TypeScript' },
+  { id: 'REACT', title: 'React' },
+  { id: 'VUE', title: 'Vue.js' },
+  { id: 'NEXTJS', title: 'Next.js' },
+  { id: 'NUXTJS', title: 'Nuxt.js' },
+  { id: 'ANGULAR', title: 'Angular' },
+  { id: 'SVELTE', title: 'Svelte' },
+  { id: 'NODEJS', title: 'Node.js' },
+  { id: 'NESTJS', title: 'NestJS' },
+  { id: 'JAVA', title: 'Java' },
+  { id: 'KOTLIN', title: 'Kotlin' },
+  { id: 'SPRING', title: 'Spring' },
+  { id: 'PYTHON', title: 'Python' },
+  { id: 'DJANGO', title: 'Django' },
+  { id: 'FASTAPI', title: 'FastAPI' },
+  { id: 'FLASK', title: 'Flask' },
+  { id: 'PHP', title: 'PHP' },
+  { id: 'LARAVEL', title: 'Laravel' },
+  { id: 'C', title: 'C' },
+  { id: 'CPP', title: 'C++' },
+  { id: 'CS', title: 'C#' },
+  { id: 'R', title: 'R' },
+  { id: 'SWIFT', title: 'Swift' },
+  { id: 'FLUTTER', title: 'Flutter' },
+  { id: 'UNITY', title: 'Unity' },
+  { id: 'UNREALENGINE', title: 'Unreal Engine' },
+  { id: 'MYSQL', title: 'MySQL' },
+  { id: 'POSTGRESQL', title: 'PostgreSQL' },
+  { id: 'MONGODB', title: 'MongoDB' },
+  { id: 'SQLITE', title: 'SQLite' },
+  { id: 'FIREBASE', title: 'Firebase' },
+  { id: 'SUPABASE', title: 'Supabase' },
+  { id: 'AWS', title: 'AWS' },
+  { id: 'GCP', title: 'Google Cloud' },
+  { id: 'AZURE', title: 'Azure' },
+  { id: 'DOCKER', title: 'Docker' },
+  { id: 'KUBERNETES', title: 'Kubernetes' },
+  { id: 'FIGMA', title: 'Figma' },
+  { id: 'PHOTOSHOP', title: 'Photoshop' },
+  { id: 'ILLUSTRATOR', title: 'Illustrator' },
+  { id: 'PREMIERE', title: 'Premiere Pro' }
 ];

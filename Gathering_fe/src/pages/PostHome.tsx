@@ -213,7 +213,9 @@ const PostHome: React.FC = () => {
                 e.stopPropagation();
                 setIsDropdownOpen(!isDropdownOpen);
               }}
-              className="shrink-0 z-10 w-[120px] inline-flex items-center justify-between py-2.5 px-4 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+              className="shrink-0 z-10 w-[120px] inline-flex items-center justify-between py-1.5 px-4 font-bold font-sans text-[#000000]/50 
+              border-[3px] rounded-[40px] border-[#D9D9D9] hover:bg-gray-200 focus:ring-4 focus:outline-none dark:bg-gray-700
+               dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
             >
               {sortType === '-createdAt'
                 ? '최신순'
@@ -242,7 +244,7 @@ const PostHome: React.FC = () => {
                 ref={dropdownRef}
                 className="absolute top-full right-0 mt-1 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-20"
               >
-                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                <ul className="py-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
                   <li>
                     <button
                       onClick={() => onChangeSortType('최신순')}

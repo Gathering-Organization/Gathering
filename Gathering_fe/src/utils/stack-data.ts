@@ -2,61 +2,135 @@ import { MenuCategory } from '@/types/menu';
 export const stackData: MenuCategory[] = [
   {
     id: 'FRONTEND',
-    title: '프론트엔드',
+    title: 'Frontend',
     items: [
       { id: 'all', label: '전체' },
       {
         id: 'LANGUAGE',
         label: '언어',
         subItems: [
-          { id: 'JAVASCRIPT', label: '자바스크립트' },
-          { id: 'TYPESCRIPT', label: '타입스크립트' }
+          { id: 'JAVASCRIPT', label: 'JavaScript' },
+          { id: 'TYPESCRIPT', label: 'TypeScript' }
         ]
       },
       {
         id: 'FRAMEWORK',
-        label: '프레임워크',
+        label: '프레임워크 & 라이브러리',
         subItems: [
-          { id: 'REACT', label: '리액트' },
-          { id: 'VUE', label: '뷰' },
+          { id: 'REACT', label: 'React' },
+          { id: 'VUE', label: 'Vue.js' },
           { id: 'NEXTJS', label: 'Next.js' },
-          { id: 'NODEJS', label: 'Node.js' }
+          { id: 'NUXTJS', label: 'Nuxt.js' },
+          { id: 'ANGULAR', label: 'Angular' },
+          { id: 'SVELTE', label: 'Svelte' }
         ]
       }
     ]
   },
   {
     id: 'BACKEND',
-    title: '백엔드',
+    title: 'Backend',
     items: [
       { id: 'all', label: '전체' },
       {
         id: 'LANGUAGE',
         label: '언어',
         subItems: [
-          { id: 'JAVA', label: '자바' },
-          { id: 'KOTLIN', label: '코틀린' }
+          { id: 'JAVA', label: 'Java' },
+          { id: 'KOTLIN', label: 'Kotlin' },
+          { id: 'PYTHON', label: 'Python' },
+          { id: 'PHP', label: 'PHP' },
+          { id: 'C', label: 'C' },
+          { id: 'CPP', label: 'C++' },
+          { id: 'CS', label: 'C#' }
         ]
       },
       {
         id: 'FRAMEWORK',
         label: '프레임워크',
         subItems: [
-          { id: 'SPRING', label: '스프링' },
-          { id: 'NESTJS', label: 'NestJS' }
+          { id: 'SPRING', label: 'Spring' },
+          { id: 'NESTJS', label: 'NestJS' },
+          { id: 'DJANGO', label: 'Django' },
+          { id: 'FASTAPI', label: 'FastAPI' },
+          { id: 'FLASK', label: 'Flask' },
+          { id: 'LARAVEL', label: 'Laravel' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'MOBILE',
+    title: 'Mobile',
+    items: [
+      { id: 'all', label: '전체' },
+      {
+        id: 'FRAMEWORK',
+        label: '프레임워크',
+        subItems: [
+          { id: 'SWIFT', label: 'Swift' },
+          { id: 'FLUTTER', label: 'Flutter' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'DATABASE',
+    title: 'Database',
+    items: [
+      { id: 'all', label: '전체' },
+      {
+        id: 'DBMS',
+        label: '데이터베이스 관리 시스템',
+        subItems: [
+          { id: 'MYSQL', label: 'MySQL' },
+          { id: 'POSTGRESQL', label: 'PostgreSQL' },
+          { id: 'MONGODB', label: 'MongoDB' },
+          { id: 'SQLITE', label: 'SQLite' },
+          { id: 'FIREBASE', label: 'Firebase' },
+          { id: 'SUPABASE', label: 'Supabase' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'CLOUD',
+    title: 'Cloud & DevOps',
+    items: [
+      { id: 'all', label: '전체' },
+      {
+        id: 'CLOUD_SERVICES',
+        label: '클라우드 서비스',
+        subItems: [
+          { id: 'AWS', label: 'AWS' },
+          { id: 'GCP', label: 'Google Cloud' },
+          { id: 'AZURE', label: 'Azure' }
+        ]
+      },
+      {
+        id: 'DEVOPS',
+        label: 'DevOps 도구',
+        subItems: [
+          { id: 'DOCKER', label: 'Docker' },
+          { id: 'KUBERNETES', label: 'Kubernetes' }
         ]
       }
     ]
   },
   {
     id: 'DESIGN',
-    title: '디자인',
+    title: 'Design',
     items: [
       { id: 'all', label: '전체' },
       {
         id: 'TOOLS',
-        label: '도구',
-        subItems: [{ id: 'FIGMA', label: '피그마' }]
+        label: '디자인 도구',
+        subItems: [
+          { id: 'FIGMA', label: 'Figma' },
+          { id: 'PHOTOSHOP', label: 'Photoshop' },
+          { id: 'ILLUSTRATOR', label: 'Illustrator' },
+          { id: 'PREMIERE', label: 'Premiere Pro' }
+        ]
       }
     ]
   }
