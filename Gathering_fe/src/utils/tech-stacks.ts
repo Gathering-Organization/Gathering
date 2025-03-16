@@ -45,5 +45,21 @@ export const techStacks: TechStack[] = [
   { id: 'FIGMA', title: 'Figma' },
   { id: 'PHOTOSHOP', title: 'Photoshop' },
   { id: 'ILLUSTRATOR', title: 'Illustrator' },
-  { id: 'PREMIERE', title: 'Premiere Pro' }
+  { id: 'PREMIERE', title: 'Premiere Pro' },
+  { id: 'CLOUDFLARE', title: 'Cloudflare' },
+  { id: 'CSS', title: 'CSS' },
+  { id: 'DART', title: 'Dart' },
+  { id: 'EMOTION', title: 'Emotion' },
+  { id: 'EXPRESSJS', title: 'ExpressJS' },
+  { id: 'FORTRAN', title: 'Fortran' },
+  { id: 'GIT', title: 'Git' },
+  { id: 'GRAPHQL', title: 'GraphQL' },
+  { id: 'HTML', title: 'HTML' },
+  { id: 'MATLAB', title: 'Matlab' },
+  { id: 'POSTMAN', title: 'Postman' },
+  { id: 'RUST', title: 'Rust' },
+  { id: 'SASS', title: 'Sass' },
+  { id: 'TAILWINDCSS', title: 'TailwindCSS' },
+  { id: 'VERCEL', title: 'Vercel' },
+  { id: 'VITE', title: 'Vite' }
 ];

@@ -14,9 +14,10 @@ import { getUserProfile } from '@/services/profileApi';
 import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
+import OptionalDropdown from '@/components/OptionalDropdown';
 
 interface DropdownDispatchContextType {
-  setSelectedStack: (value: string) => void;
+  setSelectedStack: (value: string[]) => void;
   setSelectedPosition: (value: string) => void;
 }
 
@@ -28,7 +29,7 @@ const PostHome: React.FC = () => {
   const [sortType, setSortType] = useState('-createdAt');
   const [post, setPost] = useState<approxPostInfo[]>([]);
   const [selectedType, setSelectedType] = useState<string>('ALL');
-  const [selectedStack, setSelectedStack] = useState<string>('전체');
+  const [selectedStack, setSelectedStack] = useState<string[]>(['전체']);
   const [selectedPosition, setSelectedPosition] = useState<string>('전체');
   const [showInterested, setShowInterested] = useState<boolean>(false);
   const [hideClosed, setHideClosed] = useState<boolean>(false);
@@ -65,7 +66,7 @@ const PostHome: React.FC = () => {
           page,
           sortType,
           selectedPosition !== '전체' ? selectedPosition : '',
-          selectedStack !== '전체' ? [selectedStack] : [],
+          selectedStack[0] !== '전체' ? selectedStack : [],
           selectedType !== 'ALL' ? selectedType : '',
           '',
           hideClosed,
@@ -180,8 +181,8 @@ const PostHome: React.FC = () => {
             </div>
           </div>
           <div className="flex justify-between items-center relative">
-            <section className="flex text-[16px] font-bold space-x-8 text-[#B4B4B4] pb-4 z-10">
-              <MultiLevelDropdown
+            <section className="flex text-[16px] font-bold space-x-8 text-[#B4B4B4] z-10">
+              <OptionalDropdown
                 menuData={stackData}
                 label="기술 스택"
                 align="left"
@@ -214,7 +215,7 @@ const PostHome: React.FC = () => {
                 setIsDropdownOpen(!isDropdownOpen);
               }}
               className="shrink-0 z-10 w-[120px] inline-flex items-center justify-between py-1.5 px-4 font-bold font-sans text-[#000000]/50 
-              border-[3px] rounded-[40px] border-[#D9D9D9] hover:bg-gray-200 focus:ring-4 focus:outline-none dark:bg-gray-700
+              border-[3px] rounded-lg border-[#D9D9D9] hover:bg-gray-200 focus:ring-4 focus:outline-none dark:bg-gray-700
                dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
             >
               {sortType === '-createdAt'
@@ -222,7 +223,7 @@ const PostHome: React.FC = () => {
                 : sortType === 'createdAt'
                   ? '오래된순'
                   : '인기순'}
-              <svg
+              {/* <svg
                 className="w-2.5 h-2.5"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -235,6 +236,21 @@ const PostHome: React.FC = () => {
                   strokeWidth="2"
                   d="m1 1 4 4 4-4"
                 />
+              </svg> */}
+              <svg
+                className={`w-4 h-4 ml-2 transition-transform duration-200 ${
+                  isDropdownOpen ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="3"
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
@@ -242,7 +258,7 @@ const PostHome: React.FC = () => {
             {isDropdownOpen && (
               <div
                 ref={dropdownRef}
-                className="absolute top-full right-0 mt-1 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-20"
+                className="absolute top-full right-0 mt-1 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20"
               >
                 <ul className="py-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
                   <li>

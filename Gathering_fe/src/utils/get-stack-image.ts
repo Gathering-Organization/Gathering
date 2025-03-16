@@ -53,9 +53,9 @@ import unrealEngine from '@/assets/stackIcons/UnrealEngine.svg';
 import vercel from '@/assets/stackIcons/Vercel-Light.svg';
 import vite from '@/assets/stackIcons/Vite-Light.svg';
 import vue from '@/assets/stackIcons/Vue.svg';
-import vueJs from '@/assets/stackIcons/VueJS-Light.svg';
 import azure from '@/assets/stackIcons/Azure-Light.svg';
 import kubernetes from '@/assets/stackIcons/Kubernetes.svg';
+import laravel from '@/assets/stackIcons/Laravel-Light.svg';
 
 export function getStackImage(stack: string) {
   switch (stack) {
@@ -169,12 +169,12 @@ export function getStackImage(stack: string) {
       return vite;
     case 'VUE':
       return vue;
-    case 'VUEJS':
-      return vueJs;
     case 'AZURE':
       return azure;
     case 'KUBERNETES':
       return kubernetes;
+    case 'LARAVEL':
+      return laravel;
     default:
       return null;
   }

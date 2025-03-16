@@ -4,12 +4,12 @@ import Footer from './Footer';
 
 const Layout: React.FC = () => {
   return (
-    <>
+    <div className="select-none">
       <Header />
       <Outlet />
       <div className="pb-[120px]"></div>
       <Footer />
-    </>
+    </div>
   );
 };
 
