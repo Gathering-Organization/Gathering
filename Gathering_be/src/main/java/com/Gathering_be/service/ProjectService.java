@@ -7,10 +7,7 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
-import com.Gathering_be.exception.InvalidEnumValue;
-import com.Gathering_be.exception.ProfileNotFoundException;
-import com.Gathering_be.exception.ProjectNotFoundException;
-import com.Gathering_be.exception.UnauthorizedAccessException;
+import com.Gathering_be.exception.*;
 import com.Gathering_be.global.enums.*;
 import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.repository.InterestProjectRepository;
@@ -105,10 +102,14 @@ public class ProjectService {
                                                                  String techStack, String type, String mode, Boolean isClosed,
                                                                  SearchType searchType, String keyword) {
         Long currentUserId = getCurrentUserId();
+        Sort sortCondition = switch (sort) {
+            case "-createdAt" -> Sort.by(Sort.Order.desc("createdAt"));
+            case "createdAt" -> Sort.by(Sort.Order.asc("createdAt"));
+            case "viewCount" -> Sort.by(Sort.Order.desc("viewCount"));
+            default -> throw new InvalidSortTypeException();
+        };
 
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(
-                sort.equals("-createdAt") ? Sort.Order.desc("createdAt") : Sort.Order.desc("viewCount")
-        ));
+        Pageable pageable = PageRequest.of(page - 1, size,sortCondition);
 
         JobPosition positionEnum = parseEnum(JobPosition.class, position);
         ProjectType typeEnum = parseEnum(ProjectType.class, type);
