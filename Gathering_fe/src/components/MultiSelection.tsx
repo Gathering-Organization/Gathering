@@ -60,10 +60,10 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
     <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="relative w-full text-left bg-gray-50 dark:bg-[#1E2028] p-3 px-6 border border-[#000000]/20 rounded-[30px] dark:border-gray-700 rounded-[20px] px-4 py-2.5 focus:outline-none"
         onClick={toggleDropdown}
+        className="w-full text-left cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-sm rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
       >
-        <div className="flex flex-wrap gap-1 min-h-6">
+        <div className="flex flex-wrap gap-1 max-h-12 overflow-auto items-center">
           {selectedOptions.length === 0 ? (
             <span className="text-sm text-gray-500 dark:text-gray-400">{title}</span>
           ) : (
@@ -94,9 +94,13 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
           )}
         </div>
 
-        <span className="absolute inset-y-0 right-3 flex items-center">
+        <span
+          className={`absolute inset-y-0 right-3 flex items-center transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        >
           <svg
-            className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className="w-5 h-5 text-gray-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -107,7 +111,7 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+        <div className="absolute z-10 w-full mt-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-[20px] shadow-lg overflow-hidden">
           <div className="sticky top-0 p-2 bg-white dark:bg-[#1E2028] border-b border-gray-200 dark:border-gray-700">
             <input
               type="text"
@@ -120,27 +124,27 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
 
           <ul className="max-h-60 overflow-auto py-1" role="listbox">
             <li className="relative px-2">
-              <label className="flex items-center px-2 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer rounded-md">
+              <label className="flex items-center px-2 py-2 text-sm hover:bg-[#3387E5]/20 dark:hover:bg-gray-800 cursor-pointer">
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-indigo-500 border-gray-300 rounded focus:ring-indigo-500"
                   checked={selectedOptions.length === options.length}
                   onChange={toggleSelectAll}
                 />
-                <span className="ml-2 text-black dark:text-white">모두 선택</span>
+                <span className="ml-2 text-sm text-gray-500 dark:text-white">모두 선택</span>
               </label>
             </li>
 
             {filteredOptions.map(option => (
               <li key={option} className="relative px-2">
-                <label className="flex items-center px-2 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer rounded-md">
+                <label className="flex items-center px-2 py-2 text-sm hover:bg-[#3387E5]/20 dark:hover:bg-gray-800 cursor-pointer">
                   <input
                     type="checkbox"
                     className="form-checkbox h-4 w-4 text-indigo-500 border-gray-300 rounded focus:ring-indigo-500"
                     checked={selectedOptions.includes(option)}
                     onChange={() => handleSelect(option)}
                   />
-                  <span className="ml-2 text-black dark:text-white">{option}</span>
+                  <span className="ml-2 text-sm text-gray-500 dark:text-white">{option}</span>
                 </label>
               </li>
             ))}

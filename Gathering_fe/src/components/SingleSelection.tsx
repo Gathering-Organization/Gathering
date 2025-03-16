@@ -14,11 +14,11 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
   setSelectedValue
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const selectRef = useRef<HTMLSelectElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -26,22 +26,17 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  return (
-    <div className="relative w-full">
-      <select
-        ref={selectRef}
-        onChange={e => setSelectedValue(e.target.value)}
-        onClick={() => setIsOpen(prev => !prev)}
-        className="cursor-pointer appearance-none bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-sm rounded-[20px] focus:outline-none block w-full p-3 px-6 pr-10 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-      >
-        <option value="">{title}</option>
-        {options.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+  const selectedLabel = options.find(option => option.value === selectedValue)?.label || title;
 
+  return (
+    <div ref={dropdownRef} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setIsOpen(prev => !prev)}
+        className="w-full text-left cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-sm rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
+      >
+        {selectedLabel}
+      </button>
       <span
         className={`absolute inset-y-0 right-3 flex items-center transition-transform duration-200 ${
           isOpen ? 'rotate-180' : ''
@@ -56,6 +51,22 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
         </svg>
       </span>
+      {isOpen && (
+        <div className="absolute z-10 mt-2 w-full bg-white dark:bg-[#1E2028] border border-gray-300 rounded-[20px] shadow-lg overflow-hidden">
+          {options.map(option => (
+            <div
+              key={option.value}
+              onClick={() => {
+                setSelectedValue(option.value);
+                setIsOpen(false);
+              }}
+              className="cursor-pointer px-6 py-2 text-sm text-gray-500 dark:text-white hover:bg-[#3387E5]/20 dark:hover:bg-gray-800"
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// 다른 항목을 입력하면 사용 스택에도 리렌더링이 발생해서 최적화가 필요함
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { setPosting } from '@/services/postApi';
@@ -7,7 +6,6 @@ import { PostingInfo } from '@/types/post';
 import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { useProfile } from '@/contexts/ProfileStateContext';
-import { ProfileInfo } from '@/types/profile';
 import { positionData } from '@/utils/position-data';
 import { techStacks } from '@/utils/tech-stacks';
 import SingleSelection from '@/components/SingleSelection';
@@ -23,7 +21,8 @@ interface TechStack {
 }
 
 const Posting: React.FC = () => {
-  const [projectType, setProjectType] = useState('');
+  const [projectType, setProjectType] = useState<string>('');
+  const [selectedTotalMembers, setSelectedTotalMembers] = useState<string>('0');
 
   const projectTypeOptions = [
     { label: '프로젝트', value: 'PROJECT' },
@@ -47,6 +46,20 @@ const Posting: React.FC = () => {
     { label: '6개월 이상', value: 'SIX' }
   ];
 
+  const totalMemberOptions = [
+    { label: '미정', value: '0' },
+    { label: '1명', value: '1' },
+    { label: '2명', value: '2' },
+    { label: '3명', value: '3' },
+    { label: '4명', value: '4' },
+    { label: '5명', value: '5' },
+    { label: '6명', value: '6' },
+    { label: '7명', value: '7' },
+    { label: '8명', value: '8' },
+    { label: '9명', value: '9' },
+    { label: '10명 이상', value: '10' }
+  ];
+
   const [startDate, setStartDate] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
     endDate: null
@@ -59,7 +72,8 @@ const Posting: React.FC = () => {
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
-  const [selectedDuration, setSelectedDuration] = useState('');
+  const [selectedDuration, setSelectedDuration] = useState<string>('');
+  const [selectedProjectMode, setSelectedProjectMode] = useState<string>('');
   const [post, setPost] = useState<PostingInfo>({
     title: '',
     description: '',
@@ -74,11 +88,6 @@ const Posting: React.FC = () => {
     teams: [],
     requiredPositions: []
   });
-
-  // const onChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  //   const { name, value } = e.target;
-  //   setPost(prev => ({ ...prev, [name]: value }));
-  // };
 
   const onCreate = async () => {
     console.log('최종 저장 데이터: ', post);
@@ -130,11 +139,6 @@ const Posting: React.FC = () => {
         />
       </section>
       <hr className="w-[1050px] justify-self-center border-[#000000]/15" />
-      {/* <section className="bg-white p-6 rounded-lg shadow mb-4">
-        <label className="block font-semibold mb-2">
-          #{profile.profileColor} {profile.nickname}
-        </label>
-      </section> */}
 
       <div className="grid grid-cols-2 gap-2 py-10">
         <section className="px-6 py-2">
@@ -143,57 +147,23 @@ const Posting: React.FC = () => {
             title="모집 구분"
             options={projectTypeOptions}
             selectedValue={projectType}
-            setSelectedValue={setProjectType}
+            setSelectedValue={value => {
+              setProjectType(value);
+              setPost(prev => ({ ...prev, projectType: value }));
+            }}
           />
-          {/* <label className="block mb-2">모집 구분</label>
-          <div className="relative w-full">
-            <select
-              onChange={e => setPost({ ...post, projectType: e.target.value })}
-              id="countries"
-              className="appearance-none bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 pr-10 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            >
-              <option selected>모집 구분</option>
-              <option value="PROJECT">프로젝트</option>
-              <option value="CONTEST">대회</option>
-              <option value="STUDY">스터디</option>
-              <option value="OTHER">기타</option>
-            </select>
-
-            <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-              <svg
-                className="w-5 h-5 text-gray-400 transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </span>
-          </div> */}
         </section>
         <section className="px-6 py-2">
           <label className="block mb-2">진행 방식</label>
           <SingleSelection
             title="진행 방식"
             options={projectModeOptions}
-            selectedValue={projectType}
-            setSelectedValue={setProjectType}
+            selectedValue={selectedProjectMode}
+            setSelectedValue={value => {
+              setSelectedProjectMode(value);
+              setPost(prev => ({ ...prev, projectMode: value }));
+            }}
           />
-          {/* <select
-            onChange={e => setPost({ ...post, projectMode: e.target.value })}
-            id="countries"
-            className="bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-          >
-            <option selected>진행 방식</option>
-            <option value="ONLINE">온라인</option>
-            <option value="OFFLINE">오프라인</option>
-            <option value="BLENDED">온+오프라인</option>
-          </select> */}
         </section>
         <section className="px-6 py-2">
           <label className="block mb-2">시작 예정</label>
@@ -207,6 +177,7 @@ const Posting: React.FC = () => {
             }}
             asSingle={true}
             useRange={false}
+            inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
           />
         </section>
 
@@ -222,16 +193,19 @@ const Posting: React.FC = () => {
             }}
             asSingle={true}
             useRange={false}
+            inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
           />
         </section>
         <section className="px-6 py-2">
           <label className="block mb-2">모집 인원</label>
-          <input
-            onChange={e => setPost({ ...post, totalMembers: Number(e.target.value) })}
-            type="text"
-            name="title"
-            className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm"
-            placeholder="모집 인원"
+          <SingleSelection
+            title="모집 인원"
+            options={totalMemberOptions}
+            selectedValue={selectedTotalMembers}
+            setSelectedValue={(value: string) => {
+              setSelectedTotalMembers(value);
+              setPost(prev => ({ ...prev, totalMembers: Number(value) }));
+            }}
           />
         </section>
 
@@ -241,7 +215,7 @@ const Posting: React.FC = () => {
             onChange={e => setPost({ ...post, kakaoUrl: e.target.value })}
             type="text"
             name="kakaoUrl"
-            className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm"
+            className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm focus:outline-none"
             placeholder="카카오톡 오픈채팅 URL"
           />
         </section>
@@ -254,7 +228,7 @@ const Posting: React.FC = () => {
             }}
             type="text"
             name="teams"
-            className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm"
+            className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm focus:outline-none"
             placeholder="팀원 태그 ex) @게더링#248834, @게더링하이#546931"
           />
         </section>
@@ -269,16 +243,6 @@ const Posting: React.FC = () => {
               setPost(prev => ({ ...prev, duration: value }));
             }}
           />
-          {/* <select
-            onChange={e => setPost({ ...post, duration: e.target.value })}
-            id="countries"
-            className="bg-white dark:bg-[#1E2028] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-          >
-            <option selected>진행 방식</option>
-            <option value="ONE">1개월</option>
-            <option value="TWO">2개월</option>
-            <option value="THR">3개월</option>
-          </select> */}
         </section>
         <section className="px-6 py-2">
           <label className="block mb-2">모집 포지션</label>
