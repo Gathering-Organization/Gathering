@@ -64,10 +64,13 @@ const PostItem: React.FC<
   };
 
   const parts = authorNickname.split(/(#\d+)/);
+  const visibleTechStacks = techStacks.slice(0, 3);
+  const extraTechStacksCount = techStacks.length - 3;
+
   return (
     <div
       onClick={() => nav(`/viewPost/${projectId}`)}
-      className="relative transform transition duration-200 ease-in-out hover:scale-105 cursor-pointer select-none w-85"
+      className="relative transform transition duration-200 ease-in-out hover:scale-105 cursor-pointer select-none w-85 will-change-transform"
     >
       <section className="border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative">
         <label className="absolute right-6 top-4 cursor-pointer" onClick={e => e.stopPropagation()}>
@@ -125,13 +128,18 @@ const PostItem: React.FC<
             })}
           </div>
           <div className="font-semibold py-4">
-            <div className="font-semibold py-2 flex flex-wrap gap-2">
-              {techStacks
-                .map(item => getStackImage(item.toUpperCase()))
-                .filter(Boolean)
-                .map((src, index) => (
-                  <img key={index} src={src!} alt={techStacks[index]} className="w-10 h-10" />
-                ))}
+            <div className="font-semibold py-2 flex flex-wrap gap-4">
+              {visibleTechStacks.map((item, index) => {
+                const imageSrc = getStackImage(item.toUpperCase());
+                return imageSrc ? (
+                  <img key={index} src={imageSrc} alt={item} className="w-10 h-10" />
+                ) : null;
+              })}
+              {extraTechStacksCount > 0 && (
+                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px]">
+                  +{extraTechStacksCount}
+                </div>
+              )}
             </div>
           </div>
         </section>

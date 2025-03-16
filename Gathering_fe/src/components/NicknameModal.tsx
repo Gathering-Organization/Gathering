@@ -11,7 +11,7 @@ interface NicknameModalProps {
 const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNickname, setNewNickname] = useState(nickname);
-  const { profile, updateProfileData } = useProfile();
+  const { myProfile, updateProfileData } = useProfile();
 
   const openModal = () => {
     setIsModalOpen(true);
