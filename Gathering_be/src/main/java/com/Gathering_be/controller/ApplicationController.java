@@ -37,7 +37,7 @@ public class ApplicationController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) ApplyStatus status
     ) {
-        Page<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname, page, 20, status);
+        Page<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname, page, 18, status);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 
