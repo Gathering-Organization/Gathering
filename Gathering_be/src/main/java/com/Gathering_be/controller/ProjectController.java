@@ -43,7 +43,7 @@ public class ProjectController {
                                                          @RequestParam(required = false) String keyword
     ) {
         Page<ProjectSimpleResponse> projects = projectService.searchProjectsWithFilters(
-                page, 20, sort, position, techStack, type, mode, isClosed, searchType, keyword
+                page, 18, sort, position, techStack, type, mode, isClosed, searchType, keyword
         );
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
@@ -53,7 +53,7 @@ public class ProjectController {
                                                                 @RequestParam(defaultValue = "1") int page,
                                                                 @RequestParam(required = false) Boolean isClosed
     ) {
-        Page<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname, page, 20, isClosed);
+        Page<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname, page, 18, isClosed);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 

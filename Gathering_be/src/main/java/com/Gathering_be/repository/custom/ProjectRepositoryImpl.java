@@ -6,6 +6,7 @@ import com.Gathering_be.exception.InvalidSearchTypeException;
 import com.Gathering_be.global.enums.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     private final JPAQueryFactory queryFactory;
+    private final QProject project = QProject.project;
 
     @Autowired
     public ProjectRepositoryImpl(EntityManager entityManager) {
@@ -36,7 +39,6 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                                    Boolean isClosed,
                                                    SearchType searchType,
                                                    String keyword) {
-        QProject project = QProject.project;
         BooleanBuilder builder = new BooleanBuilder();
 
         if (searchType!= null && keyword != null && !keyword.isEmpty()) {
@@ -82,8 +84,21 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(getOrderSpecifier(pageable))
                 .fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    private OrderSpecifier<?> getOrderSpecifier(Pageable pageable) {
+        for (Sort.Order order : pageable.getSort()) {
+            switch (order.getProperty()) {
+                case "createdAt":
+                    return order.isAscending() ? project.createdAt.asc() : project.createdAt.desc();
+                case "viewCount":
+                    return order.isAscending() ? project.viewCount.asc() : project.viewCount.desc();
+            }
+        }
+        return project.createdAt.desc();
     }
 }
