@@ -32,7 +32,7 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
         ref={selectRef}
         onChange={e => setSelectedValue(e.target.value)}
         onClick={() => setIsOpen(prev => !prev)}
-        className="appearance-none bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-sm rounded-[20px] focus:outline-none block w-full p-3 px-6 pr-10 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        className="cursor-pointer appearance-none bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-sm rounded-[20px] focus:outline-none block w-full p-3 px-6 pr-10 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
       >
         <option value="">{title}</option>
         {options.map(option => (

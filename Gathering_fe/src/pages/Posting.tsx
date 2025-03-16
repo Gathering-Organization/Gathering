@@ -58,8 +58,8 @@ const Posting: React.FC = () => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const [stackList] = useState<TechStack[]>([...techStacks]);
-  console.log(...techStacks);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
+  const [selectedDuration, setSelectedDuration] = useState('');
   const [post, setPost] = useState<PostingInfo>({
     title: '',
     description: '',
@@ -263,8 +263,11 @@ const Posting: React.FC = () => {
           <SingleSelection
             title="예상 기간"
             options={durationOptions}
-            selectedValue={projectType}
-            setSelectedValue={setProjectType}
+            selectedValue={selectedDuration}
+            setSelectedValue={value => {
+              setSelectedDuration(value);
+              setPost(prev => ({ ...prev, duration: value }));
+            }}
           />
           {/* <select
             onChange={e => setPost({ ...post, duration: e.target.value })}

@@ -94,7 +94,7 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
           )}
         </div>
 
-        <span className="absolute inset-y-0 right-0 flex items-center pr-2">
+        <span className="absolute inset-y-0 right-3 flex items-center">
           <svg
             className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
             fill="none"
