@@ -19,10 +19,18 @@ const Header: React.FC = () => {
     setIsLoggedIn(!!cookies.accessToken);
   }, [cookies.accessToken]);
 
+  const onLogoClick = () => {
+    if (window.location.pathname === '/') {
+      window.location.reload();
+    } else {
+      nav('/');
+    }
+  };
+
   return (
     <header className="px-24 pb-10">
       <div className="ms-8 flex justify-between py-4 items-center">
-        <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/')} />
+        <img className="cursor-pointer" src={gatheringLogo} onClick={onLogoClick} />
 
         <section className="flex items-center text-[20px] font-bold space-x-4">
           <button

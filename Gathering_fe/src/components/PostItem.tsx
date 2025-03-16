@@ -67,6 +67,9 @@ const PostItem: React.FC<
   const visibleTechStacks = techStacks.slice(0, 3);
   const extraTechStacksCount = techStacks.length - 3;
 
+  const visiblePositions = requiredPositions.slice(0, 2);
+  const extraPositionsCount = requiredPositions.length - 2;
+
   return (
     <div
       onClick={() => nav(`/viewPost/${projectId}`)}
@@ -113,7 +116,7 @@ const PostItem: React.FC<
           <div className="font-bold pb-6 bg-transparent border-none text-left text-[20px]">
             {title}
           </div>
-          <div className="flex flex-wrap gap-2">
+          {/* <div className="flex flex-wrap gap-2">
             {requiredPositions.map((positionId, index) => {
               const positionTitle =
                 positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
@@ -126,6 +129,25 @@ const PostItem: React.FC<
                 </div>
               );
             })}
+          </div> */}
+          <div className="flex flex-wrap gap-2">
+            {visiblePositions.map((positionId, index) => {
+              const positionTitle =
+                positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
+              return (
+                <div
+                  key={index}
+                  className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
+                >
+                  {positionTitle}
+                </div>
+              );
+            })}
+            {extraPositionsCount > 0 && (
+              <div className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block">
+                +{extraPositionsCount}
+              </div>
+            )}
           </div>
           <div className="font-semibold py-4">
             <div className="font-semibold py-2 flex flex-wrap gap-4">
