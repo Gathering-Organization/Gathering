@@ -29,6 +29,7 @@ public enum TechStack {
     JAVASCRIPT("JavaScript"),
     KOTLIN("Kotlin"),
     KUBERNETES("Kubernetes"),
+    LARAVEL("Laravel"),
     MATLAB("MATLAB"),
     MONGODB("MongoDB"),
     MYSQL("MySQL"),
@@ -58,7 +59,6 @@ public enum TechStack {
     VERCEL("Vercel"),
     VITE("Vite"),
     VUE("Vue"),
-    VUEJS("Vue.js"),
     ;
 
     private final String description;
