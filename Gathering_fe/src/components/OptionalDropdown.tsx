@@ -78,17 +78,14 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
       return updatedLabels;
     });
   };
-  // 상태 변경 후 API 호출
+
   useEffect(() => {
     if (selectedItems.length > 0) {
-      // 여기에 API 호출 코드 넣기
       console.log('API 호출: 선택된 항목들:', selectedItems);
-      // 예시: API 호출 함수 호출
-      // apiCall(selectedItems);
     } else {
       console.log('선택된 항목이 없습니다.');
     }
-  }, [selectedItems]); // selectedItems가 변경될 때마다 실행
+  }, [selectedItems]);
 
   return (
     <div className="relative inline-block text-left select-none" ref={dropdownRef}>
@@ -126,7 +123,6 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
                   onClick={() => {
                     const newId = activeSubmenuId === item.id ? null : item.id;
                     setActiveSubmenuId(newId);
-                    // 주요 카테고리 변경 시 2단계 메뉴 초기화
                     if (newId !== activeSubmenuId) {
                       setActiveSubmenuId2(null);
                     }
@@ -164,7 +160,7 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
                   .find(item => item.id === activeSubmenuId)
                   ?.items?.find(subItem => subItem.id === activeSubmenuId2)
                   ?.subItems?.map(subItem => {
-                    const iconSrc = getStackImage(subItem.id.toUpperCase()); // 스택 이미지 가져오기
+                    const iconSrc = getStackImage(subItem.id.toUpperCase());
 
                     return (
                       <div
@@ -173,7 +169,7 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
                         className={`flex items-center px-4 py-2 text-sm text-black dark:text-white cursor-pointer 
               ${
                 selectedItems.includes(subItem.id)
-                  ? 'bg-[#3387E5] text-white' // 선택된 항목
+                  ? 'bg-[#3387E5] text-white'
                   : 'hover:bg-gray-100 dark:hover:bg-gray-800'
               } // hover 효과`}
                       >

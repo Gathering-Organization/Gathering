@@ -54,21 +54,14 @@ const LogoutButton: React.FC = () => {
           />
           <div className="font-bold">{parts[0]}</div>
           <img
-            className="w-4 h-4 transition-transform duration-200"
+            className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
             src={triangleArrowIcon}
             alt="Dropdown arrow"
           />
-          {/* <img
-            className={`w-4 h-4 transition-transform duration-200 ${
-              isDropdownOpen ? 'rotate-180' : ''
-            }`}
-            src={triangleArrowIcon}
-            alt="Dropdown arrow"
-          /> */}
         </div>
       </button>
       {isDropdownOpen && (
-        <div className="absolute border-[#000000] right-0 mt-2 w-48 bg-white border border-r-[5px] border-b-[5px] rounded-[10px] z-50">
+        <div className="absolute border-[#000000] right-0 shadow-lg ring-1 ring-black ring-opacity-5 mt-2 w-48 bg-white rounded-[10px] z-50">
           <button
             className="block w-full text-[16px] text-center px-4 py-2 rounded-[10px] hover:bg-gray-100"
             onClick={() => {

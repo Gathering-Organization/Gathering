@@ -174,13 +174,13 @@ const PostHome: React.FC = () => {
     <ProfileCacheContext.Provider value={{ profileCache }}>
       <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
         <div className="mx-28 space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="mx-6 flex justify-between items-center">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
             <div className="flex justify-end w-[600px]">
               <SearchBar onSearch={handleSearch} />
             </div>
           </div>
-          <div className="flex justify-between items-center relative">
+          <div className="mx-4 flex justify-between items-center relative pb-4">
             <section className="flex text-[16px] font-bold space-x-8 text-[#B4B4B4] z-10">
               <OptionalDropdown
                 menuData={stackData}
@@ -223,20 +223,6 @@ const PostHome: React.FC = () => {
                 : sortType === 'createdAt'
                   ? '오래된순'
                   : '인기순'}
-              {/* <svg
-                className="w-2.5 h-2.5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 1 4 4 4-4"
-                />
-              </svg> */}
               <svg
                 className={`w-4 h-4 ml-2 transition-transform duration-200 ${
                   isDropdownOpen ? 'rotate-180' : ''

@@ -39,6 +39,10 @@ export const getAllPosting = async (
     const response = await api.get(
       `/project/pagination?page=${page}&sort=${sort}&position=${position}&techStack=${techStackParam}&type=${type}&mode=${mode}&isClosed=${isClosed}&searchType=${searchType}&keyword=${keyword}`
     );
+    console.log(
+      '요청 API:',
+      `/project/pagination?page=${page}&sort=${sort}&position=${position}&techStack=${techStackParam}&type=${type}&mode=${mode}&isClosed=${isClosed}&searchType=${searchType}&keyword=${keyword}`
+    );
     console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {

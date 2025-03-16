@@ -7,7 +7,7 @@ type ProjecTypeFilterProps = {
 
 const ProjecTypeFilter: React.FC<ProjecTypeFilterProps> = ({ selectedType, setSelectedType }) => {
   return (
-    <div className="text-[24px] font-bold space-x-8 flex">
+    <div className="text-[28px] font-bold space-x-8 flex">
       {projectType.map(item => (
         <button
           onClick={() => setSelectedType(item.projectType)}

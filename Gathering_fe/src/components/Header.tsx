@@ -21,7 +21,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="px-24 pb-10">
-      <div className="flex justify-between py-4 items-center">
+      <div className="ms-8 flex justify-between py-4 items-center">
         <img className="cursor-pointer" src={gatheringLogo} onClick={() => nav('/')} />
 
         <section className="flex items-center text-[20px] font-bold space-x-4">
