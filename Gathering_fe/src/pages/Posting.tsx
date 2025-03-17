@@ -9,6 +9,7 @@ import { useProfile } from '@/contexts/ProfileStateContext';
 import { positionData } from '@/utils/position-data';
 import { techStacks } from '@/utils/tech-stacks';
 import SingleSelection from '@/components/SingleSelection';
+import { useNavigate } from 'react-router-dom';
 
 interface Position {
   id: string;
@@ -21,6 +22,7 @@ interface TechStack {
 }
 
 const Posting: React.FC = () => {
+  const nav = useNavigate();
   const [projectType, setProjectType] = useState<string>('');
   const [selectedTotalMembers, setSelectedTotalMembers] = useState<string>('0');
 
@@ -113,6 +115,7 @@ const Posting: React.FC = () => {
 
       if (result?.success) {
         alert('모집글 작성이 완료되었습니다.');
+        nav('/');
       } else {
         alert(result?.message || '모집글 작성 중 오류가 발생했습니다.');
       }

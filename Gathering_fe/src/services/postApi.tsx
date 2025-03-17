@@ -29,7 +29,7 @@ export const getAllPosting = async (
   techStack: string[],
   type: string,
   mode: string,
-  isClosed: boolean,
+  isClosed: boolean | string,
   searchType: string,
   keyword: string
 ) => {
@@ -155,6 +155,24 @@ export const deletePosting = async (id: number) => {
     }
   } catch (error: unknown) {
     console.error('모집글 삭제 실패:', error);
+
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
+
+export const setPublic = async (projectId: number) => {
+  try {
+    const response = await api.put(`/project/toggle/isClosed/${projectId}`, { projectId });
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error: unknown) {
+    console.error('완료 여부 변경 실패:', error);
 
     if (error instanceof AxiosError) {
       console.error('서버 응답:', error.response?.data);

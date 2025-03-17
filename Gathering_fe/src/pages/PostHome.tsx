@@ -35,7 +35,7 @@ const PostHome: React.FC = () => {
   const [hideClosed, setHideClosed] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [totalPages, setTotalPages] = useState<number>(1);
-
+  const closedOption = hideClosed ? false : '';
   const [searchType, setSearchType] = useState('TITLE');
   const [keyword, setKeyword] = useState('');
 
@@ -69,7 +69,7 @@ const PostHome: React.FC = () => {
           selectedStack[0] !== '전체' ? selectedStack : [],
           selectedType !== 'ALL' ? selectedType : '',
           '',
-          hideClosed,
+          closedOption,
           searchType,
           keyword
         );
