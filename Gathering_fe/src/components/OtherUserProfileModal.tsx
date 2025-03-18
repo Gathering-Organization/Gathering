@@ -19,7 +19,7 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="relative p-6 w-full max-w-2xl bg-white rounded-lg shadow-lg">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="text-xl font-semibold text-gray-900">{parts[0]}의 프로필</h3>
+          <h3 className="text-xl font-semibold text-gray-900">{profile.nickname}의 프로필</h3>
           <button className="text-gray-400 hover:text-gray-900 rounded-lg p-2" onClick={onClose}>
             ✕
           </button>

@@ -64,6 +64,7 @@ export interface approxPostInfo {
 }
 
 export interface partPostInfo {
+  viewCount: number;
   projectId: number;
   authorNickname: string;
   closed: boolean;
@@ -72,6 +73,7 @@ export interface partPostInfo {
   description: string;
   projectMode: string;
   projectType: string;
+  duration: string;
   totalMembers: number;
   startDate: string;
   teams: { id: number; nickname: string }[];

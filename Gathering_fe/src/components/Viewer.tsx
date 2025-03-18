@@ -12,6 +12,11 @@ import editButton from '@/assets/otherIcons/post_edit_button.png';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { deletePosting } from '@/services/postApi';
 import { setPublic } from '@/services/postApi';
+import { durationOptions } from '@/utils/post-options';
+import eye from '@/assets/otherIcons/eye.png';
+import OtherApplicationModal from '@/components/OtherApplicationModal';
+import { getOtherApplication } from '@/services/applicationApi';
+import { ApplyInfo } from '@/types/apply';
 
 interface Position {
   id: string;
@@ -29,12 +34,42 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const { profile, isLoading, error } = useOtherProfile(data?.authorNickname ?? null);
   const [teamProfiles, setTeamProfiles] = useState<{ [key: string]: string }>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<string | null>(null);
+  const [isPositionTooltipOpen, setIsPositionTooltipOpen] = useState(false);
+  const [isTechTooltipOpen, setIsTechTooltipOpen] = useState(false);
   const {
     profile: teamMemberProfile,
     isLoading: teamMemberLoading,
     error: teamMemberError
   } = useOtherProfile(selectedTeamMember);
   const [loading, setLoading] = useState<boolean>(true);
+  const [applications, setApplications] = useState<ApplyInfo[]>([]);
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const result = await getOtherApplication(Number(params.id));
+        if (result?.success) {
+          setApplications(result.data);
+        }
+      } catch (error) {
+        console.error('지원서 조회 실패:', error);
+      }
+    };
+
+    if (params.id) {
+      fetchApplications();
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    const closeTooltips = () => {
+      setIsPositionTooltipOpen(false);
+      setIsTechTooltipOpen(false);
+    };
+
+    document.addEventListener('click', closeTooltips);
+    return () => document.removeEventListener('click', closeTooltips);
+  }, []);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -108,6 +143,24 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     }
   };
 
+  const visibleTechStacks = data.techStacks.slice(0, 3);
+  const extraTechStacksCount = data.techStacks.length - 3;
+
+  const visiblePositions = data.requiredPositions.slice(0, 2);
+  const extraPositionsCount = data.requiredPositions.length - 2;
+
+  // 포지션 툴팁 토글
+  const togglePositionTooltip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsPositionTooltipOpen(!isPositionTooltipOpen);
+  };
+
+  // 기술스택 툴팁 토글
+  const toggleTechTooltip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsTechTooltipOpen(!isTechTooltipOpen);
+  };
+
   return (
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
@@ -158,6 +211,10 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
               <span className="font-semibold">생성일: {getStringedDate(data.createdAt)}</span>
               <span className="font-semibold">최종 수정일: {getStringedDate(data.updatedAt)}</span>
               <span className="font-semibold">마감일: {getStringedDate(data.deadline)}</span>
+              <div className="flex items-center space-x-1 font-bold">
+                <img src={eye} alt="watched" className="w-[24px] h-[24px]" />
+                <div>{data.viewCount}</div>
+              </div>
             </div>
           </div>
           {data?.authorNickname === userNickname && (
@@ -225,12 +282,56 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">예상 기간</div>
-            <label className="block text-[#000000]/50">{data.startDate}</label>
+            <label className="block text-[#000000]/50">
+              {durationOptions.find(option => option.value === data.duration)?.label ||
+                '알 수 없음'}
+            </label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">모집 포지션</div>
             <div className="flex flex-wrap gap-2">
-              {data.requiredPositions.map((positionId, index) => {
+              {visiblePositions.map((positionId, index) => {
+                const positionTitle =
+                  positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
+                return (
+                  <div
+                    key={index}
+                    className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
+                  >
+                    {positionTitle}
+                  </div>
+                );
+              })}
+              {extraPositionsCount > 0 && (
+                <div className="relative">
+                  <div
+                    className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] cursor-pointer inline-bloc"
+                    onClick={togglePositionTooltip}
+                  >
+                    +{extraPositionsCount}
+                  </div>
+                  {isPositionTooltipOpen && (
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto">
+                      <div className="flex space-x-2">
+                        {data.requiredPositions.slice(2).map((positionId, index) => {
+                          const positionTitle =
+                            positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
+                          return positionTitle ? (
+                            <div
+                              key={index}
+                              className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
+                            >
+                              {positionTitle}
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* {data.requiredPositions.map((positionId, index) => {
                 const positionTitle =
                   positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
 
@@ -242,31 +343,61 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
                     {positionTitle}
                   </div>
                 );
-              })}
+              })} */}
             </div>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="">사용 스택</div>
-            <div className="font-semibold py-4">
-              <div className="font-semibold py-2 flex flex-wrap gap-2">
-                {data.techStacks
-                  .map(item => getStackImage(item.toUpperCase()))
-                  .filter(Boolean)
-                  .map((src, index) => (
-                    <img
-                      key={index}
-                      src={src!}
-                      alt={data.techStacks[index]}
-                      className="w-10 h-10"
-                    />
-                  ))}
+            <div className="w-28">사용 스택</div>
+            <div className="">
+              <div className="font-semibold py-2 flex flex-wrap gap-4">
+                {visibleTechStacks.map((item, index) => {
+                  const imageSrc = getStackImage(item.toUpperCase());
+                  return imageSrc ? (
+                    <img key={index} src={imageSrc} alt={item} className="w-10 h-10" />
+                  ) : null;
+                })}
+                {extraTechStacksCount > 0 && (
+                  <div className="relative">
+                    <div
+                      className="w-10 h-10 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
+                      onClick={toggleTechTooltip}
+                    >
+                      +{extraTechStacksCount}
+                    </div>
+                    {/* 기술스택 툴팁 */}
+                    {isTechTooltipOpen && (
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto">
+                        <div className="flex space-x-2">
+                          {data.techStacks.slice(3).map((item, index) => {
+                            const imageSrc = getStackImage(item.toUpperCase());
+                            return imageSrc ? (
+                              <img key={index} src={imageSrc} alt={item} className="w-10 h-10" />
+                            ) : null;
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
         <div className="block font-bold text-[24px] mb-4 px-4">모집 소개</div>
         <hr className="w-full justify-self-center border-[#000000]/60 py-4" />
-        <label className="block px-4 select-text cursor-text">{data.description}</label>
+        <div
+          className="block px-4 select-text cursor-text min-h-[300px]"
+          dangerouslySetInnerHTML={{ __html: data.description }}
+        />
+        <OtherApplicationModal title={data.title} apply={applications} />
+        {/* <div>
+          <button className="flex justify-self-center space-x-4 items-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px]">
+            <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>
+            <div className="flex items-center justify-center min-w-[24px] h-[24px] px-2 bg-[#FFFF33] rounded-full text-black font-bold">
+              999+
+            </div>
+          </button>
+        </div> */}
       </section>
       <OtherUserProfileModal
         isOpen={!!selectedTeamMember}
