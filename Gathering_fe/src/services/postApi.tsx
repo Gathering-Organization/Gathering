@@ -181,3 +181,32 @@ export const setPublic = async (projectId: number) => {
     throw error;
   }
 };
+
+export const getMyPosting = async (nickname: string, page: number, isClosed: boolean | string) => {
+  try {
+    const response = await api.get(
+      `/project/pagination?nickname=${nickname}page=${page}&isClosed=${isClosed}`
+    );
+    console.log('응답 데이터:', response.data.data);
+
+    if (response.data.status === 200) {
+      return {
+        success: true,
+        message: response.data.message,
+        data: response.data.data.content,
+        pagination: {
+          totalPages: response.data.data.totalPages,
+          totalElements: response.data.data.totalElements,
+          currentPage: response.data.data.number,
+          pageSize: response.data.data.size
+        }
+      };
+    }
+  } catch (error: unknown) {
+    console.error('전체 모집글 조회 실패:', error);
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+    throw error;
+  }
+};
