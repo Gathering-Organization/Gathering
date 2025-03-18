@@ -122,9 +122,9 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
           className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
           aria-hidden="true"
         >
-          <div className="relative p-6 w-full max-w-[800px] max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
+          <div className="relative p-6 w-full max-w-[800px] max-h-full rounded-[50px] bg-white rounded-lg shadow-lg dark:bg-gray-700">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                 활동 경력을 입력해주세요.
               </h3>
               <button
@@ -183,6 +183,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                     <DatePicker
                       startWeekOn="mon"
                       value={value}
+                      inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
                       onChange={newValue => {
                         if (newValue) {
                           setValue(newValue);
@@ -246,13 +247,15 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                     className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[180px] p-4 px-6 h-24 resize-none focus:outline-none"
                   ></textarea>
                 </section>
-                <button
-                  onClick={handleAddExperience}
-                  type="button"
-                  className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  저장하기
-                </button>
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleAddExperience}
+                    type="button"
+                    className="px-[180px] text-white bg-[#3387E5] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-[30px] text-[20px] py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    저장하기
+                  </button>
+                </div>
               </form>
             </div>
           </div>
