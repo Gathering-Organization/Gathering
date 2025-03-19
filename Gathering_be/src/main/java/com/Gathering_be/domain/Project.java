@@ -30,7 +30,10 @@ public class Project extends BaseTimeEntity {
     private Profile profile;
 
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     private String kakaoUrl;
     private LocalDateTime deadline;
     private int totalMembers;
