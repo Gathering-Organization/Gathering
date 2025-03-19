@@ -184,8 +184,9 @@ export const setPublic = async (projectId: number) => {
 
 export const getMyPosting = async (nickname: string, page: number, isClosed: boolean | string) => {
   try {
+    const nicknameParam = encodeURIComponent(nickname);
     const response = await api.get(
-      `/project/pagination?nickname=${nickname}page=${page}&isClosed=${isClosed}`
+      `/project/pagination/my-project?nickname=${nicknameParam}&page=${page}&isClosed=${isClosed}`
     );
     console.log('응답 데이터:', response.data.data);
 
@@ -203,7 +204,7 @@ export const getMyPosting = async (nickname: string, page: number, isClosed: boo
       };
     }
   } catch (error: unknown) {
-    console.error('전체 모집글 조회 실패:', error);
+    console.error('내 모집글 조회 실패:', error);
     if (error instanceof AxiosError) {
       console.error('서버 응답:', error.response?.data);
     }

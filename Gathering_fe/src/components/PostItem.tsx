@@ -4,7 +4,7 @@ import { getStackImage } from '@/utils/get-stack-image';
 import { getStringedDate } from '@/utils/get-stringed-date';
 import { useProfileCache } from '@/contexts/ProfileCacheContext';
 import { useState } from 'react';
-import { projectType as projectEachType } from '@/utils/project-type';
+import { projectType as projectEachType } from '@/utils/project-and-apply-type';
 import { positionData } from '@/utils/position-data';
 import { setInterest } from '@/services/interestApi';
 import eye from '@/assets/otherIcons/eye.png';
