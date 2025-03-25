@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { approxPostInfo } from '@/types/post';
 import { useNavigate } from 'react-router-dom';
 import { getStackImage } from '@/utils/get-stack-image';
@@ -71,9 +72,15 @@ const PostItem: React.FC<
   const extraPositionsCount = requiredPositions.length - 2;
 
   return (
-    <div
-      onClick={() => nav(`/viewPost/${projectId}`)}
+    <motion.div
+      onClick={() => {
+        nav(`/viewPost/${projectId}`);
+      }}
       className="relative transform transition duration-200 ease-in-out hover:scale-105 cursor-pointer select-none w-85 will-change-transform"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
     >
       <section className="border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative">
         <label className="absolute right-6 top-4 cursor-pointer" onClick={e => e.stopPropagation()}>
@@ -169,7 +176,7 @@ const PostItem: React.FC<
           </div>
         </section>
       </section>
-    </div>
+    </motion.div>
   );
 };
 

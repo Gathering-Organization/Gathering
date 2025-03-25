@@ -29,7 +29,8 @@ const ApplyModal: React.FC = () => {
   const handleSelectedPosition = (value: string) => {
     setApplyInfo(prev => ({ ...prev, position: value }));
   };
-  const dummySetSelectedStack = (value: string) => {};
+
+  const dummySetSelectedStack = (value: string[]) => {};
 
   const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setApplyInfo({
@@ -64,10 +65,10 @@ const ApplyModal: React.FC = () => {
 
   return (
     <DropdownDispatchContext.Provider value={dropdownContextValue}>
-      <div>
+      <div className="flex flex-col items-center mt-10">
         <button
           onClick={openModal}
-          className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+          className="mx-auto w-[160px] bg-[#3387E5] justify-center text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
         >
           지원하기
         </button>
@@ -109,7 +110,7 @@ const ApplyModal: React.FC = () => {
                 <form className="space-y-6">
                   <div className="flex items-center gap-4">
                     <label className="w-36 font-semibold dark:text-white">지원 포지션</label>
-                    <div className="flex-1">
+                    <div className="flex-1 font-bold">
                       <MultiLevelDropdown
                         menuData={positionData}
                         label="포지션"
@@ -147,7 +148,7 @@ const ApplyModal: React.FC = () => {
                   <button
                     onClick={handleViewApplication}
                     type="button"
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     내 지원서 보기
                   </button>
@@ -155,10 +156,10 @@ const ApplyModal: React.FC = () => {
                     onClick={handleSubmit}
                     type="button"
                     disabled={!isChecked}
-                    className={`w-full text-white font-medium rounded-lg text-sm px-6 py-3 text-center focus:ring-4 focus:outline-none ${
+                    className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:ring-4 focus:outline-none border border-[#3387E5] ${
                       isChecked
-                        ? 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-                        : 'bg-gray-400 cursor-not-allowed'
+                        ? 'bg-[#3387E5] hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
+                        : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >
                     제출하기

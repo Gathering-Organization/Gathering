@@ -3,6 +3,7 @@ import penSquared from '@/assets/otherIcons/Pen Squared.png';
 import { setMyNickname } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
 import { useProfile } from '@/contexts/ProfileStateContext';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
 
 interface NicknameModalProps {
   nickname: string;
@@ -12,7 +13,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNickname, setNewNickname] = useState(nickname);
   const { myProfile, updateProfileData } = useProfile();
-
+  useModalBodyLock(isModalOpen);
   const openModal = () => {
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden';

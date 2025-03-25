@@ -1,4 +1,5 @@
 import Viewer from '@/components/Viewer';
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { partPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';
@@ -30,6 +31,7 @@ const ViewPost: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        window.scrollTo(0, 0);
         const [profileResult, postResult] = await Promise.all([
           getMyProfile(),
           getPartPosting(Number(params.id))
@@ -55,17 +57,24 @@ const ViewPost: React.FC = () => {
   }, [params.id]);
 
   return (
-    <div className="flex flex-col min-h-screen pb-10">
-      <div className="flex-grow">
-        {post ? (
-          <Viewer data={post} />
-        ) : (
-          <div className="min-h-[600px] flex items-center justify-center">
-            <Spinner />
-          </div>
-        )}
-      </div>
-      {/* {post?.authorNickname === userNickname && (
+    <motion.div
+      className="flex flex-col min-h-screen pb-10"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex flex-col min-h-screen pb-10">
+        <div className="flex-grow">
+          {post ? (
+            <Viewer data={post} />
+          ) : (
+            <div className="min-h-[600px] flex items-center justify-center">
+              <Spinner />
+            </div>
+          )}
+        </div>
+        {/* {post?.authorNickname === userNickname && (
         <section className="flex gap-4 mt-4 justify-center">
           <button onClick={onClickUpdate} className="duration-200 ease-in-out hover:scale-110">
             <img src={editButton} alt="edit" className="" />
@@ -75,7 +84,8 @@ const ViewPost: React.FC = () => {
           </button>
         </section>
       )} */}
-    </div>
+      </div>
+    </motion.div>
   );
 };
 

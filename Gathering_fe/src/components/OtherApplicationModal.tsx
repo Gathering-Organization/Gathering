@@ -3,6 +3,7 @@ import { setApply } from '@/services/applyApi';
 import { ApplyInfo } from '@/types/apply';
 import { useParams } from 'react-router-dom';
 import { patchApplication } from '@/services/applicationApi';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
 
 type OtherApplicationModalProps = {
   title: string;
@@ -17,6 +18,8 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
     position: '',
     message: ''
   });
+
+  useModalBodyLock(isModalOpen);
 
   const openModal = () => {
     setIsModalOpen(true);

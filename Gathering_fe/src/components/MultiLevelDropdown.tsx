@@ -35,7 +35,8 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleItemClick = (newLabel: string) => {
+  const handleItemClick = (newLabel: string, event: React.MouseEvent) => {
+    event.preventDefault();
     setSelectedLabel(newLabel);
     setIsMainDropdownOpen(false);
 
@@ -76,8 +77,8 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
           <div className="py-1">
             <a
               href="#"
-              onClick={() => {
-                handleItemClick('전체');
+              onClick={event => {
+                handleItemClick('전체', event);
               }}
               className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
             >
@@ -87,11 +88,8 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
               if (!item.items) {
                 return (
                   <a
-                    key={item.id}
                     href="#"
-                    onClick={() => {
-                      handleItemClick(item.title);
-                    }}
+                    onClick={event => handleItemClick(item.title, event)}
                     className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     {item.title}
@@ -102,7 +100,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
                   <div key={item.id}>
                     <a
                       href="#"
-                      onClick={() => handleItemClick(item.title)}
+                      onClick={event => handleItemClick(item.title, event)}
                       className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
                       {item.title}
@@ -112,7 +110,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
                         <a
                           key={subItem.id}
                           href="#"
-                          onClick={() => handleItemClick(subItem.label)}
+                          onClick={event => handleItemClick(subItem.label, event)}
                           className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           {subItem.label}

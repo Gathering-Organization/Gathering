@@ -4,7 +4,7 @@ import { ProfileAllInfo } from '@/types/profile';
 import { Portfolio } from '@/types/profile';
 import { WorkExperience } from '@/types/profile';
 
-interface ProfileContextType {
+export interface ProfileContextType {
   myProfile: ProfileAllInfo;
   isMyProfileLoading: boolean;
   updateProfileData: (updatedData: Partial<ProfileAllInfo>) => void;

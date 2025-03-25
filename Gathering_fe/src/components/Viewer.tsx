@@ -17,6 +17,7 @@ import eye from '@/assets/otherIcons/eye.png';
 import OtherApplicationModal from '@/components/OtherApplicationModal';
 import { getOtherApplication } from '@/services/applicationApi';
 import { ApplyInfo } from '@/types/apply';
+import ApplyModal from './ApplyModal';
 
 interface Position {
   id: string;
@@ -391,7 +392,12 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           className="block px-4 select-text cursor-text min-h-[300px]"
           dangerouslySetInnerHTML={{ __html: data.description }}
         />
-        <OtherApplicationModal title={data.title} apply={applications} />
+        {data?.authorNickname === userNickname ? (
+          <OtherApplicationModal title={data.title} apply={applications} />
+        ) : (
+          <ApplyModal />
+        )}
+
         {/* <div>
           <button className="flex justify-self-center space-x-4 items-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px]">
             <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { ProfileAllInfo } from '@/types/profile';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
 
 interface OtherUserProfileModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
   onClose,
   profile
 }) => {
+  useModalBodyLock(isOpen);
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';

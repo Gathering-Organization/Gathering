@@ -3,6 +3,7 @@ import changeMark from '@/assets/otherIcons/Change Mark.png';
 import { setMyProfileColor } from '@/services/profileApi';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { profileColorCollection } from '@/utils/profile-color';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
 
 interface ProfileColorModalProps {
   profileColor: string;
@@ -12,7 +13,7 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { myProfile, updateProfileData } = useProfile();
   const [selectedColor, setSelectedColor] = useState(profileColor);
-
+  useModalBodyLock(isModalOpen);
   const openModal = () => {
     setSelectedColor(profileColor);
     setIsModalOpen(true);
