@@ -9,6 +9,8 @@ import { stackData } from '@/utils/stack-data';
 import { positionData } from '@/utils/position-data';
 import FilteringButton from '@/components/FilteringButton';
 import eye from '@/assets/otherIcons/eye.png';
+import blueEye from '@/assets/otherIcons/Blue_Eye.png';
+import blueHeart from '@/assets/otherIcons/Blue_Heart.png';
 import heart from '@/assets/otherIcons/heart.png';
 import { getUserProfile } from '@/services/profileApi';
 import { ProfileAllInfo } from '@/types/profile';
@@ -174,13 +176,13 @@ const PostHome: React.FC = () => {
     <ProfileCacheContext.Provider value={{ profileCache }}>
       <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
         <div className="mx-28 space-y-6">
-          <div className="mx-6 flex justify-between items-center">
+          <div className="mx-6 flex justify-between items-center pb-4">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
             <div className="flex justify-end w-[600px]">
               <SearchBar onSearch={handleSearch} />
             </div>
           </div>
-          <div className="mx-4 flex justify-between items-center relative pb-4">
+          <div className="mx-4 flex justify-between items-center relative">
             <section className="flex text-[16px] font-bold space-x-8 text-[#B4B4B4] z-10">
               <OptionalDropdown
                 menuData={stackData}
@@ -199,12 +201,14 @@ const PostHome: React.FC = () => {
                 option={showInterested}
                 onClick={() => setShowInterested(prev => !prev)}
                 icon={<img src={heart} alt="Heart" className="w-5 h-5" />}
+                afterIcon={<img src={blueHeart} alt="BlueHeart" className="w-5 h-5" />}
               />
               <FilteringButton
                 title="모집완료 제외하기"
                 option={hideClosed}
                 onClick={() => setHideClosed(prev => !prev)}
                 icon={<img src={eye} alt="Eye" className="w-5 h-5" />}
+                afterIcon={<img src={blueEye} alt="BlueEye" className="w-5 h-5" />}
               />
             </section>
             {/* 정렬 옵션을 선택하는 드롭다운 버튼 */}
@@ -214,9 +218,7 @@ const PostHome: React.FC = () => {
                 e.stopPropagation();
                 setIsDropdownOpen(!isDropdownOpen);
               }}
-              className="shrink-0 z-10 w-[120px] inline-flex items-center justify-between py-1.5 px-4 font-bold font-sans text-[#000000]/50 
-              border-[3px] rounded-lg border-[#D9D9D9] hover:bg-gray-200 focus:ring-4 focus:outline-none dark:bg-gray-700
-               dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+              className="inline-flex items-center justify-between min-w-[160px] px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none"
             >
               {sortType === '-createdAt'
                 ? '최신순'
@@ -224,9 +226,7 @@ const PostHome: React.FC = () => {
                   ? '오래된순'
                   : '인기순'}
               <svg
-                className={`w-4 h-4 ml-2 transition-transform duration-200 ${
-                  isDropdownOpen ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 ml-2 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -234,7 +234,7 @@ const PostHome: React.FC = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="3"
+                  strokeWidth="2"
                   d="M19 9l-7 7-7-7"
                 />
               </svg>
@@ -244,13 +244,13 @@ const PostHome: React.FC = () => {
             {isDropdownOpen && (
               <div
                 ref={dropdownRef}
-                className="absolute top-full right-0 mt-1 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20"
+                className="absolute top-full mt-2 right-0 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20"
               >
-                <ul className="py-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <ul className="py-1 text-sm text-black font-bold text-gray-700 dark:text-gray-200">
                   <li>
                     <button
                       onClick={() => onChangeSortType('최신순')}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      className="block w-full text-black text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       최신순
                     </button>
@@ -258,7 +258,7 @@ const PostHome: React.FC = () => {
                   <li>
                     <button
                       onClick={() => onChangeSortType('오래된순')}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      className="block w-full text-black text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       오래된순
                     </button>
@@ -266,7 +266,7 @@ const PostHome: React.FC = () => {
                   <li>
                     <button
                       onClick={() => onChangeSortType('인기순')}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      className="block w-full text-black text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       인기순
                     </button>
@@ -274,15 +274,8 @@ const PostHome: React.FC = () => {
                 </ul>
               </div>
             )}
-            {/* <select
-            onChange={onChangeSortType}
-            className="border-[#B4B4B4] border-solid text-[16px] font-bold text-[#B4B4B4] z-10 rounded-[20px] border-2 px-4 py-1 border-[#3387E5] border-solid cursor-pointer"
-          >
-            <option value={'latest'}>최신순</option>
-            <option value={'most'}>인기순</option>
-          </select> */}
           </div>
-          <div className="z-0 space-y-24">
+          <div className="z-0 space-y-24 pt-4">
             <PostList data={displayedPosts} onInterestToggle={updatePostInterest} />
             <Pagination
               currentPage={page}

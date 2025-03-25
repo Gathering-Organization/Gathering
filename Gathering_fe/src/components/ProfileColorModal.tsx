@@ -10,7 +10,7 @@ interface ProfileColorModalProps {
 
 const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { profile, updateProfileData } = useProfile();
+  const { myProfile, updateProfileData } = useProfile();
   const [selectedColor, setSelectedColor] = useState(profileColor);
 
   const openModal = () => {

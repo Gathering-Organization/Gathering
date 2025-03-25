@@ -165,7 +165,9 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
         <div className="flex items-center mb-16 justify-between">
-          <button className="block text-[36px] font-[1000] px-6">{data.title}</button>
+          <div className="block me-10 text-justify text-[36px] font-extrabold px-6">
+            {data.title}
+          </div>
           {data?.authorNickname === userNickname && (
             <label className="inline-flex items-center cursor-pointer">
               <input

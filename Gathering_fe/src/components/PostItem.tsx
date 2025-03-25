@@ -113,23 +113,9 @@ const PostItem: React.FC<
             <div className="font-semibold">마감일 | {getStringedDate(deadline)}</div>
           </section>
 
-          <div className="font-bold pb-6 bg-transparent border-none text-left text-[20px]">
+          <div className="line-clamp-2 font-semibold text-[18px] max-w-85 h-[50px] mb-6">
             {title}
           </div>
-          {/* <div className="flex flex-wrap gap-2">
-            {requiredPositions.map((positionId, index) => {
-              const positionTitle =
-                positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
-              return (
-                <div
-                  key={index}
-                  className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
-                >
-                  {positionTitle}
-                </div>
-              );
-            })}
-          </div> */}
           <div className="flex flex-wrap gap-2">
             {visiblePositions.map((positionId, index) => {
               const positionTitle =

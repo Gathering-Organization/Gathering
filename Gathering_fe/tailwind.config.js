@@ -23,5 +23,5 @@ module.exports = {
       }
     }
   },
-  plugins: [require('tailwindcss-font-inter')]
+  plugins: [require('@tailwindcss/line-clamp')]
 };
