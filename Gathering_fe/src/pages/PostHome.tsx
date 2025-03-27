@@ -44,12 +44,7 @@ const PostHome: React.FC = () => {
   const [profileCache, setProfileCache] = useState<{ [nickname: string]: ProfileAllInfo }>({});
 
   const filteredPosts = post.filter(p => {
-    // if (selectedType !== 'ALL' && p.projectType !== selectedType) return false;
-    // if (selectedStack !== '전체' && !p.techStacks.includes(selectedStack)) return false;
-    // if (selectedPosition !== '전체' && !p.requiredPositions.includes(selectedPosition))
-    //   return false;
     if (showInterested && !p.interested) return false;
-    // if (hideClosed && p.closed) return false;
     return true;
   });
 
@@ -64,6 +59,7 @@ const PostHome: React.FC = () => {
   useEffect(() => {
     const getAllPost = async () => {
       try {
+        window.scrollTo(0, 0);
         const result = await getAllPosting(
           page,
           sortType,
@@ -155,16 +151,6 @@ const PostHome: React.FC = () => {
     }
     setIsDropdownOpen(false);
   };
-
-  // const getSortedDate = () => {
-  //   return filteredPosts.slice().sort((a, b) => {
-  //     if (sortType === 'most') {
-  //       return b.viewCount - a.viewCount;
-  //     } else {
-  //       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  //     }
-  //   });
-  // };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);

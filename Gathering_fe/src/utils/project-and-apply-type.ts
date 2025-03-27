@@ -34,12 +34,12 @@ export const myProjectType = [
   },
   {
     projectTypeId: 2,
-    projectType: true,
+    projectType: false,
     projectTypeName: '모집중'
   },
   {
     projectTypeId: 3,
-    projectType: false,
+    projectType: true,
     projectTypeName: '모집완료'
   }
 ];

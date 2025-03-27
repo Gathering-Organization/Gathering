@@ -8,11 +8,14 @@ import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
 import { useProfile } from '@/contexts/ProfileStateContext';
+import { useLocation } from 'react-router-dom';
 
 const MyPostHome: React.FC = () => {
+  const location = useLocation();
+  const { filter: postingFilter = '' } = location.state || {};
   const [page, setPage] = useState(1);
   const [post, setPost] = useState<approxPostInfo[]>([]);
-  const [selectedType, setSelectedType] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>(String(postingFilter));
   const [totalPages, setTotalPages] = useState<number>(1);
   const [profileCache, setProfileCache] = useState<{ [nickname: string]: ProfileAllInfo }>({});
   const [info, setInfo] = useState<ProfileAllInfo>({
@@ -39,7 +42,8 @@ const MyPostHome: React.FC = () => {
     if (nickname) {
       const fetchPosts = async () => {
         try {
-          const result = await getMyPosting(nickname, page, false);
+          window.scrollTo(0, 0);
+          const result = await getMyPosting(nickname, page, selectedType);
           if (result?.success) {
             setPost(result.data);
             setTotalPages(result.pagination.totalPages);
@@ -52,35 +56,33 @@ const MyPostHome: React.FC = () => {
       };
       fetchPosts();
     }
-  }, [nickname, page]);
+  }, [nickname, page, selectedType]);
 
-  const filteredPosts =
-    selectedType === '' ? post : post.filter(p => String(p.projectType) === selectedType);
+  // useEffect(() => {
+  //   if (post.length > 0) {
+  //     const uniqueAuthors = Array.from(new Set(post.map(p => p.authorNickname)));
+  //     const fetchProfiles = async () => {
+  //       const newCache = { ...profileCache };
+  //       await Promise.all(
+  //         uniqueAuthors.map(async authorNickname => {
+  //           if (!newCache[authorNickname]) {
+  //             try {
+  //               const result = await getUserProfile(authorNickname);
+  //               if (result?.success) {
+  //                 newCache[authorNickname] = result.data as ProfileAllInfo;
+  //               }
+  //             } catch (error) {
+  //               console.error(`프로필 정보 불러오기 실패: ${authorNickname}`);
+  //             }
+  //           }
+  //         })
+  //       );
+  //       setProfileCache(newCache);
+  //     };
+  //     fetchProfiles();
+  //   }
 
-  useEffect(() => {
-    if (post.length > 0) {
-      const uniqueAuthors = Array.from(new Set(post.map(p => p.authorNickname)));
-      const fetchProfiles = async () => {
-        const newCache = { ...profileCache };
-        await Promise.all(
-          uniqueAuthors.map(async authorNickname => {
-            if (!newCache[authorNickname]) {
-              try {
-                const result = await getUserProfile(authorNickname);
-                if (result?.success) {
-                  newCache[authorNickname] = result.data as ProfileAllInfo;
-                }
-              } catch (error) {
-                console.error(`프로필 정보 불러오기 실패: ${authorNickname}`);
-              }
-            }
-          })
-        );
-        setProfileCache(newCache);
-      };
-      fetchProfiles();
-    }
-  }, [post]);
+  // }, [post]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -97,7 +99,7 @@ const MyPostHome: React.FC = () => {
           />
         </div>
         <div className="z-0 space-y-24">
-          <PostList data={filteredPosts} />
+          <PostList data={post} />
           <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
       </div>

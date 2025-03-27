@@ -73,9 +73,18 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
                 className="inline-flex items-center px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400"
               >
                 {option}
-                <button
+                {/* <button
                   type="button"
                   className="ml-1 inline-flex items-center justify-center"
+                  onClick={e => {
+                    e.stopPropagation();
+                    removeSelection(option);
+                  }}
+                > */}
+                <span
+                  role="button"
+                  aria-label="Remove option"
+                  className="ml-1 inline-flex items-center justify-center cursor-pointer"
                   onClick={e => {
                     e.stopPropagation();
                     removeSelection(option);
@@ -88,7 +97,8 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
                       clipRule="evenodd"
                     />
                   </svg>
-                </button>
+                </span>
+                {/* </button> */}
               </span>
             ))
           )}

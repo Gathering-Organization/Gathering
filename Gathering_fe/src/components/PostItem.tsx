@@ -76,11 +76,12 @@ const PostItem: React.FC<
       onClick={() => {
         nav(`/viewPost/${projectId}`);
       }}
-      className="relative transform transition duration-200 ease-in-out hover:scale-105 cursor-pointer select-none w-85 will-change-transform"
+      className="relative cursor-pointer select-none w-85 will-change-transform"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
+      whileHover={{ scale: 1.03 }}
     >
       <section className="border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative">
         <label className="absolute right-6 top-4 cursor-pointer" onClick={e => e.stopPropagation()}>
@@ -168,7 +169,7 @@ const PostItem: React.FC<
             ></div>
             <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>
-          <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4">
+          <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4 px-[10px]">
             <div>
               <img src={eye} alt="watched" className="w-[24px] h-[24px]" />
             </div>

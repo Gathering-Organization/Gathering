@@ -14,6 +14,9 @@ import WorkExperienceModal from '@/components/WorkExperienceModal';
 import NicknameModal from '@/components/NicknameModal';
 import ProfileColorModal from '@/components/ProfileColorModal';
 import WorkExperienceItem from '@/components/WorkExperienceItem';
+import { useNavigate } from 'react-router-dom';
+import { getMyPosting } from '@/services/postApi';
+import { approxPostInfo } from '@/types/post';
 
 interface TechStack {
   id: string;
@@ -21,11 +24,18 @@ interface TechStack {
 }
 
 const Profile: React.FC = () => {
+  const nav = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFile, setUploadedFile] = useState<Portfolio | null>(null);
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
+  const [projectCounts, setProjectCounts] = useState({
+    all: 0,
+    recruiting: 0,
+    completed: 0
+  });
+  const [post, setPost] = useState<approxPostInfo[]>([]);
   const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',
@@ -93,6 +103,7 @@ const Profile: React.FC = () => {
 
       if (result?.success) {
         alert('프로필 저장 성공!');
+        updateProfileData({ ...updatedInfo, workExperiences });
       } else {
         alert(result?.message || '프로필 저장 중 문제가 발생했습니다.');
       }
@@ -100,35 +111,6 @@ const Profile: React.FC = () => {
       alert('프로필 저장 중 오류가 발생했습니다.');
     }
   };
-
-  // const handleUpload = async () => {
-  //   if (!selectedFile) {
-  //     alert('파일을 선택해주세요.');
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append('file', selectedFile);
-
-  //   try {
-  //     const result = await uploadPortfolio(formData);
-
-  //     if (result?.success) {
-  //       alert('파일 업로드 성공!');
-
-  //       const profileResult = await getMyProfile();
-
-  //       if (profileResult?.success) {
-  //         alert('프로필 갱신 성공' + profileResult.data);
-  //         setUploadedFile(profileResult.data.portfolio);
-  //       } else {
-  //         alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
-  //       }
-  //     }
-  //   } catch {
-  //     alert('파일 업로드 중 오류가 발생했습니다.');
-  //   }
-  // };
 
   const handleFileSelect = () => {
     document.getElementById('fileInput')?.click();
@@ -138,7 +120,7 @@ const Profile: React.FC = () => {
     const file = e.target.files?.[0] || null;
     if (file) {
       setSelectedFile(file);
-      await handleUpload(file); // 파일 선택 후 바로 업로드 실행
+      await handleUpload(file);
     }
   };
 
@@ -190,7 +172,9 @@ const Profile: React.FC = () => {
       const result = await toggleProfileVisibility();
 
       if (result?.success) {
+        const updatedPublic = !info.public;
         setIsPublic(prev => !prev);
+        updateProfileData({ public: updatedPublic });
       }
     } catch {
       alert('프로필 공개 상태 변경 중 오류가 발생했습니다.');
@@ -232,38 +216,42 @@ const Profile: React.FC = () => {
 
     setWorkExperiences(prev => [...prev, experience]);
   };
-  // const handleAddExperience = () => {
-
-  //   if (
-  //     !newExperience.activityName ||
-  //     !newExperience.startDate ||
-  //     !newExperience.endDate ||
-  //     !newExperience.description ||
-  //     newExperience.techStacks.length === 0
-  //   ) {
-  //     alert('모든 필드를 입력해주세요.');
-  //     return;
-  //   }
-
-  //   setWorkExperiences(prev => [...prev, newExperience]);
-
-  //   setNewExperience({
-  //     activityName: '',
-  //     startDate: '',
-  //     endDate: '',
-  //     description: '',
-  //     techStacks: []
-  //   });
-
-  // };
 
   const handleDeleteExperience = (index: number) => {
     setWorkExperiences(prev => prev.filter((_, i) => i !== index));
   };
 
-  const { myProfile, isMyProfileLoading } = useProfile();
+  useEffect(() => {
+    if (info.nickname) {
+      const fetchPosts = async () => {
+        try {
+          window.scrollTo(0, 0);
+          const [allResult, recruitingResult, completedResult] = await Promise.all([
+            getMyPosting(info.nickname, 1, ''),
+            getMyPosting(info.nickname, 1, false),
+            getMyPosting(info.nickname, 1, true)
+          ]);
+          if (allResult?.success && recruitingResult?.success && completedResult?.success) {
+            setProjectCounts({
+              all: allResult.pagination.totalElements,
+              recruiting: recruitingResult.pagination.totalElements,
+              completed: completedResult.pagination.totalElements
+            });
+          } else {
+            console.error('게시글 조회 중 오류 발생');
+          }
+        } catch (error) {
+          console.error('게시글 조회 실패:', error);
+        }
+      };
+      fetchPosts();
+    }
+  }, [info.nickname]);
+
+  const { myProfile, isMyProfileLoading, updateProfileData } = useProfile();
   useEffect(() => {
     if (myProfile) {
+      window.scrollTo(0, 0);
       setInfo(myProfile);
       setIsPublic(myProfile.public);
     }
@@ -276,13 +264,6 @@ const Profile: React.FC = () => {
         <section className="p-6 flex flex-col items-center text-center">
           <h1 className="text-[30px] font-bold mb-8">기본 프로필</h1>
           <ProfileColorModal profileColor={info.profileColor} />
-          {/* <div
-            className="w-[100px] h-[100px] rounded-full mb-8 relative"
-            style={{ backgroundColor: `#${info.profileColor}` }}
-          >
-            <img src={changeMark} alt="Edit" className="w-8 h-8 absolute bottom-1 right-1" />
-          </div> */}
-
           <NicknameModal nickname={info.nickname || ''} />
           <button
             onClick={handleUpdateProfile}
@@ -315,51 +296,20 @@ const Profile: React.FC = () => {
               <MultiSelection
                 title="기술 스택을 선택하세요."
                 options={stackList.map(tech => tech.title)}
-                selectedOptions={selectedStacks.map(
-                  id => stackList.find(tech => tech.id === id)?.title || ''
-                )}
-                setSelectedOptions={selectedTechs => {
+                selectedOptions={stackList
+                  .filter(tech => info.techStacks.includes(tech.id))
+                  .map(tech => tech.title)}
+                setSelectedOptions={(selectedTitles: string[]) => {
                   const selectedIds = stackList
-                    .filter(tech => selectedTechs.includes(tech.title))
+                    .filter(tech => selectedTitles.includes(tech.title))
                     .map(tech => tech.id);
-                  setSelectedStacks(selectedIds);
+                  setInfo(prev => ({
+                    ...prev,
+                    techStacks: selectedIds
+                  }));
                 }}
               />
             </div>
-
-            {/* <select
-              id="tech-stack"
-              multiple
-              className="p-3 px-6 border border-[#000000]/20 rounded-[18px] shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              onChange={handleStackChange}
-              value={info.techStacks}
-            >
-              <option value="" disabled>
-                사용 기술 스택을 선택하세요.
-              </option>
-              {filteredStacks.map((stack, index) => (
-                <option key={index} value={stack.id}>
-                  {stack.title}
-                </option>
-              ))}
-            </select>
-            <div>
-              <h4>선택된 기술 스택:</h4>
-              <ul>
-                {info.techStacks.map((stack, index) => (
-                  <li key={index} className="flex items-center justify-between">
-                    <span>{stack}</span>
-                    <button
-                      type="button"
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => handleStackRemove(stack)}
-                    >
-                      선택 취소
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
           </div>
         </section>
 
@@ -367,12 +317,6 @@ const Profile: React.FC = () => {
           <div className="flex items-center justify-between mb-10">
             <h3 className="text-lg font-semibold">활동 경력</h3>
             <WorkExperienceModal onSave={handleAddExperience} />
-            {/* <button
-              onClick={handleAddExperience}
-              className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
-            >
-              활동 경력 입력하기
-            </button> */}
           </div>
           <div className="space-y-4">
             {workExperiences.map((experience, index) => (
@@ -382,55 +326,6 @@ const Profile: React.FC = () => {
               <WorkExperienceItem key={`info-${index}`} {...experience} />
             ))}
           </div>
-
-          {/* <div className="space-y-4">
-            {workExperiences.map((experience, index) => (
-              <div key={index} className="flex justify-between items-center border-b pb-2">
-                <div>
-                  <p className="font-semibold">{experience.activityName}</p>
-                  <p className="text-sm text-gray-600">
-                    활동일 | {experience.startDate} ~ {experience.endDate}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleDeleteExperience(index)}
-                  className="text-red-500 hover:text-red-600"
-                >
-                  삭제
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 space-y-2">
-            <input
-              type="text"
-              placeholder="활동 제목"
-              value={newExperience.activityName}
-              onChange={e => setNewExperience({ ...newExperience, activityName: e.target.value })}
-              className="border rounded w-full p-2"
-            />
-            <div className="flex space-x-2">
-              <input
-                type="date"
-                value={newExperience.startDate}
-                onChange={e => setNewExperience({ ...newExperience, startDate: e.target.value })}
-                className="border rounded w-full p-2"
-              />
-              <input
-                type="date"
-                value={newExperience.endDate}
-                onChange={e => setNewExperience({ ...newExperience, endDate: e.target.value })}
-                className="border rounded w-full p-2"
-              />
-            </div>
-            <input
-              type="text"
-              placeholder="세부설명"
-              value={newExperience.description}
-              onChange={e => setNewExperience({ ...newExperience, description: e.target.value })}
-              className="border rounded w-full p-2"
-            />
-          </div> */}
         </section>
 
         <section className="bg-white p-6 mb-4">
@@ -488,50 +383,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </section>
-        {/* <section className="bg-white p-6">
-          <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
-          <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
-            <input
-              type="file"
-              accept=".pdf"
-              onChange={e => setSelectedFile(e.target.files?.[0] || null)}
-              className="block w-[640px]"
-            />
-            <div className="flex space-x-2">
-              <button
-                onClick={handleUpload}
-                disabled={!selectedFile}
-                className={`text-[10px] font-bold px-4 py-2 rounded-[20px] ${
-                  selectedFile
-                    ? 'bg-[#3387E5] text-white hover:bg-blue-600'
-                    : 'bg-gray-300 text-gray-500'
-                }`}
-              >
-                업로드
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={!uploadedFile}
-                className={`text-[10px] font-bold px-4 rounded-[20px] ${
-                  uploadedFile
-                    ? 'bg-[#F24E1E] text-white hover:bg-red-600'
-                    : 'bg-gray-300 text-gray-500'
-                }`}
-              >
-                삭제
-              </button>
-            </div>
-            {uploadedFile && (
-              <a
-                href={uploadedFile.url}
-                download={uploadedFile.fileName}
-                className="text-blue-500 hover:underline"
-              >
-                {uploadedFile.fileName}
-              </a>
-            )}
-          </div>
-        </section> */}
+
         <section className="mt-20 p-6 flex flex-col items-center text-center">
           <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
 
@@ -550,41 +402,38 @@ const Profile: React.FC = () => {
 
               <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
             </label>
-            {/* <input
-              type="checkbox"
-              id="profile-toggle"
-              className="sr-only peer"
-              checked={isPublic}
-              onChange={handleToggle}
-            />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div> */}
-
-            {/* <label htmlFor="profile-toggle" className="cursor-pointer">
-              상세 프로필 공개 여부
-            </label> */}
           </div>
         </section>
         <section className="bg-white p-6">
           <h3 className="text-lg font-semibold mb-4">모집 현황</h3>
           <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px]">16</div>
+            <button
+              className="flex flex-col items-center"
+              onClick={() => nav('/myPostHome', { state: { filter: '' } })}
+            >
+              <div className="font-bold text-[20px]">{projectCounts.all}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
-            </div>
+            </button>
 
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px]">10</div>
+            <button
+              className="flex flex-col items-center"
+              onClick={() => nav('/myPostHome', { state: { filter: false } })}
+            >
+              <div className="font-bold text-[20px]">{projectCounts.recruiting}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
-            </div>
+            </button>
 
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px]">6</div>
+            <button
+              className="flex flex-col items-center"
+              onClick={() => nav('/myPostHome', { state: { filter: true } })}
+            >
+              <div className="font-bold text-[20px]">{projectCounts.completed}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
-            </div>
+            </button>
           </div>
         </section>
         <section className="bg-white p-6">

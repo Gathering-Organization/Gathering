@@ -188,6 +188,10 @@ export const getMyPosting = async (nickname: string, page: number, isClosed: boo
     const response = await api.get(
       `/project/pagination/my-project?nickname=${nicknameParam}&page=${page}&isClosed=${isClosed}`
     );
+    console.log(
+      '요청 API:',
+      `/project/pagination/my-project?nickname=${nicknameParam}&page=${page}&isClosed=${isClosed}`
+    );
     console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
