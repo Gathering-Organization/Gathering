@@ -275,7 +275,7 @@ const Profile: React.FC = () => {
 
         <section className="bg-white p-6 mb-4">
           <div className="flex items-center justify-between mb-10">
-            <label htmlFor="organization" className="text-[18px] font-bold">
+            <label htmlFor="organization" className="text-[18px] font-semibold">
               소속
             </label>
             <input
@@ -289,7 +289,7 @@ const Profile: React.FC = () => {
           </div>
 
           <div className="flex items-center justify-between">
-            <label htmlFor="tech-stack" className="text-[18px] font-bold">
+            <label htmlFor="tech-stack" className="text-[18px] font-semibold">
               사용 기술 스택
             </label>
             <div className="w-[650px]">

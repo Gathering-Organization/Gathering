@@ -11,16 +11,21 @@ import PostEdit from '@/pages/PostEdit';
 import Notfound from '@/pages/Notfound';
 import Apply from '@/pages/Apply';
 import MyPostHome from '@/pages/MyPostHome';
+import OtherUserProfile from './pages/OtherUserProfile';
 
-// 1. 모집글 관련 사이트
+// 1. 모집글 관련 페이지
 // - "/postHome" : 모든 모집글들을 조회하는 PostHome 페이지
 // - "/posting" : 새로운 모집글을 작성하는 Posting 페이지
 // - "/viewPost" : 모집글을 볼 수 있는 ViewPost 페이지
 // - "/postEdit" : 모집글을 수정할 수 있는 postEdit 페이지
 // - "/myPostHome" : 내 모집글들을 조회하는 MyPostHome 페이지
 
-// 2. 지원서 관련 사이트
+// 2. 지원서 관련 페이지
 // - "/apply" : 지원서를 볼 수 있는 Apply 페이지
+
+// 3. 프로필 관련 페이지
+// - "/profile" : 내 프로필을 조회 및 수정하는 Profile 페이지
+// - "/otherUserProfile" : 타인의 프로필을 조회하는 OtherUserProfile 페이지
 
 const App: React.FC = () => {
   return (
@@ -34,6 +39,7 @@ const App: React.FC = () => {
               <Route path="/" element={<PostHome />} />
               <Route path="/myPostHome" element={<MyPostHome />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/otherUserProfile/:nickname" element={<OtherUserProfile />} />
               {/* <Route path="/postHome" element={<PostHome />} /> */}
               <Route path="/posting" element={<Posting />} />
               <Route path="/viewPost/:id" element={<ViewPost />} />

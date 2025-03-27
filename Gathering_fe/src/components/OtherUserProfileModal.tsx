@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ProfileAllInfo } from '@/types/profile';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import { useNavigate } from 'react-router-dom';
 
 interface OtherUserProfileModalProps {
   isOpen: boolean;
@@ -13,6 +14,8 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
   onClose,
   profile
 }) => {
+  const nav = useNavigate();
+
   useModalBodyLock(isOpen);
   useEffect(() => {
     if (isOpen) {
@@ -51,7 +54,11 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
           <p className="text-center text-[18px] text-[#000000]/70">{profile.introduction}</p>
           <button
             className="px-10 py-2 fixed bottom-[150px] bg-[#202123] rounded-full text-white font-semibold"
-            onClick={onClose}
+            onClick={() =>
+              nav(`/otherUserProfile/${profile.nickname}`, {
+                state: { nickname: profile.nickname }
+              })
+            }
           >
             프로필 보기
           </button>
