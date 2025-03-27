@@ -50,6 +50,12 @@ const PostItem: React.FC<
 
   const onClickHeart = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (closed || !projectId) {
+      alert('마감된 모집 공고입니다.');
+      return;
+    }
+
     if (!projectId) return;
 
     const prevState = isInterested;
@@ -74,7 +80,11 @@ const PostItem: React.FC<
   return (
     <motion.div
       onClick={() => {
-        nav(`/viewPost/${projectId}`);
+        if (!closed) {
+          nav(`/viewPost/${projectId}`);
+        } else {
+          alert('마감된 모집 공고입니다.');
+        }
       }}
       className="relative cursor-pointer select-none w-85 will-change-transform"
       initial={{ opacity: 0, y: 10 }}
@@ -83,7 +93,9 @@ const PostItem: React.FC<
       transition={{ duration: 0.3 }}
       whileHover={{ scale: 1.03 }}
     >
-      <section className="border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative">
+      <section
+        className={`border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
+      >
         <label className="absolute right-6 top-4 cursor-pointer" onClick={e => e.stopPropagation()}>
           <input
             type="checkbox"
@@ -103,6 +115,14 @@ const PostItem: React.FC<
             <path d="M742.4 101.12A249.6 249.6 0 0 0 512 256a249.6 249.6 0 0 0-230.72-154.88C143.68 101.12 32 238.4 32 376.32c0 301.44 416 546.56 480 546.56s480-245.12 480-546.56c0-137.92-111.68-275.2-249.6-275.2z" />
           </svg>
         </label>
+
+        {closed && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="text-[24px] font-semibold text-white bg-black bg-opacity-50 py-2 px-8 rounded-[30px]">
+              모집 마감
+            </span>
+          </div>
+        )}
 
         <section className="px-8">
           <div className="w-[110px] bg-[#3387E5] rounded-b-[20px] justify-items-center">
