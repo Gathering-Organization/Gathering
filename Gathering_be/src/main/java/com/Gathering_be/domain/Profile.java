@@ -2,6 +2,7 @@ package com.Gathering_be.domain;
 
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.global.common.BaseTimeEntity;
+import com.Gathering_be.global.enums.ApplyStatus;
 import com.Gathering_be.global.enums.TechStack;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -49,6 +50,15 @@ public class Profile extends BaseTimeEntity {
     @OneToMany(mappedBy = "profile")
     private Set<ProjectTeams> teams = new HashSet<>();
 
+    private int totalProjects;
+    private int openedProjects;
+    private int closedProjects;
+
+    private int totalApplications;
+    private int pendingApplications;
+    private int approvedApplications;
+    private int rejectedApplications;
+
     @Builder
     public Profile(Member member, String nickname, String profileColor,
                    String introduction, Portfolio portfolio, boolean isPublic) {
@@ -95,5 +105,49 @@ public class Profile extends BaseTimeEntity {
 
     public void togglePublic() {
         this.isPublic = !this.isPublic;
+    }
+
+    public void addProject() {
+        totalProjects++;
+        openedProjects++;
+    }
+
+    public void removeProject(boolean isClosed) {
+        totalProjects--;
+        if (isClosed) {
+            closedProjects--;
+        } else {
+            openedProjects--;
+        }
+    }
+
+    public void toggleProjectStatus(boolean isClosing) {
+        if (isClosing) {
+            openedProjects--;
+            closedProjects++;
+        } else {
+            openedProjects++;
+            closedProjects--;
+        }
+    }
+
+    public void addApplication() {
+        totalApplications++;
+        pendingApplications++;
+    }
+
+    public void removePendingApplication() {
+        totalApplications--;
+        pendingApplications--;
+    }
+
+    public void updateApplicationStatus(ApplyStatus newStatus) {
+        pendingApplications--;
+
+        if (newStatus == ApplyStatus.APPROVED) {
+            approvedApplications++;
+        } else if (newStatus == ApplyStatus.REJECTED) {
+            rejectedApplications++;
+        }
     }
 }
