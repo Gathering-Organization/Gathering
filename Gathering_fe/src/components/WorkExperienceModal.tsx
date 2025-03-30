@@ -121,7 +121,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
           className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
           aria-hidden="true"
         >
-          <div className="relative p-6 w-full max-w-[800px] max-h-full rounded-[50px] bg-white rounded-lg shadow-lg dark:bg-gray-700">
+          <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
               <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                 활동 경력을 입력해주세요.

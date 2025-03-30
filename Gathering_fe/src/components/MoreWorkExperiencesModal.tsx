@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { techStacks } from '@/utils/tech-stacks';
@@ -14,11 +14,13 @@ interface TechStack {
 interface MoreWorkExperiencesModalProps {
   workExperiences: WorkExperience[];
   nickname: string;
+  onDelete: (activityName: string) => void;
 }
 
 const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
   workExperiences,
-  nickname
+  nickname,
+  onDelete
 }) => {
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
@@ -40,7 +42,7 @@ const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
 
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'unset';
   };
 
   return (
@@ -87,7 +89,11 @@ const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
             </div>
             <div className="mt-3 max-h-[70vh] overflow-y-auto p-2">
               {workExperiences.map((experience, index) => (
-                <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                <WorkExperienceItem
+                  key={`experience-${index}`}
+                  {...experience}
+                  onDelete={onDelete}
+                />
               ))}
             </div>
           </div>

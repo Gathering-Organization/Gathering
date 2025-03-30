@@ -230,6 +230,24 @@ const Profile: React.FC = () => {
     setWorkExperiences(prev => [...prev, experience]);
   };
 
+  const handleDeleteExperience = (activityName: string) => {
+    const updatedWorkExperiences = info.workExperiences.filter(
+      experience => experience.activityName !== activityName
+    );
+
+    setInfo(prev => ({
+      ...prev,
+      workExperiences: updatedWorkExperiences
+    }));
+
+    if (updatedWorkExperiences.length <= 3) {
+      document.body.style.overflow = 'unset';
+    }
+
+    setWorkExperiences(updatedWorkExperiences);
+    alert('활동 경력을 삭제 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
+  };
+
   useEffect(() => {
     if (info.nickname) {
       const fetchPosts = async () => {
@@ -336,7 +354,11 @@ const Profile: React.FC = () => {
           </div>
           <div>
             {info.workExperiences.slice(0, 3).map((experience, index) => (
-              <WorkExperienceItem key={`experience-${index}`} {...experience} />
+              <WorkExperienceItem
+                key={`experience-${index}`}
+                {...experience}
+                onDelete={handleDeleteExperience}
+              />
             ))}
           </div>
           {info.workExperiences.length > 3 && (
@@ -344,6 +366,7 @@ const Profile: React.FC = () => {
               <MoreWorkExperiencesModal
                 workExperiences={info.workExperiences}
                 nickname={parts[0]}
+                onDelete={handleDeleteExperience}
               />
             </div>
           )}

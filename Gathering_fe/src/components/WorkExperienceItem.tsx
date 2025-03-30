@@ -1,12 +1,22 @@
 import { WorkExperience } from '@/types/profile';
+import WorkExperienceViewerModal from './WorkExperienceViewerModal';
 
-const WorkExperienceItem: React.FC<WorkExperience> = ({
+interface WorkExperienceItemProps extends WorkExperience {
+  onDelete: (activityName: string) => void;
+}
+
+const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
   startDate,
   endDate,
   activityName,
   description,
-  techStacks
+  techStacks,
+  onDelete
 }) => {
+  const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    onDelete(activityName);
+  };
   return (
     <div>
       <section className="bg-white py-3">
@@ -18,11 +28,19 @@ const WorkExperienceItem: React.FC<WorkExperience> = ({
             </div>
           </div>
           <div className="flex space-x-4">
-            <button className="text-[12px] bg-[#000000] font-bold px-6 py-2 rounded-[20px] text-white whitespace-nowrap">
+            {/* <button className="text-[12px] bg-[#000000] font-bold px-6 py-2 rounded-[20px] text-white whitespace-nowrap">
               보기
-            </button>
+            </button> */}
+            <WorkExperienceViewerModal
+              startDate={startDate}
+              endDate={endDate}
+              activityName={activityName}
+              description={description}
+              techStacks={techStacks}
+            />
 
             <button
+              onClick={handleDeleteClick}
               className={
                 'text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap'
               }
