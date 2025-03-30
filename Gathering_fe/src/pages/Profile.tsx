@@ -139,6 +139,7 @@ const Profile: React.FC = () => {
         const profileResult = await getMyProfile();
         if (profileResult?.success) {
           setUploadedFile(profileResult.data.portfolio);
+          updateProfileData(profileResult.data);
         } else {
           alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
         }
@@ -159,8 +160,14 @@ const Profile: React.FC = () => {
 
       if (result?.success) {
         alert('파일 삭제 성공!');
-        setSelectedFile(null);
-        setUploadedFile(null);
+        const profileResult = await getMyProfile();
+        if (profileResult?.success) {
+          setSelectedFile(null);
+          setUploadedFile(null);
+          updateProfileData(profileResult.data);
+        } else {
+          alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
+        }
       }
     } catch {
       alert('파일 삭제 중 오류가 발생했습니다.');
@@ -181,27 +188,27 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleStackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+  // const handleStackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
 
-    const updatedTechStacks = [...new Set([...selectedOptions, ...info.techStacks])];
+  //   const updatedTechStacks = [...new Set([...selectedOptions, ...info.techStacks])];
 
-    setInfo(prevInfo => ({
-      ...prevInfo,
-      techStacks: updatedTechStacks
-    }));
+  //   setInfo(prevInfo => ({
+  //     ...prevInfo,
+  //     techStacks: updatedTechStacks
+  //   }));
 
-    console.log(updatedTechStacks);
-  };
+  //   console.log(updatedTechStacks);
+  // };
 
-  const handleStackRemove = (stack: string) => {
-    const updatedTechStacks = info.techStacks.filter(tech => tech !== stack);
+  // const handleStackRemove = (stack: string) => {
+  //   const updatedTechStacks = info.techStacks.filter(tech => tech !== stack);
 
-    setInfo(prevInfo => ({
-      ...prevInfo,
-      techStacks: updatedTechStacks
-    }));
-  };
+  //   setInfo(prevInfo => ({
+  //     ...prevInfo,
+  //     techStacks: updatedTechStacks
+  //   }));
+  // };
 
   const handleAddExperience = (experience: WorkExperience) => {
     if (
@@ -217,9 +224,9 @@ const Profile: React.FC = () => {
     setWorkExperiences(prev => [...prev, experience]);
   };
 
-  const handleDeleteExperience = (index: number) => {
-    setWorkExperiences(prev => prev.filter((_, i) => i !== index));
-  };
+  // const handleDeleteExperience = (index: number) => {
+  //   setWorkExperiences(prev => prev.filter((_, i) => i !== index));
+  // };
 
   useEffect(() => {
     if (info.nickname) {
@@ -253,9 +260,10 @@ const Profile: React.FC = () => {
     if (myProfile) {
       window.scrollTo(0, 0);
       setInfo(myProfile);
+      setUploadedFile(myProfile.portfolio ?? null);
       setIsPublic(myProfile.public);
     }
-  }, [myProfile, isPublic]);
+  }, [myProfile, uploadedFile, isPublic]);
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
   return (

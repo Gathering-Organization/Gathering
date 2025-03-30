@@ -71,18 +71,24 @@ const OtherUserProfile: React.FC = () => {
         <section className="bg-white p-6 mb-4">
           <div className="flex items-center justify-between mb-10">
             <div className="text-[18px] font-semibold">소속</div>
-            <div className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-[#000000]/20 rounded-[30px] focus:outline-none">
-              {profile.organization}
+            <div
+              className={`self-end w-[650px] p-3 px-6 border bg-gray-50 border-[#000000]/20 rounded-[30px] focus:outline-none ${profile.techStacks.length === 0 ? 'text-gray-500' : 'text-black'}`}
+            >
+              {profile.organization ? profile.organization : '저장된 소속이 없습니다.'}
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="text-[18px] font-semibold">사용 기술 스택</div>
-            <div className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-[#000000]/20 rounded-[30px] focus:outline-none">
-              {stackList
-                .filter(tech => profile.techStacks.includes(tech.id))
-                .map(tech => tech.title)
-                .join(', ')}
+            <div
+              className={`self-end w-[650px] p-3 px-6 border bg-gray-50 border-[#000000]/20 rounded-[30px] focus:outline-none ${profile.techStacks.length === 0 ? 'text-gray-500' : 'text-black'}`}
+            >
+              {profile.techStacks.length > 0
+                ? stackList
+                    .filter(tech => profile.techStacks.includes(tech.id))
+                    .map(tech => tech.title)
+                    .join(', ')
+                : '저장된 기술 스택이 없습니다.'}
             </div>
           </div>
         </section>
