@@ -17,6 +17,7 @@ import WorkExperienceItem from '@/components/WorkExperienceItem';
 import { useNavigate } from 'react-router-dom';
 import { getMyPosting } from '@/services/postApi';
 import { approxPostInfo } from '@/types/post';
+import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
 
 interface TechStack {
   id: string;
@@ -272,6 +273,7 @@ const Profile: React.FC = () => {
   }, [myProfile]);
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
+  const parts = info.nickname.split(/(#\d+)/);
   return (
     <div className="mx-60 space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
@@ -328,21 +330,23 @@ const Profile: React.FC = () => {
         </section>
 
         <section className="bg-white p-6 mb-4">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">활동 경력</h3>
             <WorkExperienceModal onSave={handleAddExperience} />
           </div>
-          <div className="space-y-4">
-            {/* {workExperiences.map((experience, index) => (
-              <WorkExperienceItem key={`new-${index}`} {...experience} />
-            ))}
-            {info.workExperiences.map((experience, index) => (
-              <WorkExperienceItem key={`info-${index}`} {...experience} />
-            ))} */}
-            {info.workExperiences.map((experience, index) => (
+          <div>
+            {info.workExperiences.slice(0, 3).map((experience, index) => (
               <WorkExperienceItem key={`experience-${index}`} {...experience} />
             ))}
           </div>
+          {info.workExperiences.length > 3 && (
+            <div className="bg-white py-3">
+              <MoreWorkExperiencesModal
+                workExperiences={info.workExperiences}
+                nickname={parts[0]}
+              />
+            </div>
+          )}
         </section>
 
         <section className="bg-white p-6 mb-4">

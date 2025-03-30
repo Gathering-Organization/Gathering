@@ -71,7 +71,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
 
     closeModal();
     resetForm();
-    // alert('활동 경력을 모두 입력 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
+    alert('활동 경력을 모두 입력 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
   };
 
   const resetForm = () => {

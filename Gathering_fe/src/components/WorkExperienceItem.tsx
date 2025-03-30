@@ -9,7 +9,7 @@ const WorkExperienceItem: React.FC<WorkExperience> = ({
 }) => {
   return (
     <div>
-      <section className="bg-white p-6">
+      <section className="bg-white py-3">
         <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
           <div className="w-[600px]">
             <div className="font-bold pb-2">{activityName}</div>
