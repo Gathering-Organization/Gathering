@@ -221,12 +221,13 @@ const Profile: React.FC = () => {
       return;
     }
 
+    setInfo(prev => ({
+      ...prev,
+      workExperiences: [...prev.workExperiences, experience]
+    }));
+
     setWorkExperiences(prev => [...prev, experience]);
   };
-
-  // const handleDeleteExperience = (index: number) => {
-  //   setWorkExperiences(prev => prev.filter((_, i) => i !== index));
-  // };
 
   useEffect(() => {
     if (info.nickname) {
@@ -256,14 +257,19 @@ const Profile: React.FC = () => {
   }, [info.nickname]);
 
   const { myProfile, isMyProfileLoading, updateProfileData } = useProfile();
+
   useEffect(() => {
     if (myProfile) {
-      window.scrollTo(0, 0);
+      if (!info.nickname) {
+        window.scrollTo(0, 0);
+      }
+
       setInfo(myProfile);
       setUploadedFile(myProfile.portfolio ?? null);
+      setWorkExperiences(myProfile.workExperiences);
       setIsPublic(myProfile.public);
     }
-  }, [myProfile, uploadedFile, isPublic]);
+  }, [myProfile]);
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
   return (
@@ -327,11 +333,14 @@ const Profile: React.FC = () => {
             <WorkExperienceModal onSave={handleAddExperience} />
           </div>
           <div className="space-y-4">
-            {workExperiences.map((experience, index) => (
+            {/* {workExperiences.map((experience, index) => (
               <WorkExperienceItem key={`new-${index}`} {...experience} />
             ))}
             {info.workExperiences.map((experience, index) => (
               <WorkExperienceItem key={`info-${index}`} {...experience} />
+            ))} */}
+            {info.workExperiences.map((experience, index) => (
+              <WorkExperienceItem key={`experience-${index}`} {...experience} />
             ))}
           </div>
         </section>

@@ -1,8 +1,6 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { getMyProfile, getUserProfile } from '@/services/profileApi';
 import { ProfileAllInfo } from '@/types/profile';
-import { Portfolio } from '@/types/profile';
-import { WorkExperience } from '@/types/profile';
 
 export interface ProfileContextType {
   myProfile: ProfileAllInfo;

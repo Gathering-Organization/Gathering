@@ -40,19 +40,19 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
     description: '',
     techStacks: []
   });
-  const handleDateChange = (newValue: DateRange) => {
-    const startDate = newValue.startDate
-      ? new Date(newValue.startDate).toISOString().split('T')[0]
-      : '';
-    const endDate = newValue.endDate ? new Date(newValue.endDate).toISOString().split('T')[0] : '';
+  // const handleDateChange = (newValue: DateRange) => {
+  //   const startDate = newValue.startDate
+  //     ? new Date(newValue.startDate).toISOString().split('T')[0]
+  //     : '';
+  //   const endDate = newValue.endDate ? new Date(newValue.endDate).toISOString().split('T')[0] : '';
 
-    setDateRange({ startDate, endDate });
-    setNewExperience(prev => ({
-      ...prev,
-      startDate,
-      endDate
-    }));
-  };
+  //   setDateRange({ startDate, endDate });
+  //   setNewExperience(prev => ({
+  //     ...prev,
+  //     startDate,
+  //     endDate
+  //   }));
+  // };
 
   const handleAddExperience = () => {
     console.log('저장된 경험:', newExperience);
@@ -67,12 +67,11 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
       return;
     }
 
-    onSave({
-      ...newExperience,
-      techStacks: selectedStacks
-    });
+    onSave({ ...newExperience, techStacks: selectedStacks });
+
     closeModal();
     resetForm();
+    // alert('활동 경력을 모두 입력 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
   };
 
   const resetForm = () => {
@@ -84,7 +83,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
       techStacks: []
     });
     setSelectedStacks([]);
-    setDateRange({ startDate: '', endDate: '' });
+    setValue({ startDate: null, endDate: null });
   };
   //   console.log(newExperience);
   //   setWorkExperiences(prev => [...prev, newExperience]);
