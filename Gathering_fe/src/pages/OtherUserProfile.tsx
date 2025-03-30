@@ -5,6 +5,7 @@ import MultiSelection from '@/components/MultiSelection';
 import WorkExperienceItem from '@/components/WorkExperienceItem';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
+import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
 
 interface TechStack {
   id: string;
@@ -97,13 +98,18 @@ const OtherUserProfile: React.FC = () => {
           <div className="flex items-center justify-between mb-10">
             <h3 className="text-lg font-semibold">활동 경력</h3>
           </div>
-          <div className="space-y-4">
-            {workExperiences.map((experience, index) => (
-              <WorkExperienceItem key={`new-${index}`} {...experience} />
-            ))}
-            {profile.workExperiences.map((experience, index) => (
+          <div>
+            {profile.workExperiences.slice(0, 3).map((experience, index) => (
               <WorkExperienceItem key={`info-${index}`} {...experience} />
             ))}
+            {profile.workExperiences.length > 3 && (
+              <div className="bg-white py-3">
+                <MoreWorkExperiencesModal
+                  workExperiences={profile.workExperiences}
+                  nickname={parts[0]}
+                />
+              </div>
+            )}
           </div>
         </section>
 

@@ -2,7 +2,7 @@ import { WorkExperience } from '@/types/profile';
 import WorkExperienceViewerModal from './WorkExperienceViewerModal';
 
 interface WorkExperienceItemProps extends WorkExperience {
-  onDelete: (activityName: string) => void;
+  onDelete?: (activityName: string) => void;
 }
 
 const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
@@ -15,7 +15,9 @@ const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
 }) => {
   const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    onDelete(activityName);
+    if (onDelete) {
+      onDelete(activityName);
+    }
   };
   return (
     <div>
@@ -27,10 +29,7 @@ const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
               활동일 | {startDate} ~ {endDate}
             </div>
           </div>
-          <div className="flex space-x-4">
-            {/* <button className="text-[12px] bg-[#000000] font-bold px-6 py-2 rounded-[20px] text-white whitespace-nowrap">
-              보기
-            </button> */}
+          <div className={`flex ${onDelete ? 'space-x-4' : 'w-full justify-end me-8'}`}>
             <WorkExperienceViewerModal
               startDate={startDate}
               endDate={endDate}
@@ -39,14 +38,14 @@ const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
               techStacks={techStacks}
             />
 
-            <button
-              onClick={handleDeleteClick}
-              className={
-                'text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap'
-              }
-            >
-              삭제
-            </button>
+            {onDelete && (
+              <button
+                onClick={handleDeleteClick}
+                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
+              >
+                삭제
+              </button>
+            )}
           </div>
         </div>
       </section>

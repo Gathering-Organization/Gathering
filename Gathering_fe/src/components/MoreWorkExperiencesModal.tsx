@@ -14,7 +14,7 @@ interface TechStack {
 interface MoreWorkExperiencesModalProps {
   workExperiences: WorkExperience[];
   nickname: string;
-  onDelete: (activityName: string) => void;
+  onDelete?: (activityName: string) => void;
 }
 
 const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
