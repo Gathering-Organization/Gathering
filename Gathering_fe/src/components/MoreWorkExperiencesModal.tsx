@@ -59,9 +59,9 @@ const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
           className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
           aria-hidden="true"
         >
-          <div className="relative p-10 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
+          <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
             <div className="flex items-center justify-between p-4 md:p-5 border-b border-gray-200 dark:border-gray-600">
-              <h3 className="text-[24px] font-bold text-gray-900 dark:text-white">
+              <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                 {nickname}님의 활동 경력입니다.
               </h3>
               <button
@@ -87,7 +87,7 @@ const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <div className="mt-3 max-h-[70vh] overflow-y-auto p-2">
+            <div className="mt-3 max-h-[70vh] overflow-y-auto p-6 md:p-7">
               {workExperiences.map((experience, index) => (
                 <WorkExperienceItem
                   key={`experience-${index}`}

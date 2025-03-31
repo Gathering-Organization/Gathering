@@ -68,7 +68,7 @@ const ApplyModal: React.FC = () => {
       <div className="flex flex-col items-center mt-10">
         <button
           onClick={openModal}
-          className="mx-auto w-[160px] bg-[#3387E5] justify-center text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+          className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
         >
           지원하기
         </button>
@@ -78,9 +78,9 @@ const ApplyModal: React.FC = () => {
             className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
             aria-hidden="true"
           >
-            <div className="relative p-6 w-full max-w-[800px] max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
+            <div className="relative p-4 w-full max-w-[800px] max-h-full bg-white rounded-[20px] shadow-lg dark:bg-gray-700 overflow-hidden">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                   지원서를 입력해주세요.
                 </h3>
                 <button
@@ -136,7 +136,7 @@ const ApplyModal: React.FC = () => {
                       type="checkbox"
                       checked={isChecked}
                       onChange={e => setIsChecked(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:border-gray-600"
                     />
                     <label
                       htmlFor="default-checkbox"
@@ -148,7 +148,7 @@ const ApplyModal: React.FC = () => {
                   <button
                     onClick={handleViewApplication}
                     type="button"
-                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     내 지원서 보기
                   </button>
@@ -156,9 +156,9 @@ const ApplyModal: React.FC = () => {
                     onClick={handleSubmit}
                     type="button"
                     disabled={!isChecked}
-                    className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:ring-4 focus:outline-none border border-[#3387E5] ${
+                    className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none border border-[#3387E5] ${
                       isChecked
-                        ? 'bg-[#3387E5] hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
+                        ? 'bg-[#3387E5] hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >

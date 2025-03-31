@@ -139,7 +139,7 @@ const OtherUserProfile: React.FC = () => {
           </div>
         </section>
 
-        <section className="mt-20 p-6 flex flex-col items-center text-center">
+        <section className="mt-14 p-6 flex flex-col items-center text-center">
           <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
         </section>
         <section className="bg-white p-6">
@@ -165,7 +165,7 @@ const OtherUserProfile: React.FC = () => {
             </div>
           </div>
         </section>
-        <section className="bg-white p-6">
+        <section className="bg-white p-6 mb-8">
           <h3 className="text-lg font-semibold mb-4">지원 현황</h3>
           <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
             <div className="flex flex-col items-center">

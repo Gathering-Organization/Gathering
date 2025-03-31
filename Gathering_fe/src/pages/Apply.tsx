@@ -11,6 +11,7 @@ import { useProfile } from '@/contexts/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
 import { ProfileContextType } from '@/contexts/ProfileStateContext';
 import { getStackImage } from '@/utils/get-stack-image';
+import { positionData } from '@/utils/position-data';
 
 interface TechStack {
   id: string;
@@ -19,12 +20,10 @@ interface TechStack {
 
 const Apply: React.FC = () => {
   const [applyInfo, setApplyInfo] = useState({ position: '', message: '' });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<Portfolio | null>(null);
+
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [stackList] = useState<TechStack[]>([...techStacks]);
-  const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
-  const [isTechTooltipOpen, setIsTechTooltipOpen] = useState(false);
+  const [isTechTooltipOpen, setIsTechTooltipOpen] = useState<number | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
@@ -62,7 +61,7 @@ const Apply: React.FC = () => {
 
   useEffect(() => {
     const closeTooltips = () => {
-      setIsTechTooltipOpen(false);
+      setIsTechTooltipOpen(null);
     };
 
     document.addEventListener('click', closeTooltips);
@@ -71,15 +70,28 @@ const Apply: React.FC = () => {
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
   const parts = info.nickname.split(/(#\d+)/);
-  const toggleTechTooltip = (e: React.MouseEvent) => {
+
+  const toggleTechTooltip = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsTechTooltipOpen(!isTechTooltipOpen);
+    setIsTechTooltipOpen(prev => (prev === index ? null : index));
+  };
+
+  const positionTitle =
+    positionData.find(position => position.id === applyInfo.position)?.title || applyInfo.position;
+
+  const stackLists = info.techStacks.map(id => {
+    const stack = techStacks.find(stack => stack.id === id);
+    return stack ? stack.title : id;
+  });
+
+  const handleClose = () => {
+    window.close();
   };
 
   return (
     <div className="mx-60">
       <div className="border-[#000000]/20 border-2 rounded-xl p-10 px-20 min-h-screen">
-        <section className="flex px-8 space-x-4 items-center">
+        <section className="flex space-x-4 items-center">
           <div
             className="w-[36px] h-[36px] rounded-full"
             style={{ backgroundColor: `#${info.profileColor}` }}
@@ -92,7 +104,7 @@ const Apply: React.FC = () => {
 
         <section className="flex space-x-12 p-8 items-center font-inter">
           <div className="font-bold text-[20px] w-[200px]">지원 포지션</div>
-          <div className="">{applyInfo.position}</div>
+          <div className="font-semibold">{positionTitle}</div>
         </section>
         <hr className="w-full h-[1px] bg-[#000000]/60 border-none" />
         <div className="">
@@ -102,7 +114,7 @@ const Apply: React.FC = () => {
           </section>
           <section className="flex space-x-12 p-8 items-center font-inter">
             <div className="font-bold text-[20px] w-[200px]">사용 기술 스택</div>
-            <div className="">{info.techStacks.join(', ')}</div>
+            <div className="font-semibold">{stackLists.join(', ')}</div>
           </section>
           <section className="flex space-x-12 p-8 items-start font-inter">
             <div className="font-bold text-[20px] w-[200px]">활동 내역</div>
@@ -117,12 +129,12 @@ const Apply: React.FC = () => {
                     {index > 0 && (
                       <hr className="w-full h-[1px] bg-[#000000]/20 border-none my-8" />
                     )}
-                    <div className="font-bold text-[20px]">
+                    <div className="font-bold text-[18px]">
                       {exp.activityName} ({exp.startDate} ~ {exp.endDate})
                     </div>
 
                     {/* 기술 스택 리스트 */}
-                    <div className="flex items-center space-x-4 mt-2">
+                    <div className="flex items-center space-x-4 mt-4">
                       {/* 보이는 기술 스택 */}
                       {visibleTechStacks.map((item, index) => {
                         const imageSrc = getStackImage(item.toUpperCase());
@@ -136,24 +148,19 @@ const Apply: React.FC = () => {
                         <div className="relative">
                           <div
                             className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
-                            onClick={toggleTechTooltip}
+                            onClick={e => toggleTechTooltip(index, e)}
                           >
                             +{extraTechStacksCount}
                           </div>
 
                           {/* 기술 스택 툴팁 */}
-                          {isTechTooltipOpen && (
+                          {isTechTooltipOpen === index && (
                             <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
                               <div className="flex space-x-2">
-                                {extraTechStacks.map((item, index) => {
+                                {extraTechStacks.map((item, i) => {
                                   const imageSrc = getStackImage(item.toUpperCase());
                                   return imageSrc ? (
-                                    <img
-                                      key={index}
-                                      src={imageSrc}
-                                      alt={item}
-                                      className="w-8 h-8"
-                                    />
+                                    <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
                                   ) : null;
                                 })}
                               </div>
@@ -163,7 +170,7 @@ const Apply: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="mt-10 font-semibold">{exp.description}</div>
+                    <div className="mt-10 text-[#202123]">{exp.description}</div>
                   </div>
                 );
               })}
@@ -174,7 +181,7 @@ const Apply: React.FC = () => {
           <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
           <section className="flex space-x-12 p-8 items-center font-inter">
             <div className="font-bold text-[20px] w-[200px]">간단 자기어필</div>
-            <div className="">{applyInfo.message}</div>
+            <div className="text-[#202123]">{applyInfo.message}</div>
           </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
@@ -192,8 +199,11 @@ const Apply: React.FC = () => {
           </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <section className="justify-self-center py-10">
-            <button className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-semibold">
-              확인
+            <button
+              onClick={handleClose}
+              className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-semibold"
+            >
+              닫기
             </button>
           </section>
         </div>
