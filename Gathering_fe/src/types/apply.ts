@@ -8,6 +8,7 @@ export interface ApplyDetails {
   id: number;
   nickname: string;
   projectId: number;
+  position: string;
   message: string;
   status: string;
 }

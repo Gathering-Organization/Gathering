@@ -16,7 +16,7 @@ import { durationOptions } from '@/utils/post-options';
 import eye from '@/assets/otherIcons/eye.png';
 import OtherApplicationModal from '@/components/OtherApplicationModal';
 import { getOtherApplication } from '@/services/applicationApi';
-import { ApplyInfo } from '@/types/apply';
+import { ApplyDetails, ApplyInfo } from '@/types/apply';
 import ApplyModal from './ApplyModal';
 
 interface Position {
@@ -43,7 +43,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     error: teamMemberError
   } = useOtherProfile(selectedTeamMember);
   const [loading, setLoading] = useState<boolean>(true);
-  const [applications, setApplications] = useState<ApplyInfo[]>([]);
+  const [applications, setApplications] = useState<ApplyDetails[]>([]);
 
   useEffect(() => {
     const fetchApplications = async () => {

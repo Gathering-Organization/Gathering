@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MultiLevelDropdown from './MultiLevelDropdown';
 import { positionData } from '@/utils/position-data';
-import { setApply } from '@/services/applyApi';
+import { postApplication } from '@/services/applicationApi';
 import { ApplyInfo } from '@/types/apply';
 import { DropdownDispatchContext } from '@/pages/PostHome';
 import { useParams } from 'react-router-dom';
@@ -41,7 +41,11 @@ const ApplyModal: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await setApply(applyInfo);
+      const response = await postApplication(
+        applyInfo.projectId,
+        applyInfo.position,
+        applyInfo.message
+      );
       if (response?.success) {
         alert('지원서 제출이 완료되었습니다.');
         closeModal();

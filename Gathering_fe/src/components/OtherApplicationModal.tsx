@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
-import { setApply } from '@/services/applyApi';
-import { ApplyInfo } from '@/types/apply';
+import { postApplication } from '@/services/applicationApi';
+import { ApplyDetails } from '@/types/apply';
 import { useParams } from 'react-router-dom';
 import { patchApplication } from '@/services/applicationApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import { positionData } from '@/utils/position-data';
 
 type OtherApplicationModalProps = {
   title: string;
-  apply: ApplyInfo[];
+  apply: ApplyDetails[];
 };
 
 const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, apply }) => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
+  const [applyDetails, setApplyDetails] = useState<ApplyDetails>({
+    id: 0,
     projectId: Number(params.id),
+    nickname: '',
     position: '',
-    message: ''
+    message: '',
+    status: ''
   });
 
   useModalBodyLock(isModalOpen);
@@ -32,19 +36,19 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
   };
 
   const handleSelectedPosition = (value: string) => {
-    setApplyInfo(prev => ({ ...prev, position: value }));
+    setApplyDetails(prev => ({ ...prev, position: value }));
   };
 
   const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setApplyInfo({
-      ...applyInfo,
+    setApplyDetails({
+      ...applyDetails,
       message: e.target.value
     });
   };
 
   const handleApprove = async () => {
     try {
-      const response = await patchApplication(applyInfo.projectId, 'APPROVED');
+      const response = await patchApplication(applyDetails.projectId, 'APPROVED');
       if (response?.success) {
         alert('승인이 완료되었습니다.');
         closeModal();
@@ -58,7 +62,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
 
   const handleReject = async () => {
     try {
-      const response = await patchApplication(applyInfo.projectId, 'REJECTED');
+      const response = await patchApplication(applyDetails.projectId, 'REJECTED');
       if (response?.success) {
         alert('거절 처리가 완료되었습니다.');
         closeModal();
@@ -89,82 +93,70 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
           className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
           aria-hidden="true"
         >
-          <div className="relative p-6 w-full max-w-[800px] max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
-            <div>
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-[30px] font-black text-gray-900 dark:text-white">{title}</h3>
-                <button
-                  type="button"
-                  className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                  onClick={closeModal}
+          <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
+            <div className="flex items-center justify-between p-4 md:p-5 border-b border-gray-200 dark:border-gray-600">
+              <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">지원자 현황</h3>
+              <button
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                onClick={closeModal}
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
                 >
-                  <svg
-                    className="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+            </div>
 
-              <div>
-                <div className="my-10 ms-6 text-[20px] font-bold">지원자 현황</div>
-                <div>
-                  <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
-                    {/* <div className="w-[600px]">
-                      {uploadedFile ? (
-                        <a
-                        //   href={uploadedFile.url}
-                        //   download={uploadedFile.fileName}
-                          className="font-semibold text-blue-500 hover:underline ml-4"
-                        >
-                          {`차무식님의 [${applyInfo.position}] 지원서`}
-                        </a>
-                      ) : (
-                        <span className="text-gray-500 ml-4">선택된 파일 없음</span>
-                      )}
-                    </div> */}
-                    {apply.length > 0 ? (
-                      <div className="p-4">
-                        {apply.map((item, index) => (
-                          <div>
-                            <div key={index} className="mb-4 border p-4 rounded">
-                              <div>Project ID: {item.projectId}</div>
-                              <div>Position: {item.position}</div>
-                              <div>Message: {item.message}</div>
-                            </div>
-                            <div className="flex space-x-4">
-                              <button
-                                onClick={handleApprove}
-                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600"
-                              >
-                                승인
-                              </button>
-                              <button
-                                onClick={handleReject}
-                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600"
-                              >
-                                거절
-                              </button>
-                            </div>
+            <div className="p-6">
+              <div className="mt-3 max-h-[70vh] overflow-y-auto">
+                {apply.length > 0 ? (
+                  <div className="space-y-4">
+                    {apply.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] p-4 px-6 h-24"
+                      >
+                        <div className="w-[60%]">
+                          <div className="font-bold pb-2">
+                            {item.nickname}님의 [
+                            {positionData.find(position => position.id === item.position)?.title ||
+                              item.position}
+                            ] 지원서
                           </div>
-                        ))}
+                        </div>
+                        <div className="flex space-x-4 w-[40%] justify-end">
+                          <button
+                            onClick={handleApprove}
+                            className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 whitespace-nowrap"
+                          >
+                            승인
+                          </button>
+                          <button
+                            onClick={handleReject}
+                            className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
+                          >
+                            거절
+                          </button>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="text-center text-gray-500">지원자가 없습니다!</div>
-                    )}
+                    ))}
                   </div>
-                </div>
+                ) : (
+                  <div className="text-center text-gray-500">지원자가 없습니다!</div>
+                )}
               </div>
             </div>
           </div>
