@@ -145,24 +145,24 @@ const OtherUserProfile: React.FC = () => {
         <section className="bg-white p-6">
           <h3 className="text-lg font-semibold mb-4">모집 현황</h3>
           <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
-            <button className="flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <div className="font-bold text-[20px]">16</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
-            </button>
+            </div>
 
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <button className="flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <div className="font-bold text-[20px]">10</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
-            </button>
+            </div>
 
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <button className="flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <div className="font-bold text-[20px]">6</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
-            </button>
+            </div>
           </div>
         </section>
         <section className="bg-white p-6">

@@ -37,7 +37,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   }, []);
 
   return (
-    <form className="max-w-lg w-full">
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+      }}
+      className="max-w-lg w-full"
+    >
       <div className="flex relative">
         {/* 드롭다운 버튼 */}
         <button
