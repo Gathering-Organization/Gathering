@@ -6,6 +6,7 @@ import { patchApplication } from '@/services/applicationApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
 import { positionData } from '@/utils/position-data';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
+import Badge from '@/components/Badge';
 
 type OtherApplicationModalProps = {
   title: string;
@@ -88,9 +89,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
           className="flex justify-self-center space-x-4 items-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px]"
         >
           <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>
-          <div className="flex items-center justify-center min-w-[24px] h-[24px] px-2 bg-[#FFFF33] rounded-full text-black font-bold">
-            999+
-          </div>
+          <Badge count={apply.length} />
         </button>
       </div>
 
@@ -151,18 +150,30 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
                           >
                             보기
                           </button>
-                          <button
-                            onClick={() => handleApprove(item.id)}
-                            className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 whitespace-nowrap"
-                          >
-                            승인
-                          </button>
-                          <button
-                            onClick={() => handleReject(item.id)}
-                            className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
-                          >
-                            거절
-                          </button>
+                          {item.status === 'PENDING' ? (
+                            <>
+                              <button
+                                onClick={() => handleApprove(item.id)}
+                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 whitespace-nowrap"
+                              >
+                                승인
+                              </button>
+                              <button
+                                onClick={() => handleReject(item.id)}
+                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
+                              >
+                                거절
+                              </button>
+                            </>
+                          ) : item.status === 'APPROVED' ? (
+                            <div className="cursor-not-allowed text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5]/60 text-white whitespace-nowrap">
+                              승인 상태입니다.
+                            </div>
+                          ) : item.status === 'REJECTED' ? (
+                            <div className="cursor-not-allowed text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E]/60 text-white whitespace-nowrap">
+                              거절 상태입니다.
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     ))}
