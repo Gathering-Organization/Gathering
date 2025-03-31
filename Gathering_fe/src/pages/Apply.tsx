@@ -12,6 +12,8 @@ import { techStacks } from '@/utils/tech-stacks';
 import { ProfileContextType } from '@/contexts/ProfileStateContext';
 import { getStackImage } from '@/utils/get-stack-image';
 import { positionData } from '@/utils/position-data';
+import { useSearchParams } from 'react-router-dom';
+import { useOtherProfile } from '@/hooks/UseOtherProfile';
 
 interface TechStack {
   id: string;
@@ -19,6 +21,8 @@ interface TechStack {
 }
 
 const Apply: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const nickname = searchParams.get('nickname');
   const [applyInfo, setApplyInfo] = useState({ position: '', message: '' });
 
   const [isPublic, setIsPublic] = useState<boolean>(false);
@@ -47,17 +51,25 @@ const Apply: React.FC = () => {
   const filteredStacks = stacks.filter(stack => !info.techStacks.includes(stack.title));
 
   const { myProfile, isMyProfileLoading } = useProfile();
+
+  const { profile, isLoading, error } = useOtherProfile(nickname);
+
+  const isLoadingOverall = nickname ? isLoading : isMyProfileLoading;
+  const hasError = nickname ? error : false;
+
   useEffect(() => {
     const stored = localStorage.getItem('applyInfo');
     if (stored) {
       setApplyInfo(JSON.parse(stored));
     }
-    if (myProfile) {
-      console.log(myProfile);
+    if (nickname && profile) {
+      setInfo(profile);
+      setWorkExperiences(profile.workExperiences);
+    } else if (!nickname && myProfile) {
       setInfo(myProfile);
       setWorkExperiences(myProfile.workExperiences);
     }
-  }, [myProfile, isPublic]);
+  }, [nickname, profile, myProfile, isPublic]);
 
   useEffect(() => {
     const closeTooltips = () => {
@@ -87,6 +99,13 @@ const Apply: React.FC = () => {
   const handleClose = () => {
     window.close();
   };
+
+  if (isLoadingOverall) {
+    return <div>로딩 중...</div>;
+  }
+  if (hasError) {
+    return <div>오류가 발생했습니다.</div>;
+  }
 
   return (
     <div className="mx-60">

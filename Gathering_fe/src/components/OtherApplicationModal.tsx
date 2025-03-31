@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { patchApplication } from '@/services/applicationApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
 import { positionData } from '@/utils/position-data';
+import { useOtherProfile } from '@/hooks/UseOtherProfile';
 
 type OtherApplicationModalProps = {
   title: string;
@@ -46,9 +47,9 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
     });
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (id: number) => {
     try {
-      const response = await patchApplication(applyDetails.projectId, 'APPROVED');
+      const response = await patchApplication(id, 'APPROVED');
       if (response?.success) {
         alert('승인이 완료되었습니다.');
         closeModal();
@@ -60,9 +61,9 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
     }
   };
 
-  const handleReject = async () => {
+  const handleReject = async (id: number) => {
     try {
-      const response = await patchApplication(applyDetails.projectId, 'REJECTED');
+      const response = await patchApplication(id, 'REJECTED');
       if (response?.success) {
         alert('거절 처리가 완료되었습니다.');
         closeModal();
@@ -72,6 +73,11 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
     } catch (error) {
       alert('거절 처리 중 오류가 발생했습니다.');
     }
+  };
+
+  const handleViewApplication = (item: ApplyDetails) => {
+    localStorage.setItem('applyInfo', JSON.stringify(item));
+    window.open(`/apply/view?nickname=${encodeURIComponent(item.nickname)}`, '_blank');
   };
 
   return (
@@ -131,7 +137,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
                       >
                         <div className="w-[60%]">
                           <div className="font-bold pb-2">
-                            {item.nickname}님의 [
+                            {item.nickname.split(/(#\d+)/)[0]}님의 [
                             {positionData.find(position => position.id === item.position)?.title ||
                               item.position}
                             ] 지원서
@@ -139,13 +145,20 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
                         </div>
                         <div className="flex space-x-4 w-[40%] justify-end">
                           <button
-                            onClick={handleApprove}
+                            onClick={() => handleViewApplication(item)}
+                            type="button"
+                            className="text-[12px] bg-[#000000] font-bold px-6 py-2 rounded-[20px] text-white whitespace-nowrap"
+                          >
+                            보기
+                          </button>
+                          <button
+                            onClick={() => handleApprove(item.id)}
                             className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 whitespace-nowrap"
                           >
                             승인
                           </button>
                           <button
-                            onClick={handleReject}
+                            onClick={() => handleReject(item.id)}
                             className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
                           >
                             거절

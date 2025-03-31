@@ -63,7 +63,7 @@ export const getMyApplication = async (id: number) => {
 
 export const patchApplication = async (applicationId: number, status: string) => {
   try {
-    const response = await api.patch(`/application/${applicationId}/status`, { status });
+    const response = await api.patch(`/application/${applicationId}/status?status=${status}`);
 
     console.log(`/application/${applicationId}/status`);
     if (response.data.status === 200) {
