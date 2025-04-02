@@ -1,5 +1,6 @@
 package com.Gathering_be.service;
 
+import com.Gathering_be.domain.Application;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
 import com.Gathering_be.domain.ProjectTeams;
@@ -44,6 +45,7 @@ public class ProjectService {
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
         Long memberId = getCurrentUserId();
         Profile profile = findProfileByMemberId(memberId);
+        profile.addProject();
 
         Project project = Project.builder()
                 .profile(profile)
@@ -84,6 +86,7 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
+        project.getProfile().removeProject(project.isClosed());
         projectRepository.deleteById(projectId);
     }
 
@@ -163,6 +166,7 @@ public class ProjectService {
         validateMemberAccess(project);
 
         project.toggleIsClosed();
+        project.getProfile().toggleProjectStatus(project.isClosed());
     }
       
     @Scheduled(cron = "0 0 0 * * *")
@@ -174,7 +178,11 @@ public class ProjectService {
 
         for (Project project : expiredProjects) {
             project.closeProject();
-            applicationRepository.updatePendingApplicationsToRejected(project.getId());
+
+            List<Application> applications = applicationRepository.findAllByProjectAndStatus(project, ApplyStatus.PENDING);
+            for (Application application : applications) {
+                application.reject();
+            }
         }
     }
 

@@ -52,6 +52,7 @@ public class ApplicationService {
                 .message(request.getMessage())
                 .build();
 
+        profile.addApplication();
         applicationRepository.save(application);
     }
 
@@ -106,6 +107,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
+        application.getProfile().removePendingApplication();
         applicationRepository.delete(application);
     }
 
@@ -126,6 +128,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
+        application.getProfile().updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
     }
 

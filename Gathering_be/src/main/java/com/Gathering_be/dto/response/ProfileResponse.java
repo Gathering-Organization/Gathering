@@ -23,10 +23,21 @@ public class ProfileResponse {
     private Portfolio portfolio;
     private List<WorkExperienceResponse> workExperiences;
 
+    private int totalProjects;
+    private int openedProjects;
+    private int closedProjects;
+
+    private int totalApplications;
+    private int pendingApplications;
+    private int approvedApplications;
+    private int rejectedApplications;
+
     @Builder
     public ProfileResponse(String profileColor, String nickname, String introduction,
                            boolean isPublic, String organization, Set<TechStack> techStacks,
-                           Portfolio portfolio, List<WorkExperienceResponse> workExperiences) {
+                           Portfolio portfolio, List<WorkExperienceResponse> workExperiences,
+                           int totalProjects, int openedProjects, int closedProjects,
+                           int totalApplications, int pendingApplications, int approvedApplications, int rejectedApplications) {
         this.profileColor = profileColor;
         this.nickname = nickname;
         this.introduction = introduction;
@@ -35,6 +46,13 @@ public class ProfileResponse {
         this.techStacks = techStacks;
         this.portfolio = portfolio;
         this.workExperiences = workExperiences;
+        this.totalProjects = totalProjects;
+        this.openedProjects = openedProjects;
+        this.closedProjects = closedProjects;
+        this.totalApplications = totalApplications;
+        this.pendingApplications = pendingApplications;
+        this.approvedApplications = approvedApplications;
+        this.rejectedApplications = rejectedApplications;
     }
 
     public static ProfileResponse from(Profile profile, boolean isMyProfile) {
@@ -50,6 +68,13 @@ public class ProfileResponse {
 
         if (isMyProfile || profile.isPublic()) {
             builder.organization(profile.getOrganization());
+            builder.totalProjects(profile.getTotalProjects());
+            builder.openedProjects(profile.getOpenedProjects());
+            builder.closedProjects(profile.getClosedProjects());
+            builder.totalApplications(profile.getTotalApplications());
+            builder.pendingApplications(profile.getPendingApplications());
+            builder.approvedApplications(profile.getApprovedApplications());
+            builder.rejectedApplications(profile.getRejectedApplications());
         }
 
         if (isMyProfile) {

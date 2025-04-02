@@ -43,4 +43,8 @@ public class Application extends BaseTimeEntity {
     public void updateStatus(ApplyStatus newStatus) {
         this.status = newStatus;
     }
+    public void reject() {
+        this.status = ApplyStatus.REJECTED;
+        this.profile.updateApplicationStatus(ApplyStatus.REJECTED);
+    }
 }
