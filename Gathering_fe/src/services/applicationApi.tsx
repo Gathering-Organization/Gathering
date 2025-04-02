@@ -7,7 +7,7 @@ export const postApplication = async (projectId: number, position: string, messa
 
     console.log('응답 데이터:', response.data);
 
-    if (response.data.status === 200) {
+    if (response.data.status === 201) {
       return { success: true, message: response.data.message };
     }
   } catch (error: unknown) {

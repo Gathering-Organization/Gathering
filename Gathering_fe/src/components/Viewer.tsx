@@ -48,9 +48,11 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const result = await getOtherApplication(Number(params.id));
-        if (result?.success) {
-          setApplications(result.data);
+        if (data?.authorNickname === userNickname) {
+          const result = await getOtherApplication(Number(params.id));
+          if (result?.success) {
+            setApplications(result.data);
+          }
         }
       } catch (error) {
         console.error('지원서 조회 실패:', error);
