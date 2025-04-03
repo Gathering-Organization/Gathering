@@ -5,6 +5,7 @@ import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
 import com.Gathering_be.global.enums.TechStack;
+import com.Gathering_be.global.service.S3Service;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -63,9 +64,9 @@ public class ProjectDetailResponse {
         this.viewCount = viewCount;
     }
 
-    public static ProjectDetailResponse from(Project project, boolean isInterested) {
+    public static ProjectDetailResponse from(Project project, boolean isInterested, S3Service s3Service) {
         Set<ProfileResponse> teams = project.getTeams().stream()
-                .map(projectTeams -> ProfileResponse.from(projectTeams.getProfile(), false))
+                .map(projectTeams -> ProfileResponse.from(projectTeams.getProfile(), false, s3Service))
                 .collect(Collectors.toSet());
 
         return ProjectDetailResponse.builder()

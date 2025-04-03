@@ -4,6 +4,7 @@ import com.Gathering_be.exception.FileSizeExceededException;
 import com.Gathering_be.exception.FileUploadException;
 import com.Gathering_be.exception.InvalidFileTypeException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,20 +51,6 @@ public class S3Service {
         }
     }
 
-    private void validateFile(MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new InvalidFileTypeException();
-        }
-
-        if (!ALLOWED_IMAGE_TYPES.contains(file.getContentType())) {
-            throw new InvalidFileTypeException();
-        }
-
-        if (file.getSize() > MAX_FILE_SIZE) {
-            throw new FileSizeExceededException();
-        }
-    }
-
     public void deleteFile(String fileUrl) {
         try {
             String fileName = extractFileName(fileUrl);
@@ -70,6 +59,19 @@ public class S3Service {
             log.error("파일 삭제 실패", e);
             throw new FileUploadException();
         }
+    }
+
+    public String getPresignedUrl(String fileUrl) {
+        String fileKey = fileUrl.substring(fileUrl.indexOf("portfolio/"));
+
+        Date expiration = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucket, fileKey)
+                        .withExpiration(expiration);
+
+        URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
+        return url.toString();
     }
 
     private String createUniqueFileName(String directory, String originalFileName) {
@@ -85,6 +87,20 @@ public class S3Service {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
             throw new InvalidFileTypeException();
+        }
+    }
+
+    private void validateFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new InvalidFileTypeException();
+        }
+
+        if (!ALLOWED_IMAGE_TYPES.contains(file.getContentType())) {
+            throw new InvalidFileTypeException();
+        }
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new FileSizeExceededException();
         }
     }
 }
