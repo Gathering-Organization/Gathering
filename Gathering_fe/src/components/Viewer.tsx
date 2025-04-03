@@ -18,6 +18,7 @@ import OtherApplicationModal from '@/components/OtherApplicationModal';
 import { getOtherApplication } from '@/services/applicationApi';
 import { ApplyDetails, ApplyInfo } from '@/types/apply';
 import ApplyModal from './ApplyModal';
+import { techStacks } from '@/utils/tech-stacks';
 
 interface Position {
   id: string;
@@ -161,13 +162,26 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   // 포지션 툴팁 토글
   const togglePositionTooltip = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsPositionTooltipOpen(!isPositionTooltipOpen);
+    setIsPositionTooltipOpen(prev => {
+      const newState = !prev;
+
+      if (newState) {
+        setIsTechTooltipOpen(false);
+      }
+      return newState;
+    });
   };
 
   // 기술스택 툴팁 토글
   const toggleTechTooltip = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsTechTooltipOpen(!isTechTooltipOpen);
+    setIsTechTooltipOpen(prev => {
+      const newState = !prev;
+      if (newState) {
+        setIsPositionTooltipOpen(false);
+      }
+      return newState;
+    });
   };
 
   return (
@@ -363,8 +377,16 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
               <div className="font-semibold py-2 flex flex-wrap gap-4">
                 {visibleTechStacks.map((item, index) => {
                   const imageSrc = getStackImage(item.toUpperCase());
+                  const tech = techStacks.find(stack => stack.id === item);
+                  const techTitle = tech ? tech.title : item;
                   return imageSrc ? (
-                    <img key={index} src={imageSrc} alt={item} className="w-10 h-10" />
+                    <img
+                      key={index}
+                      title={techTitle}
+                      src={imageSrc}
+                      alt={item}
+                      className="w-10 h-10"
+                    />
                   ) : null;
                 })}
                 {extraTechStacksCount > 0 && (
@@ -381,8 +403,16 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
                         <div className="flex space-x-2">
                           {data.techStacks.slice(3).map((item, index) => {
                             const imageSrc = getStackImage(item.toUpperCase());
+                            const tech = techStacks.find(stack => stack.id === item);
+                            const techTitle = tech ? tech.title : item;
                             return imageSrc ? (
-                              <img key={index} src={imageSrc} alt={item} className="w-10 h-10" />
+                              <img
+                                key={index}
+                                title={techTitle}
+                                src={imageSrc}
+                                alt={item}
+                                className="w-10 h-10"
+                              />
                             ) : null;
                           })}
                         </div>
