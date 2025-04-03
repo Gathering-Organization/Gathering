@@ -9,11 +9,11 @@ import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import Badge from '@/components/Badge';
 
 type OtherApplicationModalProps = {
-  title: string;
   apply: ApplyDetails[];
+  onStatusChange: (id: number, newStatus: string) => void;
 };
 
-const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, apply }) => {
+const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, onStatusChange }) => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [applyDetails, setApplyDetails] = useState<ApplyDetails>({
@@ -37,23 +37,23 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
     document.body.style.overflow = 'auto';
   };
 
-  const handleSelectedPosition = (value: string) => {
-    setApplyDetails(prev => ({ ...prev, position: value }));
-  };
+  // const handleSelectedPosition = (value: string) => {
+  //   setApplyDetails(prev => ({ ...prev, position: value }));
+  // };
 
-  const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setApplyDetails({
-      ...applyDetails,
-      message: e.target.value
-    });
-  };
+  // const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   setApplyDetails({
+  //     ...applyDetails,
+  //     message: e.target.value
+  //   });
+  // };
 
   const handleApprove = async (id: number) => {
     try {
       const response = await patchApplication(id, 'APPROVED');
       if (response?.success) {
+        onStatusChange(id, 'APPROVED');
         alert('승인이 완료되었습니다.');
-        closeModal();
       } else {
         alert(response?.message || '승인 처리 중 오류가 발생했습니다.');
       }
@@ -66,8 +66,8 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ title, ap
     try {
       const response = await patchApplication(id, 'REJECTED');
       if (response?.success) {
+        onStatusChange(id, 'REJECTED');
         alert('거절 처리가 완료되었습니다.');
-        closeModal();
       } else {
         alert(response?.message || '거절 처리 중 오류가 발생했습니다.');
       }

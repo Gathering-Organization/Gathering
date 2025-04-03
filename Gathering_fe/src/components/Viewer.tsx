@@ -130,6 +130,12 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
 
   const parts = data.authorNickname.split(/(#\d+)/);
 
+  const updateApplicationStatus = (id: number, newStatus: string) => {
+    setApplications(prev =>
+      prev.map(item => (item.id === id ? { ...item, status: newStatus } : item))
+    );
+  };
+
   const handleToggleChange = async (checked: boolean) => {
     setIsToggleOn(checked);
 
@@ -395,7 +401,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           dangerouslySetInnerHTML={{ __html: data.description }}
         />
         {data?.authorNickname === userNickname ? (
-          <OtherApplicationModal title={data.title} apply={applications} />
+          <OtherApplicationModal apply={applications} onStatusChange={updateApplicationStatus} />
         ) : (
           <ApplyModal />
         )}
