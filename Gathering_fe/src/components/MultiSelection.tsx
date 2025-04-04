@@ -69,6 +69,10 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
           ) : (
             selectedOptions.map(option => (
               <span
+                onClick={e => {
+                  e.stopPropagation();
+                  removeSelection(option);
+                }}
                 key={option}
                 className="inline-flex items-center px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400"
               >
@@ -85,10 +89,6 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
                   role="button"
                   aria-label="Remove option"
                   className="ml-1 inline-flex items-center justify-center cursor-pointer"
-                  onClick={e => {
-                    e.stopPropagation();
-                    removeSelection(option);
-                  }}
                 >
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path

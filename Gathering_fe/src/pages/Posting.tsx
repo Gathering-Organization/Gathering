@@ -16,6 +16,7 @@ import {
   durationOptions,
   totalMemberOptions
 } from '@/utils/post-options';
+import TeamTagInput from '@/components/TeamTagInput';
 
 interface Position {
   id: string;
@@ -194,16 +195,7 @@ const Posting: React.FC = () => {
         </section>
         <section className="px-6 py-2">
           <label className="block mb-2">팀원 태그</label>
-          <input
-            onChange={e => {
-              const teamNicknames = e.target.value.split(',').map(nickname => nickname.trim());
-              setPost({ ...post, teams: teamNicknames });
-            }}
-            type="text"
-            name="teams"
-            className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm focus:outline-none"
-            placeholder="팀원 태그 ex) @게더링#248834, @게더링하이#546931"
-          />
+          <TeamTagInput teams={post.teams} setTeams={teams => setPost({ ...post, teams })} />
         </section>
         <section className="px-6 py-2">
           <label className="block mb-2">예상 기간</label>

@@ -1,5 +1,6 @@
 import { ProfileInfo, WorkExperience } from '@/types/profile';
 import { api } from './api';
+import { AxiosError } from 'axios';
 
 export const getMyProfile = async () => {
   try {
@@ -15,6 +16,21 @@ export const getMyProfile = async () => {
   }
 };
 
+// export const getUserProfile = async (nickname: string) => {
+//   try {
+//     const encodedNickname = encodeURIComponent(nickname);
+//     const response = await api.get(`/profile/nickname/${encodedNickname}`);
+
+//     if (response.data.status === 200) {
+//       console.log('getUserProfile API : ', response.data.data);
+//       return { success: true, message: response.data.message, data: response.data.data };
+//     }
+//   } catch (error) {
+//     console.error('다른 유저 프로필 조회 API 요청 실패:', error);
+//     throw error;
+//   }
+// };
+
 export const getUserProfile = async (nickname: string) => {
   try {
     const encodedNickname = encodeURIComponent(nickname);
@@ -24,7 +40,15 @@ export const getUserProfile = async (nickname: string) => {
       console.log('getUserProfile API : ', response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
-  } catch (error) {
+
+    return { success: false, message: response.data.message };
+  } catch (error: unknown) {
+    const err = error as AxiosError;
+
+    if (err.response?.status === 404) {
+      return { success: false, message: '존재하지 않는 유저입니다.' };
+    }
+
     console.error('다른 유저 프로필 조회 API 요청 실패:', error);
     throw error;
   }
