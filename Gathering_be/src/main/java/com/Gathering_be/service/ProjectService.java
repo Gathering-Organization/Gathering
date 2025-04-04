@@ -10,6 +10,7 @@ import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.exception.*;
 import com.Gathering_be.global.enums.*;
+import com.Gathering_be.global.service.S3Service;
 import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
@@ -40,6 +41,7 @@ public class ProjectService {
     private final InterestProjectRepository interestProjectRepository;
     private final ApplicationRepository applicationRepository;
     private final RedisService redisService;
+    private final S3Service s3Service;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
@@ -66,7 +68,7 @@ public class ProjectService {
         project.getTeams().addAll(projectTeams);
 
         Project savedProject = projectRepository.save(project);
-        return ProjectDetailResponse.from(savedProject, false);
+        return ProjectDetailResponse.from(savedProject, false, s3Service);
     }
 
     @Transactional
@@ -98,7 +100,7 @@ public class ProjectService {
                 .orElseThrow(ProjectNotFoundException::new);
 
         boolean isInterested = isUserInterestedInProject(projectId);
-        return ProjectDetailResponse.from(project, isInterested);
+        return ProjectDetailResponse.from(project, isInterested, s3Service);
     }
 
     public Page<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,

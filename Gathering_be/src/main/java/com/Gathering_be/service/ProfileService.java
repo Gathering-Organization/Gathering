@@ -68,18 +68,18 @@ public class ProfileService {
     public ProfileResponse getProfileById(Long profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(ProfileNotFoundException::new);
-        return ProfileResponse.from(profile, false);
+        return ProfileResponse.from(profile, false, s3Service);
     }
 
     public ProfileResponse getMyProfile() {
         Profile profile = getProfileByMemberId(getCurrentUserId());
-        return ProfileResponse.from(profile, true);
+        return ProfileResponse.from(profile, true, s3Service);
     }
 
     public ProfileResponse getProfileByNickname(String nickname) {
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
-        return ProfileResponse.from(profile, false);
+        return ProfileResponse.from(profile, false, s3Service);
     }
 
 
