@@ -188,7 +188,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
         <div className="flex items-center mb-16 justify-between">
-          <div className="block me-10 text-justify text-[36px] font-extrabold px-6">
+          <div className="block select-text me-10 text-justify text-[36px] font-extrabold px-6">
             {data.title}
           </div>
           {data?.authorNickname === userNickname && (

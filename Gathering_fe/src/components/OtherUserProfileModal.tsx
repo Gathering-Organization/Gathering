@@ -51,7 +51,9 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
           </div>
         </div>
         <div className="h-1/2 flex flex-col items-center justify-center p-6">
-          <p className="text-center text-[18px] text-[#000000]/70">{profile.introduction}</p>
+          <p className="text-center text-[18px] select-text text-[#000000]/70">
+            {profile.introduction}
+          </p>
           <button
             className="px-10 py-2 fixed bottom-[150px] bg-[#202123] rounded-full text-white font-semibold"
             onClick={() =>

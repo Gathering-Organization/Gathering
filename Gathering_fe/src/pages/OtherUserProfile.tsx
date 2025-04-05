@@ -115,7 +115,7 @@ const OtherUserProfile: React.FC = () => {
 
         <section className="bg-white p-6 mb-4">
           <h3 className="text-lg font-semibold mb-4">간단 자기소개</h3>
-          <div className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none">
+          <div className="border-[#000000]/50 select-text border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none">
             {profile.introduction}
           </div>
         </section>
