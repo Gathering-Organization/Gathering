@@ -11,7 +11,8 @@ import PostEdit from '@/pages/PostEdit';
 import Notfound from '@/pages/Notfound';
 import Apply from '@/pages/Apply';
 import MyPostHome from '@/pages/MyPostHome';
-import OtherUserProfile from './pages/OtherUserProfile';
+import OtherUserProfile from '@/pages/OtherUserProfile';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // 1. 모집글 관련 페이지
 // - "/postHome" : 모든 모집글들을 조회하는 PostHome 페이지
@@ -37,14 +38,63 @@ const App: React.FC = () => {
             <Route element={<Layout />}>
               {/* <Route path="/" element={<Main />} /> */}
               <Route path="/" element={<PostHome />} />
-              <Route path="/myPostHome" element={<MyPostHome />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/otherUserProfile/:nickname" element={<OtherUserProfile />} />
+              <Route
+                path="/myPostHome"
+                element={
+                  <ProtectedRoute>
+                    <MyPostHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/otherUserProfile/:nickname"
+                element={
+                  <ProtectedRoute>
+                    <OtherUserProfile />
+                  </ProtectedRoute>
+                }
+              />
               {/* <Route path="/postHome" element={<PostHome />} /> */}
-              <Route path="/posting" element={<Posting />} />
-              <Route path="/viewPost/:id" element={<ViewPost />} />
-              <Route path="/postEdit/:id" element={<PostEdit />} />
-              <Route path="/apply/:id" element={<Apply />} />
+              <Route
+                path="/posting"
+                element={
+                  <ProtectedRoute>
+                    <Posting />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/viewPost/:id"
+                element={
+                  <ProtectedRoute>
+                    <ViewPost />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/postEdit/:id"
+                element={
+                  <ProtectedRoute>
+                    <PostEdit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/apply/:id"
+                element={
+                  <ProtectedRoute>
+                    <Apply />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<Notfound />} />
             </Route>
           </Routes>
