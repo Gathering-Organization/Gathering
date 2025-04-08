@@ -97,7 +97,7 @@ const PostItem: React.FC<
       whileHover={{ scale: 1.03 }}
     >
       <section
-        className={`border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
+        className={`h-[420px] border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
       >
         {status ? (
           <div
@@ -146,7 +146,7 @@ const PostItem: React.FC<
           </div>
         )}
 
-        <section className="px-8">
+        <section className="h-[337px] px-8">
           <div className="w-[110px] bg-[#3387E5] rounded-b-[20px] justify-items-center">
             <div
               className="font-semibold py-2 text-[#FFFFFF] items-center text-[20px]"
@@ -202,8 +202,7 @@ const PostItem: React.FC<
           </div>
         </section>
 
-        <hr className="w-full border-[#B4B4B4]" />
-        <section className="flex justify-between items-center p-2 px-6">
+        <section className="border-t border-[#B4B4B4] flex justify-between items-center p-2 px-6">
           <div className="flex font-semibold p-4 items-center gap-4">
             <div
               className="w-8 h-8 rounded-[30px]"

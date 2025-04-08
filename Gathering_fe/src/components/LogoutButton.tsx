@@ -20,6 +20,7 @@ const LogoutButton: React.FC = () => {
 
       if (result?.success) {
         alert('로그아웃 성공!');
+        nav('/');
       } else {
         alert(result?.message || '로그아웃에 실패했습니다.');
       }
