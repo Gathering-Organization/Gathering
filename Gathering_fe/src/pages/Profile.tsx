@@ -388,6 +388,8 @@ const Profile: React.FC = () => {
               {uploadedFile ? (
                 <a
                   href={uploadedFile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   download={uploadedFile.fileName}
                   className="font-semibold text-blue-500 hover:underline ml-4"
                 >
