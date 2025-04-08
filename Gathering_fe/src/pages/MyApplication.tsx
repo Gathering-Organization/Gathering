@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import PostList from '@/components/PostList';
-import { getMyPosting } from '@/services/postApi';
+import { getMyPosting, getPartPosting } from '@/services/postApi';
 import { approxPostInfo } from '@/types/post';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
-import { getUserProfile } from '@/services/profileApi';
 import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { useLocation } from 'react-router-dom';
+import { getMyApplication } from '@/services/applicationApi';
+import { ApplyDetails } from '@/types/apply';
+import { getUserProfile } from '@/services/profileApi';
 
-const MyPostHome: React.FC = () => {
+const MyApplication: React.FC = () => {
   const location = useLocation();
   const { filter: postingFilter = '' } = location.state || {};
   const [page, setPage] = useState(1);
@@ -47,21 +49,63 @@ const MyPostHome: React.FC = () => {
 
   useEffect(() => {
     if (nickname) {
-      const fetchPosts = async () => {
+      const fetchPostsAndProfiles = async () => {
         try {
           window.scrollTo(0, 0);
-          const result = await getMyPosting(nickname, page, selectedType);
-          if (result?.success) {
-            setPost(result.data);
-            setTotalPages(result.pagination.totalPages);
+
+          const myApplicationResult = await getMyApplication(nickname, page, selectedType);
+
+          if (myApplicationResult?.success) {
+            const applicationList: ApplyDetails[] = myApplicationResult.data;
+
+            const statusMap: Record<number, string> = {};
+            applicationList.forEach(app => {
+              statusMap[app.projectId] = app.status;
+            });
+
+            const projectIds = applicationList.map(item => item.projectId);
+            const projectInfos = await Promise.all(
+              projectIds.map((id: number) => getPartPosting(id))
+            );
+
+            const validProjects = projectInfos
+              .filter(p => p && p.success)
+              .map(p => p?.data as approxPostInfo);
+
+            const projectsWithStatus = validProjects.map(project => ({
+              ...project,
+              status: statusMap[project.projectId] || undefined
+            }));
+
+            setPost(projectsWithStatus);
+            setTotalPages(myApplicationResult.pagination.totalPages);
+
+            const newCache: { [nickname: string]: ProfileAllInfo } = {};
+            const uniqueNicknames = [...new Set(validProjects.map(post => post.authorNickname))];
+
+            await Promise.all(
+              uniqueNicknames.map(async nick => {
+                try {
+                  const result = await getUserProfile(nick);
+                  if (result?.success) {
+                    newCache[nick] = result.data;
+                  }
+                } catch (err) {
+                  console.error(`프로필 정보 불러오기 실패: ${nick}`);
+                }
+              })
+            );
+
+            setProfileCache(prev => ({ ...prev, ...newCache }));
           } else {
-            console.error(result?.message || '게시글 조회 중 오류 발생');
+            console.error(myApplicationResult?.message || '지원서 조회 중 오류 발생');
           }
         } catch (error) {
-          console.error('게시글 조회 실패:', error);
+          console.error('지원서 조회 실패:', error);
         }
       };
-      fetchPosts();
+
+      fetchPostsAndProfiles();
     }
   }, [nickname, page, selectedType]);
 
@@ -76,7 +120,7 @@ const MyPostHome: React.FC = () => {
           <ProjecTypeFilter
             selectedType={selectedType}
             setSelectedType={setSelectedType}
-            filterCategory={'myProject'}
+            filterCategory={'myApply'}
           />
         </div>
         <div className="z-0 space-y-24">
@@ -88,4 +132,4 @@ const MyPostHome: React.FC = () => {
   );
 };
 
-export default MyPostHome;
+export default MyApplication;

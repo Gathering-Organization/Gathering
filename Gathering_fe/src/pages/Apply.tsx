@@ -37,18 +37,16 @@ const Apply: React.FC = () => {
     profileColor: '',
     portfolio: null,
     public: true,
-    workExperiences: []
+    workExperiences: [],
+    totalProjects: 0,
+    openedProjects: 0,
+    closedProjects: 0,
+    totalApplications: 0,
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0
   });
   const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
-  const [newExperience, setNewExperience] = useState<WorkExperience>({
-    activityName: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    techStacks: []
-  });
-  const stacks = [...techStacks];
-  const filteredStacks = stacks.filter(stack => !info.techStacks.includes(stack.title));
 
   const { myProfile, isMyProfileLoading } = useProfile();
 

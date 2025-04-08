@@ -19,7 +19,14 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     profileColor: '',
     public: false,
     portfolio: null,
-    workExperiences: []
+    workExperiences: [],
+    totalProjects: 0,
+    openedProjects: 0,
+    closedProjects: 0,
+    totalApplications: 0,
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0
   });
   const [isMyProfileLoading, setIsLoading] = useState<boolean>(true);
 
@@ -36,7 +43,14 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
           profileColor: result.data.profileColor || '',
           public: result.data.public || false,
           portfolio: result.data.portfolio || null,
-          workExperiences: result.data.workExperiences || []
+          workExperiences: result.data.workExperiences || [],
+          totalProjects: result.data.totalProjects,
+          openedProjects: result.data.openedProjects,
+          closedProjects: result.data.closedProjects,
+          totalApplications: result.data.totalApplications,
+          pendingApplications: result.data.pendingApplications,
+          approvedApplications: result.data.approvedApplications,
+          rejectedApplications: result.data.rejectedApplications
         });
       }
     } catch (error) {

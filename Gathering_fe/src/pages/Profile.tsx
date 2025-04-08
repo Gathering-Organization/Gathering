@@ -45,7 +45,14 @@ const Profile: React.FC = () => {
     profileColor: '',
     public: false,
     portfolio: null,
-    workExperiences: []
+    workExperiences: [],
+    totalProjects: 0,
+    openedProjects: 0,
+    closedProjects: 0,
+    totalApplications: 0,
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0
   });
   const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
   const [newExperience, setNewExperience] = useState<WorkExperience>({
@@ -57,37 +64,6 @@ const Profile: React.FC = () => {
   });
   const stacks = [...techStacks];
   const filteredStacks = stacks.filter(stack => !info.techStacks.includes(stack.title));
-
-  // useEffect(() => {
-  //   const handleMyProfile = async () => {
-  //     try {
-  //       const result = await getMyProfile();
-
-  //       if (result?.success) {
-  //         alert('내 정보 불러오기 성공!' + result.data);
-  //         console.log(result.data);
-  //         setIsPublic(result.data.public);
-  //         if (result.data.portfolio) {
-  //           setUploadedFile(result.data.portfolio);
-  //         }
-  //         setInfo({
-  //           nickname: result.data.nickname || '',
-  //           introduction: result.data.introduction || '',
-  //           organization: result.data.organization || '',
-  //           techStacks: result.data.techStacks || [],
-  //           profileColor: result.data.profileColor || ''
-  //         });
-  //         setWorkExperiences(result.data.workExperiences || []);
-  //       } else {
-  //         alert(result?.message || '내 정보 불러오기에 실패했습니다.');
-  //       }
-  //     } catch {
-  //       alert('내 정보 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
-  //     }
-  //   };
-
-  //   handleMyProfile();
-  // }, []);
 
   const handleUpdateProfile = async () => {
     try {
@@ -189,28 +165,6 @@ const Profile: React.FC = () => {
     }
   };
 
-  // const handleStackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-
-  //   const updatedTechStacks = [...new Set([...selectedOptions, ...info.techStacks])];
-
-  //   setInfo(prevInfo => ({
-  //     ...prevInfo,
-  //     techStacks: updatedTechStacks
-  //   }));
-
-  //   console.log(updatedTechStacks);
-  // };
-
-  // const handleStackRemove = (stack: string) => {
-  //   const updatedTechStacks = info.techStacks.filter(tech => tech !== stack);
-
-  //   setInfo(prevInfo => ({
-  //     ...prevInfo,
-  //     techStacks: updatedTechStacks
-  //   }));
-  // };
-
   const handleAddExperience = (experience: WorkExperience) => {
     if (
       !experience.activityName ||
@@ -248,32 +202,32 @@ const Profile: React.FC = () => {
     alert('활동 경력을 삭제 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
   };
 
-  useEffect(() => {
-    if (info.nickname) {
-      const fetchPosts = async () => {
-        try {
-          window.scrollTo(0, 0);
-          const [allResult, recruitingResult, completedResult] = await Promise.all([
-            getMyPosting(info.nickname, 1, ''),
-            getMyPosting(info.nickname, 1, false),
-            getMyPosting(info.nickname, 1, true)
-          ]);
-          if (allResult?.success && recruitingResult?.success && completedResult?.success) {
-            setProjectCounts({
-              all: allResult.pagination.totalElements,
-              recruiting: recruitingResult.pagination.totalElements,
-              completed: completedResult.pagination.totalElements
-            });
-          } else {
-            console.error('게시글 조회 중 오류 발생');
-          }
-        } catch (error) {
-          console.error('게시글 조회 실패:', error);
-        }
-      };
-      fetchPosts();
-    }
-  }, [info.nickname]);
+  // useEffect(() => {
+  //   if (info.nickname) {
+  //     const fetchPosts = async () => {
+  //       try {
+  //         window.scrollTo(0, 0);
+  //         const [allResult, recruitingResult, completedResult] = await Promise.all([
+  //           getMyPosting(info.nickname, 1, ''),
+  //           getMyPosting(info.nickname, 1, false),
+  //           getMyPosting(info.nickname, 1, true)
+  //         ]);
+  //         if (allResult?.success && recruitingResult?.success && completedResult?.success) {
+  //           setProjectCounts({
+  //             all: allResult.pagination.totalElements,
+  //             recruiting: recruitingResult.pagination.totalElements,
+  //             completed: completedResult.pagination.totalElements
+  //           });
+  //         } else {
+  //           console.error('게시글 조회 중 오류 발생');
+  //         }
+  //       } catch (error) {
+  //         console.error('게시글 조회 실패:', error);
+  //       }
+  //     };
+  //     fetchPosts();
+  //   }
+  // }, [info.nickname]);
 
   const { myProfile, isMyProfileLoading, updateProfileData } = useProfile();
 
@@ -457,7 +411,7 @@ const Profile: React.FC = () => {
               className="flex flex-col items-center"
               onClick={() => nav('/myPostHome', { state: { filter: '' } })}
             >
-              <div className="font-bold text-[20px]">{projectCounts.all}</div>
+              <div className="font-bold text-[20px]">{info.totalProjects}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
             </button>
 
@@ -467,7 +421,7 @@ const Profile: React.FC = () => {
               className="flex flex-col items-center"
               onClick={() => nav('/myPostHome', { state: { filter: false } })}
             >
-              <div className="font-bold text-[20px]">{projectCounts.recruiting}</div>
+              <div className="font-bold text-[20px]">{info.openedProjects}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
             </button>
 
@@ -477,7 +431,7 @@ const Profile: React.FC = () => {
               className="flex flex-col items-center"
               onClick={() => nav('/myPostHome', { state: { filter: true } })}
             >
-              <div className="font-bold text-[20px]">{projectCounts.completed}</div>
+              <div className="font-bold text-[20px]">{info.closedProjects}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
             </button>
           </div>
@@ -485,30 +439,46 @@ const Profile: React.FC = () => {
         <section className="bg-white p-6">
           <h3 className="text-lg font-semibold mb-4">지원 현황</h3>
           <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px]">16</div>
+            <button
+              onClick={() => nav('/myApplication', { state: { filter: '' } })}
+              className="flex flex-col items-center"
+            >
+              <div className="font-bold text-[20px]">{info.totalApplications}</div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
-            </div>
+            </button>
 
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px]">10</div>
-              <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
-            </div>
+            <button
+              onClick={() => nav('/myApplication', { state: { filter: 'PENDING' } })}
+              className="flex flex-col items-center"
+            >
+              <div className="font-bold text-[20px]">{info.pendingApplications}</div>
+              <div className="font-semibold text-[#B4B4B4] text-[12px]">대기중</div>
+            </button>
 
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px] text-[#3387E5]">6</div>
+            <button
+              onClick={() => nav('/myApplication', { state: { filter: 'APPROVED' } })}
+              className="flex flex-col items-center"
+            >
+              <div className="font-bold text-[20px] text-[#3387E5]">
+                {info.approvedApplications}
+              </div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">승인</div>
-            </div>
+            </button>
             <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
-            <div className="flex flex-col items-center">
-              <div className="font-bold text-[20px] text-[#F24E1E]">6</div>
+            <button
+              onClick={() => nav('/myApplication', { state: { filter: 'REJECTED' } })}
+              className="flex flex-col items-center"
+            >
+              <div className="font-bold text-[20px] text-[#F24E1E]">
+                {info.rejectedApplications}
+              </div>
               <div className="font-semibold text-[#B4B4B4] text-[12px]">거절</div>
-            </div>
+            </button>
           </div>
         </section>
       </div>

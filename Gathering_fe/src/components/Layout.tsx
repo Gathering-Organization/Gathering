@@ -1,11 +1,16 @@
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import Header from './Header';
 import Footer from './Footer';
 
 const Layout: React.FC = () => {
+  const location = useLocation();
+
+  const hideHeaderPaths = ['/apply/view'];
+  const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
+
   return (
     <div className="select-none">
-      <Header />
+      {!shouldHideHeader ? <Header /> : <div className="h-[100px]" />}
       <Outlet />
       <div className="pb-[120px]"></div>
       <Footer />

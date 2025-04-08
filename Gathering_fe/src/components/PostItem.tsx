@@ -16,7 +16,10 @@ interface Position {
 }
 
 const PostItem: React.FC<
-  approxPostInfo & { onInterestToggle?: (projectId: number, newValue: boolean) => void }
+  approxPostInfo & {
+    onInterestToggle?: (projectId: number, newValue: boolean) => void;
+    status?: string;
+  }
 > = ({
   projectId,
   title,
@@ -29,7 +32,8 @@ const PostItem: React.FC<
   techStacks,
   onInterestToggle,
   requiredPositions,
-  viewCount
+  viewCount,
+  status
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
@@ -69,7 +73,6 @@ const PostItem: React.FC<
       alert('관심글 설정에 실패했습니다.');
     }
   };
-
   const parts = authorNickname.split(/(#\d+)/);
   const visibleTechStacks = techStacks.slice(0, 3);
   const extraTechStacksCount = techStacks.length - 3;
@@ -96,25 +99,44 @@ const PostItem: React.FC<
       <section
         className={`border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
       >
-        <label className="absolute right-6 top-4 cursor-pointer" onClick={e => e.stopPropagation()}>
-          <input
-            type="checkbox"
-            onClick={onClickHeart}
-            hidden
-            checked={isInterested}
-            readOnly
-            onChange={() => {}}
-          />
-          <svg
-            className={`w-8 h-10 transition-all duration-200 ease-in-out ${
-              isInterested ? 'fill-red-500 scale-110' : 'fill-gray-300'
+        {status ? (
+          <div
+            className={`absolute right-6 top-4 py-1 px-4 rounded-[20px] text-sm font-semibold ${
+              status === 'APPROVED'
+                ? 'bg-[#3387E5] text-[#FFFFFF]'
+                : status === 'REJECTED'
+                  ? 'bg-[#F24E1E] text-[#FFFFFF]'
+                  : 'bg-[#EEEEEE] text-gray-700'
             }`}
-            viewBox="0 0 1024 1024"
-            xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M742.4 101.12A249.6 249.6 0 0 0 512 256a249.6 249.6 0 0 0-230.72-154.88C143.68 101.12 32 238.4 32 376.32c0 301.44 416 546.56 480 546.56s480-245.12 480-546.56c0-137.92-111.68-275.2-249.6-275.2z" />
-          </svg>
-        </label>
+            {status === 'PENDING' && '대기중'}
+            {status === 'APPROVED' && '승인'}
+            {status === 'REJECTED' && '거절'}
+          </div>
+        ) : (
+          <label
+            className="absolute right-6 top-4 cursor-pointer"
+            onClick={e => e.stopPropagation()}
+          >
+            <input
+              type="checkbox"
+              onClick={onClickHeart}
+              hidden
+              checked={isInterested}
+              readOnly
+              onChange={() => {}}
+            />
+            <svg
+              className={`w-8 h-10 transition-all duration-200 ease-in-out ${
+                isInterested ? 'fill-red-500 scale-110' : 'fill-gray-300'
+              }`}
+              viewBox="0 0 1024 1024"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M742.4 101.12A249.6 249.6 0 0 0 512 256a249.6 249.6 0 0 0-230.72-154.88C143.68 101.12 32 238.4 32 376.32c0 301.44 416 546.56 480 546.56s480-245.12 480-546.56c0-137.92-111.68-275.2-249.6-275.2z" />
+            </svg>
+          </label>
+        )}
 
         {closed && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

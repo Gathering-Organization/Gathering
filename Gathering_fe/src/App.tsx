@@ -13,6 +13,7 @@ import Apply from '@/pages/Apply';
 import MyPostHome from '@/pages/MyPostHome';
 import OtherUserProfile from '@/pages/OtherUserProfile';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import MyApplication from '@/pages/MyApplication';
 
 // 1. 모집글 관련 페이지
 // - "/postHome" : 모든 모집글들을 조회하는 PostHome 페이지
@@ -23,6 +24,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 
 // 2. 지원서 관련 페이지
 // - "/apply" : 지원서를 볼 수 있는 Apply 페이지
+// - "/myApplication" : 내 지원서들을 조회하는 MyApplication 페이지
 
 // 3. 프로필 관련 페이지
 // - "/profile" : 내 프로필을 조회 및 수정하는 Profile 페이지
@@ -43,6 +45,14 @@ const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <MyPostHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/myApplication"
+                element={
+                  <ProtectedRoute>
+                    <MyApplication />
                   </ProtectedRoute>
                 }
               />
@@ -87,14 +97,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/apply/:id"
-                element={
-                  <ProtectedRoute>
-                    <Apply />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/apply/:id" element={<Apply />} />
               <Route path="*" element={<Notfound />} />
             </Route>
           </Routes>

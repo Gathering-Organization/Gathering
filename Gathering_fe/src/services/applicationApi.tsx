@@ -41,14 +41,31 @@ export const getOtherApplication = async (projectId: number) => {
   }
 };
 
-export const getMyApplication = async (id: number) => {
+export const getMyApplication = async (nickname: string, page: number, status: string) => {
   try {
-    const response = await api.get(`/project/${id}`);
+    const nicknameParam = encodeURIComponent(nickname);
+    const response = await api.get(
+      `/application/my-apply?nickname=${nicknameParam}&page=${page}&status=${status}`
+    );
+    console.log(
+      '요청 API:',
+      `/application/my-apply?nickname=${nicknameParam}&page=${page}&status=${status}`
+    );
 
-    console.log('응답 데이터:', response.data);
+    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
-      return { success: true, message: response.data.message, data: response.data.data };
+      return {
+        success: true,
+        message: response.data.message,
+        data: response.data.data.content,
+        pagination: {
+          totalPages: response.data.data.totalPages,
+          totalElements: response.data.data.totalElements,
+          currentPage: response.data.data.number,
+          pageSize: response.data.data.size
+        }
+      };
     }
   } catch (error: unknown) {
     console.error('내 지원서 조회 실패:', error);

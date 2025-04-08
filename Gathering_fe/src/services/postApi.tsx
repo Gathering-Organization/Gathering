@@ -66,42 +66,6 @@ export const getAllPosting = async (
     throw error;
   }
 };
-// export const getAllPosting = async (
-//   page: number,
-//   sort: string,
-//   position: string,
-//   techStack: string[],
-//   type: string,
-//   mode: string,
-//   isClosed: boolean,
-//   searchType: string,
-//   keyword: string
-// ) => {
-//   try {
-//     const techStackParam = encodeURIComponent(techStack.join(','));
-
-//     const response = await api.get(
-//       `/project/pagination?page=${page}&sort=${sort}&position=${position}&techStack=${techStackParam}&type=${type}&mode=${mode}&isClosed=${isClosed}&searchType=${searchType}&keyword=${keyword}`
-//     );
-//     console.log(
-//       `/project/pagination?page=${page}&sort=${sort}&position=${position}&techStack=${techStackParam}&type=${type}&mode=${mode}&isClosed=${isClosed}&searchType=${searchType}&keyword=${keyword}`
-//     );
-
-//     console.log('응답 데이터:', response.data);
-
-//     if (response.data.status === 200) {
-//       return { success: true, message: response.data.message, data: response.data.data };
-//     }
-//   } catch (error: unknown) {
-//     console.error('전체 모집글 조회 실패:', error);
-
-//     if (error instanceof AxiosError) {
-//       console.error('서버 응답:', error.response?.data);
-//     }
-
-//     throw error;
-//   }
-// };
 
 export const getPartPosting = async (id: number) => {
   try {
