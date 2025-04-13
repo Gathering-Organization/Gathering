@@ -28,6 +28,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
+    private final EmailService emailService;
 
     @Transactional
     public void applyForProject(ApplicationRequest request) {
@@ -54,6 +55,8 @@ public class ApplicationService {
 
         profile.addApplication();
         applicationRepository.save(application);
+
+        emailService.sendNewApplyMail(project.getProfile().getMember().getEmail(), project.getTitle());
     }
 
     @Transactional(readOnly = true)
@@ -130,6 +133,11 @@ public class ApplicationService {
 
         application.getProfile().updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
+
+        String email = application.getProfile().getMember().getEmail();
+        String nickname = application.getProfile().getNickname();
+        boolean result = newStatus == ApplyStatus.APPROVED ? true : false;
+        emailService.sendResultMail(email, project.getTitle(), nickname, result);
     }
 
 

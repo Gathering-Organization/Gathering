@@ -42,6 +42,7 @@ public class ProjectService {
     private final ApplicationRepository applicationRepository;
     private final RedisService redisService;
     private final S3Service s3Service;
+    private final EmailService emailService;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
@@ -184,6 +185,9 @@ public class ProjectService {
             List<Application> applications = applicationRepository.findAllByProjectAndStatus(project, ApplyStatus.PENDING);
             for (Application application : applications) {
                 application.reject();
+                String email = application.getProfile().getMember().getEmail();
+                String nickname = application.getProfile().getNickname();
+                emailService.sendCloseMail(email, project.getTitle(), nickname);
             }
         }
     }
