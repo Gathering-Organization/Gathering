@@ -41,7 +41,9 @@ public class ApplicationService {
             throw new SelfApplicationNotAllowedException();
         }
 
-        if (applicationRepository.existsByProfileIdAndProjectId(profile.getId(), project.getId())) {
+        if (applicationRepository.findAll().stream().anyMatch(
+                a -> a.getProject().getId().equals(project.getId()) &&
+                        a.getProfileFromSnapshot().getId().equals(profile.getId()))) {
             throw new ApplicationAlreadyExistsException();
         }
 
@@ -99,7 +101,10 @@ public class ApplicationService {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getProfile().getMember().getId().equals(currentUserId)) {
+        Profile profile = profileRepository.findByMemberId(currentUserId)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        if (!profile.getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
         }
 
@@ -107,7 +112,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        application.getProfile().removePendingApplication();
+        profile.removePendingApplication();
         applicationRepository.delete(application);
     }
 
@@ -128,7 +133,11 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        application.getProfile().updateApplicationStatus(newStatus);
+        Profile applicantProfile = profileRepository.findByMemberId(
+                application.getProfileFromSnapshot().getMember().getId())
+                        .orElseThrow(ProfileNotFoundException::new);
+
+        applicantProfile.updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
     }
 
