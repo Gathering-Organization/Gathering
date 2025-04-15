@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { getMyPosting } from '@/services/postApi';
 import { approxPostInfo } from '@/types/post';
 import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
+import Toast from '@/components/Toast';
 
 interface TechStack {
   id: string;
@@ -26,6 +27,16 @@ interface TechStack {
 
 const Profile: React.FC = () => {
   const nav = useNavigate();
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastStatus, setToastStatus] = useState(true);
+
+  const showToast = (message: string, status: boolean) => {
+    setToastMessage(message);
+    setToastStatus(status);
+  };
+  const handleToastClose = () => {
+    setToastMessage('');
+  };
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFile, setUploadedFile] = useState<Portfolio | null>(null);
   const [isPublic, setIsPublic] = useState<boolean>(false);
@@ -79,13 +90,13 @@ const Profile: React.FC = () => {
       const result = await setMyProfile(updatedInfo, workExperiences);
 
       if (result?.success) {
-        alert('프로필 저장 성공!');
+        showToast('지원서 제출이 완료되었습니다.', true);
         updateProfileData({ ...updatedInfo, workExperiences });
       } else {
-        alert(result?.message || '프로필 저장 중 문제가 발생했습니다.');
+        showToast('프로필 저장 중 오류가 발생했습니다.', false);
       }
     } catch {
-      alert('프로필 저장 중 오류가 발생했습니다.');
+      showToast('프로필 저장 중 오류가 발생했습니다.', false);
     }
   };
 
@@ -330,10 +341,12 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold mb-4">간단 자기소개</h3>
           <textarea
             value={info.introduction || ''}
+            maxLength={300}
             placeholder="300자 이내로 자신을 소개해 보세요!"
             onChange={e => setInfo({ ...info, introduction: e.target.value })}
             className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none"
           ></textarea>
+          <div className="text-right mt-1 text-gray-600">{info.introduction.length}/300</div>
         </section>
         <section className="bg-white p-6">
           <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
@@ -482,6 +495,9 @@ const Profile: React.FC = () => {
           </div>
         </section>
       </div>
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={handleToastClose} status={toastStatus} />
+      )}
     </div>
   );
 };

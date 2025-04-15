@@ -3,6 +3,7 @@ import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { techStacks } from '@/utils/tech-stacks';
 import { WorkExperience } from '@/types/profile';
+import Toast from '@/components/Toast';
 
 interface TechStack {
   id: string;
@@ -20,6 +21,15 @@ interface DateRange {
 
 const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => {
   const [stackList] = useState<TechStack[]>([...techStacks]);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastStatus, setToastStatus] = useState(true);
+  const showToast = (message: string, status: boolean) => {
+    setToastMessage(message);
+    setToastStatus(status);
+  };
+  const handleToastClose = () => {
+    setToastMessage('');
+  };
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
   const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
@@ -63,7 +73,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
       !newExperience.description
     ) {
       console.log(newExperience);
-      alert('모든 필드를 입력해주세요.');
+      showToast('모든 필드를 입력해주세요.', false);
       return;
     }
 
@@ -71,7 +81,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
 
     closeModal();
     resetForm();
-    alert('활동 경력을 모두 입력 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
+    showToast('활동 경력을 모두 입력 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.', true);
   };
 
   const resetForm = () => {
@@ -118,10 +128,10 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 flex justify-center items-center"
           aria-hidden="true"
         >
-          <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
+          <div className="relative p-4 w-full max-w-[800px] max-h-[94vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
               <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                 활동 경력을 입력해주세요.
@@ -160,6 +170,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                 <div className="flex items-center gap-4">
                   <label className="w-36 font-semibold text-gray-700 dark:text-white">활동명</label>
                   <input
+                    maxLength={100}
                     onChange={e =>
                       setNewExperience(prev => ({
                         ...prev,
@@ -242,9 +253,13 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                     onChange={e =>
                       setNewExperience({ ...newExperience, description: e.target.value })
                     }
+                    maxLength={500}
                     placeholder="활동 경력에 대해 간략히 설명해주세요!"
                     className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[180px] p-4 px-6 h-24 resize-none focus:outline-none"
                   ></textarea>
+                  <div className="text-right mt-1 text-gray-600">
+                    {newExperience.description.length}/500
+                  </div>
                 </section>
                 <div className="flex justify-center">
                   <button
@@ -259,6 +274,9 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
             </div>
           </div>
         </div>
+      )}
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={handleToastClose} status={toastStatus} />
       )}
     </div>
   );
