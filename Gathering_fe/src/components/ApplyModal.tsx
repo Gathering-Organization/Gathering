@@ -10,6 +10,7 @@ const ApplyModal: React.FC = () => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [status, setStatus] = useState('');
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
     projectId: Number(params.id),
     position: '',
@@ -130,9 +131,13 @@ const ApplyModal: React.FC = () => {
                       placeholder={
                         '300자 이내로 자신을 어필해 보세요!\n\n첨부할 포트폴리오가 없다면 모집글에 대한 지원자님의 열정을 표현해도 좋아요!'
                       }
+                      maxLength={300}
                       onChange={handleChangeIntroduction}
                       className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 resize-none focus:outline-none"
                     ></textarea>
+                    <div className="text-right mt-1 text-gray-600">
+                      {applyInfo.message.length}/300
+                    </div>
                   </section>
                   <div className="flex items-center justify-end mb-4">
                     <input

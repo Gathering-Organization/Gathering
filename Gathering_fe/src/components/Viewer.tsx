@@ -355,20 +355,6 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
                   )}
                 </div>
               )}
-
-              {/* {data.requiredPositions.map((positionId, index) => {
-                const positionTitle =
-                  positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
-
-                return (
-                  <div
-                    key={index}
-                    className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
-                  >
-                    {positionTitle}
-                  </div>
-                );
-              })} */}
             </div>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">

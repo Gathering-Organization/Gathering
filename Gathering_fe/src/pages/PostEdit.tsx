@@ -323,7 +323,7 @@ const PostEdit: React.FC = () => {
           className="bg-[#3387E5] font-bold px-10 py-2 text-white justify-items-center rounded-[30px] hover:bg-blue-600"
           onClick={onUpdate}
         >
-          작성하기
+          수정완료
         </button>
       </div>
     </div>
