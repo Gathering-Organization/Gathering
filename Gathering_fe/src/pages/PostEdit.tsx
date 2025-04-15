@@ -18,6 +18,7 @@ import {
   totalMemberOptions
 } from '@/utils/post-options';
 import ReactQuill from 'react-quill';
+import { useProfile } from '@/contexts/ProfileStateContext';
 
 interface Position {
   id: string;
@@ -74,30 +75,49 @@ const PostEdit: React.FC = () => {
     profileColor: ''
   });
   useEffect(() => {
-    if (post.startDate) {
-      const parsedStart = new Date(`${post.startDate}T00:00:00`);
-      if (!isNaN(parsedStart.getTime())) {
-        setStartDate({ startDate: parsedStart, endDate: parsedStart });
-      }
-    }
+    const fetchData = async () => {
+      try {
+        const postResult = await getPartPosting(Number(params.id));
 
-    if (post.deadline) {
-      const parsedDeadline = new Date(post.deadline);
-      if (!isNaN(parsedDeadline.getTime())) {
-        setDeadline({ startDate: parsedDeadline, endDate: parsedDeadline });
+        if (postResult?.success) {
+          const data = postResult.data;
+          const teamNicknames = (data.teams || []).map(
+            (team: { nickname: string }) => team.nickname
+          );
+
+          setPost({
+            ...data,
+            teams: teamNicknames
+          });
+
+          // 날짜 초기화
+          setStartDate({
+            startDate: data.startDate ? new Date(data.startDate) : null,
+            endDate: data.startDate ? new Date(data.startDate) : null
+          });
+
+          setDeadline({
+            startDate: data.deadline ? new Date(data.deadline) : null,
+            endDate: data.deadline ? new Date(data.deadline) : null
+          });
+
+          // 선택 값 초기화
+          setProjectType(data.projectType);
+          setSelectedProjectMode(data.projectMode);
+          setSelectedTotalMembers(data.totalMembers.toString());
+          setSelectedDuration(data.duration);
+          setSelectedPositions(data.requiredPositions || []);
+          setSelectedStacks(data.techStacks || []);
+        } else {
+          alert(postResult?.message || '모집글 정보를 불러오는 중 오류가 발생했습니다.');
+        }
+      } catch {
+        alert('데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
       }
-    }
-  }, [post.startDate, post.deadline]);
-  useEffect(() => {
-    if (post) {
-      setProjectType(post.projectType);
-      setSelectedProjectMode(post.projectMode);
-      setSelectedTotalMembers(post.totalMembers.toString());
-      setSelectedDuration(post.duration);
-      setSelectedPositions(post.requiredPositions);
-      setSelectedStacks(post.techStacks);
-    }
-  }, [post]);
+    };
+
+    fetchData();
+  }, [params.id]);
 
   const onUpdate = async () => {
     console.log('최종 저장 닉네임: ', post.teams);
@@ -133,62 +153,9 @@ const PostEdit: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [profileResult, postResult] = await Promise.all([
-          getMyProfile(),
-          getPartPosting(Number(params.id))
-        ]);
+  const { myProfile, isMyProfileLoading } = useProfile();
 
-        // 내 프로필 불러오기
-        if (profileResult?.success) {
-          alert('내 정보 불러오기 성공!' + profileResult.data);
-          console.log(profileResult.data);
-          setInfo({
-            nickname: profileResult.data.nickname || '',
-            introduction: profileResult.data.introduction || '',
-            organization: profileResult.data.organization || '',
-            techStacks: profileResult.data.techStacks || [],
-            profileColor: profileResult.data.profileColor || ''
-          });
-        } else {
-          alert(profileResult?.message || '내 정보 불러오기에 실패했습니다.');
-        }
-
-        // 모집글 정보 불러오기
-        if (postResult?.success) {
-          const teamNicknames = ((postResult.data.teams as { nickname: string }[]) || []).map(
-            team => team.nickname
-          );
-          setPost({ ...postResult.data, teams: teamNicknames });
-          setSelectedPositions(postResult.data.requiredPositions || []);
-          setSelectedStacks(postResult.data.techStacks || []);
-
-          setStartDate({
-            startDate: postResult.data.startDate ? new Date(postResult.data.startDate) : null,
-            endDate: null
-          });
-
-          setDeadline({
-            startDate: null,
-            endDate: postResult.data.deadline ? new Date(postResult.data.deadline) : null
-          });
-
-          console.log('불러온 날짜:', {
-            startDate: postResult.data.startDate,
-            deadline: postResult.data.deadline
-          });
-        } else {
-          alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
-        }
-      } catch {
-        alert('데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    };
-
-    fetchData();
-  }, []);
+  if (isMyProfileLoading) return <div>로딩 중...</div>;
 
   return (
     <div className="mx-48 space-y-2">
