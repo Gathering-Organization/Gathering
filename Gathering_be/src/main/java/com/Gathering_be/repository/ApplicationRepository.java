@@ -11,8 +11,5 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findByProjectId(Long projectId);
-    boolean existsByProfileIdAndProjectId(Long profileId, Long projectId);
-    Page<Application> findByProfileNickname(String nickname, Pageable pageable);
-    Page<Application> findByProfileNicknameAndStatus(String nickname, ApplyStatus status, Pageable pageable);
     List<Application> findAllByProjectAndStatus(Project project, ApplyStatus status);
 }

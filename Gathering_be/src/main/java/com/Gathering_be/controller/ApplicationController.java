@@ -2,6 +2,7 @@ package com.Gathering_be.controller;
 
 import com.Gathering_be.dto.request.ApplicationRequest;
 import com.Gathering_be.dto.response.ApplicationResponse;
+import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.global.enums.ApplyStatus;
 import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.global.response.ResultResponse;
@@ -37,8 +38,8 @@ public class ApplicationController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) ApplyStatus status
     ) {
-        Page<ApplicationResponse> applications = applicationService.getApplicationsByNickname(nickname, page, 18, status);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
+        Page<ProjectSimpleResponse> projects = applicationService.getAppliedProjectsByNickname(nickname, page, 18, status);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
     @DeleteMapping("/{applicationId}")
