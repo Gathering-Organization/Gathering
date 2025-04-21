@@ -1,10 +1,7 @@
 package com.Gathering_be.dto.response;
 
 import com.Gathering_be.domain.Project;
-import com.Gathering_be.global.enums.JobPosition;
-import com.Gathering_be.global.enums.ProjectMode;
-import com.Gathering_be.global.enums.ProjectType;
-import com.Gathering_be.global.enums.TechStack;
+import com.Gathering_be.global.enums.*;
 import com.Gathering_be.global.service.S3Service;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,13 +33,15 @@ public class ProjectDetailResponse {
     private final LocalDateTime deadline;
     private final boolean isInterested;
     private final Long viewCount;
+    private final boolean isApplied;
+    private final ApplyStatus applyStatus;
 
     @Builder
     public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
                                  String duration, List<JobPosition> requiredPositions, Set<TechStack> techStacks, String kakaoUrl,
                                  boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline,
-                                 boolean isInterested, Long viewCount) {
+                                 boolean isInterested, Long viewCount, boolean isApplied, ApplyStatus applyStatus) {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
@@ -62,9 +61,12 @@ public class ProjectDetailResponse {
         this.kakaoUrl = kakaoUrl;
         this.isInterested = isInterested;
         this.viewCount = viewCount;
+        this.isApplied = isApplied;
+        this.applyStatus = applyStatus;
     }
 
-    public static ProjectDetailResponse from(Project project, boolean isInterested, S3Service s3Service) {
+    public static ProjectDetailResponse from(Project project, boolean isInterested, S3Service s3Service,
+                                             boolean isApplied, ApplyStatus applyStatus) {
         Set<ProfileResponse> teams = project.getTeams().stream()
                 .map(projectTeams -> ProfileResponse.from(projectTeams.getProfile(), false, s3Service))
                 .collect(Collectors.toSet());
@@ -89,6 +91,8 @@ public class ProjectDetailResponse {
                 .kakaoUrl(project.getKakaoUrl())
                 .isInterested(isInterested)
                 .viewCount(project.getViewCount())
+                .isApplied(isApplied)
+                .applyStatus(applyStatus)
                 .build();
     }
 }
