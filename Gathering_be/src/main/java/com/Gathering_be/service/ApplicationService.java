@@ -77,6 +77,32 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
+    public Page<ApplicationResponse> getApplicationsByNickname(String nickname, int page, int size, ApplyStatus status) {
+        Profile profile = profileRepository.findByNickname(nickname)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        if (!profile.getMember().getId().equals(getCurrentUserId())) {
+            throw new UnauthorizedAccessException();
+        }
+
+        List<Application> applications = applicationRepository.findAll().stream()
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .filter(app -> status == null || app.getStatus() == status)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        int start = Math.min((page - 1) * size, applications.size());
+        int end = Math.min(start + size, applications.size());
+
+        List<ApplicationResponse> content = applications.subList(start, end).stream()
+                .map(app -> ApplicationResponse.from(app, s3Service))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(content, PageRequest.of(page - 1, size), applications.size());
+    }
+
+
+    @Transactional(readOnly = true)
     public Page<ProjectSimpleResponse> getAppliedProjectsByNickname(String nickname, int page, int size, ApplyStatus status) {
         Long currentUserId = getCurrentUserId();
 
