@@ -162,8 +162,8 @@ public class ApplicationService {
         applicantProfile.updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
 
-        String email = application.getProfile().getMember().getEmail();
-        String nickname = application.getProfile().getNickname();
+        String email = applicantProfile.getMember().getEmail();
+        String nickname = applicantProfile.getNickname();
         boolean result = newStatus == ApplyStatus.APPROVED ? true : false;
         emailService.sendResultMail(email, project.getTitle(), nickname, result);
     }

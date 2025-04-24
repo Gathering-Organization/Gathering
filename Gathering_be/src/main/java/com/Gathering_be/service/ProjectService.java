@@ -185,8 +185,9 @@ public class ProjectService {
             List<Application> applications = applicationRepository.findAllByProjectAndStatus(project, ApplyStatus.PENDING);
             for (Application application : applications) {
                 application.reject();
-                String email = application.getProfile().getMember().getEmail();
-                String nickname = application.getProfile().getNickname();
+                Profile applicantProfile = application.getProfileFromSnapshot();
+                String email = applicantProfile.getMember().getEmail();
+                String nickname = applicantProfile.getNickname();
                 emailService.sendCloseMail(email, project.getTitle(), nickname);
             }
         }
