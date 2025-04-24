@@ -5,21 +5,22 @@ import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
 import com.Gathering_be.dto.request.ApplicationRequest;
 import com.Gathering_be.dto.response.ApplicationResponse;
+import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.exception.*;
 import com.Gathering_be.global.enums.ApplyStatus;
+import com.Gathering_be.global.service.S3Service;
 import com.Gathering_be.repository.ApplicationRepository;
+import com.Gathering_be.repository.InterestProjectRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +29,8 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
+    private final InterestProjectRepository interestProjectRepository;
+    private final S3Service s3Service;
     private final EmailService emailService;
 
     @Transactional
@@ -42,7 +45,9 @@ public class ApplicationService {
             throw new SelfApplicationNotAllowedException();
         }
 
-        if (applicationRepository.existsByProfileIdAndProjectId(profile.getId(), project.getId())) {
+        if (applicationRepository.findAll().stream().anyMatch(
+                a -> a.getProject().getId().equals(project.getId()) &&
+                        a.getProfileFromSnapshot().getId().equals(profile.getId()))) {
             throw new ApplicationAlreadyExistsException();
         }
 
@@ -70,29 +75,45 @@ public class ApplicationService {
 
         return applicationRepository.findByProjectId(projectId)
                 .stream()
-                .map(ApplicationResponse::from)
+                .map(app -> ApplicationResponse.from(app, s3Service))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Page<ApplicationResponse> getApplicationsByNickname(String nickname, int page, int size, ApplyStatus status) {
+    public Page<ProjectSimpleResponse> getAppliedProjectsByNickname(String nickname, int page, int size, ApplyStatus status) {
+        Long currentUserId = getCurrentUserId();
+
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
 
-        if (!profile.getMember().getId().equals(getCurrentUserId())) {
+        if (!profile.getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
         }
 
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Application> applicationPage;
+        List<Application> applications = applicationRepository.findAll().stream()
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .filter(app -> status == null || app.getStatus() == status)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .collect(Collectors.toList());
 
-        if (status != null) {
-            applicationPage = applicationRepository.findByProfileNicknameAndStatus(nickname, status, pageable);
-        } else {
-            applicationPage = applicationRepository.findByProfileNickname(nickname, pageable);
-        }
+        List<Project> projects = applications.stream()
+                .map(Application::getProject)
+                .collect(Collectors.toList());
 
-        return applicationPage.map(ApplicationResponse::from);
+        Set<Long> interestedProjectIds = (currentUserId != null)
+                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
+                .stream()
+                .map(interest -> interest.getProject().getId())
+                .collect(Collectors.toSet())
+                : Set.of();
+
+        int start = Math.min((page - 1) * size, projects.size());
+        int end = Math.min(start + size, projects.size());
+        List<ProjectSimpleResponse> content = projects.subList(start, end).stream()
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(content, PageRequest.of(page - 1, size), projects.size());
     }
 
     @Transactional
@@ -102,7 +123,10 @@ public class ApplicationService {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getProfile().getMember().getId().equals(currentUserId)) {
+        Profile profile = profileRepository.findByMemberId(currentUserId)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        if (!profile.getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
         }
 
@@ -110,7 +134,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        application.getProfile().removePendingApplication();
+        profile.removePendingApplication();
         applicationRepository.delete(application);
     }
 
@@ -131,7 +155,11 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        application.getProfile().updateApplicationStatus(newStatus);
+        Profile applicantProfile = profileRepository.findByMemberId(
+                application.getProfileFromSnapshot().getMember().getId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        applicantProfile.updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
 
         String email = application.getProfile().getMember().getEmail();
@@ -144,6 +172,12 @@ public class ApplicationService {
     private Project findProjectById(Long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
+    }
+
+    private Long getProfileIdByMemberId(Long memberId) {
+        Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(ProfileNotFoundException::new);
+        return profile.getId();
     }
 
     private Long getCurrentUserId() {

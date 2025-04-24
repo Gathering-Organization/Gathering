@@ -42,6 +42,8 @@ public enum ErrorCode {
     //Profile
     PROFILE_NOT_FOUND(404, "P001", "존재하지 않는 프로필입니다."),
     PROFILE_ACCESS_DENIED(403, "P002", "비공개 프로필은 조회할 수 없습니다."),
+    PROFILE_SERIALIZE_FAILED(500, "P003", "프로필 직렬화에 실패했습니다."),
+    PROFILE_DESERIALIZE_FAILED(500, "P004", "프로필 역직렬화에 실패했습니다."),
 
     // Project
     PROJECT_NOT_FOUND(404, "PJ001", "존재하지 않는 프로젝트입니다."),

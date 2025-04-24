@@ -4,6 +4,7 @@ import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.global.common.BaseTimeEntity;
 import com.Gathering_be.global.enums.ApplyStatus;
 import com.Gathering_be.global.enums.TechStack;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +36,7 @@ public class Profile extends BaseTimeEntity {
     @Embedded
     private Portfolio portfolio;
 
+    @JsonProperty("public")
     private boolean isPublic;
     private String organization;
 
