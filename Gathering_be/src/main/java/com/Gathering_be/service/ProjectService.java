@@ -27,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,7 +65,7 @@ public class ProjectService {
         project.getTeams().addAll(projectTeams);
 
         Project savedProject = projectRepository.save(project);
-        return ProjectDetailResponse.from(savedProject, false, s3Service);
+        return ProjectDetailResponse.from(savedProject, false, s3Service, false, null);
     }
 
     @Transactional
@@ -100,7 +97,23 @@ public class ProjectService {
                 .orElseThrow(ProjectNotFoundException::new);
 
         boolean isInterested = isUserInterestedInProject(projectId);
-        return ProjectDetailResponse.from(project, isInterested, s3Service);
+
+        Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(ProfileNotFoundException::new);
+        boolean isApplied = false;
+        ApplyStatus applyStatus = null;
+
+        Optional<Application> application = applicationRepository.findAll().stream()
+                .filter(app -> app.getProject().getId().equals(projectId))
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .findFirst();
+
+        if (application.isPresent()) {
+            isApplied = true;
+            applyStatus = application.get().getStatus();
+        }
+
+        return ProjectDetailResponse.from(project, isInterested, s3Service, isApplied, applyStatus);
     }
 
     public Page<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,
