@@ -90,7 +90,7 @@ const Profile: React.FC = () => {
       const result = await setMyProfile(updatedInfo, workExperiences);
 
       if (result?.success) {
-        showToast('지원서 제출이 완료되었습니다.', true);
+        showToast('프로필 저장이 완료되었습니다.', true);
         updateProfileData({ ...updatedInfo, workExperiences });
       } else {
         showToast('프로필 저장 중 오류가 발생했습니다.', false);
@@ -212,33 +212,6 @@ const Profile: React.FC = () => {
     setWorkExperiences(updatedWorkExperiences);
     alert('활동 경력을 삭제 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
   };
-
-  // useEffect(() => {
-  //   if (info.nickname) {
-  //     const fetchPosts = async () => {
-  //       try {
-  //         window.scrollTo(0, 0);
-  //         const [allResult, recruitingResult, completedResult] = await Promise.all([
-  //           getMyPosting(info.nickname, 1, ''),
-  //           getMyPosting(info.nickname, 1, false),
-  //           getMyPosting(info.nickname, 1, true)
-  //         ]);
-  //         if (allResult?.success && recruitingResult?.success && completedResult?.success) {
-  //           setProjectCounts({
-  //             all: allResult.pagination.totalElements,
-  //             recruiting: recruitingResult.pagination.totalElements,
-  //             completed: completedResult.pagination.totalElements
-  //           });
-  //         } else {
-  //           console.error('게시글 조회 중 오류 발생');
-  //         }
-  //       } catch (error) {
-  //         console.error('게시글 조회 실패:', error);
-  //       }
-  //     };
-  //     fetchPosts();
-  //   }
-  // }, [info.nickname]);
 
   const { myProfile, isMyProfileLoading, updateProfileData } = useProfile();
 

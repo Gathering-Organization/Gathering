@@ -24,7 +24,6 @@ const Apply: React.FC = () => {
   const [searchParams] = useSearchParams();
   const nickname = searchParams.get('nickname');
   const [applyInfo, setApplyInfo] = useState({ position: '', message: '' });
-
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [isTechTooltipOpen, setIsTechTooltipOpen] = useState<number | null>(null);
@@ -86,6 +85,38 @@ const Apply: React.FC = () => {
     setIsTechTooltipOpen(prev => (prev === index ? null : index));
   };
 
+  const onSave = async () => {
+    if (!info.portfolio) return;
+    try {
+      // 추후 해당 개념 정리 필요 (파일이 외부 서버에 있거나 CORS-정책이 있는 경우 download attribute가 작동하지 않을 수 있다.)
+      // 아래는 해당 문제를 우회하여 다운로드 하는 방식이다.
+      // 1. 원본 PDF를 fetch로 가져와서 blob으로 변환
+      const response = await fetch(info.portfolio.url, { mode: 'cors' });
+      if (!response.ok) throw new Error('파일을 가져오는 데 실패했습니다.');
+      const blob = await response.blob();
+
+      // 2. blob을 가리키는 객체 URL 생성
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // 3. 다운로드용 a 태그 만들기
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = info.portfolio.fileName || 'portfolio.pdf';
+      document.body.appendChild(link);
+      link.click();
+
+      // 4. 사용한 엘리먼트와 URL 정리
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error(err);
+      alert('파일 저장 중 오류가 발생했습니다.');
+    }
+  };
+  const onView = () => {
+    if (!info.portfolio) return;
+    window.open(info.portfolio.url, '_blank');
+  };
   const positionTitle =
     positionData.find(position => position.id === applyInfo.position)?.title || applyInfo.position;
 
@@ -116,22 +147,22 @@ const Apply: React.FC = () => {
           <div className="text-[24px] font-bold">{parts[0]}님의 지원서입니다.</div>
         </section>
 
-        <div className="mt-16 px-8 text-[28px] font-black font-inter">RESUME.</div>
+        <div className="mt-16 px-8 text-[28px] font-black">RESUME.</div>
         <hr className="mt-6 w-full h-[2px] bg-[#000000]/60 border-none" />
 
-        <section className="flex space-x-12 p-8 items-center font-inter">
+        <section className="flex space-x-12 p-8 items-center">
           <div className="font-bold text-[20px] w-[200px]">지원 포지션</div>
-          <div className="font-semibold">{positionTitle}</div>
+          <div className="text-[18px]">{positionTitle}</div>
         </section>
         <hr className="w-full h-[1px] bg-[#000000]/60 border-none" />
         <div className="">
-          <section className="flex space-x-12 p-8 items-center font-inter">
+          <section className="flex space-x-12 p-8 items-center">
             <div className="font-bold text-[20px] w-[200px]">소속</div>
-            <div className="font-semibold">{info.organization}</div>
+            <div className="text-[18px]">{info.organization}</div>
           </section>
-          <section className="flex space-x-12 p-8 items-center font-inter">
+          <section className="flex space-x-12 p-8 items-center">
             <div className="font-bold text-[20px] w-[200px]">사용 기술 스택</div>
-            <div className="font-semibold">{stackLists.join(', ')}</div>
+            <div className="text-[18px]">{stackLists.join(', ')}</div>
           </section>
           <section className="flex space-x-12 p-8 items-start font-inter">
             <div className="font-bold text-[20px] w-[200px]">활동 내역</div>
@@ -146,7 +177,7 @@ const Apply: React.FC = () => {
                     {index > 0 && (
                       <hr className="w-full h-[1px] bg-[#000000]/20 border-none my-8" />
                     )}
-                    <div className="font-bold text-[18px]">
+                    <div className="font-semibold text-[18px]">
                       {exp.activityName} ({exp.startDate} ~ {exp.endDate})
                     </div>
 
@@ -198,18 +229,25 @@ const Apply: React.FC = () => {
           <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
           <section className="flex space-x-12 p-8 items-center font-inter">
             <div className="font-bold text-[20px] w-[200px]">간단 자기어필</div>
-            <div className="text-[#202123]">{applyInfo.message}</div>
+            <div className="text-[#202123] text-[18px]">{applyInfo.message}</div>
           </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <section className="flex justify-between m-10 items-center">
             <div className="font-bold text-[18px] w-[200px]">{info.portfolio?.fileName}</div>
+
             <div className="flex space-x-8">
-              <button className="px-8 py-2 bg-[#000000] text-[#FFFFFF] rounded-[16px] font-semibold">
+              <button
+                onClick={onSave}
+                className="px-8 py-2 bg-[#000000] text-[#FFFFFF] rounded-[16px] font-semibold"
+              >
                 저장
               </button>
-              <button className="px-8 py-2 bg-[#000000]/10 text-[#202123] rounded-[16px] font-semibold">
+              <button
+                onClick={onView}
+                className="px-8 py-2 bg-[#000000]/10 text-[#202123] rounded-[16px] font-semibold"
+              >
                 보기
               </button>
             </div>
