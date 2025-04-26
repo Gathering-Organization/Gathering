@@ -215,7 +215,7 @@ const PostEdit: React.FC = () => {
         </section>
 
         <section className="px-6 py-2">
-          <label className="block mb-2">마감 날짜</label>
+          <label className="block mb-2">모집 마감 기한</label>
           <DatePicker
             value={deadline}
             onChange={newValue => {
