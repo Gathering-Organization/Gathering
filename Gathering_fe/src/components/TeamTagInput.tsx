@@ -1,6 +1,7 @@
 import React, { useState, KeyboardEvent, ChangeEvent, MouseEvent, useRef, useEffect } from 'react';
 
 import { getUserProfile } from '@/services/profileApi';
+import { useToast } from '@/contexts/ToastContext';
 
 interface TeamTagInputProps {
   teams: string[];
@@ -12,6 +13,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
   const [inputValue, setInputValue] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
 
   const toggleDropdown = () => setIsOpen(prev => !prev);
 
@@ -33,7 +35,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
       if (trimmedValue === '') return;
 
       if (teams.includes(trimmedValue)) {
-        alert('이미 추가된 팀원입니다.');
+        showToast('프로필 저장이 완료되었습니다.', false);
         return;
       }
 
@@ -44,11 +46,11 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
           setTeams([...teams, trimmedValue]);
           setInputValue('');
         } else {
-          alert('존재하지 않는 유저입니다.');
+          showToast('존재하지 않는 유저입니다.', false);
         }
       } catch (err) {
         console.error(err);
-        alert('유저 정보를 불러오는 중 오류가 발생했습니다.');
+        showToast('유저 정보를 불러오는 중 오류가 발생했습니다.', false);
       }
     }
   };

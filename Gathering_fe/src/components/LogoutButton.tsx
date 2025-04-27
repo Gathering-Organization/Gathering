@@ -3,12 +3,14 @@ import { useProfile } from '@/contexts/ProfileStateContext';
 import { logout } from '@/services/authApi';
 import triangleArrowIcon from '@/assets/otherIcons/Triangle Arrow.png';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/contexts/ToastContext';
 
 const LogoutButton: React.FC = () => {
   const { myProfile, isMyProfileLoading } = useProfile();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const nav = useNavigate();
+  const { showToast } = useToast();
 
   const userNickname = myProfile?.nickname || '';
   const userColor = myProfile?.profileColor || 'ccc';
@@ -19,13 +21,13 @@ const LogoutButton: React.FC = () => {
       const result = await logout();
 
       if (result?.success) {
-        alert('로그아웃 성공!');
+        showToast('로그아웃 되었습니다.', true);
         nav('/');
       } else {
-        alert(result?.message || '로그아웃에 실패했습니다.');
+        showToast('로그아웃에 실패했습니다.', false);
       }
     } catch {
-      alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
+      showToast('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.', false);
     }
   };
 

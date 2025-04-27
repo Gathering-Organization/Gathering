@@ -6,27 +6,27 @@ import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
 import Spinner from '@/components/Spinner';
-import deleteButton from '@/assets/otherIcons/post_delete_button.png';
-import editButton from '@/assets/otherIcons/post_edit_button.png';
+import { useToast } from '@/contexts/ToastContext';
 
 const ViewPost: React.FC = () => {
   const [post, setPost] = useState<partPostInfo | null>(null);
   const nav = useNavigate();
   const params = useParams();
   const [userNickname, setUserNickname] = useState<string>('');
+  const { showToast } = useToast();
 
-  const onClickDelete = () => {
-    if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
-      deletePosting(Number(params.id));
-      nav('/', { replace: true });
-    }
-  };
+  // const onClickDelete = () => {
+  //   if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
+  //     deletePosting(Number(params.id));
+  //     nav('/', { replace: true });
+  //   }
+  // };
 
-  const onClickUpdate = () => {
-    if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
-      nav(`/postEdit/${params.id}`);
-    }
-  };
+  // const onClickUpdate = () => {
+  //   if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
+  //     nav(`/postEdit/${params.id}`);
+  //   }
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,16 +40,16 @@ const ViewPost: React.FC = () => {
         if (profileResult?.success) {
           setUserNickname(profileResult.data.nickname);
         } else {
-          alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
+          showToast('프로필 정보를 불러오는 중 오류가 발생했습니다.', false);
         }
 
         if (postResult?.success) {
           setPost(postResult.data);
         } else {
-          alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
+          showToast('모집글 정보를 불러오는 중 오류가 발생했습니다.', false);
         }
       } catch {
-        alert('데이터를 불러오는 중 오류가 발생했습니다.');
+        showToast('데이터를 불러오는 중 오류가 발생했습니다.', false);
       }
     };
 

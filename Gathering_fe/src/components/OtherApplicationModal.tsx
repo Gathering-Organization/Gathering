@@ -7,6 +7,7 @@ import useModalBodyLock from '@/hooks/UseModalBodyLock';
 import { positionData } from '@/utils/position-data';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import Badge from '@/components/Badge';
+import { useToast } from '@/contexts/ToastContext';
 
 type OtherApplicationModalProps = {
   apply: ApplyDetails[];
@@ -16,6 +17,7 @@ type OtherApplicationModalProps = {
 const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, onStatusChange }) => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { showToast } = useToast();
   const [applyDetails, setApplyDetails] = useState<ApplyDetails>({
     id: 0,
     projectId: Number(params.id),
@@ -53,12 +55,12 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
       const response = await patchApplication(id, 'APPROVED');
       if (response?.success) {
         onStatusChange(id, 'APPROVED');
-        alert('승인이 완료되었습니다.');
+        showToast('승인 처리가 완료되었습니다.', true);
       } else {
-        alert(response?.message || '승인 처리 중 오류가 발생했습니다.');
+        showToast('승인 처리 중 오류가 발생했습니다.', false);
       }
     } catch (error) {
-      alert('승인 처리 중 오류가 발생했습니다.');
+      showToast('승인 처리 중 오류가 발생했습니다.', false);
     }
   };
 
@@ -67,12 +69,12 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
       const response = await patchApplication(id, 'REJECTED');
       if (response?.success) {
         onStatusChange(id, 'REJECTED');
-        alert('거절 처리가 완료되었습니다.');
+        showToast('거절 처리가 완료되었습니다.', true);
       } else {
-        alert(response?.message || '거절 처리 중 오류가 발생했습니다.');
+        showToast('거절 처리 중 오류가 발생했습니다.', false);
       }
     } catch (error) {
-      alert('거절 처리 중 오류가 발생했습니다.');
+      showToast('거절 처리 중 오류가 발생했습니다.', false);
     }
   };
 

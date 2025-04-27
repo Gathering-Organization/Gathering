@@ -4,6 +4,7 @@ import { setMyProfileColor } from '@/services/profileApi';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { profileColorCollection } from '@/utils/profile-color';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import { useToast } from '@/contexts/ToastContext';
 
 interface ProfileColorModalProps {
   profileColor: string;
@@ -13,6 +14,8 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { myProfile, updateProfileData } = useProfile();
   const [selectedColor, setSelectedColor] = useState(profileColor);
+  const { showToast } = useToast();
+
   useModalBodyLock(isModalOpen);
   const openModal = () => {
     setSelectedColor(profileColor);
@@ -30,12 +33,13 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
       const result = await setMyProfileColor(selectedColor);
       if (result?.success) {
         updateProfileData({ profileColor: selectedColor });
-        alert('프로필 컬러가 성공적으로 변경되었습니다!');
+        showToast('프로필 컬러가 성공적으로 변경되었습니다.', true);
+        closeModal();
       } else {
-        alert(result?.message || '프로필 컬러 변경 중 문제가 발생했습니다.');
+        showToast('프로필 컬러 변경 중 문제가 발생했습니다.', false);
       }
     } catch {
-      alert('프로필 컬러 변경 중 오류가 발생했습니다.');
+      showToast('프로필 컬러 변경 중 문제가 발생했습니다.', false);
     }
   };
 
@@ -102,7 +106,9 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
 
                 <button
                   onClick={handleUpdateProfileColor}
-                  type="submit"
+                  // submit으로 하면 리로딩이 발생하므로 button으로 처리해야 한다.
+                  // type="submit"
+                  type="button"
                   className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   변경하기

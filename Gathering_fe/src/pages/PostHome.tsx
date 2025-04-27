@@ -17,6 +17,7 @@ import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
 import OptionalDropdown from '@/components/OptionalDropdown';
+import { useToast } from '@/contexts/ToastContext';
 
 interface DropdownDispatchContextType {
   setSelectedStack: (value: string[]) => void;
@@ -48,6 +49,8 @@ const PostHome: React.FC = () => {
     return true;
   });
 
+  const { showToast } = useToast();
+
   const updatePostInterest = (projectId: number, newInterest: boolean) => {
     setPost(prevPosts =>
       prevPosts.map(post =>
@@ -72,15 +75,15 @@ const PostHome: React.FC = () => {
           keyword
         );
         if (result?.success) {
-          alert('전체 모집글 조회가 완료되었습니다.');
+          // showToast('모집글 조회가 완료되었습니다.', true);
           console.log(result.data);
           setPost(result.data);
           setTotalPages(result.pagination.totalPages);
         } else {
-          alert(result?.message || '전체 모집글 조회 중 오류가 발생했습니다.');
+          showToast('모집글 조회 중 오류가 발생했습니다.', false);
         }
       } catch (error) {
-        alert('전체 모집글 조회 중 오류가 발생했습니다.');
+        showToast('모집글 조회 중 오류가 발생했습니다.', false);
       }
     };
     getAllPost();

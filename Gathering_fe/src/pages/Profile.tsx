@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { getMyPosting } from '@/services/postApi';
 import { approxPostInfo } from '@/types/post';
 import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
-import Toast from '@/components/Toast';
+import { useToast } from '@/contexts/ToastContext';
 
 interface TechStack {
   id: string;
@@ -27,16 +27,8 @@ interface TechStack {
 
 const Profile: React.FC = () => {
   const nav = useNavigate();
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastStatus, setToastStatus] = useState(true);
 
-  const showToast = (message: string, status: boolean) => {
-    setToastMessage(message);
-    setToastStatus(status);
-  };
-  const handleToastClose = () => {
-    setToastMessage('');
-  };
+  const { showToast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFile, setUploadedFile] = useState<Portfolio | null>(null);
   const [isPublic, setIsPublic] = useState<boolean>(false);
@@ -122,24 +114,24 @@ const Profile: React.FC = () => {
       const result = await uploadPortfolio(formData);
 
       if (result?.success) {
-        alert('파일 업로드 성공!');
+        showToast('포트폴리오 업로드가 완료되었습니다.', true);
 
         const profileResult = await getMyProfile();
         if (profileResult?.success) {
           setUploadedFile(profileResult.data.portfolio);
           updateProfileData(profileResult.data);
         } else {
-          alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
+          showToast('프로필 갱신 중 오류가 발생했습니다.', false);
         }
       }
     } catch {
-      alert('파일 업로드 중 오류가 발생했습니다.');
+      showToast('포트폴리오 업로드 중 오류가 발생했습니다.', false);
     }
   };
 
   const handleDelete = async () => {
     if (!uploadedFile) {
-      alert('삭제할 파일이 없습니다.');
+      showToast('삭제할 포트폴리오가 없습니다.', false);
       return;
     }
 
@@ -147,18 +139,18 @@ const Profile: React.FC = () => {
       const result = await deletePortfolio();
 
       if (result?.success) {
-        alert('파일 삭제 성공!');
+        showToast('포트폴리오 삭제가 완료되었습니다.', true);
         const profileResult = await getMyProfile();
         if (profileResult?.success) {
           setSelectedFile(null);
           setUploadedFile(null);
           updateProfileData(profileResult.data);
         } else {
-          alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
+          showToast('프로필 갱신 중 오류가 발생했습니다.', false);
         }
       }
     } catch {
-      alert('파일 삭제 중 오류가 발생했습니다.');
+      showToast('포트폴리오 삭제 중 오류가 발생했습니다.', false);
     }
   };
 
@@ -172,7 +164,7 @@ const Profile: React.FC = () => {
         updateProfileData({ public: updatedPublic });
       }
     } catch {
-      alert('프로필 공개 상태 변경 중 오류가 발생했습니다.');
+      showToast('프로필 공개 상태 변경 중 오류가 발생했습니다.', false);
     }
   };
 
@@ -183,7 +175,7 @@ const Profile: React.FC = () => {
       !experience.endDate ||
       !experience.description
     ) {
-      alert('모든 필드를 입력해주세요.');
+      showToast('모든 필드를 입력해주세요.', false);
       return;
     }
 
@@ -210,7 +202,10 @@ const Profile: React.FC = () => {
     }
 
     setWorkExperiences(updatedWorkExperiences);
-    alert('활동 경력을 삭제 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.');
+    showToast(
+      '해당 활동 경력이 삭제되었습니다. 반드시 프로필 저장 버튼을 눌러 저장해주세요.',
+      true
+    );
   };
 
   const { myProfile, isMyProfileLoading, updateProfileData } = useProfile();
@@ -229,7 +224,9 @@ const Profile: React.FC = () => {
   }, [myProfile]);
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
+
   const parts = info.nickname.split(/(#\d+)/);
+
   return (
     <div className="mx-60 space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
@@ -468,9 +465,6 @@ const Profile: React.FC = () => {
           </div>
         </section>
       </div>
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={handleToastClose} status={toastStatus} />
-      )}
     </div>
   );
 };

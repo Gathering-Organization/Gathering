@@ -17,6 +17,7 @@ import {
   totalMemberOptions
 } from '@/utils/post-options';
 import TeamTagInput from '@/components/TeamTagInput';
+import { useToast } from '@/contexts/ToastContext';
 
 interface Position {
   id: string;
@@ -62,6 +63,8 @@ const Posting: React.FC = () => {
     requiredPositions: []
   });
 
+  const { showToast } = useToast();
+
   const onCreate = async () => {
     console.log('최종 저장 데이터: ', post);
     try {
@@ -85,13 +88,13 @@ const Posting: React.FC = () => {
       const result = await setPosting(postInfo);
 
       if (result?.success) {
-        alert('모집글 작성이 완료되었습니다.');
+        showToast('모집글 작성이 완료되었습니다.', true);
         nav('/');
       } else {
-        alert(result?.message || '모집글 작성 중 오류가 발생했습니다.');
+        showToast('모집글 작성 중 오류가 발생했습니다.', false);
       }
     } catch (error) {
-      alert('모집글 작성 중 오류가 발생했습니다.');
+      showToast('모집글 작성 중 오류가 발생했습니다.', false);
       console.error(error);
     }
   };

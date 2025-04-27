@@ -4,6 +4,7 @@ import { setMyNickname } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import { useToast } from '@/contexts/ToastContext';
 
 interface NicknameModalProps {
   nickname: string;
@@ -13,6 +14,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNickname, setNewNickname] = useState(nickname);
   const { myProfile, updateProfileData } = useProfile();
+  const { showToast } = useToast();
   useModalBodyLock(isModalOpen);
   const openModal = () => {
     setIsModalOpen(true);
@@ -30,13 +32,13 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
       if (result?.success) {
         console.log(nickname);
         updateProfileData({ nickname: newNickname });
-        alert('닉네임이 성공적으로 변경되었습니다!');
+        showToast('닉네임이 성공적으로 변경되었습니다.', true);
         closeModal();
       } else {
-        alert(result?.message || '닉네임 변경 중 문제가 발생했습니다.');
+        showToast('닉네임 변경 중 문제가 발생했습니다.', false);
       }
     } catch {
-      alert('닉네임 변경 중 오류가 발생했습니다.');
+      showToast('닉네임 변경 중 문제가 발생했습니다.', false);
     }
   };
 
@@ -125,7 +127,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
                 </div>
                 <button
                   onClick={handleUpdateNickname}
-                  type="submit"
+                  type="button"
                   className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   변경하기

@@ -9,6 +9,7 @@ import { projectType as projectEachType } from '@/utils/project-and-apply-type';
 import { positionData } from '@/utils/position-data';
 import { setInterest } from '@/services/interestApi';
 import eye from '@/assets/otherIcons/eye.png';
+import { useToast } from '@/contexts/ToastContext';
 
 interface Position {
   id: string;
@@ -38,7 +39,7 @@ const PostItem: React.FC<
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
   const nav = useNavigate();
-
+  const { showToast } = useToast();
   const { profileCache } = useProfileCache();
 
   const profileInfo = profileCache[authorNickname] || {
@@ -56,7 +57,7 @@ const PostItem: React.FC<
     e.stopPropagation();
 
     if (closed || !projectId) {
-      alert('마감된 모집 공고입니다.');
+      showToast('마감된 모집 공고입니다.', false);
       return;
     }
 
@@ -70,7 +71,7 @@ const PostItem: React.FC<
     } catch (error) {
       setIsInterested(prevState);
       if (onInterestToggle) onInterestToggle(projectId, prevState);
-      alert('관심글 설정에 실패했습니다.');
+      showToast('관심글 설정에 실패했습니다.', false);
     }
   };
   const parts = authorNickname.split(/(#\d+)/);
@@ -86,7 +87,7 @@ const PostItem: React.FC<
         if (!closed) {
           nav(`/viewPost/${projectId}`);
         } else {
-          alert('마감된 모집 공고입니다.');
+          showToast('마감된 모집 공고입니다.', false);
         }
       }}
       className="relative cursor-pointer select-none w-85 will-change-transform"

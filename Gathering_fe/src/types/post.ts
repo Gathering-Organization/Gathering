@@ -82,4 +82,6 @@ export interface partPostInfo {
   deadline: string;
   techStacks: string[];
   requiredPositions: string[];
+  applied: boolean;
+  applyStatus: string | null;
 }

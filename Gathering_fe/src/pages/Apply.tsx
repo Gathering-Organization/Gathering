@@ -14,6 +14,7 @@ import { getStackImage } from '@/utils/get-stack-image';
 import { positionData } from '@/utils/position-data';
 import { useSearchParams } from 'react-router-dom';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
+import { useToast } from '@/contexts/ToastContext';
 
 interface TechStack {
   id: string;
@@ -53,6 +54,7 @@ const Apply: React.FC = () => {
 
   const isLoadingOverall = nickname ? isLoading : isMyProfileLoading;
   const hasError = nickname ? error : false;
+  const { showToast } = useToast();
 
   useEffect(() => {
     const stored = localStorage.getItem('applyInfo');
@@ -110,7 +112,7 @@ const Apply: React.FC = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch (err) {
       console.error(err);
-      alert('파일 저장 중 오류가 발생했습니다.');
+      showToast('포트폴리오 저장 중 오류가 발생했습니다.', false);
     }
   };
   const onView = () => {

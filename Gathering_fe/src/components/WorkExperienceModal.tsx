@@ -3,7 +3,7 @@ import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { techStacks } from '@/utils/tech-stacks';
 import { WorkExperience } from '@/types/profile';
-import Toast from '@/components/Toast';
+import { useToast } from '@/contexts/ToastContext';
 
 interface TechStack {
   id: string;
@@ -21,15 +21,8 @@ interface DateRange {
 
 const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => {
   const [stackList] = useState<TechStack[]>([...techStacks]);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastStatus, setToastStatus] = useState(true);
-  const showToast = (message: string, status: boolean) => {
-    setToastMessage(message);
-    setToastStatus(status);
-  };
-  const handleToastClose = () => {
-    setToastMessage('');
-  };
+  const { showToast } = useToast();
+
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
   const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
@@ -274,9 +267,6 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
             </div>
           </div>
         </div>
-      )}
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={handleToastClose} status={toastStatus} />
       )}
     </div>
   );

@@ -11,6 +11,7 @@ import { positionData } from '@/utils/position-data';
 import { techStacks } from '@/utils/tech-stacks';
 import SingleSelection from '@/components/SingleSelection';
 import TeamTagInput from '@/components/TeamTagInput';
+import { useToast } from '@/contexts/ToastContext';
 import {
   durationOptions,
   projectModeOptions,
@@ -67,6 +68,8 @@ const PostEdit: React.FC = () => {
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([...post.techStacks]);
 
+  const { showToast } = useToast();
+
   const [info, setInfo] = useState<ProfileInfo>({
     nickname: '',
     introduction: '',
@@ -109,10 +112,10 @@ const PostEdit: React.FC = () => {
           setSelectedPositions(data.requiredPositions || []);
           setSelectedStacks(data.techStacks || []);
         } else {
-          alert(postResult?.message || '모집글 정보를 불러오는 중 오류가 발생했습니다.');
+          showToast('모집글 정보를 불러오는 중 오류가 발생했습니다.', false);
         }
       } catch {
-        alert('데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.');
+        showToast('데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.', false);
       }
     };
 
@@ -142,13 +145,13 @@ const PostEdit: React.FC = () => {
       const result = await modifyPosting(Number(params.id), postInfo);
 
       if (result?.success) {
-        alert('모집글 수정이 완료되었습니다.');
+        showToast('모집글 수정이 완료되었습니다.', true);
         nav('/', { replace: true });
       } else {
-        alert(result?.message || '모집글 수정 중 오류가 발생했습니다.');
+        showToast('모집글 수정 중 오류가 발생했습니다.', false);
       }
     } catch (error) {
-      alert('모집글 수정 중 오류가 발생했습니다.');
+      showToast('모집글 수정 중 오류가 발생했습니다.', false);
       console.error(error);
     }
   };

@@ -19,6 +19,8 @@ import { getOtherApplication } from '@/services/applicationApi';
 import { ApplyDetails, ApplyInfo } from '@/types/apply';
 import ApplyModal from './ApplyModal';
 import { techStacks } from '@/utils/tech-stacks';
+import ApplyResultModal from './ApplyResultModal';
+import { useToast } from '@/contexts/ToastContext';
 
 interface Position {
   id: string;
@@ -45,6 +47,8 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   } = useOtherProfile(selectedTeamMember);
   const [loading, setLoading] = useState<boolean>(true);
   const [applications, setApplications] = useState<ApplyDetails[]>([]);
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -144,11 +148,11 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
       const response = await setPublic(Number(params.id));
 
       if (!response || !response.success) {
-        alert('완료 여부 변경에 실패했습니다.');
+        showToast('완료 여부 변경에 실패했습니다.', false);
         setIsToggleOn(!checked);
       }
     } catch (error) {
-      alert('서버 오류가 발생했습니다.');
+      showToast('서버 오류가 발생했습니다.', false);
       setIsToggleOn(!checked);
     }
   };
@@ -418,6 +422,12 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
         />
         {data?.authorNickname === userNickname ? (
           <OtherApplicationModal apply={applications} onStatusChange={updateApplicationStatus} />
+        ) : data?.applied ? (
+          <ApplyResultModal
+            nickname={userNickname}
+            position={'후롱트'}
+            applyStatus={data?.applyStatus}
+          />
         ) : (
           <ApplyModal />
         )}
