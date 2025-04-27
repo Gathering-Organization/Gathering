@@ -178,8 +178,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        Profile applicantProfile = profileRepository.findByMemberId(
-                application.getProfileFromSnapshot().getMember().getId())
+        Profile applicantProfile = profileRepository.findById(application.getProfileFromSnapshot().getId())
                 .orElseThrow(ProfileNotFoundException::new);
 
         applicantProfile.updateApplicationStatus(newStatus);
