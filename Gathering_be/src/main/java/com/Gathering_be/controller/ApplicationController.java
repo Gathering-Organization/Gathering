@@ -27,19 +27,24 @@ public class ApplicationController {
     }
 
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<ResultResponse> getApplicationsByProject(@PathVariable Long projectId) {
-        List<ApplicationResponse> applications = applicationService.getApplicationsByProject(projectId);
+    public ResponseEntity<ResultResponse> getApplicationsForProject(@PathVariable Long projectId) {
+        List<ApplicationResponse> applications = applicationService.getApplicationsForProject(projectId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
     }
 
-    @GetMapping("/my-apply")
-    public ResponseEntity<ResultResponse> getApplicationsByProfile(
-            @RequestParam String nickname,
+    @GetMapping("/my")
+    public ResponseEntity<ResultResponse> getMyApplications(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) ApplyStatus status
     ) {
-        Page<ProjectSimpleResponse> projects = applicationService.getAppliedProjectsByNickname(nickname, page, 18, status);
+        Page<ProjectSimpleResponse> projects = applicationService.getMyAppliedProjects(page, 18, status);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
+    }
+
+    @GetMapping("/{applicationId}")
+    public ResponseEntity<ResultResponse> getMyApplicationById(@PathVariable Long applicationId) {
+        ApplicationResponse application = applicationService.getMyApplicationById(applicationId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, application));
     }
 
     @DeleteMapping("/{applicationId}")

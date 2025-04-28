@@ -62,7 +62,7 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationResponse> getApplicationsByProject(Long projectId) {
+    public List<ApplicationResponse> getApplicationsForProject(Long projectId) {
         Long currentUserId = getCurrentUserId();
         Project project = findProjectById(projectId);
 
@@ -74,6 +74,24 @@ public class ApplicationService {
                 .stream()
                 .map(app -> ApplicationResponse.from(app, s3Service))
                 .collect(Collectors.toList());
+    }
+
+    public ApplicationResponse getMyApplicationById(Long applicationId) {
+        Long currentUserId = getCurrentUserId();
+
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(ApplicationNotFoundException::new);
+
+        Long snapshotProfileId = application.getProfileFromSnapshot().getId();
+
+        Profile profile = profileRepository.findById(snapshotProfileId)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        if (!profile.getMember().getId().equals(currentUserId)) {
+            throw new UnauthorizedAccessException();
+        }
+
+        return ApplicationResponse.from(application, s3Service);
     }
 
     @Transactional(readOnly = true)
@@ -101,17 +119,12 @@ public class ApplicationService {
         return new PageImpl<>(content, PageRequest.of(page - 1, size), applications.size());
     }
 
-
     @Transactional(readOnly = true)
-    public Page<ProjectSimpleResponse> getAppliedProjectsByNickname(String nickname, int page, int size, ApplyStatus status) {
+    public Page<ProjectSimpleResponse> getMyAppliedProjects(int page, int size, ApplyStatus status) {
         Long currentUserId = getCurrentUserId();
 
-        Profile profile = profileRepository.findByNickname(nickname)
+        Profile profile = profileRepository.findByMemberId(currentUserId)
                 .orElseThrow(ProfileNotFoundException::new);
-
-        if (!profile.getMember().getId().equals(currentUserId)) {
-            throw new UnauthorizedAccessException();
-        }
 
         List<Application> applications = applicationRepository.findAll().stream()
                 .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
