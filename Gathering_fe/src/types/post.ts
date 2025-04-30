@@ -69,6 +69,7 @@ export interface partPostInfo {
   authorNickname: string;
   closed: boolean;
   interested: boolean;
+  kakaoUrl: string;
   title: string;
   description: string;
   projectMode: string;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MultiLevelDropdown from './MultiLevelDropdown';
 import { positionData } from '@/utils/position-data';
 import { postApplication } from '@/services/applicationApi';
-import { ApplyInfo } from '@/types/apply';
+import { ApplyDetails } from '@/types/apply';
 import { DropdownDispatchContext } from '@/pages/PostHome';
 import { useParams } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
@@ -11,18 +11,32 @@ type ApplyResultProps = {
   nickname: string;
   position: string;
   applyStatus: string | null;
+  kakaoUrl: string;
 };
 
-const ApplyResultModal: React.FC<ApplyResultProps> = ({ nickname, position, applyStatus }) => {
+const ApplyResultModal: React.FC<ApplyResultProps> = ({
+  nickname,
+  position,
+  applyStatus,
+  kakaoUrl
+}) => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [status, setStatus] = useState('');
   const { showToast } = useToast();
-  const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
+  const [applyInfo, setApplyInfo] = useState<ApplyDetails>({
+    id: 0,
     projectId: Number(params.id),
+    nickname: '',
     position: '',
-    message: ''
+    message: '',
+    status: '',
+    profileColor: '',
+    workExperiences: [],
+    organization: '',
+    portfolio: null,
+    techStacks: []
   });
 
   const openModal = () => {
@@ -67,6 +81,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({ nickname, position, appl
   };
 
   const handleViewApplication = () => {
+    console.log(applyInfo);
     localStorage.setItem('applyInfo', JSON.stringify(applyInfo));
     window.open('/apply/view', '_blank');
   };
@@ -74,6 +89,11 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({ nickname, position, appl
   const dropdownContextValue = {
     setSelectedStack: dummySetSelectedStack,
     setSelectedPosition: handleSelectedPosition
+  };
+
+  const handleOpenChat = () => {
+    const url = kakaoUrl.startsWith('http') ? kakaoUrl : `https://${kakaoUrl}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const parts = nickname.split(/(#\d+)/);
@@ -151,11 +171,12 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({ nickname, position, appl
                   </button>
                   <button
                     // onClick={handleSubmit}
-                    disabled={applyStatus === 'REJECTED'}
+                    onClick={handleOpenChat}
+                    disabled={applyStatus !== 'APPROVED'}
                     type="button"
                     className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none ${
-                      applyStatus === 'REJECTED'
-                        ? 'bg-[#3387E5] hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
+                      applyStatus === 'APPROVED'
+                        ? 'bg-[#3387E5] hover:bg-blue-800 text-white'
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >

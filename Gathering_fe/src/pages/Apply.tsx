@@ -1,10 +1,3 @@
-import {
-  deletePortfolio,
-  getMyProfile,
-  setMyProfile,
-  toggleProfileVisibility,
-  uploadPortfolio
-} from '@/services/profileApi';
 import { Portfolio, ProfileAllInfo, WorkExperience } from '@/types/profile';
 import { useEffect, useRef, useState } from 'react';
 import { useProfile } from '@/contexts/ProfileStateContext';
@@ -15,6 +8,7 @@ import { positionData } from '@/utils/position-data';
 import { useSearchParams } from 'react-router-dom';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import { useToast } from '@/contexts/ToastContext';
+import { ApplyDetails } from '@/types/apply';
 
 interface TechStack {
   id: string;
@@ -24,11 +18,11 @@ interface TechStack {
 const Apply: React.FC = () => {
   const [searchParams] = useSearchParams();
   const nickname = searchParams.get('nickname');
-  const [applyInfo, setApplyInfo] = useState({ position: '', message: '' });
-  const [isPublic, setIsPublic] = useState<boolean>(false);
-  const [stackList] = useState<TechStack[]>([...techStacks]);
+  const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>(null);
+  // const [isPublic, setIsPublic] = useState<boolean>(false);
+  // const [stackList] = useState<TechStack[]>([...techStacks]);
   const [isTechTooltipOpen, setIsTechTooltipOpen] = useState<number | null>(null);
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  // const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',
@@ -50,37 +44,90 @@ const Apply: React.FC = () => {
 
   const { myProfile, isMyProfileLoading } = useProfile();
 
-  const { profile, isLoading, error } = useOtherProfile(nickname);
+  const isOwnProfile = !nickname;
+  const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
-  const isLoadingOverall = nickname ? isLoading : isMyProfileLoading;
-  const hasError = nickname ? error : false;
   const { showToast } = useToast();
+
+  // useEffect(() => {
+  //   const stored = localStorage.getItem('applyInfo');
+  //   console.log('헤헤', stored);
+  //   if (stored) {
+  //     setApplyInfo(JSON.parse(stored));
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   const closeTooltips = () => setIsTechTooltipOpen(null);
+  //   document.addEventListener('click', closeTooltips);
+  //   return () => document.removeEventListener('click', closeTooltips);
+  // }, []);
+
+  // useEffect(() => {
+  //   const stored = localStorage.getItem('applyInfo');
+  //   if (stored) {
+  //     setApplyInfo(JSON.parse(stored));
+  //   }
+  //   if (nickname && profile) {
+  //     setInfo(profile);
+  //     setWorkExperiences(profile.workExperiences);
+  //   } else if (!nickname && myProfile) {
+  //     setInfo(myProfile);
+  //     setWorkExperiences(myProfile.workExperiences);
+  //   }
+  // }, [nickname, profile, myProfile, isPublic]);
+
+  // useEffect(() => {
+  //   const closeTooltips = () => {
+  //     setIsTechTooltipOpen(null);
+  //   };
+
+  //   document.addEventListener('click', closeTooltips);
+  //   return () => document.removeEventListener('click', closeTooltips);
+  // }, []);
+  // // if (!applyInfo) return <div>로딩 중...</div>;
+  // if (isMyProfileLoading) return <div>로딩 중...</div>;
 
   useEffect(() => {
     const stored = localStorage.getItem('applyInfo');
     if (stored) {
       setApplyInfo(JSON.parse(stored));
     }
-    if (nickname && profile) {
-      setInfo(profile);
-      setWorkExperiences(profile.workExperiences);
-    } else if (!nickname && myProfile) {
-      setInfo(myProfile);
-      setWorkExperiences(myProfile.workExperiences);
-    }
-  }, [nickname, profile, myProfile, isPublic]);
+  }, []);
 
   useEffect(() => {
-    const closeTooltips = () => {
-      setIsTechTooltipOpen(null);
-    };
+    if (!nickname) {
+      if (myProfile) {
+        setInfo(myProfile);
+        setWorkExperiences(myProfile.workExperiences);
+      }
+    }
+  }, [nickname, myProfile]);
 
+  useEffect(() => {
+    const closeTooltips = () => setIsTechTooltipOpen(null);
     document.addEventListener('click', closeTooltips);
     return () => document.removeEventListener('click', closeTooltips);
   }, []);
+  const needLoading = isLoadingOverall || !info || (!isOwnProfile && !applyInfo);
 
-  if (isMyProfileLoading) return <div>로딩 중...</div>;
-  const parts = info.nickname.split(/(#\d+)/);
+  if (needLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  const portfolioFileName = isOwnProfile
+    ? info.portfolio?.fileName
+    : applyInfo?.portfolio?.fileName;
+
+  console.log(applyInfo);
+  const positionTitle =
+    positionData.find(position => position.id === applyInfo?.position)?.title ||
+    applyInfo?.position;
+
+  const stackLists = info.techStacks.map(id => {
+    const stack = techStacks.find(stack => stack.id === id);
+    return stack ? stack.title : id;
+  });
 
   const toggleTechTooltip = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -88,12 +135,13 @@ const Apply: React.FC = () => {
   };
 
   const onSave = async () => {
-    if (!info.portfolio) return;
+    const portfolio = isOwnProfile ? info.portfolio : applyInfo?.portfolio;
+    if (!portfolio) return;
     try {
       // 추후 해당 개념 정리 필요 (파일이 외부 서버에 있거나 CORS-정책이 있는 경우 download attribute가 작동하지 않을 수 있다.)
       // 아래는 해당 문제를 우회하여 다운로드 하는 방식이다.
       // 1. 원본 PDF를 fetch로 가져와서 blob으로 변환
-      const response = await fetch(info.portfolio.url, { mode: 'cors' });
+      const response = await fetch(portfolio.url, { mode: 'cors' });
       if (!response.ok) throw new Error('파일을 가져오는 데 실패했습니다.');
       const blob = await response.blob();
 
@@ -103,7 +151,7 @@ const Apply: React.FC = () => {
       // 3. 다운로드용 a 태그 만들기
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = info.portfolio.fileName || 'portfolio.pdf';
+      link.download = portfolio.fileName || 'portfolio.pdf';
       document.body.appendChild(link);
       link.click();
 
@@ -116,16 +164,10 @@ const Apply: React.FC = () => {
     }
   };
   const onView = () => {
-    if (!info.portfolio) return;
-    window.open(info.portfolio.url, '_blank');
+    const portfolio = isOwnProfile ? info.portfolio : applyInfo?.portfolio;
+    if (!portfolio) return;
+    window.open(portfolio.url, '_blank');
   };
-  const positionTitle =
-    positionData.find(position => position.id === applyInfo.position)?.title || applyInfo.position;
-
-  const stackLists = info.techStacks.map(id => {
-    const stack = techStacks.find(stack => stack.id === id);
-    return stack ? stack.title : id;
-  });
 
   const handleClose = () => {
     window.close();
@@ -134,19 +176,31 @@ const Apply: React.FC = () => {
   if (isLoadingOverall) {
     return <div>로딩 중...</div>;
   }
-  if (hasError) {
-    return <div>오류가 발생했습니다.</div>;
-  }
 
   return (
     <div className="mx-60">
       <div className="border-[#000000]/20 border-2 rounded-xl p-10 px-20 min-h-screen">
         <section className="flex space-x-4 items-center">
-          <div
-            className="w-[36px] h-[36px] rounded-full"
-            style={{ backgroundColor: `#${info.profileColor}` }}
-          ></div>
-          <div className="text-[24px] font-bold">{parts[0]}님의 지원서입니다.</div>
+          {isOwnProfile ? (
+            <div
+              className="w-[36px] h-[36px] rounded-full"
+              style={{ backgroundColor: `#${info.profileColor}` }}
+            ></div>
+          ) : (
+            <div
+              className="w-[36px] h-[36px] rounded-full"
+              style={{ backgroundColor: `#${applyInfo?.profileColor}` }}
+            ></div>
+          )}
+          {isOwnProfile ? (
+            <div className="text-[24px] font-bold">
+              {info.nickname.split(/(#\d+)/)}님의 지원서입니다.
+            </div>
+          ) : (
+            <div className="text-[24px] font-bold">
+              {applyInfo?.nickname.split(/(#\d+)/)}님의 지원서입니다.
+            </div>
+          )}
         </section>
 
         <div className="mt-16 px-8 text-[28px] font-black">RESUME.</div>
@@ -160,7 +214,11 @@ const Apply: React.FC = () => {
         <div className="">
           <section className="flex space-x-12 p-8 items-center">
             <div className="font-bold text-[20px] w-[200px]">소속</div>
-            <div className="text-[18px]">{info.organization}</div>
+            {isOwnProfile ? (
+              <div className="text-[18px]">{info.organization}</div>
+            ) : (
+              <div className="text-[18px]">{applyInfo?.organization}</div>
+            )}
           </section>
           <section className="flex space-x-12 p-8 items-center">
             <div className="font-bold text-[20px] w-[200px]">사용 기술 스택</div>
@@ -231,13 +289,13 @@ const Apply: React.FC = () => {
           <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
           <section className="flex space-x-12 p-8 items-center font-inter">
             <div className="font-bold text-[20px] w-[200px]">간단 자기어필</div>
-            <div className="text-[#202123] text-[18px]">{applyInfo.message}</div>
+            <div className="text-[#202123] text-[18px]">{applyInfo?.message}</div>
           </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <section className="flex justify-between m-10 items-center">
-            <div className="font-bold text-[18px] w-[200px]">{info.portfolio?.fileName}</div>
+            <div className="font-bold text-[18px] w-[200px]">{portfolioFileName}</div>
 
             <div className="flex space-x-8">
               <button

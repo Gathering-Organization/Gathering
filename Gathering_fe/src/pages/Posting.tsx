@@ -65,8 +65,16 @@ const Posting: React.FC = () => {
 
   const { showToast } = useToast();
 
+  const isValidKakaoUrl = (url: string) => {
+    const kakaoRegex = /^https:\/\/open\.kakao\.com\/o\/[a-zA-Z0-9]+$/;
+    return kakaoRegex.test(url);
+  };
+
   const onCreate = async () => {
-    console.log('최종 저장 데이터: ', post);
+    if (!isValidKakaoUrl(post.kakaoUrl)) {
+      showToast('올바른 카카오 오픈채팅 URL을 입력해주세요.', false);
+      return;
+    }
     try {
       const postInfo = {
         title: post.title,
@@ -83,8 +91,6 @@ const Posting: React.FC = () => {
         requiredPositions: post.requiredPositions
       };
 
-      console.log('변환된 데이터: ', postInfo);
-
       const result = await setPosting(postInfo);
 
       if (result?.success) {
@@ -95,7 +101,6 @@ const Posting: React.FC = () => {
       }
     } catch (error) {
       showToast('모집글 작성 중 오류가 발생했습니다.', false);
-      console.error(error);
     }
   };
 

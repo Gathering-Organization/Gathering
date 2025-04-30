@@ -187,7 +187,6 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
       return newState;
     });
   };
-
   return (
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
@@ -427,6 +426,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
             nickname={userNickname}
             position={'후롱트'}
             applyStatus={data?.applyStatus}
+            kakaoUrl={data?.kakaoUrl}
           />
         ) : (
           <ApplyModal />

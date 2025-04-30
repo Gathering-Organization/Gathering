@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { postApplication } from '@/services/applicationApi';
+import React, { useEffect, useState } from 'react';
 import { ApplyDetails } from '@/types/apply';
 import { useParams } from 'react-router-dom';
 import { patchApplication } from '@/services/applicationApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
 import { positionData } from '@/utils/position-data';
-import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import Badge from '@/components/Badge';
 import { useToast } from '@/contexts/ToastContext';
 
@@ -24,7 +22,12 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
     nickname: '',
     position: '',
     message: '',
-    status: ''
+    status: '',
+    profileColor: '',
+    workExperiences: [],
+    organization: '',
+    portfolio: null,
+    techStacks: []
   });
 
   useModalBodyLock(isModalOpen);
@@ -81,8 +84,8 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
   const handleViewApplication = (item: ApplyDetails) => {
     localStorage.setItem('applyInfo', JSON.stringify(item));
     window.open(`/apply/view?nickname=${encodeURIComponent(item.nickname)}`, '_blank');
+    // window.open('/apply/view', '_blank');
   };
-
   return (
     <div>
       <div>

@@ -122,8 +122,16 @@ const PostEdit: React.FC = () => {
     fetchData();
   }, [params.id]);
 
+  const isValidKakaoUrl = (url: string) => {
+    const kakaoRegex = /^https:\/\/open\.kakao\.com\/o\/[a-zA-Z0-9]+$/;
+    return kakaoRegex.test(url);
+  };
+
   const onUpdate = async () => {
-    console.log('최종 저장 닉네임: ', post.teams);
+    if (!isValidKakaoUrl(post.kakaoUrl)) {
+      showToast('올바른 카카오 오픈채팅 URL을 입력해주세요.', false);
+      return;
+    }
     try {
       const postInfo = {
         title: post.title,
@@ -140,8 +148,6 @@ const PostEdit: React.FC = () => {
         requiredPositions: post.requiredPositions
       };
 
-      console.log('변환된 데이터: ', postInfo);
-
       const result = await modifyPosting(Number(params.id), postInfo);
 
       if (result?.success) {
@@ -152,7 +158,6 @@ const PostEdit: React.FC = () => {
       }
     } catch (error) {
       showToast('모집글 수정 중 오류가 발생했습니다.', false);
-      console.error(error);
     }
   };
 
