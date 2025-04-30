@@ -76,22 +76,21 @@ public class ApplicationService {
                 .collect(Collectors.toList());
     }
 
-    public ApplicationResponse getMyApplicationById(Long applicationId) {
+    @Transactional(readOnly = true)
+    public ApplicationResponse getMyApplicationByProjectId(Long projectId) {
         Long currentUserId = getCurrentUserId();
 
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
-
-        Long snapshotProfileId = application.getProfileFromSnapshot().getId();
-
-        Profile profile = profileRepository.findById(snapshotProfileId)
+        Profile profile = profileRepository.findByMemberId(currentUserId)
                 .orElseThrow(ProfileNotFoundException::new);
 
-        if (!profile.getMember().getId().equals(currentUserId)) {
-            throw new UnauthorizedAccessException();
-        }
+        List<Application> applications = applicationRepository.findByProjectId(projectId);
 
-        return ApplicationResponse.from(application, s3Service);
+        Application myApp = applications.stream()
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .findFirst()
+                .orElseThrow(ApplicationNotFoundException::new);
+
+        return ApplicationResponse.from(myApp, s3Service);
     }
 
     @Transactional(readOnly = true)
