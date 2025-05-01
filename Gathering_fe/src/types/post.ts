@@ -61,6 +61,7 @@ export interface approxPostInfo {
   techStacks: string[];
   requiredPositions: string[];
   viewCount: number;
+  status?: string;
 }
 
 export interface partPostInfo {

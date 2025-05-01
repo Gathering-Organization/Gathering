@@ -41,16 +41,10 @@ export const getOtherApplication = async (projectId: number) => {
   }
 };
 
-export const getMyApplication = async (nickname: string, page: number, status: string) => {
+export const getMyApplication = async (page: number, status: string) => {
   try {
-    const nicknameParam = encodeURIComponent(nickname);
-    const response = await api.get(
-      `/application/my-apply?nickname=${nicknameParam}&page=${page}&status=${status}`
-    );
-    console.log(
-      '요청 API:',
-      `/application/my-apply?nickname=${nicknameParam}&page=${page}&status=${status}`
-    );
+    const response = await api.get(`/application/my?page=${page}&status=${status}`);
+    console.log('요청 API:', `/application/my?page=${page}&status=${status}`);
 
     console.log('응답 데이터:', response.data.data);
 

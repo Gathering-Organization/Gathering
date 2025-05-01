@@ -53,7 +53,7 @@ const MyApplication: React.FC = () => {
         try {
           window.scrollTo(0, 0);
 
-          const myApplicationResult = await getMyApplication(nickname, page, selectedType);
+          const myApplicationResult = await getMyApplication(page, selectedType);
 
           if (myApplicationResult?.success) {
             const applicationList: ApplyDetails[] = myApplicationResult.data;
@@ -63,38 +63,39 @@ const MyApplication: React.FC = () => {
               statusMap[app.projectId] = app.status;
             });
 
-            const projectIds = applicationList.map(item => item.projectId);
-            const projectInfos = await Promise.all(
-              projectIds.map((id: number) => getPartPosting(id))
-            );
+            // const projectIds = applicationList.map(item => item.projectId);
+            // const projectInfos = await Promise.all(
+            //   projectIds.map((id: number) => getPartPosting(id))
+            // );
 
-            const validProjects = projectInfos
-              .filter(p => p && p.success)
-              .map(p => p?.data as approxPostInfo);
+            // const validProjects = projectInfos
+            //   .filter(p => p && p.success)
+            //   .map(p => p?.data as approxPostInfo);
 
-            const projectsWithStatus = validProjects.map(project => ({
-              ...project,
-              status: statusMap[project.projectId] || undefined
-            }));
+            // const projectsWithStatus = validProjects.map(project => ({
+            //   ...project,
+            //   status: statusMap[project.projectId] || undefined
+            // }));
 
-            setPost(projectsWithStatus);
-            setTotalPages(myApplicationResult.pagination.totalPages);
+            // setPost(projectsWithStatus);
+            setPost(myApplicationResult.data);
+            setTotalPages(myApplicationResult.data.totalPages);
 
             const newCache: { [nickname: string]: ProfileAllInfo } = {};
-            const uniqueNicknames = [...new Set(validProjects.map(post => post.authorNickname))];
+            // const uniqueNicknames = [...new Set(validProjects.map(post => post.authorNickname))];
 
-            await Promise.all(
-              uniqueNicknames.map(async nick => {
-                try {
-                  const result = await getUserProfile(nick);
-                  if (result?.success) {
-                    newCache[nick] = result.data;
-                  }
-                } catch (err) {
-                  console.error(`프로필 정보 불러오기 실패: ${nick}`);
-                }
-              })
-            );
+            // await Promise.all(
+            //   uniqueNicknames.map(async nick => {
+            //     try {
+            //       const result = await getUserProfile(nick);
+            //       if (result?.success) {
+            //         newCache[nick] = result.data;
+            //       }
+            //     } catch (err) {
+            //       console.error(`프로필 정보 불러오기 실패: ${nick}`);
+            //     }
+            //   })
+            // );
 
             setProfileCache(prev => ({ ...prev, ...newCache }));
           } else {
