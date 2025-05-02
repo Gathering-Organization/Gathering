@@ -76,22 +76,21 @@ public class ApplicationService {
                 .collect(Collectors.toList());
     }
 
-    public ApplicationResponse getMyApplicationById(Long applicationId) {
+    @Transactional(readOnly = true)
+    public ApplicationResponse getMyApplicationByProjectId(Long projectId) {
         Long currentUserId = getCurrentUserId();
 
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
-
-        Long snapshotProfileId = application.getProfileFromSnapshot().getId();
-
-        Profile profile = profileRepository.findById(snapshotProfileId)
+        Profile profile = profileRepository.findByMemberId(currentUserId)
                 .orElseThrow(ProfileNotFoundException::new);
 
-        if (!profile.getMember().getId().equals(currentUserId)) {
-            throw new UnauthorizedAccessException();
-        }
+        List<Application> applications = applicationRepository.findByProjectId(projectId);
 
-        return ApplicationResponse.from(application, s3Service);
+        Application myApp = applications.stream()
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .findFirst()
+                .orElseThrow(ApplicationNotFoundException::new);
+
+        return ApplicationResponse.from(myApp, s3Service);
     }
 
     @Transactional(readOnly = true)
@@ -132,24 +131,24 @@ public class ApplicationService {
                 .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
                 .collect(Collectors.toList());
 
-        List<Project> projects = applications.stream()
-                .map(Application::getProject)
-                .collect(Collectors.toList());
-
-        Set<Long> interestedProjectIds = (currentUserId != null)
-                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
+        Set<Long> interestedProjectIds = interestProjectRepository.findAllByProfileId(profile.getId())
                 .stream()
                 .map(interest -> interest.getProject().getId())
-                .collect(Collectors.toSet())
-                : Set.of();
+                .collect(Collectors.toSet());
 
-        int start = Math.min((page - 1) * size, projects.size());
-        int end = Math.min(start + size, projects.size());
-        List<ProjectSimpleResponse> content = projects.subList(start, end).stream()
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
+        int start = Math.min((page - 1) * size, applications.size());
+        int end = Math.min(start + size, applications.size());
+
+        List<ProjectSimpleResponse> content = applications.subList(start, end).stream()
+                .map(app -> {
+                    Project project = app.getProject();
+                    ApplyStatus applyStatus = app.getStatus();
+                    boolean isInterested = interestedProjectIds.contains(project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested, applyStatus);
+                })
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(content, PageRequest.of(page - 1, size), projects.size());
+        return new PageImpl<>(content, PageRequest.of(page - 1, size), applications.size());
     }
 
     @Transactional

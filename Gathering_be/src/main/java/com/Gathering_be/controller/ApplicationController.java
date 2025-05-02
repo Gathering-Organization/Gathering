@@ -26,7 +26,7 @@ public class ApplicationController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_CREATE_SUCCESS));
     }
 
-    @GetMapping("/project/{projectId}")
+    @GetMapping("/received/project/{projectId}")
     public ResponseEntity<ResultResponse> getApplicationsForProject(@PathVariable Long projectId) {
         List<ApplicationResponse> applications = applicationService.getApplicationsForProject(projectId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, applications));
@@ -41,9 +41,9 @@ public class ApplicationController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
-    @GetMapping("/{applicationId}")
-    public ResponseEntity<ResultResponse> getMyApplicationById(@PathVariable Long applicationId) {
-        ApplicationResponse application = applicationService.getMyApplicationById(applicationId);
+    @GetMapping("/my/project/{projectId}")
+    public ResponseEntity<ResultResponse> getMyApplicationByProjectId(@PathVariable Long projectId) {
+        ApplicationResponse application = applicationService.getMyApplicationByProjectId(projectId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.APPLICATION_READ_SUCCESS, application));
     }
 

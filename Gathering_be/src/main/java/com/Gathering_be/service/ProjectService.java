@@ -148,7 +148,7 @@ public class ProjectService {
                 : Set.of();
 
         return projectPage
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())));
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId()), null));
     }
 
     public Page<ProjectSimpleResponse> getProjectsByNickname(String nickname, int page, int size, Boolean isClosed) {
@@ -172,7 +172,7 @@ public class ProjectService {
                 : Set.of();
 
         return projectPage
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())));
+                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId()), null));
     }
 
     @Transactional
