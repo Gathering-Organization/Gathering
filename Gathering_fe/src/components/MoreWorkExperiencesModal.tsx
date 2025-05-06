@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import DatePicker from 'react-tailwindcss-datepicker';
-import MultiSelection from '@/components/MultiSelection';
 import { techStacks } from '@/utils/tech-stacks';
 import { WorkExperience } from '@/types/profile';
 import moreIcon from '@/assets/otherIcons/More.png';

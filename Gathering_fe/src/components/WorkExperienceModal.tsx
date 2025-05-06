@@ -184,6 +184,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                   </label>
                   <div className="flex-1">
                     <DatePicker
+                      readOnly={true}
                       startWeekOn="mon"
                       value={value}
                       inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"

@@ -107,7 +107,7 @@ const Posting: React.FC = () => {
   const { myProfile, isMyProfileLoading } = useProfile();
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
-
+  const MIN_DATE = new Date();
   return (
     <div className="mx-48 space-y-2">
       <section className="p-6">
@@ -148,8 +148,9 @@ const Posting: React.FC = () => {
           />
         </section>
         <section className="px-6 py-2">
-          <label className="block mb-2">시작 예정</label>
+          <label className="block mb-2">시작 날짜</label>
           <DatePicker
+            readOnly={true}
             value={startDate}
             onChange={newValue => {
               if (newValue) {
@@ -166,6 +167,8 @@ const Posting: React.FC = () => {
         <section className="px-6 py-2">
           <label className="block mb-2">모집 마감 기한</label>
           <DatePicker
+            minDate={MIN_DATE}
+            readOnly={true}
             value={deadline}
             onChange={newValue => {
               if (newValue) {
@@ -198,7 +201,7 @@ const Posting: React.FC = () => {
             type="text"
             name="kakaoUrl"
             className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm focus:outline-none"
-            placeholder="카카오톡 오픈채팅 URL"
+            placeholder="카카오톡 오픈채팅 URL ex) https://open.kakao.com/o/.../"
           />
         </section>
         <section className="px-6 py-2">

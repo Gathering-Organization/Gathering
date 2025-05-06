@@ -164,7 +164,7 @@ const PostEdit: React.FC = () => {
   const { myProfile, isMyProfileLoading } = useProfile();
 
   if (isMyProfileLoading) return <div>로딩 중...</div>;
-
+  const MIN_DATE = new Date();
   return (
     <div className="mx-48 space-y-2">
       <section className="p-6">
@@ -206,8 +206,9 @@ const PostEdit: React.FC = () => {
           />
         </section>
         <section className="px-6 py-2">
-          <label className="block mb-2">시작 예정</label>
+          <label className="block mb-2">시작 날짜</label>
           <DatePicker
+            readOnly={true}
             value={startDate}
             onChange={newValue => {
               console.log(startDate);
@@ -225,6 +226,8 @@ const PostEdit: React.FC = () => {
         <section className="px-6 py-2">
           <label className="block mb-2">모집 마감 기한</label>
           <DatePicker
+            minDate={MIN_DATE}
+            readOnly={true}
             value={deadline}
             onChange={newValue => {
               if (newValue) {
