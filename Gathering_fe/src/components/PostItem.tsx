@@ -19,7 +19,7 @@ interface Position {
 const PostItem: React.FC<
   approxPostInfo & {
     onInterestToggle?: (projectId: number, newValue: boolean) => void;
-    status?: string;
+    applyStatus?: string;
   }
 > = ({
   projectId,
@@ -34,7 +34,7 @@ const PostItem: React.FC<
   onInterestToggle,
   requiredPositions,
   viewCount,
-  status,
+  applyStatus,
   profileColor
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
@@ -101,19 +101,19 @@ const PostItem: React.FC<
       <section
         className={`h-[420px] border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
       >
-        {status ? (
+        {applyStatus ? (
           <div
             className={`absolute right-6 top-4 py-1 px-4 rounded-[20px] text-sm font-semibold ${
-              status === 'APPROVED'
+              applyStatus === 'APPROVED'
                 ? 'bg-[#3387E5] text-[#FFFFFF]'
-                : status === 'REJECTED'
+                : applyStatus === 'REJECTED'
                   ? 'bg-[#F24E1E] text-[#FFFFFF]'
                   : 'bg-[#EEEEEE] text-gray-700'
             }`}
           >
-            {status === 'PENDING' && '대기중'}
-            {status === 'APPROVED' && '승인'}
-            {status === 'REJECTED' && '거절'}
+            {applyStatus === 'PENDING' && '대기중'}
+            {applyStatus === 'APPROVED' && '승인'}
+            {applyStatus === 'REJECTED' && '거절'}
           </div>
         ) : (
           <label

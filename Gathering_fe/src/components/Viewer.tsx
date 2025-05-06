@@ -15,7 +15,7 @@ import { setPublic } from '@/services/postApi';
 import { durationOptions } from '@/utils/post-options';
 import eye from '@/assets/otherIcons/eye.png';
 import OtherApplicationModal from '@/components/OtherApplicationModal';
-import { getOtherApplication } from '@/services/applicationApi';
+import { getMyApplication, getOtherApplication } from '@/services/applicationApi';
 import { ApplyDetails, ApplyInfo } from '@/types/apply';
 import ApplyModal from './ApplyModal';
 import { techStacks } from '@/utils/tech-stacks';
@@ -33,6 +33,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const params = useParams();
   const nav = useNavigate();
   const userNickname = myProfile?.nickname;
+  const [applyInfo, setApplyInfo] = useState<ApplyInfo>();
   const [positionList] = useState<Position[]>([...positionData]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { profile, isLoading, error } = useOtherProfile(data?.authorNickname ?? null);
@@ -57,6 +58,11 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           const result = await getOtherApplication(Number(params.id));
           if (result?.success) {
             setApplications(result.data);
+          }
+        } else {
+          const result = await getMyApplication(Number(data?.projectId));
+          if (result?.success) {
+            setApplyInfo(result.data);
           }
         }
       } catch (error) {
@@ -425,7 +431,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
         ) : data?.applied ? (
           <ApplyResultModal
             nickname={userNickname}
-            position={'후롱트'}
+            position={positionData.find(position => position.id === applyInfo?.position)?.title}
             applyStatus={data?.applyStatus}
             kakaoUrl={data?.kakaoUrl}
           />

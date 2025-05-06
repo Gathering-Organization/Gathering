@@ -9,7 +9,7 @@ import { useToast } from '@/contexts/ToastContext';
 
 type ApplyResultProps = {
   nickname: string;
-  position: string;
+  position?: string;
   applyStatus: string | null;
   kakaoUrl: string;
 };
