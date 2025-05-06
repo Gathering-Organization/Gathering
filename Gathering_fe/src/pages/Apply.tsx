@@ -128,6 +128,9 @@ const Apply: React.FC = () => {
     const stack = techStacks.find(stack => stack.id === id);
     return stack ? stack.title : id;
   });
+  const visibleStacks = stackLists.slice(0, 3);
+  const extraStacks = stackLists.slice(3);
+  const extraStacksCount = extraStacks.length;
 
   const toggleTechTooltip = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -222,7 +225,42 @@ const Apply: React.FC = () => {
           </section>
           <section className="flex space-x-12 p-8 items-center">
             <div className="font-bold text-[20px] w-[200px]">사용 기술 스택</div>
-            <div className="text-[18px]">{stackLists.join(', ')}</div>
+            <div className="text-[18px]">
+              {
+                <div className="flex items-center space-x-4">
+                  {visibleStacks.map((item, index) => {
+                    const imageSrc = getStackImage(item.toUpperCase());
+                    return imageSrc ? (
+                      <img key={index} src={imageSrc} alt={item} className="w-8 h-8" />
+                    ) : null;
+                  })}
+
+                  {extraStacksCount > 0 && (
+                    <div className="relative">
+                      <div
+                        className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
+                        onClick={e => toggleTechTooltip(9999, e)}
+                      >
+                        +{extraStacksCount}
+                      </div>
+
+                      {isTechTooltipOpen === 9999 && (
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
+                          <div className="flex space-x-2">
+                            {extraStacks.map((item, i) => {
+                              const imageSrc = getStackImage(item.toUpperCase());
+                              return imageSrc ? (
+                                <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
+                              ) : null;
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              }
+            </div>
           </section>
           <section className="flex space-x-12 p-8 items-start font-inter">
             <div className="font-bold text-[20px] w-[200px]">활동 내역</div>
@@ -284,12 +322,13 @@ const Apply: React.FC = () => {
               })}
             </div>
           </section>
-          {/* <hr className="w-full h-[1px] bg-[#000000]/60 border-none" /> */}
 
           <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
           <section className="flex space-x-12 p-8 items-center font-inter">
-            <div className="font-bold text-[20px] w-[200px]">간단 자기어필</div>
-            <div className="text-[#202123] text-[18px]">{applyInfo?.message}</div>
+            <div className="font-bold text-[20px] w-[200px]">간단 자기 어필</div>
+            <div className="text-[#202123] max-w-[550px] break-words text-balance whitespace-pre-line text-[18px]">
+              {applyInfo?.message}
+            </div>
           </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
