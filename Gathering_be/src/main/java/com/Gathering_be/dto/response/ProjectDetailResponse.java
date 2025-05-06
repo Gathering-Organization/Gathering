@@ -35,13 +35,15 @@ public class ProjectDetailResponse {
     private final Long viewCount;
     private final boolean isApplied;
     private final ApplyStatus applyStatus;
+    private final String profileColor;
 
     @Builder
     public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
                                  String duration, List<JobPosition> requiredPositions, Set<TechStack> techStacks, String kakaoUrl,
                                  boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline,
-                                 boolean isInterested, Long viewCount, boolean isApplied, ApplyStatus applyStatus) {
+                                 boolean isInterested, Long viewCount, boolean isApplied, ApplyStatus applyStatus,
+                                 String profileColor) {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
@@ -63,6 +65,7 @@ public class ProjectDetailResponse {
         this.viewCount = viewCount;
         this.isApplied = isApplied;
         this.applyStatus = applyStatus;
+        this.profileColor = profileColor;
     }
 
     public static ProjectDetailResponse from(Project project, boolean isInterested, S3Service s3Service,
@@ -93,6 +96,7 @@ public class ProjectDetailResponse {
                 .viewCount(project.getViewCount())
                 .isApplied(isApplied)
                 .applyStatus(applyStatus)
+                .profileColor(project.getProfile().getProfileColor())
                 .build();
     }
 }
