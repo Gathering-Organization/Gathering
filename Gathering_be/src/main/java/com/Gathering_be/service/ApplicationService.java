@@ -65,7 +65,7 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationResponse> getApplicationsByProject(Long projectId) {
+    public List<ApplicationResponse> getApplicationsForProject(Long projectId) {
         Long currentUserId = getCurrentUserId();
         Project project = findProjectById(projectId);
 
@@ -80,13 +80,28 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProjectSimpleResponse> getAppliedProjectsByNickname(String nickname, int page, int size, ApplyStatus status) {
+    public ApplicationResponse getMyApplicationByProjectId(Long projectId) {
         Long currentUserId = getCurrentUserId();
 
+        Profile profile = profileRepository.findByMemberId(currentUserId)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        List<Application> applications = applicationRepository.findByProjectId(projectId);
+
+        Application myApp = applications.stream()
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .findFirst()
+                .orElseThrow(ApplicationNotFoundException::new);
+
+        return ApplicationResponse.from(myApp, s3Service);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ApplicationResponse> getApplicationsByNickname(String nickname, int page, int size, ApplyStatus status) {
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
 
-        if (!profile.getMember().getId().equals(currentUserId)) {
+        if (!profile.getMember().getId().equals(getCurrentUserId())) {
             throw new UnauthorizedAccessException();
         }
 
@@ -96,24 +111,47 @@ public class ApplicationService {
                 .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
                 .collect(Collectors.toList());
 
-        List<Project> projects = applications.stream()
-                .map(Application::getProject)
+        int start = Math.min((page - 1) * size, applications.size());
+        int end = Math.min(start + size, applications.size());
+
+        List<ApplicationResponse> content = applications.subList(start, end).stream()
+                .map(app -> ApplicationResponse.from(app, s3Service))
                 .collect(Collectors.toList());
 
-        Set<Long> interestedProjectIds = (currentUserId != null)
-                ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))
+        return new PageImpl<>(content, PageRequest.of(page - 1, size), applications.size());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProjectSimpleResponse> getMyAppliedProjects(int page, int size, ApplyStatus status) {
+        Long currentUserId = getCurrentUserId();
+
+        Profile profile = profileRepository.findByMemberId(currentUserId)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        List<Application> applications = applicationRepository.findAll().stream()
+                .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
+                .filter(app -> status == null || app.getStatus() == status)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        Set<Long> interestedProjectIds = interestProjectRepository.findAllByProfileId(profile.getId())
                 .stream()
                 .map(interest -> interest.getProject().getId())
-                .collect(Collectors.toSet())
-                : Set.of();
+                .collect(Collectors.toSet());
 
-        int start = Math.min((page - 1) * size, projects.size());
-        int end = Math.min(start + size, projects.size());
-        List<ProjectSimpleResponse> content = projects.subList(start, end).stream()
-                .map(project -> ProjectSimpleResponse.from(project, interestedProjectIds.contains(project.getId())))
+        int start = Math.min((page - 1) * size, applications.size());
+        int end = Math.min(start + size, applications.size());
+
+        List<ProjectSimpleResponse> content = applications.subList(start, end).stream()
+                .map(app -> {
+                    Project project = app.getProject();
+                    ApplyStatus applyStatus = app.getStatus();
+                    boolean isInterested = interestedProjectIds.contains(project.getId());
+                    return ProjectSimpleResponse.from(project, isInterested, applyStatus);
+                })
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(content, PageRequest.of(page - 1, size), projects.size());
+        return new PageImpl<>(content, PageRequest.of(page - 1, size), applications.size());
     }
 
     @Transactional
@@ -155,8 +193,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        Profile applicantProfile = profileRepository.findByMemberId(
-                application.getProfileFromSnapshot().getMember().getId())
+        Profile applicantProfile = profileRepository.findById(application.getProfileFromSnapshot().getId())
                 .orElseThrow(ProfileNotFoundException::new);
 
         applicantProfile.updateApplicationStatus(newStatus);

@@ -61,6 +61,8 @@ public class Application extends BaseTimeEntity {
 
     private String serializeProfile(Profile profile) {
         try {
+            profile.getTechStacks().size();
+            profile.getWorkExperiences().size();
             return objectMapper.writeValueAsString(profile);
         } catch (Exception e) {
             throw new ProfileSerializeFailedException();

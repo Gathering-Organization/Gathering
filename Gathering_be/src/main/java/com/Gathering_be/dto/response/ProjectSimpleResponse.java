@@ -1,6 +1,7 @@
 package com.Gathering_be.dto.response;
 
 import com.Gathering_be.domain.Project;
+import com.Gathering_be.global.enums.ApplyStatus;
 import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.enums.ProjectType;
 import com.Gathering_be.global.enums.TechStack;
@@ -24,6 +25,7 @@ public class ProjectSimpleResponse {
 
     private String title;
     private String authorNickname;
+    private String profileColor;
 
     private List<JobPosition> requiredPositions;
     private Set<TechStack> techStacks;
@@ -31,10 +33,13 @@ public class ProjectSimpleResponse {
     private boolean isInterested;
     private Long viewCount;
 
+    private ApplyStatus applyStatus;
+
     @Builder
     public ProjectSimpleResponse(Long projectId, ProjectType projectType, LocalDateTime createdAt, LocalDateTime updatedAt,
-                                 LocalDateTime deadline, String title, String authorNickname, List<JobPosition> requiredPositions,
-                                 Set<TechStack> techStacks, boolean isClosed, boolean isInterested, Long viewCount) {
+                                 LocalDateTime deadline, String title, String authorNickname, String profileColor,
+                                 List<JobPosition> requiredPositions, Set<TechStack> techStacks, boolean isClosed,
+                                 boolean isInterested, Long viewCount, ApplyStatus applyStatus) {
         this.projectId = projectId;
         this.projectType = projectType;
         this.createdAt = createdAt;
@@ -47,9 +52,11 @@ public class ProjectSimpleResponse {
         this.isClosed = isClosed;
         this.isInterested = isInterested;
         this.viewCount = viewCount;
+        this.applyStatus = applyStatus;
+        this.profileColor = profileColor;
     }
 
-    public static ProjectSimpleResponse from(Project project, boolean isInterested) {
+    public static ProjectSimpleResponse from(Project project, boolean isInterested, ApplyStatus applyStatus) {
         return ProjectSimpleResponse.builder()
                 .projectId(project.getId())
                 .projectType(project.getProjectType())
@@ -58,11 +65,13 @@ public class ProjectSimpleResponse {
                 .deadline(project.getDeadline())
                 .title(project.getTitle())
                 .authorNickname(project.getProfile().getNickname())
+                .profileColor(project.getProfile().getProfileColor())
                 .requiredPositions(project.getRequiredPositions())
                 .techStacks(project.getTechStacks())
                 .isClosed(project.isClosed())
                 .isInterested(isInterested)
                 .viewCount(project.getViewCount())
+                .applyStatus(applyStatus)
                 .build();
     }
 }
