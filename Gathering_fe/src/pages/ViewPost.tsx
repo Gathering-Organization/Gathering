@@ -15,19 +15,6 @@ const ViewPost: React.FC = () => {
   const [userNickname, setUserNickname] = useState<string>('');
   const { showToast } = useToast();
 
-  // const onClickDelete = () => {
-  //   if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
-  //     deletePosting(Number(params.id));
-  //     nav('/', { replace: true });
-  //   }
-  // };
-
-  // const onClickUpdate = () => {
-  //   if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
-  //     nav(`/postEdit/${params.id}`);
-  //   }
-  // };
-
   useEffect(() => {
     const fetchData = async () => {
       try {

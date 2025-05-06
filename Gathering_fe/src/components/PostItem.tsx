@@ -34,24 +34,25 @@ const PostItem: React.FC<
   onInterestToggle,
   requiredPositions,
   viewCount,
-  status
+  status,
+  profileColor
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
   const nav = useNavigate();
   const { showToast } = useToast();
-  const { profileCache } = useProfileCache();
+  // const { profileCache } = useProfileCache();
 
-  const profileInfo = profileCache[authorNickname] || {
-    profileColor: 'cccccc',
-    nickname: authorNickname,
-    introduction: '',
-    techStacks: [],
-    portfolio: null,
-    public: false,
-    workExperiences: [],
-    organization: ''
-  };
+  // const profileInfo = profileCache[authorNickname] || {
+  //   profileColor: 'cccccc',
+  //   nickname: authorNickname,
+  //   introduction: '',
+  //   techStacks: [],
+  //   portfolio: null,
+  //   public: false,
+  //   workExperiences: [],
+  //   organization: ''
+  // };
 
   const onClickHeart = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -207,7 +208,7 @@ const PostItem: React.FC<
           <div className="flex font-semibold p-4 items-center gap-4">
             <div
               className="w-8 h-8 rounded-[30px]"
-              style={{ backgroundColor: `#${profileInfo.profileColor}` }}
+              style={{ backgroundColor: `#${profileColor}` }}
             ></div>
             <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>

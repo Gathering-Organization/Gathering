@@ -65,6 +65,7 @@ export interface approxPostInfo {
 }
 
 export interface partPostInfo {
+  profileColor: string;
   viewCount: number;
   projectId: number;
   authorNickname: string;

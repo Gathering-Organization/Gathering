@@ -106,6 +106,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
 
     fetchProfiles();
   }, [data?.teams]);
+
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
@@ -231,7 +232,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
             >
               <div
                 className="w-[30px] h-[30px] rounded-full"
-                style={{ backgroundColor: `#${profile.profileColor}` }}
+                style={{ backgroundColor: `#${data.profileColor}` }}
               />
               <span className="font-bold text-[20px] whitespace-nowrap">{parts[0]}</span>
             </button>
