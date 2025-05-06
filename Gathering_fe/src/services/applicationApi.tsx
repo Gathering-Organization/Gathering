@@ -23,7 +23,7 @@ export const postApplication = async (projectId: number, position: string, messa
 
 export const getOtherApplication = async (projectId: number) => {
   try {
-    const response = await api.get(`/application/project/${projectId}`);
+    const response = await api.get(`/application/received/project/${projectId}`);
 
     console.log('응답 데이터:', response.data);
 
@@ -41,7 +41,7 @@ export const getOtherApplication = async (projectId: number) => {
   }
 };
 
-export const getMyApplication = async (page: number, status: string) => {
+export const getMyAllApplication = async (page: number, status: string) => {
   try {
     const response = await api.get(`/application/my?page=${page}&status=${status}`);
     console.log('요청 API:', `/application/my?page=${page}&status=${status}`);
@@ -63,6 +63,25 @@ export const getMyApplication = async (page: number, status: string) => {
     }
   } catch (error: unknown) {
     console.error('내 지원서 조회 실패:', error);
+
+    if (error instanceof AxiosError) {
+      console.error('서버 응답:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
+
+export const getMyApplication = async (projectId: number) => {
+  try {
+    const response = await api.get(`/application/my/project/${projectId}`);
+    console.log('응답 데이터:', response.data.data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message, data: response.data.data };
+    }
+  } catch (error: unknown) {
+    console.error('내 단일 지원서 조회 실패:', error);
 
     if (error instanceof AxiosError) {
       console.error('서버 응답:', error.response?.data);

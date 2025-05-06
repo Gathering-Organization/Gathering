@@ -81,9 +81,8 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
   };
 
   const handleViewApplication = () => {
-    console.log(applyInfo);
-    localStorage.setItem('applyInfo', JSON.stringify(applyInfo));
-    window.open('/apply/view', '_blank');
+    const projectId = params.id;
+    window.open(`/apply/view?projectId=${projectId}`, '_blank');
   };
 
   const dropdownContextValue = {

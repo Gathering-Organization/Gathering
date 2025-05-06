@@ -8,7 +8,7 @@ import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { useLocation } from 'react-router-dom';
-import { getMyApplication } from '@/services/applicationApi';
+import { getMyAllApplication } from '@/services/applicationApi';
 import { ApplyDetails } from '@/types/apply';
 import { getUserProfile } from '@/services/profileApi';
 
@@ -53,7 +53,7 @@ const MyApplication: React.FC = () => {
         try {
           window.scrollTo(0, 0);
 
-          const myApplicationResult = await getMyApplication(page, selectedType);
+          const myApplicationResult = await getMyAllApplication(page, selectedType);
 
           if (myApplicationResult?.success) {
             const applicationList: ApplyDetails[] = myApplicationResult.data;

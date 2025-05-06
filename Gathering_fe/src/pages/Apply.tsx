@@ -9,6 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import { useToast } from '@/contexts/ToastContext';
 import { ApplyDetails } from '@/types/apply';
+import { getMyApplication } from '@/services/applicationApi';
 
 interface TechStack {
   id: string;
@@ -17,7 +18,8 @@ interface TechStack {
 
 const Apply: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const nickname = searchParams.get('nickname');
+  const projectId = searchParams.get('projectId');
+
   const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>(null);
   // const [isPublic, setIsPublic] = useState<boolean>(false);
   // const [stackList] = useState<TechStack[]>([...techStacks]);
@@ -41,68 +43,40 @@ const Apply: React.FC = () => {
     rejectedApplications: 0
   });
   const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
-
   const { myProfile, isMyProfileLoading } = useProfile();
-
-  const isOwnProfile = !nickname;
+  const isOwnProfile = !projectId;
   const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
   const { showToast } = useToast();
 
-  // useEffect(() => {
-  //   const stored = localStorage.getItem('applyInfo');
-  //   console.log('헤헤', stored);
-  //   if (stored) {
-  //     setApplyInfo(JSON.parse(stored));
-  //   }
-  // }, []);
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        if (projectId) {
+          const result = await getMyApplication(Number(projectId));
+          if (result?.success) {
+            console.log('파파파', result.data, isOwnProfile);
+            setApplyInfo(result.data);
 
-  // useEffect(() => {
-  //   const closeTooltips = () => setIsTechTooltipOpen(null);
-  //   document.addEventListener('click', closeTooltips);
-  //   return () => document.removeEventListener('click', closeTooltips);
-  // }, []);
+            setWorkExperiences(result.data.workExperiences);
+          }
+        }
+      } catch (error) {
+        console.error('지원서 조회 실패:', error);
+      }
+    };
 
-  // useEffect(() => {
-  //   const stored = localStorage.getItem('applyInfo');
-  //   if (stored) {
-  //     setApplyInfo(JSON.parse(stored));
-  //   }
-  //   if (nickname && profile) {
-  //     setInfo(profile);
-  //     setWorkExperiences(profile.workExperiences);
-  //   } else if (!nickname && myProfile) {
-  //     setInfo(myProfile);
-  //     setWorkExperiences(myProfile.workExperiences);
-  //   }
-  // }, [nickname, profile, myProfile, isPublic]);
-
-  // useEffect(() => {
-  //   const closeTooltips = () => {
-  //     setIsTechTooltipOpen(null);
-  //   };
-
-  //   document.addEventListener('click', closeTooltips);
-  //   return () => document.removeEventListener('click', closeTooltips);
-  // }, []);
-  // // if (!applyInfo) return <div>로딩 중...</div>;
-  // if (isMyProfileLoading) return <div>로딩 중...</div>;
+    fetchApplications();
+  }, [projectId]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('applyInfo');
-    if (stored) {
-      setApplyInfo(JSON.parse(stored));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!nickname) {
+    if (!projectId) {
       if (myProfile) {
         setInfo(myProfile);
         setWorkExperiences(myProfile.workExperiences);
       }
     }
-  }, [nickname, myProfile]);
+  }, [projectId, myProfile]);
 
   useEffect(() => {
     const closeTooltips = () => setIsTechTooltipOpen(null);
@@ -124,13 +98,18 @@ const Apply: React.FC = () => {
     positionData.find(position => position.id === applyInfo?.position)?.title ||
     applyInfo?.position;
 
-  const stackLists = info.techStacks.map(id => {
-    const stack = techStacks.find(stack => stack.id === id);
-    return stack ? stack.title : id;
-  });
-  const visibleStacks = stackLists.slice(0, 3);
-  const extraStacks = stackLists.slice(3);
-  const extraStacksCount = extraStacks.length;
+  const stackLists = isOwnProfile
+    ? info.techStacks.map(id => {
+        const stack = techStacks.find(stack => stack.id === id);
+        return stack ? stack.title : id;
+      })
+    : applyInfo?.techStacks.map(id => {
+        const stack = techStacks.find(stack => stack.id === id);
+        return stack ? stack.title : id;
+      });
+  const visibleStacks = stackLists?.slice(0, 3);
+  const extraStacks = stackLists?.slice(3);
+  const extraStacksCount = extraStacks?.length;
 
   const toggleTechTooltip = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -228,14 +207,14 @@ const Apply: React.FC = () => {
             <div className="text-[18px]">
               {
                 <div className="flex items-center space-x-4">
-                  {visibleStacks.map((item, index) => {
+                  {visibleStacks?.map((item, index) => {
                     const imageSrc = getStackImage(item.toUpperCase());
                     return imageSrc ? (
                       <img key={index} src={imageSrc} alt={item} className="w-8 h-8" />
                     ) : null;
                   })}
 
-                  {extraStacksCount > 0 && (
+                  {extraStacksCount && extraStacksCount > 0 && (
                     <div className="relative">
                       <div
                         className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
