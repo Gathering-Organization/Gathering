@@ -17,7 +17,7 @@ public class ProjectDetailResponse {
     private final Long projectId;
     private final String title;
     private final String description;
-    private final String authorNickname;
+    private final ProfileResponse author;
     private final String kakaoUrl;
     private final ProjectType projectType;
     private final ProjectMode projectMode;
@@ -35,19 +35,17 @@ public class ProjectDetailResponse {
     private final Long viewCount;
     private final boolean isApplied;
     private final ApplyStatus applyStatus;
-    private final String profileColor;
 
     @Builder
-    public ProjectDetailResponse(Long projectId, String title, String description, String authorNickname, ProjectType projectType,
+    public ProjectDetailResponse(Long projectId, String title, String description, ProfileResponse author, ProjectType projectType,
                                  ProjectMode projectMode, int totalMembers, LocalDate startDate, Set<ProfileResponse> teams,
                                  String duration, List<JobPosition> requiredPositions, Set<TechStack> techStacks, String kakaoUrl,
                                  boolean isClosed, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deadline,
-                                 boolean isInterested, Long viewCount, boolean isApplied, ApplyStatus applyStatus,
-                                 String profileColor) {
+                                 boolean isInterested, Long viewCount, boolean isApplied, ApplyStatus applyStatus) {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
-        this.authorNickname = authorNickname;
+        this.author = author;
         this.projectType = projectType;
         this.projectMode = projectMode;
         this.totalMembers = totalMembers;
@@ -65,7 +63,6 @@ public class ProjectDetailResponse {
         this.viewCount = viewCount;
         this.isApplied = isApplied;
         this.applyStatus = applyStatus;
-        this.profileColor = profileColor;
     }
 
     public static ProjectDetailResponse from(Project project, boolean isInterested, S3Service s3Service,
@@ -78,7 +75,7 @@ public class ProjectDetailResponse {
                 .projectId(project.getId())
                 .title(project.getTitle())
                 .description(project.getDescription())
-                .authorNickname(project.getProfile().getNickname())
+                .author(ProfileResponse.from(project.getProfile(), false, s3Service))
                 .projectType(project.getProjectType())
                 .projectMode(project.getProjectMode())
                 .totalMembers(project.getTotalMembers())
@@ -96,7 +93,6 @@ public class ProjectDetailResponse {
                 .viewCount(project.getViewCount())
                 .isApplied(isApplied)
                 .applyStatus(applyStatus)
-                .profileColor(project.getProfile().getProfileColor())
                 .build();
     }
 }
