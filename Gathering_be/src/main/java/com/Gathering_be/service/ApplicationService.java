@@ -31,6 +31,7 @@ public class ApplicationService {
     private final ProjectRepository projectRepository;
     private final InterestProjectRepository interestProjectRepository;
     private final S3Service s3Service;
+    private final EmailService emailService;
 
     @Transactional
     public void applyForProject(ApplicationRequest request) {
@@ -59,6 +60,8 @@ public class ApplicationService {
 
         profile.addApplication();
         applicationRepository.save(application);
+
+        emailService.sendNewApplyMail(project.getProfile().getMember().getEmail(), project.getTitle());
     }
 
     @Transactional(readOnly = true)
@@ -195,6 +198,11 @@ public class ApplicationService {
 
         applicantProfile.updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
+
+        String email = applicantProfile.getMember().getEmail();
+        String nickname = applicantProfile.getNickname();
+        boolean result = newStatus == ApplyStatus.APPROVED ? true : false;
+        emailService.sendResultMail(email, project.getTitle(), nickname, result);
     }
 
 
