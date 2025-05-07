@@ -31,6 +31,8 @@ public class Profile extends BaseTimeEntity {
     private String nickname;
 
     private String profileColor = "000000";
+
+    @Column(columnDefinition = "TEXT")
     private String introduction;
 
     @Embedded
