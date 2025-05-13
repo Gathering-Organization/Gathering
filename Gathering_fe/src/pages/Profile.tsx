@@ -7,7 +7,7 @@ import {
 } from '@/services/profileApi';
 import { motion } from 'framer-motion';
 import { Portfolio, ProfileAllInfo, WorkExperience } from '@/types/profile';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
 import MultiSelection from '@/components/MultiSelection';
@@ -115,20 +115,27 @@ const Profile: React.FC = () => {
       const result = await uploadPortfolio(formData);
 
       if (result?.success) {
-        showToast('포트폴리오 업로드가 완료되었습니다.', true);
-
+        showToast(
+          '포트폴리오 업로드가 완료되었습니다. 다른 수정 내용이 있다면 반드시 프로필 저장 버튼을 눌러 저장해주세요.',
+          true
+        );
         const profileResult = await getMyProfile();
         if (profileResult?.success) {
           setUploadedFile(profileResult.data.portfolio);
-          updateProfileData(profileResult.data);
-        } else {
-          showToast('프로필 갱신 중 오류가 발생했습니다.', false);
+          setInfo(prev => ({
+            ...prev,
+            portfolio: profileResult.data.portfolio
+          }));
         }
+      } else {
+        showToast('포트폴리오 업로드 중 오류가 발생했습니다.', false);
       }
     } catch {
       showToast('포트폴리오 업로드 중 오류가 발생했습니다.', false);
     }
   };
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleDelete = async () => {
     if (!uploadedFile) {
@@ -140,15 +147,22 @@ const Profile: React.FC = () => {
       const result = await deletePortfolio();
 
       if (result?.success) {
-        showToast('포트폴리오 삭제가 완료되었습니다.', true);
-        const profileResult = await getMyProfile();
-        if (profileResult?.success) {
-          setSelectedFile(null);
-          setUploadedFile(null);
-          updateProfileData(profileResult.data);
-        } else {
-          showToast('프로필 갱신 중 오류가 발생했습니다.', false);
+        showToast(
+          '포트폴리오 삭제가 완료되었습니다. 다른 수정 내용이 있다면 반드시 프로필 저장 버튼을 눌러 저장해주세요.',
+          true
+        );
+        setSelectedFile(null);
+        setUploadedFile(null);
+        setInfo(prev => ({
+          ...prev,
+          portfolio: null
+        }));
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
         }
+      } else {
+        showToast('포트폴리오 삭제 중 오류가 발생했습니다.', false);
       }
     } catch {
       showToast('포트폴리오 삭제 중 오류가 발생했습니다.', false);
@@ -344,6 +358,7 @@ const Profile: React.FC = () => {
                 )}
               </div>
               <input
+                ref={fileInputRef}
                 id="fileInput"
                 type="file"
                 accept=".pdf"
