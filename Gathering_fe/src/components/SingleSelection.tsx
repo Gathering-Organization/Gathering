@@ -52,7 +52,7 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
         </svg>
       </span>
       {isOpen && (
-        <div className="absolute z-10 mt-2 w-full bg-white dark:bg-[#1E2028] border border-gray-300 rounded-[20px] shadow-lg overflow-hidden">
+        <div className="absolute z-10 mt-2 w-full bg-white dark:bg-[#1E2028] border border-gray-300 rounded-[20px] shadow-lg overflow-hidden animate-fadeDown">
           {options.map(option => (
             <div
               key={option.value}

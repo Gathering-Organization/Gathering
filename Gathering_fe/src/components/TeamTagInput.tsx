@@ -130,7 +130,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-[20px] shadow-lg overflow-hidden">
+        <div className="absolute z-10 w-full mt-2 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-[20px] shadow-lg overflow-hidden animate-fadeDown">
           <div className="sticky top-0 p-2 bg-white dark:bg-[#1E2028] border-gray-200 dark:border-gray-700">
             <input
               ref={inputRef}
