@@ -11,6 +11,7 @@ const Layout: React.FC = () => {
   return (
     <div className="select-none">
       {!shouldHideHeader ? <Header /> : <div className="h-[100px]" />}
+      <div className="pt-[72px]"></div>
       <Outlet />
       <div className="pb-[120px]"></div>
       <Footer />

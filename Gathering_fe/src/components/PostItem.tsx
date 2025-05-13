@@ -204,13 +204,14 @@ const PostItem: React.FC<
           </div>
         </section>
 
-        <section className="border-t border-[#B4B4B4] flex justify-between items-center p-2">
+        <section className="border-t border-[#B4B4B4] flex justify-between items-center p-2 px-4">
           <div className="flex font-semibold p-4 items-center gap-4">
             <div
               className="w-8 h-8 rounded-[30px]"
               style={{ backgroundColor: `#${profileColor}` }}
             ></div>
-            <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
+            {/* w-[200px] 속성을 뺐으므로 닉네임 오버플로우 오류가 발생할 수도 있음 */}
+            <div className="whitespace-nowrap truncate">{parts[0]}</div>
           </div>
           <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4">
             <div className="w-6 h-6 aspect-square">

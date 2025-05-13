@@ -164,7 +164,7 @@ const PostHome: React.FC = () => {
   return (
     <ProfileCacheContext.Provider value={{ profileCache }}>
       <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
-        <div className="mx-36 space-y-6 pt-[72px]">
+        <div className="mx-36 space-y-6">
           <div className="mx-6 flex justify-between items-center pb-4">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
             <div className="flex justify-end w-[600px]">

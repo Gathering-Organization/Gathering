@@ -116,7 +116,7 @@ const MyApplication: React.FC = () => {
 
   return (
     <ProfileCacheContext.Provider value={{ profileCache }}>
-      <div className="mx-28 space-y-6">
+      <div className="mx-36 space-y-6">
         <div className="mx-6 flex justify-between items-center">
           <ProjecTypeFilter
             selectedType={selectedType}
@@ -124,7 +124,7 @@ const MyApplication: React.FC = () => {
             filterCategory={'myApply'}
           />
         </div>
-        <div className="z-0 space-y-24">
+        <div className="z-0 space-y-24 mx-4 pt-4">
           <PostList data={post} />
           <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
