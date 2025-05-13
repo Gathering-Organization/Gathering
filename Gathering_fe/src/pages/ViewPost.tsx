@@ -10,25 +10,14 @@ import { useToast } from '@/contexts/ToastContext';
 
 const ViewPost: React.FC = () => {
   const [post, setPost] = useState<partPostInfo | null>(null);
-  const nav = useNavigate();
   const params = useParams();
-  const [userNickname, setUserNickname] = useState<string>('');
   const { showToast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         window.scrollTo(0, 0);
-        const [profileResult, postResult] = await Promise.all([
-          getMyProfile(),
-          getPartPosting(Number(params.id))
-        ]);
-
-        if (profileResult?.success) {
-          setUserNickname(profileResult.data.nickname);
-        } else {
-          showToast('프로필 정보를 불러오는 중 오류가 발생했습니다.', false);
-        }
+        const postResult = await getPartPosting(Number(params.id));
 
         if (postResult?.success) {
           setPost(postResult.data);
