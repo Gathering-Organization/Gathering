@@ -20,6 +20,7 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
   const openModal = () => {
     setSelectedColor(profileColor);
     setIsModalOpen(true);
+
     document.body.style.overflow = 'hidden';
   };
 

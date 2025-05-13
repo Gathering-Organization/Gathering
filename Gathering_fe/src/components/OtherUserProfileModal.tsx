@@ -31,8 +31,8 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="relative w-full max-w-2xl min-h-[500px] bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm">
+      <div className="relative w-full max-w-2xl min-h-[500px] bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col animate-fadeIn">
         <div className="h-1/2 bg-[#D9D9D9]/40 flex flex-col pt-[60px] items-center justify-center p-6 relative">
           <button
             className="absolute top-8 right-8 text-gray-400 font-bold hover:text-gray-900 rounded-lg p-2"
@@ -55,7 +55,7 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
             {profile.introduction}
           </p>
           <button
-            className="px-10 py-2 fixed bottom-[150px] bg-[#202123] rounded-full text-white font-semibold"
+            className="px-10 py-2 absolute bottom-[40px] bg-[#202123] rounded-full text-white font-semibold"
             onClick={() =>
               nav(`/otherUserProfile/${profile.nickname}`, {
                 state: { nickname: profile.nickname }

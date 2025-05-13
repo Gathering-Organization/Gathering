@@ -81,10 +81,10 @@ const ApplyModal: React.FC = () => {
 
         {isModalOpen && (
           <div
-            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
+            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
             aria-hidden="true"
           >
-            <div className="relative p-4 w-full max-w-[800px] max-h-full bg-white rounded-[20px] shadow-lg dark:bg-gray-700 overflow-hidden">
+            <div className="relative p-4 w-full max-w-[800px] max-h-full bg-white rounded-[20px] shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                   지원서를 입력해주세요.

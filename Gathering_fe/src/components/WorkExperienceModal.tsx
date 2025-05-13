@@ -121,7 +121,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
           aria-hidden="true"
         >
           <div className="relative p-4 w-full max-w-[800px] max-h-[94vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn will-change-[opacity]">

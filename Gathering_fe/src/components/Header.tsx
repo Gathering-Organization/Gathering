@@ -10,6 +10,7 @@ const Header: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
   const [cookies] = useCookies(['accessToken']);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const nav = useNavigate();
   const onClickPostingButton = () => {
     nav('/posting');

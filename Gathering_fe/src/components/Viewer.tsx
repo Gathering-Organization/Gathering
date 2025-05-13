@@ -21,6 +21,8 @@ import ApplyModal from './ApplyModal';
 import { techStacks } from '@/utils/tech-stacks';
 import ApplyResultModal from './ApplyResultModal';
 import { useToast } from '@/contexts/ToastContext';
+import { projectType } from '@/utils/project-and-apply-type';
+import { projectModeOptions } from '@/utils/post-options';
 
 interface Position {
   id: string;
@@ -279,15 +281,21 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
         <div className="grid grid-cols-2 gap-6 py-10 mb-4 px-4">
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">모집 구분</div>
-            <label className="block text-[#000000]/50">{data.projectType}</label>
+
+            <label className="block text-[#000000]/50">
+              {projectType.find(item => item.projectType === data.projectType)?.projectTypeName ||
+                '알 수 없음'}
+            </label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">진행 방식</div>
-            <label className="block text-[#000000]/50">{data.projectMode}</label>
+            <label className="block text-[#000000]/50">
+              {projectModeOptions.find(item => item.value === data.projectMode)?.label}
+            </label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">모집 인원</div>
-            <label className="block text-[#000000]/50">{data.totalMembers}</label>
+            <label className="block text-[#000000]/50">{data.totalMembers}명</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">시작 예정</div>
@@ -346,7 +354,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
                     +{extraPositionsCount}
                   </div>
                   {isPositionTooltipOpen && (
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto">
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto animate-fadeDown">
                       <div className="flex space-x-2">
                         {data.requiredPositions.slice(2).map((positionId, index) => {
                           const positionTitle =
@@ -395,7 +403,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
                     </div>
                     {/* 기술스택 툴팁 */}
                     {isTechTooltipOpen && (
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto">
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto animate-fadeDown">
                         <div className="flex space-x-2">
                           {data.techStacks.slice(3).map((item, index) => {
                             const imageSrc = getStackImage(item.toUpperCase());
