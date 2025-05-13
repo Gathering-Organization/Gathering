@@ -55,9 +55,14 @@ const ProjecTypeFilter: React.FC<ProjecTypeFilterProps> = ({
     <div className="text-[28px] font-bold space-x-8 flex">
       {filterItems.map(item => (
         <button
+          style={{ willChange: 'transform' }}
           onClick={() => setSelectedType(String(item.projectType))}
           key={item.projectTypeId}
-          className={selectedType === String(item.projectType) ? 'text-black' : 'text-[#B4B4B4]'}
+          className={`transition-all duration-300 transform ${
+            selectedType === String(item.projectType)
+              ? 'text-black scale-105'
+              : 'text-[#B4B4B4] scale-100'
+          }`}
         >
           {item.projectTypeName}
         </button>

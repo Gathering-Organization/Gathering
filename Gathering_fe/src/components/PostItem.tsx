@@ -91,7 +91,7 @@ const PostItem: React.FC<
           showToast('마감된 모집 공고입니다.', false);
         }
       }}
-      className="relative cursor-pointer select-none w-85 will-change-transform"
+      className="relative cursor-pointer select-none w-[380px] will-change-transform"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -204,7 +204,7 @@ const PostItem: React.FC<
           </div>
         </section>
 
-        <section className="border-t border-[#B4B4B4] flex justify-between items-center p-2 px-6">
+        <section className="border-t border-[#B4B4B4] flex justify-between items-center p-2">
           <div className="flex font-semibold p-4 items-center gap-4">
             <div
               className="w-8 h-8 rounded-[30px]"
@@ -212,9 +212,9 @@ const PostItem: React.FC<
             ></div>
             <div className="w-[200px] whitespace-nowrap truncate">{parts[0]}</div>
           </div>
-          <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4 px-[10px]">
-            <div>
-              <img src={eye} alt="watched" className="w-[24px] h-[24px]" />
+          <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4">
+            <div className="w-6 h-6 aspect-square">
+              <img src={eye} alt="watched" className="w-full h-full object-contain" />
             </div>
             <div>{viewCount}</div>
           </div>
