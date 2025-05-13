@@ -121,10 +121,10 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
           aria-hidden="true"
         >
-          <div className="relative p-4 w-full max-w-[800px] max-h-[94vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden">
+          <div className="relative p-4 w-full max-w-[800px] max-h-[94vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn will-change-[opacity]">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
               <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                 활동 경력을 입력해주세요.
@@ -259,7 +259,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                   <button
                     onClick={handleAddExperience}
                     type="button"
-                    className="px-[180px] text-white bg-[#3387E5] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-[30px] text-[20px] py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="px-[180px] text-white bg-[#3387E5] hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-[30px] text-[16px] py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     저장하기
                   </button>
