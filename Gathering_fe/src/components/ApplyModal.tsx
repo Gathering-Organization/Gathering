@@ -11,7 +11,6 @@ const ApplyModal: React.FC = () => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [status, setStatus] = useState('');
   const { showToast } = useToast();
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
     projectId: Number(params.id),

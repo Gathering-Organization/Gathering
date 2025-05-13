@@ -36,9 +36,9 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const nav = useNavigate();
   const userNickname = myProfile?.nickname;
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>();
+  const [isApplicationLoading, setIsApplicationLoading] = useState(false);
   const [positionList] = useState<Position[]>([...positionData]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { profile, isLoading, error } = useOtherProfile(data?.author.nickname ?? null);
   const [teamProfiles, setTeamProfiles] = useState<{ [key: string]: string }>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<string | null>(null);
   const [isPositionTooltipOpen, setIsPositionTooltipOpen] = useState(false);
@@ -61,11 +61,6 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           if (result?.success) {
             setApplications(result.data);
           }
-        } else {
-          const result = await getMyApplication(Number(data?.projectId));
-          if (result?.success) {
-            setApplyInfo(result.data);
-          }
         }
       } catch (error) {
         console.error('지원서 조회 실패:', error);
@@ -77,6 +72,18 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     }
   }, [params.id]);
 
+  const fetchApplicationData = async () => {
+    if (!data) return;
+    try {
+      if (!applyInfo) {
+        const res = await getMyApplication(Number(data.projectId));
+        if (res?.success) setApplyInfo(res.data);
+      }
+    } catch (err) {
+      console.error('지원서 조회 실패:', err);
+    }
+  };
+
   useEffect(() => {
     const closeTooltips = () => {
       setIsPositionTooltipOpen(false);
@@ -87,33 +94,33 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     return () => document.removeEventListener('click', closeTooltips);
   }, []);
 
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      if (!data?.teams.length) return;
+  // useEffect(() => {
+  //   const fetchProfiles = async () => {
+  //     if (!data?.teams.length) return;
 
-      setLoading(true);
+  //     setLoading(true);
 
-      try {
-        const profilesData: { [key: string]: string } = {};
+  //     try {
+  //       const profilesData: { [key: string]: string } = {};
 
-        const profilePromises = data.teams.map(async member => {
-          const response = await getUserProfile(member.nickname);
-          if (response?.success) {
-            profilesData[member.nickname] = response.data.author.profileColor;
-          }
-        });
+  //       const profilePromises = data.teams.map(async member => {
+  //         const response = await getUserProfile(member.nickname);
+  //         if (response?.success) {
+  //           profilesData[member.nickname] = response.data.author.profileColor;
+  //         }
+  //       });
 
-        await Promise.all(profilePromises);
-        setTeamProfiles(profilesData);
-      } catch (error) {
-        console.error('Error fetching team profiles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       await Promise.all(profilePromises);
+  //       setTeamProfiles(profilesData);
+  //     } catch (error) {
+  //       console.error('Error fetching team profiles:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchProfiles();
-  }, [data?.teams]);
+  //   fetchProfiles();
+  // }, [data?.teams]);
 
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
@@ -139,8 +146,6 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   };
 
   if (!data) return <p>데이터를 불러오는 중...</p>;
-
-  if (error) return <p>{error}</p>;
 
   const parts = data.author.nickname.split(/(#\d+)/);
 
@@ -274,7 +279,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
         <OtherUserProfileModal
           isOpen={isProfileModalOpen}
           onClose={closeProfileModal}
-          profile={profile}
+          profile={data.author}
         />
         <hr className="w-full justify-self-center border-[#000000]/60" />
 
@@ -442,6 +447,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
             position={positionData.find(position => position.id === applyInfo?.position)?.title}
             applyStatus={data?.applyStatus}
             kakaoUrl={data?.kakaoUrl}
+            fetchApplication={fetchApplicationData}
           />
         ) : (
           <ApplyModal />

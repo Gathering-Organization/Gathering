@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 
 type ApplyResultProps = {
+  fetchApplication: () => void;
   nickname: string;
   position?: string;
   applyStatus: string | null;
@@ -15,6 +16,7 @@ type ApplyResultProps = {
 };
 
 const ApplyResultModal: React.FC<ApplyResultProps> = ({
+  fetchApplication,
   nickname,
   position,
   applyStatus,
@@ -41,6 +43,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
 
   const openModal = () => {
     setIsModalOpen(true);
+    fetchApplication();
     document.body.style.overflow = 'hidden';
   };
 
