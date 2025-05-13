@@ -156,7 +156,7 @@ const Apply: React.FC = () => {
   };
 
   if (isLoadingOverall) {
-    return <div>로딩 중...</div>;
+    return <div className="min-h-[500px]">로딩 중...</div>;
   }
 
   return (
