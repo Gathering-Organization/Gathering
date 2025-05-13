@@ -11,7 +11,14 @@ export const useOtherProfile = (userNickname: string | null) => {
     profileColor: '',
     public: false,
     portfolio: null,
-    workExperiences: []
+    workExperiences: [],
+    totalProjects: 0,
+    openedProjects: 0,
+    closedProjects: 0,
+    totalApplications: 0,
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0
   });
 
   const [isLoading, setIsLoading] = useState(true);

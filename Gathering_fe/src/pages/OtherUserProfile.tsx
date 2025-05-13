@@ -13,14 +13,15 @@ interface TechStack {
   title: string;
 }
 
+interface LocationState {
+  profile: ProfileAllInfo;
+}
+
 const OtherUserProfile: React.FC = () => {
   const location = useLocation();
-  const { nickname: userNickname = '' } = location.state || {};
-  const { profile, isLoading, error } = useOtherProfile(userNickname ?? null);
+  const { profile } = (location.state as LocationState) || {};
+  // const { profile, isLoading, error } = useOtherProfile(userNickname ?? null);
   const [stackList] = useState<TechStack[]>([...techStacks]);
-  const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
-  const nav = useNavigate();
-
   //   useEffect(() => {
   //     if (info.nickname) {
   //       const fetchPosts = async () => {
@@ -47,10 +48,10 @@ const OtherUserProfile: React.FC = () => {
   //       fetchPosts();
   //     }
   //   }, [info.nickname]);
-
-  if (isLoading) {
-    return <div></div>;
+  if (!profile) {
+    return <p>프로필 정보가 없습니다.</p>;
   }
+
   const parts = profile.nickname.split(/(#\d+)/);
   return (
     <motion.div

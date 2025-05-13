@@ -23,6 +23,7 @@ import ApplyResultModal from './ApplyResultModal';
 import { useToast } from '@/contexts/ToastContext';
 import { projectType } from '@/utils/project-and-apply-type';
 import { projectModeOptions } from '@/utils/post-options';
+import { ProfileAllInfo } from '@/types/profile';
 
 interface Position {
   id: string;
@@ -43,11 +44,11 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const [selectedTeamMember, setSelectedTeamMember] = useState<string | null>(null);
   const [isPositionTooltipOpen, setIsPositionTooltipOpen] = useState(false);
   const [isTechTooltipOpen, setIsTechTooltipOpen] = useState(false);
-  const {
-    profile: teamMemberProfile,
-    isLoading: teamMemberLoading,
-    error: teamMemberError
-  } = useOtherProfile(selectedTeamMember);
+  // const {
+  //   profile: teamMemberProfile,
+  //   isLoading: teamMemberLoading,
+  //   error: teamMemberError
+  // } = useOtherProfile(selectedTeamMember);
   const [loading, setLoading] = useState<boolean>(true);
   const [applications, setApplications] = useState<ApplyDetails[]>([]);
 
@@ -201,6 +202,11 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
       return newState;
     });
   };
+
+  const selectedMember = data.teams.find(m => m.nickname === selectedTeamMember) as
+    | ProfileAllInfo
+    | undefined;
+
   return (
     <div className="mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-6 mb-4">
@@ -309,20 +315,20 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           <div className="flex items-center space-x-12 text-[20px] font-bold">
             <div className="w-28">팀원 태그</div>
             <div className="flex flex-wrap gap-2">
-              {data.teams.map((teamNickname, index) => (
+              {data.teams.map(member => (
                 <button
-                  key={index}
-                  onClick={() => openTeamMemberModal(teamNickname.nickname)}
+                  key={member.nickname}
+                  onClick={() => openTeamMemberModal(member.nickname)}
                   className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg"
                 >
                   <div
                     className="w-[20px] h-[20px] rounded-full"
                     style={{
-                      backgroundColor: `#${teamProfiles[teamNickname.nickname] || ''}`
+                      backgroundColor: `#${member.profileColor || ''}`
                     }}
                   />
                   <span className="font-bold text-[14px] whitespace-nowrap">
-                    {teamNickname.nickname.split(/(#\d+)/)[0]}
+                    {member.nickname.split(/(#\d+)/)[0]}
                   </span>
                 </button>
               ))}
@@ -465,7 +471,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
       <OtherUserProfileModal
         isOpen={!!selectedTeamMember}
         onClose={closeTeamMemberModal}
-        profile={teamMemberProfile}
+        profile={selectedMember!}
       />
     </div>
   );

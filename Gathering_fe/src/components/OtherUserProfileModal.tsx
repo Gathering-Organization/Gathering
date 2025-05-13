@@ -58,7 +58,7 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
             className="px-10 py-2 absolute bottom-[40px] bg-[#202123] rounded-full text-white font-semibold"
             onClick={() =>
               nav(`/otherUserProfile/${profile.nickname}`, {
-                state: { nickname: profile.nickname }
+                state: { profile: profile }
               })
             }
           >
