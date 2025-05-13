@@ -1,4 +1,5 @@
 import { Portfolio, WorkExperience } from '@/types/profile';
+import { ProfileAllInfo } from '@/types/profile';
 
 export interface TeamInfo {
   introduction: string;
@@ -65,10 +66,9 @@ export interface approxPostInfo {
 }
 
 export interface partPostInfo {
-  profileColor: string;
   viewCount: number;
   projectId: number;
-  authorNickname: string;
+  author: ProfileAllInfo;
   closed: boolean;
   interested: boolean;
   kakaoUrl: string;

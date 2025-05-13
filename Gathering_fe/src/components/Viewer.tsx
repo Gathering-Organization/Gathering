@@ -36,7 +36,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>();
   const [positionList] = useState<Position[]>([...positionData]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { profile, isLoading, error } = useOtherProfile(data?.authorNickname ?? null);
+  const { profile, isLoading, error } = useOtherProfile(data?.author.nickname ?? null);
   const [teamProfiles, setTeamProfiles] = useState<{ [key: string]: string }>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<string | null>(null);
   const [isPositionTooltipOpen, setIsPositionTooltipOpen] = useState(false);
@@ -54,7 +54,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        if (data?.authorNickname === userNickname) {
+        if (data?.author.nickname === userNickname) {
           const result = await getOtherApplication(Number(params.id));
           if (result?.success) {
             setApplications(result.data);
@@ -97,7 +97,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
         const profilePromises = data.teams.map(async member => {
           const response = await getUserProfile(member.nickname);
           if (response?.success) {
-            profilesData[member.nickname] = response.data.profileColor;
+            profilesData[member.nickname] = response.data.author.profileColor;
           }
         });
 
@@ -140,7 +140,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
 
   if (error) return <p>{error}</p>;
 
-  const parts = data.authorNickname.split(/(#\d+)/);
+  const parts = data.author.nickname.split(/(#\d+)/);
 
   const updateApplicationStatus = (id: number, newStatus: string) => {
     setApplications(prev =>
@@ -201,7 +201,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           <div className="block select-text me-10 text-justify text-[36px] font-extrabold px-6">
             {data.title}
           </div>
-          {data?.authorNickname === userNickname && (
+          {data?.author.nickname === userNickname && (
             <label className="inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -238,7 +238,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
             >
               <div
                 className="w-[30px] h-[30px] rounded-full"
-                style={{ backgroundColor: `#${data.profileColor}` }}
+                style={{ backgroundColor: `#${data.author.profileColor}` }}
               />
               <span className="font-bold text-[20px] whitespace-nowrap">{parts[0]}</span>
             </button>
@@ -252,7 +252,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
               </div>
             </div>
           </div>
-          {data?.authorNickname === userNickname && (
+          {data?.author.nickname === userNickname && (
             <section className="flex gap-4 items-center">
               <button
                 onClick={onClickUpdate}
@@ -426,7 +426,7 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
           className="block px-4 select-text cursor-text min-h-[300px]"
           dangerouslySetInnerHTML={{ __html: data.description }}
         />
-        {data?.authorNickname === userNickname ? (
+        {data?.author.nickname === userNickname ? (
           <OtherApplicationModal apply={applications} onStatusChange={updateApplicationStatus} />
         ) : data?.applied ? (
           <ApplyResultModal
