@@ -74,7 +74,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="absolute mt-12 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-20"
+            className="absolute mt-12 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-20 animate-fadeDown"
           >
             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
               {searchOptions.map((option, index) => (

@@ -72,7 +72,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
 
       {isMainDropdownOpen && (
         <div
-          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-56 rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5`}
+          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-56 rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 animate-fadeDown`}
         >
           <div className="py-1">
             <a

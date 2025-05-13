@@ -109,7 +109,7 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
       {/* 드롭다운 메뉴 */}
       {isMainDropdownOpen && (
         <div
-          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-[600px] rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 overflow-hidden`}
+          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-[600px] rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 overflow-hidden animate-fadeDown`}
         >
           <div className="grid grid-cols-[200px_200px_1fr]">
             {/* 1단계 메뉴 */}

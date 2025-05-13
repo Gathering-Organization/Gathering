@@ -64,7 +64,7 @@ const LogoutButton: React.FC = () => {
         </div>
       </button>
       {isDropdownOpen && (
-        <div className="absolute border-[#000000] right-0 shadow-lg ring-1 ring-black ring-opacity-5 mt-2 w-48 bg-white rounded-[10px] z-50 overflow-hidden">
+        <div className="absolute border-[#000000] right-0 shadow-lg ring-1 ring-black ring-opacity-5 mt-2 w-48 bg-white rounded-[10px] z-50 overflow-hidden animate-fadeDown">
           <button
             className="block w-full text-[16px] text-center px-4 py-2 hover:bg-gray-100"
             onClick={() => {

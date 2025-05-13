@@ -233,7 +233,7 @@ const PostHome: React.FC = () => {
             {isDropdownOpen && (
               <div
                 ref={dropdownRef}
-                className="absolute top-full mt-2 right-0 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20"
+                className="absolute top-full mt-2 right-0 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20 animate-fadeDown"
               >
                 <ul className="py-1 text-sm text-black font-bold text-gray-700 dark:text-gray-200">
                   <li>
