@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    image: choibokeun/gathering:${IMAGE_TAG}
+    container_name: gathering-app-dev
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_REDIS_HOST=${SPRING_REDIS_HOST}
+      - SPRING_REDIS_PORT=${SPRING_REDIS_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - SWAGGER_USERNAME=${SWAGGER_USERNAME}
+      - SWAGGER_PASSWORD=${SWAGGER_PASSWORD}
+      - GOOGLE_RESOURCE_URI=${GOOGLE_RESOURCE_URI}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - GATHERING_GMAIL_USERNAME=${GATHERING_GMAIL_USERNAME}
+      - GATHERING_GMAIL_PASSWORD=${GATHERING_GMAIL_PASSWORD}
+    depends_on:
+      - redis
+    networks:
+      - gathering-network-dev
+
+  redis:
+    image: redis:latest
+    container_name: gathering-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    command: redis-server --appendonly yes
+    networks:
+      - gathering-network-dev
+
+networks:
+  gathering-network-dev:
+    driver: bridge
+
+volumes:
+  redis_data_dev:
