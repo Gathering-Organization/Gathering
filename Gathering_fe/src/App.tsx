@@ -10,11 +10,16 @@ import ViewPost from '@/pages/ViewPost';
 import PostEdit from '@/pages/PostEdit';
 import Notfound from '@/pages/Notfound';
 import Apply from '@/pages/Apply';
+import SignUp from '@/pages/SignUp';
 import MyPostHome from '@/pages/MyPostHome';
 import OtherUserProfile from '@/pages/OtherUserProfile';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import MyApplication from '@/pages/MyApplication';
 import { ToastProvider } from '@/contexts/ToastContext';
+
+// 0. 회원 정보 관련 사이트
+// - "/profile" : 회원의 프로필 정보를 조회 및 수정하는 Profile 페이지
+// - "/signup" : 회원가입을 할 수 있는 SignUp 페이지
 
 // 1. 모집글 관련 페이지
 // - "/postHome" : 모든 모집글들을 조회하는 PostHome 페이지
@@ -41,6 +46,14 @@ const App: React.FC = () => {
               <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
               <Route element={<Layout />}>
                 {/* <Route path="/" element={<Main />} /> */}
+                <Route
+                  path="/SignUp"
+                  element={
+                    <ProtectedRoute>
+                      <SignUp />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/" element={<PostHome />} />
                 <Route
                   path="/myPostHome"

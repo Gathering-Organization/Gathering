@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { logout } from '@/services/authApi';
-import triangleArrowIcon from '@/assets/otherIcons/Triangle Arrow.png';
 import { useNavigate } from 'react-router-dom';
+import triangleArrowIcon from '@/assets/otherIcons/Triangle Arrow.png';
 import { useToast } from '@/contexts/ToastContext';
 
 const LogoutButton: React.FC = () => {

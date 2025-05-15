@@ -27,6 +27,36 @@ export const signup = async (data: SignupRequest) => {
   }
 };
 
+export const certEmail = async (email: string) => {
+  try {
+    const encodedEmail = encodeURIComponent(email);
+
+    const response = await api.post(`/verify/send?email=${encodedEmail}`);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error) {
+    console.error('인증 메일 요청 실패:', error);
+    throw error;
+  }
+};
+
+export const certCode = async (email: string, code: string) => {
+  try {
+    const encodedEmail = encodeURIComponent(email);
+
+    const response = await api.post(`/verify/code?email=${encodedEmail}&code=${code}`);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error) {
+    console.error('인증 번호 확인 실패:', error);
+    throw error;
+  }
+};
+
 export const login = async (data: LoginRequest) => {
   try {
     const response = await api.post('/auth/login', data);

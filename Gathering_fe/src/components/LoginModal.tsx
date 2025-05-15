@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import {} from '@/services/api';
 import { LoginRequest } from '@/types/auth';
+import { useNavigate } from 'react-router-dom';
 import { login } from '@/services/authApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import googleIcon from '@/assets/otherIcons/Google.png';
+import loginIcon from '@/assets/otherIcons/Login.png';
+import gatheringLogo from '/gathering_home.svg';
 
 type LoginModalProps = {
   isOpen: boolean;
@@ -11,12 +15,10 @@ type LoginModalProps = {
 };
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick }) => {
-  const [formData, setFormData] = useState<LoginRequest>({
-    email: '',
-    password: ''
-  });
-
+  const [formData, setFormData] = useState<LoginRequest>({ email: '', password: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEmailLogin, setIsEmailLogin] = useState(false);
+  const nav = useNavigate();
   useModalBodyLock(isModalOpen);
 
   const openModal = () => {
@@ -27,6 +29,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
   const closeModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = 'auto';
+    setIsEmailLogin(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +39,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const result = await login(formData);
-
       if (result?.success) {
-        alert('로그인 성공!');
+        alert('로그인 되었습니다.');
         onClose();
       } else {
         alert(result?.message || '로그인에 실패했습니다.');
@@ -56,6 +57,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
     closeModal();
   };
 
+  const handleEmailLoginMode = () => {
+    setIsEmailLogin(true);
+  };
+
   return (
     <div>
       <button className="text-[20px] font-bold relative inline-block" onClick={openModal}>
@@ -67,16 +72,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
           className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
           aria-hidden="true"
         >
-          <div className="relative p-4 w-full max-w-md max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">로그인</h3>
+          <div className="relative p-4 w-full max-w-md bg-white rounded-[50px] shadow-lg dark:bg-gray-700">
+            <div className="flex items-center justify-between p-4 md:p-5 rounded-t">
               <button
                 type="button"
                 className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 onClick={closeModal}
               >
                 <svg
-                  className="w-3 h-3"
+                  className="w-4 h-4"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -93,19 +97,47 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <div className="p-4 md:p-5">
-              <form className="space-y-4" action="#">
-                <form onSubmit={handleLogin}>
+
+            <div className="flex flex-col items-center mb-8">
+              <img className="w-[300px] mb-8" src={gatheringLogo} alt="Gathering Logo" />
+
+              {!isEmailLogin ? (
+                <div className="space-y-4 w-full flex flex-col items-center font-inter">
+                  <div className="font-semibold text-[22px] text-[#202123] py-4">
+                    Gathering에 오신 것을 환영합니다!
+                  </div>
+                  <div className="font-normal mx-8 text-[16px] text-[#202123] text-center pt-4 pb-8">
+                    IT 초보와 고수가 모두 모이는 GATHERING을 통해 팀원을 찾아보세요!
+                  </div>
+                  <button
+                    onClick={handleGoogle}
+                    type="button"
+                    className="flex font-inter space-x-4 justify-center items-center w-[300px] border border-[#000000]/20 font-semibold rounded-[100px] text-[20px] px-4 py-3 text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                  >
+                    <img className="w-8 h-8" src={googleIcon} alt="google login" />
+                    <div>Google로 로그인하기</div>
+                  </button>
+                  <button
+                    onClick={handleEmailLoginMode}
+                    type="button"
+                    className="flex font-inter space-x-4 justify-center items-center w-[300px] bg-gray-200 font-semibold rounded-[100px] text-[20px] px-4 py-3 text-center hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                  >
+                    <img className="w-8 h-8" src={loginIcon} alt="login Icon" />
+                    <div>이메일로 로그인하기</div>
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleLogin} className="space-y-4 w-full max-w-80 mx-auto pt-4">
                   <div>
                     <input
                       type="email"
                       name="email"
                       id="email"
                       value={formData.email}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 mb-4 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="이메일을 입력하세요."
                       onChange={handleInputChange}
                       required
+                      className="bg-gray-50 border border-gray-300 text-gray-900 mb-4 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="이메일을 입력하세요."
                     />
                   </div>
                   <div>
@@ -114,76 +146,37 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
                       name="password"
                       id="password"
                       value={formData.password}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 mb-8 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="비밀번호를 입력하세요."
                       onChange={handleInputChange}
                       required
+                      className="bg-gray-50 border border-gray-300 text-gray-900 mb-8 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="비밀번호를 입력하세요."
                     />
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    로그인 하기
-                  </button>
+                  <div className="flex flex-col items-center space-y-4 pt-4">
+                    <button
+                      type="submit"
+                      className="bg-[#3387E5] font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      로그인
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        nav('/signup');
+                        closeModal();
+                      }}
+                      className="bg-[#000000]/15 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                    >
+                      회원가입
+                    </button>
+                  </div>
                 </form>
-
-                <button
-                  type="button"
-                  className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={onSignupClick}
-                >
-                  회원가입 하기
-                </button>
-                <button onClick={handleGoogle}>
-                  <img
-                    className="w-14 h-14"
-                    src="https://d1nuzc1w51n1es.cloudfront.net/d99d8628713bb69bd142.png"
-                    alt="google login"
-                  />
-                </button>
-              </form>
+              )}
             </div>
           </div>
         </div>
       )}
     </div>
-    // <Modal isOpen={isOpen} onClose={onClose} title="로그인">
-    //   <form onSubmit={handleLogin}>
-    //     <div>
-    //       <label>이메일</label>
-    //       <input
-    //         type="email"
-    //         name="email"
-    //         value={formData.email}
-    //         onChange={handleInputChange}
-    //         required
-    //       />
-    //     </div>
-    //     <div>
-    //       <label>비밀번호</label>
-    //       <input
-    //         type="password"
-    //         name="password"
-    //         value={formData.password}
-    //         onChange={handleInputChange}
-    //         required
-    //       />
-    //     </div>
-    //     <button type="submit">로그인</button>
-    //   </form>
-
-    // <button onClick={handleGoogle}>
-    //   <img
-    //     src="https://d1nuzc1w51n1es.cloudfront.net/d99d8628713bb69bd142.png"
-    //     alt="google login"
-    //   />
-    // </button>
-
-    //   <button type="button" onClick={onSignupClick}>
-    //     회원가입하러가기
-    //   </button>
-    // </Modal>
   );
 };
 
