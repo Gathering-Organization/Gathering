@@ -23,6 +23,13 @@ export interface ProfileAllInfo {
   public: boolean;
   workExperiences: WorkExperience[];
   organization: string;
+  totalProjects: number;
+  openedProjects: number;
+  closedProjects: number;
+  totalApplications: number;
+  pendingApplications: number;
+  approvedApplications: number;
+  rejectedApplications: number;
 }
 
 export interface Portfolio {

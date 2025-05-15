@@ -3,6 +3,8 @@ import penSquared from '@/assets/otherIcons/Pen Squared.png';
 import { setMyNickname } from '@/services/profileApi';
 import { ProfileInfo } from '@/types/profile';
 import { useProfile } from '@/contexts/ProfileStateContext';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import { useToast } from '@/contexts/ToastContext';
 
 interface NicknameModalProps {
   nickname: string;
@@ -11,8 +13,9 @@ interface NicknameModalProps {
 const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNickname, setNewNickname] = useState(nickname);
-  const { profile, updateProfileData } = useProfile();
-
+  const { myProfile, updateProfileData } = useProfile();
+  const { showToast } = useToast();
+  useModalBodyLock(isModalOpen);
   const openModal = () => {
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden';
@@ -29,13 +32,13 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
       if (result?.success) {
         console.log(nickname);
         updateProfileData({ nickname: newNickname });
-        alert('닉네임이 성공적으로 변경되었습니다!');
+        showToast('닉네임이 성공적으로 변경되었습니다.', true);
         closeModal();
       } else {
-        alert(result?.message || '닉네임 변경 중 문제가 발생했습니다.');
+        showToast('닉네임 변경 중 문제가 발생했습니다.', false);
       }
     } catch {
-      alert('닉네임 변경 중 오류가 발생했습니다.');
+      showToast('닉네임 변경 중 문제가 발생했습니다.', false);
     }
   };
 
@@ -80,10 +83,10 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
           aria-hidden="true"
         >
-          <div className="relative p-4 w-full max-w-md max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
+          <div className="relative p-4 w-full max-w-md max-h-full bg-white rounded-[20px] shadow-lg dark:bg-gray-700 animate-fadeIn will-change-[opacity]">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">닉네임 변경</h3>
               <button
@@ -124,8 +127,8 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
                 </div>
                 <button
                   onClick={handleUpdateNickname}
-                  type="submit"
-                  className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  type="button"
+                  className="w-full text-white bg-[#3387E5] hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-[30px] text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   변경하기
                 </button>

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ProfileAllInfo } from '@/types/profile';
-import { getStackImage } from '@/utils/get-stack-image';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import { useNavigate } from 'react-router-dom';
 
 interface OtherUserProfileModalProps {
   isOpen: boolean;
@@ -13,86 +14,56 @@ const OtherUserProfileModal: React.FC<OtherUserProfileModalProps> = ({
   onClose,
   profile
 }) => {
+  const nav = useNavigate();
+
+  useModalBodyLock(isOpen);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
-  const parts = profile.nickname.split(/(#\d+)/);
+
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="relative p-6 w-full max-w-2xl bg-white rounded-lg shadow-lg">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="text-xl font-semibold text-gray-900">{parts[0]}의 프로필</h3>
-          <button className="text-gray-400 hover:text-gray-900 rounded-lg p-2" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm">
+      <div className="relative w-full max-w-2xl min-h-[500px] bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col animate-fadeIn">
+        <div className="h-1/2 bg-[#D9D9D9]/40 flex flex-col pt-[60px] items-center justify-center p-6 relative">
+          <button
+            className="absolute top-8 right-8 text-gray-400 font-bold hover:text-gray-900 rounded-lg p-2"
+            onClick={onClose}
+          >
             ✕
           </button>
+          <div className="justify-items-center mt-4">
+            <div
+              className="w-24 h-24 rounded-full mb-4"
+              style={{ backgroundColor: `#${profile.profileColor}` }}
+            ></div>
+            <h3 className="text-xl font-semibold text-gray-900 text-center">
+              {profile.nickname}의 프로필
+            </h3>
+          </div>
         </div>
-
-        <div className="p-6 space-y-6">
-          {/* 기본 정보 섹션 */}
-          <div className="space-y-4">
-            <h4 className="font-bold text-lg">소개</h4>
-            <p className="text-gray-600">{profile.introduction || '작성된 소개가 없습니다.'}</p>
-
-            <div className="flex items-center gap-4">
-              <span className="font-semibold">소속:</span>
-              <p>{profile.organization || '미입력'}</p>
-            </div>
-          </div>
-
-          {/* 기술 스택 섹션 */}
-          <div className="space-y-4">
-            <h4 className="font-bold text-lg">기술 스택</h4>
-            <div className="flex flex-wrap gap-2">
-              {profile.techStacks.map((stack, index) => (
-                <img
-                  key={index}
-                  src={getStackImage(stack.toUpperCase()) ?? ''}
-                  alt={stack}
-                  className="w-10 h-10"
-                />
-              ))}
-              {profile.techStacks.length === 0 && (
-                <p className="text-gray-500">등록된 기술 스택이 없습니다.</p>
-              )}
-            </div>
-          </div>
-
-          {/* 경력 섹션 */}
-          <div className="space-y-4">
-            <h4 className="font-bold text-lg">활동 경력</h4>
-            {profile.workExperiences?.map((experience, index) => (
-              <div key={index} className="p-4 border rounded-lg">
-                <div className="font-medium">{experience.activityName}</div>
-                <div className="text-sm text-gray-500">
-                  {experience.startDate} ~ {experience.endDate}
-                </div>
-                <p className="mt-2 text-gray-600">{experience.description}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {experience.techStacks?.map((stack, idx) => (
-                    <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                      {stack}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-            {profile.workExperiences?.length === 0 && (
-              <p className="text-gray-500">등록된 활동 경력이 없습니다.</p>
-            )}
-          </div>
-
-          {/* 포트폴리오 섹션 */}
-          {profile.portfolio && (
-            <div className="space-y-4">
-              <h4 className="font-bold text-lg">포트폴리오</h4>
-              <a
-                href={profile.portfolio.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                {profile.portfolio.url}
-              </a>
-            </div>
-          )}
+        <div className="h-1/2 flex flex-col items-center justify-center p-6">
+          <p className="text-center text-[18px] select-text text-[#000000]/70">
+            {profile.introduction}
+          </p>
+          <button
+            className="px-10 py-2 absolute bottom-[40px] bg-[#202123] rounded-full text-white font-semibold"
+            onClick={() =>
+              nav(`/otherUserProfile/${profile.nickname}`, {
+                state: { profile: profile }
+              })
+            }
+          >
+            프로필 보기
+          </button>
         </div>
       </div>
     </div>

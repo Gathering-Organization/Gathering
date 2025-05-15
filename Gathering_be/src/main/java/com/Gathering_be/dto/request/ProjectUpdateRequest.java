@@ -1,7 +1,9 @@
 package com.Gathering_be.dto.request;
 
+import com.Gathering_be.global.enums.JobPosition;
 import com.Gathering_be.global.enums.ProjectMode;
 import com.Gathering_be.global.enums.ProjectType;
+import com.Gathering_be.global.enums.TechStack;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,19 +26,18 @@ public class ProjectUpdateRequest {
     private String duration;
     private LocalDateTime deadline;
     private LocalDate startDate;
-    private boolean isClosed;
     private ProjectMode projectMode;
 
-    private Set<String> techStacks;
-    private List<String> requiredPositions;
+    private Set<TechStack> techStacks;
+    private List<JobPosition> requiredPositions;
     private Set<String> teams;
 
     @Builder
     public ProjectUpdateRequest(String title, String description, String kakaoUrl,
                                 ProjectType projectType, int totalMembers, String duration,
-                                LocalDateTime deadline, LocalDate startDate, boolean isClosed,
-                                ProjectMode projectMode, Set<String> techStacks,
-                                List<String> requiredPositions, Set<String> teams) {
+                                LocalDateTime deadline, LocalDate startDate,
+                                ProjectMode projectMode, Set<TechStack> techStacks,
+                                List<JobPosition> requiredPositions, Set<String> teams) {
         this.title = title;
         this.description = description;
         this.kakaoUrl = kakaoUrl;
@@ -47,7 +48,6 @@ public class ProjectUpdateRequest {
         this.startDate = startDate;
         this.techStacks = techStacks;
         this.requiredPositions = requiredPositions;
-        this.isClosed = isClosed;
         this.projectMode = projectMode;
         this.teams = teams;
     }

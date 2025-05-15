@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import MultiLevelDropdown from './MultiLevelDropdown';
 import { positionData } from '@/utils/position-data';
-import { setApply } from '@/services/applyApi';
+import { postApplication } from '@/services/applicationApi';
 import { ApplyInfo } from '@/types/apply';
 import { DropdownDispatchContext } from '@/pages/PostHome';
 import { useParams } from 'react-router-dom';
+import { useToast } from '@/contexts/ToastContext';
 
 const ApplyModal: React.FC = () => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const { showToast } = useToast();
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
     projectId: Number(params.id),
     position: '',
@@ -29,7 +31,8 @@ const ApplyModal: React.FC = () => {
   const handleSelectedPosition = (value: string) => {
     setApplyInfo(prev => ({ ...prev, position: value }));
   };
-  const dummySetSelectedStack = (value: string) => {};
+
+  const dummySetSelectedStack = (value: string[]) => {};
 
   const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setApplyInfo({
@@ -40,20 +43,23 @@ const ApplyModal: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await setApply(applyInfo);
+      const response = await postApplication(
+        applyInfo.projectId,
+        applyInfo.position,
+        applyInfo.message
+      );
       if (response?.success) {
-        alert('지원서 제출이 완료되었습니다.');
+        showToast('지원서 제출이 완료되었습니다.', true);
         closeModal();
       } else {
-        alert(response?.message || '지원서 제출 중 오류가 발생했습니다.');
+        showToast('지원서 제출 중 오류가 발생했습니다.', false);
       }
     } catch (error) {
-      alert('지원서 제출 중 오류가 발생했습니다.');
+      showToast('지원서 제출 중 오류가 발생했습니다.', false);
     }
   };
 
   const handleViewApplication = () => {
-    localStorage.setItem('applyInfo', JSON.stringify(applyInfo));
     window.open('/apply/view', '_blank');
   };
 
@@ -64,22 +70,22 @@ const ApplyModal: React.FC = () => {
 
   return (
     <DropdownDispatchContext.Provider value={dropdownContextValue}>
-      <div>
+      <div className="flex flex-col items-center mt-10">
         <button
           onClick={openModal}
-          className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+          className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
         >
           지원하기
         </button>
 
         {isModalOpen && (
           <div
-            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
+            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
             aria-hidden="true"
           >
-            <div className="relative p-6 w-full max-w-[800px] max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
+            <div className="relative p-4 w-full max-w-[800px] max-h-full bg-white rounded-[20px] shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                   지원서를 입력해주세요.
                 </h3>
                 <button
@@ -109,7 +115,7 @@ const ApplyModal: React.FC = () => {
                 <form className="space-y-6">
                   <div className="flex items-center gap-4">
                     <label className="w-36 font-semibold dark:text-white">지원 포지션</label>
-                    <div className="flex-1">
+                    <div className="flex-1 font-bold">
                       <MultiLevelDropdown
                         menuData={positionData}
                         label="포지션"
@@ -125,9 +131,13 @@ const ApplyModal: React.FC = () => {
                       placeholder={
                         '300자 이내로 자신을 어필해 보세요!\n\n첨부할 포트폴리오가 없다면 모집글에 대한 지원자님의 열정을 표현해도 좋아요!'
                       }
+                      maxLength={300}
                       onChange={handleChangeIntroduction}
                       className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 resize-none focus:outline-none"
                     ></textarea>
+                    <div className="text-right mt-1 text-gray-600">
+                      {applyInfo.message.length}/300
+                    </div>
                   </section>
                   <div className="flex items-center justify-end mb-4">
                     <input
@@ -135,7 +145,7 @@ const ApplyModal: React.FC = () => {
                       type="checkbox"
                       checked={isChecked}
                       onChange={e => setIsChecked(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:border-gray-600"
                     />
                     <label
                       htmlFor="default-checkbox"
@@ -147,7 +157,7 @@ const ApplyModal: React.FC = () => {
                   <button
                     onClick={handleViewApplication}
                     type="button"
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     내 지원서 보기
                   </button>
@@ -155,10 +165,10 @@ const ApplyModal: React.FC = () => {
                     onClick={handleSubmit}
                     type="button"
                     disabled={!isChecked}
-                    className={`w-full text-white font-medium rounded-lg text-sm px-6 py-3 text-center focus:ring-4 focus:outline-none ${
+                    className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none ${
                       isChecked
-                        ? 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-                        : 'bg-gray-400 cursor-not-allowed'
+                        ? 'bg-[#3387E5] hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
+                        : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >
                     제출하기

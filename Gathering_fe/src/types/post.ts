@@ -1,4 +1,5 @@
 import { Portfolio, WorkExperience } from '@/types/profile';
+import { ProfileAllInfo } from '@/types/profile';
 
 export interface TeamInfo {
   introduction: string;
@@ -61,23 +62,45 @@ export interface approxPostInfo {
   techStacks: string[];
   requiredPositions: string[];
   viewCount: number;
+  applyStatus?: string;
 }
 
 export interface partPostInfo {
+  viewCount: number;
   projectId: number;
-  authorNickname: string;
+  author: ProfileAllInfo;
   closed: boolean;
   interested: boolean;
+  kakaoUrl: string;
   title: string;
   description: string;
   projectMode: string;
   projectType: string;
+  duration: string;
   totalMembers: number;
   startDate: string;
-  teams: { id: number; nickname: string }[];
+  teams: {
+    profileColor: string;
+    nickname: string;
+    introduction: string;
+    techStacks: string[];
+    portfolio?: Portfolio | null;
+    public: boolean;
+    workExperiences: WorkExperience[];
+    organization: string;
+    totalProjects: number;
+    openedProjects: number;
+    closedProjects: number;
+    totalApplications: number;
+    pendingApplications: number;
+    approvedApplications: number;
+    rejectedApplications: number;
+  }[];
   createdAt: string;
   updatedAt: string;
   deadline: string;
   techStacks: string[];
   requiredPositions: string[];
+  applied: boolean;
+  applyStatus: string | null;
 }

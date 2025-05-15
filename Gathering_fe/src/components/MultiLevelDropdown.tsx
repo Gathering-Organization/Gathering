@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import SubmenuLevel1 from '@/components/SubmenuLevel1';
 import { MultiLevelDropdownProps } from '@/types/menu';
 import { DropdownDispatchContext } from '@/pages/PostHome';
 import { positionData, Position } from '@/utils/position-data';
-import { techStacks, TechStack } from '@/utils/tech-stacks';
 
 const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
   menuData,
-  label = '기술 스택',
+  label = '포지션',
   buttonClassName = '',
   align = 'left'
 }) => {
@@ -20,7 +18,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
     throw new Error('DropdownDispatchContext가 제공되지 않았습니다.');
   }
 
-  const { setSelectedStack, setSelectedPosition } = dropdownContext;
+  const { setSelectedPosition } = dropdownContext;
 
   const toggleMainDropdown = () => {
     setIsMainDropdownOpen(!isMainDropdownOpen);
@@ -37,31 +35,20 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleItemClick = (newLabel: string) => {
+  const handleItemClick = (newLabel: string, event: React.MouseEvent) => {
+    event.preventDefault();
     setSelectedLabel(newLabel);
     setIsMainDropdownOpen(false);
 
-    let selectedItem: TechStack | Position | undefined;
+    let selectedItem: Position | undefined;
 
     if (newLabel !== '전체') {
-      if (label === '기술 스택') {
-        selectedItem = techStacks.find(item => item.title === newLabel);
-      } else if (label === '포지션') {
-        selectedItem = positionData.find(item => item.title === newLabel);
-      }
+      selectedItem = positionData.find(item => item.title === newLabel);
       if (selectedItem) {
-        if (label === '기술 스택') {
-          setSelectedStack(selectedItem.id);
-        } else if (label === '포지션') {
-          setSelectedPosition(selectedItem.id);
-        }
+        setSelectedPosition(selectedItem.id);
       }
     } else if (newLabel === '전체') {
-      if (label === '기술 스택') {
-        setSelectedStack('전체');
-      } else if (label === '포지션') {
-        setSelectedPosition('전체');
-      }
+      setSelectedPosition('전체');
     }
   };
 
@@ -74,9 +61,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
       >
         <span className="truncate">{selectedLabel}</span> {/* 선택된 항목 텍스트 */}
         <svg
-          className={`w-4 h-4 ml-2 transition-transform duration-200 ${
-            isMainDropdownOpen ? 'rotate-180' : ''
-          }`}
+          className={`w-4 h-4 ml-2 transition-transform duration-200 ${isMainDropdownOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -87,15 +72,13 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
 
       {isMainDropdownOpen && (
         <div
-          className={`absolute ${
-            align === 'left' ? 'left-0' : 'right-0'
-          } mt-2 w-56 rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5`}
+          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-56 rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 animate-fadeDown`}
         >
           <div className="py-1">
             <a
               href="#"
-              onClick={() => {
-                handleItemClick('전체');
+              onClick={event => {
+                handleItemClick('전체', event);
               }}
               className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
             >
@@ -105,11 +88,8 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
               if (!item.items) {
                 return (
                   <a
-                    key={item.id}
                     href="#"
-                    onClick={() => {
-                      handleItemClick(item.title);
-                    }}
+                    onClick={event => handleItemClick(item.title, event)}
                     className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     {item.title}
@@ -117,12 +97,27 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
                 );
               } else {
                 return (
-                  <SubmenuLevel1
-                    key={item.id}
-                    title={item.title}
-                    items={item.items || []}
-                    onItemClick={handleItemClick}
-                  />
+                  <div key={item.id}>
+                    <a
+                      href="#"
+                      onClick={event => handleItemClick(item.title, event)}
+                      className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      {item.title}
+                    </a>
+                    <div className="pl-4">
+                      {item.items.map(subItem => (
+                        <a
+                          key={subItem.id}
+                          href="#"
+                          onClick={event => handleItemClick(subItem.label, event)}
+                          className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                          {subItem.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 );
               }
             })}

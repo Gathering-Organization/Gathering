@@ -1,14 +1,15 @@
-import {
-  deletePortfolio,
-  getMyProfile,
-  setMyProfile,
-  toggleProfileVisibility,
-  uploadPortfolio
-} from '@/services/profileApi';
 import { Portfolio, ProfileAllInfo, WorkExperience } from '@/types/profile';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { techStacks } from '@/utils/tech-stacks';
+import { ProfileContextType } from '@/contexts/ProfileStateContext';
+import { getStackImage } from '@/utils/get-stack-image';
+import { positionData } from '@/utils/position-data';
+import { useSearchParams } from 'react-router-dom';
+import { useOtherProfile } from '@/hooks/UseOtherProfile';
+import { useToast } from '@/contexts/ToastContext';
+import { ApplyDetails } from '@/types/apply';
+import { getMyApplication } from '@/services/applicationApi';
 
 interface TechStack {
   id: string;
@@ -16,12 +17,14 @@ interface TechStack {
 }
 
 const Apply: React.FC = () => {
-  const [applyInfo, setApplyInfo] = useState({ position: '', message: '' });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<Portfolio | null>(null);
-  const [isPublic, setIsPublic] = useState<boolean>(false);
-  const [stackList] = useState<TechStack[]>([...techStacks]);
-  const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get('projectId');
+
+  const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>(null);
+  // const [isPublic, setIsPublic] = useState<boolean>(false);
+  // const [stackList] = useState<TechStack[]>([...techStacks]);
+  const [isTechTooltipOpen, setIsTechTooltipOpen] = useState<number | null>(null);
+  // const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',
@@ -30,474 +33,315 @@ const Apply: React.FC = () => {
     profileColor: '',
     portfolio: null,
     public: true,
-    workExperiences: []
+    workExperiences: [],
+    totalProjects: 0,
+    openedProjects: 0,
+    closedProjects: 0,
+    totalApplications: 0,
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0
   });
   const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
-  const [newExperience, setNewExperience] = useState<WorkExperience>({
-    activityName: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    techStacks: []
-  });
-  const stacks = [...techStacks];
-  const filteredStacks = stacks.filter(stack => !info.techStacks.includes(stack.title));
+  const { myProfile, isMyProfileLoading } = useProfile();
+  const isOwnProfile = !projectId;
+  const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
-  const handleUpdateProfile = async () => {
-    try {
-      const updatedInfo = {
-        nickname: info?.nickname || '',
-        introduction: info?.introduction || '',
-        organization: info?.organization || '',
-        techStacks: info?.techStacks || [],
-        profileColor: info.profileColor,
-        public: isPublic
-      };
-      console.log(updatedInfo, workExperiences);
-      const result = await setMyProfile(updatedInfo, workExperiences);
+  const { showToast } = useToast();
 
-      if (result?.success) {
-        alert('프로필 저장 성공!');
-      } else {
-        alert(result?.message || '프로필 저장 중 문제가 발생했습니다.');
-      }
-    } catch {
-      alert('프로필 저장 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleFileSelect = () => {
-    document.getElementById('fileInput')?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (file) {
-      setSelectedFile(file);
-      await handleUpload(file); // 파일 선택 후 바로 업로드 실행
-    }
-  };
-
-  const handleUpload = async (file: File) => {
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const result = await uploadPortfolio(formData);
-
-      if (result?.success) {
-        alert('파일 업로드 성공!');
-
-        const profileResult = await getMyProfile();
-        if (profileResult?.success) {
-          setUploadedFile(profileResult.data.portfolio);
-        } else {
-          alert(profileResult?.message || '프로필 갱신 중 문제가 발생했습니다.');
-        }
-      }
-    } catch {
-      alert('파일 업로드 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!uploadedFile) {
-      alert('삭제할 파일이 없습니다.');
-      return;
-    }
-
-    try {
-      const result = await deletePortfolio();
-
-      if (result?.success) {
-        alert('파일 삭제 성공!');
-        setSelectedFile(null);
-        setUploadedFile(null);
-      }
-    } catch {
-      alert('파일 삭제 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleToggle = async () => {
-    try {
-      const result = await toggleProfileVisibility();
-
-      if (result?.success) {
-        setIsPublic(prev => !prev);
-      }
-    } catch {
-      alert('프로필 공개 상태 변경 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleStackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-
-    const updatedTechStacks = [...new Set([...selectedOptions, ...info.techStacks])];
-
-    setInfo(prevInfo => ({
-      ...prevInfo,
-      techStacks: updatedTechStacks
-    }));
-
-    console.log(updatedTechStacks);
-  };
-
-  const handleStackRemove = (stack: string) => {
-    const updatedTechStacks = info.techStacks.filter(tech => tech !== stack);
-
-    setInfo(prevInfo => ({
-      ...prevInfo,
-      techStacks: updatedTechStacks
-    }));
-  };
-
-  const handleAddExperience = () => {
-    if (
-      !newExperience.activityName ||
-      !newExperience.startDate ||
-      !newExperience.endDate ||
-      !newExperience.description
-    ) {
-      alert('모든 필드를 입력해주세요.');
-      return;
-    }
-
-    setWorkExperiences(prev => [...prev, newExperience]);
-    setNewExperience({
-      activityName: '',
-      startDate: '',
-      endDate: '',
-      description: '',
-      techStacks: []
-    });
-  };
-
-  const handleDeleteExperience = (index: number) => {
-    setWorkExperiences(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const { profile, isLoading } = useProfile();
   useEffect(() => {
-    const stored = localStorage.getItem('applyInfo');
-    if (stored) {
-      setApplyInfo(JSON.parse(stored));
-    }
-    if (profile) {
-      console.log(profile);
-      setInfo(profile);
-    }
-  }, [profile, isPublic]);
+    const fetchApplications = async () => {
+      try {
+        if (projectId) {
+          const result = await getMyApplication(Number(projectId));
+          if (result?.success) {
+            console.log('파파파', result.data, isOwnProfile);
+            setApplyInfo(result.data);
 
-  if (isLoading) return <div>로딩 중...</div>;
+            setWorkExperiences(result.data.workExperiences);
+          }
+        }
+      } catch (error) {
+        console.error('지원서 조회 실패:', error);
+      }
+    };
+
+    fetchApplications();
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!projectId) {
+      if (myProfile) {
+        setInfo(myProfile);
+        setWorkExperiences(myProfile.workExperiences);
+      }
+    }
+  }, [projectId, myProfile]);
+
+  useEffect(() => {
+    const closeTooltips = () => setIsTechTooltipOpen(null);
+    document.addEventListener('click', closeTooltips);
+    return () => document.removeEventListener('click', closeTooltips);
+  }, []);
+  const needLoading = isLoadingOverall || !info || (!isOwnProfile && !applyInfo);
+
+  if (needLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  const portfolioFileName = isOwnProfile
+    ? info.portfolio?.fileName
+    : applyInfo?.portfolio?.fileName;
+
+  console.log(applyInfo);
+  const positionTitle =
+    positionData.find(position => position.id === applyInfo?.position)?.title ||
+    applyInfo?.position;
+
+  const stackLists = isOwnProfile
+    ? info.techStacks.map(id => {
+        const stack = techStacks.find(stack => stack.id === id);
+        return stack ? stack.title : id;
+      })
+    : applyInfo?.techStacks.map(id => {
+        const stack = techStacks.find(stack => stack.id === id);
+        return stack ? stack.title : id;
+      });
+  const visibleStacks = stackLists?.slice(0, 3);
+  const extraStacks = stackLists?.slice(3);
+  const extraStacksCount = extraStacks?.length;
+
+  const toggleTechTooltip = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsTechTooltipOpen(prev => (prev === index ? null : index));
+  };
+
+  const onSave = async () => {
+    const portfolio = isOwnProfile ? info.portfolio : applyInfo?.portfolio;
+    if (!portfolio) return;
+    try {
+      // 추후 해당 개념 정리 필요 (파일이 외부 서버에 있거나 CORS-정책이 있는 경우 download attribute가 작동하지 않을 수 있다.)
+      // 아래는 해당 문제를 우회하여 다운로드 하는 방식이다.
+      // 1. 원본 PDF를 fetch로 가져와서 blob으로 변환
+      const response = await fetch(portfolio.url, { mode: 'cors' });
+      if (!response.ok) throw new Error('파일을 가져오는 데 실패했습니다.');
+      const blob = await response.blob();
+
+      // 2. blob을 가리키는 객체 URL 생성
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // 3. 다운로드용 a 태그 만들기
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = portfolio.fileName || 'portfolio.pdf';
+      document.body.appendChild(link);
+      link.click();
+
+      // 4. 사용한 엘리먼트와 URL 정리
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error(err);
+      showToast('포트폴리오 저장 중 오류가 발생했습니다.', false);
+    }
+  };
+  const onView = () => {
+    const portfolio = isOwnProfile ? info.portfolio : applyInfo?.portfolio;
+    if (!portfolio) return;
+    window.open(portfolio.url, '_blank');
+  };
+
+  const handleClose = () => {
+    window.close();
+  };
+
+  if (isLoadingOverall) {
+    return <div className="min-h-[500px]">로딩 중...</div>;
+  }
+
   return (
     <div className="mx-60">
       <div className="border-[#000000]/20 border-2 rounded-xl p-10 px-20 min-h-screen">
-        <section className="flex px-8 space-x-4 items-center">
-          <div
-            className="w-[40px] h-[40px] rounded-full"
-            style={{ backgroundColor: `#${info.profileColor}` }}
-          ></div>
-          <div className="text-[24px] font-bold">{info.nickname}님의 지원서입니다.</div>
+        <section className="flex space-x-4 items-center">
+          {isOwnProfile ? (
+            <div
+              className="w-[36px] h-[36px] rounded-full"
+              style={{ backgroundColor: `#${info.profileColor}` }}
+            ></div>
+          ) : (
+            <div
+              className="w-[36px] h-[36px] rounded-full"
+              style={{ backgroundColor: `#${applyInfo?.profileColor}` }}
+            ></div>
+          )}
+          {isOwnProfile ? (
+            <div className="text-[24px] font-bold">
+              {info.nickname.split(/(#\d+)/)}님의 지원서입니다.
+            </div>
+          ) : (
+            <div className="text-[24px] font-bold">
+              {applyInfo?.nickname.split(/(#\d+)/)}님의 지원서입니다.
+            </div>
+          )}
         </section>
 
-        <div className="mt-16 px-8 text-[28px] font-black font-inter">RESUME.</div>
+        <div className="mt-16 px-8 text-[28px] font-black">RESUME.</div>
         <hr className="mt-6 w-full h-[2px] bg-[#000000]/60 border-none" />
 
-        <section className="flex space-x-12 p-8 items-center font-inter">
-          <div className="font-black text-[20px] w-[200px]">지원 포지션</div>
-          <div className="">{applyInfo.position}</div>
+        <section className="flex space-x-12 p-8 items-center">
+          <div className="font-bold text-[20px] w-[200px]">지원 포지션</div>
+          <div className="text-[18px]">{positionTitle}</div>
         </section>
         <hr className="w-full h-[1px] bg-[#000000]/60 border-none" />
         <div className="">
-          <section className="flex space-x-12 p-8 items-center font-inter">
-            <div className="font-black text-[20px] w-[200px]">소속</div>
-            <div className="">{info.organization}</div>
+          <section className="flex space-x-12 p-8 items-center">
+            <div className="font-bold text-[20px] w-[200px]">소속</div>
+            {isOwnProfile ? (
+              <div className="text-[18px]">{info.organization}</div>
+            ) : (
+              <div className="text-[18px]">{applyInfo?.organization}</div>
+            )}
           </section>
-          <section className="flex space-x-12 p-8 items-center font-inter">
-            <div className="font-black text-[20px] w-[200px]">사용 기술 스택</div>
-            <div className="">{info.techStacks.join(', ')}</div>
-          </section>
-          <section className="flex space-x-12 p-8 items-start font-inter">
-            <div className="font-black text-[20px] w-[200px]">활동 내역</div>
-            <div className="flex flex-col">
-              {workExperiences.map((exp, index) => (
-                <div key={index}>
-                  {index > 0 && <hr className="w-full h-[1px] bg-[#000000]/20 border-none my-8" />}
-                  <div className="font-bold text-[20px]">
-                    {exp.activityName} ({exp.startDate} ~ {exp.endDate})
-                  </div>
-                  <div className="text-[16px] text-gray-500 mt-1">{exp.techStacks.join(', ')}</div>
-                  <div className="mt-2">{exp.description}</div>
+          <section className="flex space-x-12 p-8 items-center">
+            <div className="font-bold text-[20px] w-[200px]">사용 기술 스택</div>
+            <div className="text-[18px]">
+              {
+                <div className="flex items-center space-x-4">
+                  {visibleStacks?.map((item, index) => {
+                    const imageSrc = getStackImage(item.toUpperCase());
+                    return imageSrc ? (
+                      <img key={index} src={imageSrc} alt={item} className="w-8 h-8" />
+                    ) : null;
+                  })}
+
+                  {extraStacksCount && extraStacksCount > 0 && (
+                    <div className="relative">
+                      <div
+                        className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
+                        onClick={e => toggleTechTooltip(9999, e)}
+                      >
+                        +{extraStacksCount}
+                      </div>
+
+                      {isTechTooltipOpen === 9999 && (
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
+                          <div className="flex space-x-2">
+                            {extraStacks.map((item, i) => {
+                              const imageSrc = getStackImage(item.toUpperCase());
+                              return imageSrc ? (
+                                <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
+                              ) : null;
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              ))}
+              }
             </div>
           </section>
-          {/* <hr className="w-full h-[1px] bg-[#000000]/60 border-none" /> */}
+          <section className="flex space-x-12 p-8 items-start font-inter">
+            <div className="font-bold text-[20px] w-[200px]">활동 내역</div>
+            <div className="flex flex-col">
+              {workExperiences.map((exp, index) => {
+                const visibleTechStacks = exp.techStacks.slice(0, 3); // 상위 3개만 보이기
+                const extraTechStacks = exp.techStacks.slice(3); // 나머지 숨김
+                const extraTechStacksCount = extraTechStacks.length;
+
+                return (
+                  <div key={index}>
+                    {index > 0 && (
+                      <hr className="w-full h-[1px] bg-[#000000]/20 border-none my-8" />
+                    )}
+                    <div className="font-semibold text-[18px]">
+                      {exp.activityName} ({exp.startDate} ~ {exp.endDate})
+                    </div>
+
+                    {/* 기술 스택 리스트 */}
+                    <div className="flex items-center space-x-4 mt-4">
+                      {/* 보이는 기술 스택 */}
+                      {visibleTechStacks.map((item, index) => {
+                        const imageSrc = getStackImage(item.toUpperCase());
+                        return imageSrc ? (
+                          <img key={index} src={imageSrc} alt={item} className="w-8 h-8" />
+                        ) : null;
+                      })}
+
+                      {/* 추가 기술 스택 버튼 */}
+                      {extraTechStacksCount > 0 && (
+                        <div className="relative">
+                          <div
+                            className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
+                            onClick={e => toggleTechTooltip(index, e)}
+                          >
+                            +{extraTechStacksCount}
+                          </div>
+
+                          {/* 기술 스택 툴팁 */}
+                          {isTechTooltipOpen === index && (
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
+                              <div className="flex space-x-2">
+                                {extraTechStacks.map((item, i) => {
+                                  const imageSrc = getStackImage(item.toUpperCase());
+                                  return imageSrc ? (
+                                    <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
+                                  ) : null;
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-10 text-[#202123]">{exp.description}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
 
           <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
           <section className="flex space-x-12 p-8 items-center font-inter">
-            <div className="font-black text-[20px] w-[200px]">간단 자기어필</div>
-            <div className="">{applyInfo.message}</div>
+            <div className="font-bold text-[20px] w-[200px]">간단 자기 어필</div>
+            <div className="text-[#202123] max-w-[550px] break-words text-balance whitespace-pre-line text-[18px]">
+              {applyInfo?.message}
+            </div>
           </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
           <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
-          <section className="p-8">포트폴리오 영역</section>
+          <section className="flex justify-between m-10 items-center">
+            <div className="font-bold text-[18px] w-[200px]">{portfolioFileName}</div>
+
+            <div className="flex space-x-8">
+              <button
+                onClick={onSave}
+                className="px-8 py-2 bg-[#000000] text-[#FFFFFF] rounded-[16px] font-semibold"
+              >
+                저장
+              </button>
+              <button
+                onClick={onView}
+                className="px-8 py-2 bg-[#000000]/10 text-[#202123] rounded-[16px] font-semibold"
+              >
+                보기
+              </button>
+            </div>
+          </section>
           <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
-          <section className=" justify-self-center py-10">
-            <button className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-bold">
-              확인
+          <section className="justify-self-center py-10">
+            <button
+              onClick={handleClose}
+              className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-semibold"
+            >
+              닫기
             </button>
           </section>
         </div>
       </div>
     </div>
-    // <div className="mx-60 space-y-6">
-    //   <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
-    //     <section className="p-6 flex flex-col items-center text-    center">
-    //       <div
-    //         className="w-[100px] h-[100px] rounded-full mb-8"
-    //         style={{ backgroundColor: `#${info.profileColor}` }}
-    //       ></div>
-    //       <div>
-    //         <button
-    //           className="w-[50px] h-[50px] rounded-full mb-8 relative"
-    //           style={{ backgroundColor: `#${info.profileColor}` }}
-    //         ></button>
-    //         <h1 className="text-[30px] font-bold mb-8">{info.nickname}님의 지원서입니다.</h1>
-    //       </div>
-    //       <div>
-    //         <div>RESUME.</div>
-    //       </div>
-    //     </section>
-    //     <hr className="w-[2px] h-12 bg-[#000000] border-none" />
-    //     <section className="bg-white p-6 mb-4">
-    //       <div className="flex items-center justify-between mb-10">
-    //         <label htmlFor="position" className="text-[18px] font-bold">
-    //           지원 포지션
-    //         </label>
-    //         <input
-    //           id="organization"
-    //           type="text"
-    //           value={info.organization || ''}
-    //           placeholder="소속을 입력해주세요. ex) OO회사 OO 부서, OO대학교 OO학과"
-    //           onChange={e => setInfo({ ...info, organization: e.target.value })}
-    //           className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-[#000000]/20 rounded-[30px] focus:outline-none"
-    //         />
-    //       </div>
-    //       <hr className="w-[1px] h-12 bg-[#000000]/60 border-none" />
-
-    //       <div className="flex items-center justify-between">
-    //         <label htmlFor="tech-stack" className="text-[18px] font-bold">
-    //           사용 기술 스택
-    //         </label>
-    //         <div className="w-[650px]">
-    //           <MultiSelection
-    //             title="기술 스택을 선택하세요."
-    //             options={stackList.map(tech => tech.title)}
-    //             selectedOptions={selectedStacks.map(
-    //               id => stackList.find(tech => tech.id === id)?.title || ''
-    //             )}
-    //             setSelectedOptions={selectedTechs => {
-    //               const selectedIds = stackList
-    //                 .filter(tech => selectedTechs.includes(tech.title))
-    //                 .map(tech => tech.id);
-    //               setSelectedStacks(selectedIds);
-    //             }}
-    //           />
-    //         </div>
-    //       </div>
-    //     </section>
-
-    //     <section className="bg-white p-6 mb-4">
-    //       <div className="flex items-center justify-between mb-10">
-    //         <h3 className="text-lg font-semibold">활동 경력</h3>
-    //         <WorkExperienceModal />
-    //       </div>
-
-    //       <div className="space-y-4">
-    //         {workExperiences.map((experience, index) => (
-    //           <div key={index} className="flex justify-between items-center border-b pb-2">
-    //             <div>
-    //               <p className="font-semibold">{experience.activityName}</p>
-    //               <p className="text-sm text-gray-600">
-    //                 활동일 | {experience.startDate} ~ {experience.endDate}
-    //               </p>
-    //             </div>
-    //             <button
-    //               onClick={() => handleDeleteExperience(index)}
-    //               className="text-red-500 hover:text-red-600"
-    //             >
-    //               삭제
-    //             </button>
-    //           </div>
-    //         ))}
-    //       </div>
-    //       <div className="mt-4 space-y-2">
-    //         <input
-    //           type="text"
-    //           placeholder="활동 제목"
-    //           value={newExperience.activityName}
-    //           onChange={e => setNewExperience({ ...newExperience, activityName: e.target.value })}
-    //           className="border rounded w-full p-2"
-    //         />
-    //         <div className="flex space-x-2">
-    //           <input
-    //             type="date"
-    //             value={newExperience.startDate}
-    //             onChange={e => setNewExperience({ ...newExperience, startDate: e.target.value })}
-    //             className="border rounded w-full p-2"
-    //           />
-    //           <input
-    //             type="date"
-    //             value={newExperience.endDate}
-    //             onChange={e => setNewExperience({ ...newExperience, endDate: e.target.value })}
-    //             className="border rounded w-full p-2"
-    //           />
-    //         </div>
-    //         <input
-    //           type="text"
-    //           placeholder="세부설명"
-    //           value={newExperience.description}
-    //           onChange={e => setNewExperience({ ...newExperience, description: e.target.value })}
-    //           className="border rounded w-full p-2"
-    //         />
-    //       </div>
-    //     </section>
-
-    //     <section className="bg-white p-6 mb-4">
-    //       <h3 className="text-lg font-semibold mb-4">간단 자기소개</h3>
-    //       <textarea
-    //         value={info.introduction || ''}
-    //         placeholder="300자 이내로 자신을 소개해 보세요!"
-    //         onChange={e => setInfo({ ...info, introduction: e.target.value })}
-    //         className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none"
-    //       ></textarea>
-    //     </section>
-    //     <section className="bg-white p-6">
-    //       <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
-    //       <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
-    //         <div className="w-[600px]">
-    //           {uploadedFile ? (
-    //             <a
-    //               href={uploadedFile.url}
-    //               download={uploadedFile.fileName}
-    //               className="font-semibold text-blue-500 hover:underline ml-4"
-    //             >
-    //               {uploadedFile.fileName}
-    //             </a>
-    //           ) : (
-    //             <span className="text-gray-500 ml-4">선택된 파일 없음</span>
-    //           )}
-    //         </div>
-    //         <input
-    //           id="fileInput"
-    //           type="file"
-    //           accept=".pdf"
-    //           onChange={handleFileChange}
-    //           className="hidden"
-    //         />
-
-    //         <div className="flex space-x-4">
-    //           <button
-    //             onClick={handleFileSelect}
-    //             className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600"
-    //           >
-    //             업로드
-    //           </button>
-
-    //           <button
-    //             onClick={handleDelete}
-    //             disabled={!uploadedFile}
-    //             className={`text-[12px] font-bold px-6 py-2 rounded-[20px] ${
-    //               uploadedFile
-    //                 ? 'bg-[#F24E1E] text-white hover:bg-red-600'
-    //                 : 'bg-gray-300 text-gray-500'
-    //             }`}
-    //           >
-    //             삭제
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </section>
-    //     <section className="mt-20 p-6 flex flex-col items-center text-center">
-    //       <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
-
-    //       <div className="self-end space-x-2 inline-flex items-center cursor-pointer">
-    //         <span className="ms-3 text-sm font-semibold text-[#B4B4B4] dark:text-gray-300">
-    //           상세 프로필 공개 여부
-    //         </span>
-    //         <label className="inline-flex items-center cursor-pointer">
-    //           <input
-    //             type="checkbox"
-    //             checked={isPublic}
-    //             onChange={handleToggle}
-    //             value=""
-    //             className="sr-only peer"
-    //           />
-
-    //           <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-    //         </label>
-    //       </div>
-    //     </section>
-    //     <section className="bg-white p-6">
-    //       <h3 className="text-lg font-semibold mb-4">모집 현황</h3>
-    //       <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px]">16</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
-    //         </div>
-
-    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
-
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px]">10</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
-    //         </div>
-
-    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
-
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px]">6</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
-    //         </div>
-    //       </div>
-    //     </section>
-    //     <section className="bg-white p-6">
-    //       <h3 className="text-lg font-semibold mb-4">지원 현황</h3>
-    //       <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px]">16</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
-    //         </div>
-
-    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
-
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px]">10</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
-    //         </div>
-
-    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
-
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px] text-[#3387E5]">6</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">승인</div>
-    //         </div>
-    //         <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
-
-    //         <div className="flex flex-col items-center">
-    //           <div className="font-bold text-[20px] text-[#F24E1E]">6</div>
-    //           <div className="font-semibold text-[#B4B4B4] text-[12px]">거절</div>
-    //         </div>
-    //       </div>
-    //     </section>
-    //   </div>
-    // </div>
   );
 };
 

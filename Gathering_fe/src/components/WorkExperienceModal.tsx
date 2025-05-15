@@ -3,6 +3,7 @@ import DatePicker from 'react-tailwindcss-datepicker';
 import MultiSelection from '@/components/MultiSelection';
 import { techStacks } from '@/utils/tech-stacks';
 import { WorkExperience } from '@/types/profile';
+import { useToast } from '@/contexts/ToastContext';
 
 interface TechStack {
   id: string;
@@ -20,6 +21,8 @@ interface DateRange {
 
 const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => {
   const [stackList] = useState<TechStack[]>([...techStacks]);
+  const { showToast } = useToast();
+
   const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
   const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
@@ -40,19 +43,19 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
     description: '',
     techStacks: []
   });
-  const handleDateChange = (newValue: DateRange) => {
-    const startDate = newValue.startDate
-      ? new Date(newValue.startDate).toISOString().split('T')[0]
-      : '';
-    const endDate = newValue.endDate ? new Date(newValue.endDate).toISOString().split('T')[0] : '';
+  // const handleDateChange = (newValue: DateRange) => {
+  //   const startDate = newValue.startDate
+  //     ? new Date(newValue.startDate).toISOString().split('T')[0]
+  //     : '';
+  //   const endDate = newValue.endDate ? new Date(newValue.endDate).toISOString().split('T')[0] : '';
 
-    setDateRange({ startDate, endDate });
-    setNewExperience(prev => ({
-      ...prev,
-      startDate,
-      endDate
-    }));
-  };
+  //   setDateRange({ startDate, endDate });
+  //   setNewExperience(prev => ({
+  //     ...prev,
+  //     startDate,
+  //     endDate
+  //   }));
+  // };
 
   const handleAddExperience = () => {
     console.log('저장된 경험:', newExperience);
@@ -63,16 +66,15 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
       !newExperience.description
     ) {
       console.log(newExperience);
-      alert('모든 필드를 입력해주세요.');
+      showToast('모든 필드를 입력해주세요.', false);
       return;
     }
 
-    onSave({
-      ...newExperience,
-      techStacks: selectedStacks
-    });
+    onSave({ ...newExperience, techStacks: selectedStacks });
+
     closeModal();
     resetForm();
+    showToast('활동 경력을 모두 입력 후 반드시 프로필 저장 버튼을 눌러 저장해주세요.', true);
   };
 
   const resetForm = () => {
@@ -84,7 +86,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
       techStacks: []
     });
     setSelectedStacks([]);
-    setDateRange({ startDate: '', endDate: '' });
+    setValue({ startDate: null, endDate: null });
   };
   //   console.log(newExperience);
   //   setWorkExperiences(prev => [...prev, newExperience]);
@@ -119,12 +121,12 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
           aria-hidden="true"
         >
-          <div className="relative p-6 w-full max-w-[800px] max-h-full bg-white rounded-lg shadow-lg dark:bg-gray-700">
+          <div className="relative p-4 w-full max-w-[800px] max-h-[94vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn will-change-[opacity]">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
                 활동 경력을 입력해주세요.
               </h3>
               <button
@@ -161,6 +163,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                 <div className="flex items-center gap-4">
                   <label className="w-36 font-semibold text-gray-700 dark:text-white">활동명</label>
                   <input
+                    maxLength={100}
                     onChange={e =>
                       setNewExperience(prev => ({
                         ...prev,
@@ -181,8 +184,10 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                   </label>
                   <div className="flex-1">
                     <DatePicker
+                      readOnly={true}
                       startWeekOn="mon"
                       value={value}
+                      inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
                       onChange={newValue => {
                         if (newValue) {
                           setValue(newValue);
@@ -242,17 +247,23 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                     onChange={e =>
                       setNewExperience({ ...newExperience, description: e.target.value })
                     }
+                    maxLength={500}
                     placeholder="활동 경력에 대해 간략히 설명해주세요!"
                     className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[180px] p-4 px-6 h-24 resize-none focus:outline-none"
                   ></textarea>
+                  <div className="text-right mt-1 text-gray-600">
+                    {newExperience.description.length}/500
+                  </div>
                 </section>
-                <button
-                  onClick={handleAddExperience}
-                  type="button"
-                  className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  저장하기
-                </button>
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleAddExperience}
+                    type="button"
+                    className="px-[180px] text-white bg-[#3387E5] hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-[30px] text-[16px] py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    저장하기
+                  </button>
+                </div>
               </form>
             </div>
           </div>

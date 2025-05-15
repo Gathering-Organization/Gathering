@@ -4,14 +4,14 @@ import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.global.enums.SearchType;
 import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.global.response.ResultResponse;
 import com.Gathering_be.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/project")
@@ -31,17 +31,44 @@ public class ProjectController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, project));
     }
 
-    @GetMapping
-    public ResponseEntity<ResultResponse> getAllProjects() {
-        List<ProjectSimpleResponse> projects = projectService.getAllProjects();
+    @GetMapping("/pagination")
+    public ResponseEntity<ResultResponse> getAllProjects(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "-createdAt") String sort,
+                                                         @RequestParam(defaultValue = "ALL") String position,
+                                                         @RequestParam(required = false) String techStack,
+                                                         @RequestParam(defaultValue = "ALL") String type,
+                                                         @RequestParam(defaultValue = "ALL") String mode,
+                                                         @RequestParam(required = false) Boolean isClosed,
+                                                         @RequestParam(required = false) SearchType searchType,
+                                                         @RequestParam(required = false) String keyword
+    ) {
+        Page<ProjectSimpleResponse> projects = projectService.searchProjectsWithFilters(
+                page, 18, sort, position, techStack, type, mode, isClosed, searchType, keyword
+        );
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
+    }
+
+    @GetMapping("/pagination/my-project")
+    public ResponseEntity<ResultResponse> getProjectsByNickname(@RequestParam String nickname,
+                                                                @RequestParam(defaultValue = "1") int page,
+                                                                @RequestParam(required = false) Boolean isClosed
+    ) {
+        Page<ProjectSimpleResponse> projects = projectService.getProjectsByNickname(nickname, page, 18, isClosed);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResultResponse> updateProject(@PathVariable Long id,
-                                                        @RequestBody ProjectUpdateRequest request) {
+                                                        @RequestBody ProjectUpdateRequest request
+    ) {
         projectService.updateProject(id, request);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_UPDATE_SUCCESS));
+    }
+
+    @PutMapping("/toggle/isClosed/{id}")
+    public ResponseEntity<ResultResponse> toggleIsClosed(@PathVariable Long id) {
+        projectService.toggleProjectRecruitment(id);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_VISIBILITY_UPDATE_SUCCESS));
     }
 
     @DeleteMapping("/{id}")
