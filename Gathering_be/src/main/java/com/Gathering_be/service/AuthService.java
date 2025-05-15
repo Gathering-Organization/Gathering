@@ -41,12 +41,10 @@ public class AuthService {
 
     @Transactional
     public void signUp(SignUpRequest request) {
-        if (memberRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateEmailException();
-        }
+        String verified = redisService.getValues("verified:" + request.getEmail() + request.getCode());
+        if (verified == null) { throw new EmailNotVerified(); }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-
         Member member = Member.localBuilder()
                 .email(request.getEmail())
                 .name(request.getName())
@@ -93,10 +91,6 @@ public class AuthService {
     }
 
     private String generateUniqueNickname(String baseName) {
-        if (!profileRepository.existsByNickname(baseName)) {
-            return baseName;
-        }
-
         while (true) {
             int randomNumber = (int) (Math.random() * 900000) + 100000;
             String nickname = baseName + "#" + randomNumber;

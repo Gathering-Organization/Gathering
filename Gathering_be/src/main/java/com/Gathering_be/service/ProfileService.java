@@ -24,17 +24,15 @@ public class ProfileService {
         Profile profile = getProfileByMemberId(getCurrentUserId());
 
         if (request.getNickname() != null && !request.getNickname().equals(profile.getNickname())) {
-            if (profileRepository.existsByNickname(request.getNickname())) {
-                String baseNickname = request.getNickname();
-                String uniqueNickname = generateUniqueNickname(baseNickname);
-                request = ProfileUpdateRequest.builder()
-                        .nickname(uniqueNickname)
-                        .introduction(request.getIntroduction())
-                        .organization(request.getOrganization())
-                        .techStacks(request.getTechStacks())
-                        .workExperiences(request.getWorkExperiences())
-                        .build();
-            }
+            String baseNickname = request.getNickname();
+            String uniqueNickname = generateUniqueNickname(baseNickname);
+            request = ProfileUpdateRequest.builder()
+                    .nickname(uniqueNickname)
+                    .introduction(request.getIntroduction())
+                    .organization(request.getOrganization())
+                    .techStacks(request.getTechStacks())
+                    .workExperiences(request.getWorkExperiences())
+                    .build();
         }
         profile.update(request);
     }
@@ -70,13 +68,20 @@ public class ProfileService {
     public ProfileResponse getProfileById(Long profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(ProfileNotFoundException::new);
-        return ProfileResponse.from(profile, false);
+        return ProfileResponse.from(profile, false, s3Service);
     }
 
     public ProfileResponse getMyProfile() {
         Profile profile = getProfileByMemberId(getCurrentUserId());
-        return ProfileResponse.from(profile, true);
+        return ProfileResponse.from(profile, true, s3Service);
     }
+
+    public ProfileResponse getProfileByNickname(String nickname) {
+        Profile profile = profileRepository.findByNickname(nickname)
+                .orElseThrow(ProfileNotFoundException::new);
+        return ProfileResponse.from(profile, false, s3Service);
+    }
+
 
     private Profile getProfileByMemberId(Long memberId) {
         return profileRepository.findByMemberId(memberId)
@@ -85,12 +90,6 @@ public class ProfileService {
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-    }
-
-    public ProfileResponse getProfileByNickname(String nickname) {
-        Profile profile = profileRepository.findByNickname(nickname)
-                .orElseThrow(ProfileNotFoundException::new);
-        return ProfileResponse.from(profile, false);
     }
 
     private String generateUniqueNickname(String baseNickname) {

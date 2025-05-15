@@ -2,6 +2,9 @@ package com.Gathering_be.domain;
 
 import com.Gathering_be.dto.request.ProfileUpdateRequest;
 import com.Gathering_be.global.common.BaseTimeEntity;
+import com.Gathering_be.global.enums.ApplyStatus;
+import com.Gathering_be.global.enums.TechStack;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,17 +31,21 @@ public class Profile extends BaseTimeEntity {
     private String nickname;
 
     private String profileColor = "000000";
+
+    @Column(columnDefinition = "TEXT")
     private String introduction;
 
     @Embedded
     private Portfolio portfolio;
 
+    @JsonProperty("public")
     private boolean isPublic;
     private String organization;
 
-    @ElementCollection
+    @ElementCollection(targetClass = TechStack.class)
+    @Enumerated(EnumType.STRING)
     @CollectionTable(name = "tech_stacks", joinColumns = @JoinColumn(name = "profile_id"))
-    private Set<String> techStacks = new HashSet<>();
+    private Set<TechStack> techStacks = new HashSet<>();
 
     @ElementCollection
     @CollectionTable(name = "work_experiences", joinColumns = @JoinColumn(name = "profile_id"))
@@ -46,6 +53,15 @@ public class Profile extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "profile")
     private Set<ProjectTeams> teams = new HashSet<>();
+
+    private int totalProjects;
+    private int openedProjects;
+    private int closedProjects;
+
+    private int totalApplications;
+    private int pendingApplications;
+    private int approvedApplications;
+    private int rejectedApplications;
 
     @Builder
     public Profile(Member member, String nickname, String profileColor,
@@ -93,5 +109,49 @@ public class Profile extends BaseTimeEntity {
 
     public void togglePublic() {
         this.isPublic = !this.isPublic;
+    }
+
+    public void addProject() {
+        totalProjects++;
+        openedProjects++;
+    }
+
+    public void removeProject(boolean isClosed) {
+        totalProjects--;
+        if (isClosed) {
+            closedProjects--;
+        } else {
+            openedProjects--;
+        }
+    }
+
+    public void toggleProjectStatus(boolean isClosing) {
+        if (isClosing) {
+            openedProjects--;
+            closedProjects++;
+        } else {
+            openedProjects++;
+            closedProjects--;
+        }
+    }
+
+    public void addApplication() {
+        totalApplications++;
+        pendingApplications++;
+    }
+
+    public void removePendingApplication() {
+        totalApplications--;
+        pendingApplications--;
+    }
+
+    public void updateApplicationStatus(ApplyStatus newStatus) {
+        pendingApplications--;
+
+        if (newStatus == ApplyStatus.APPROVED) {
+            approvedApplications++;
+        } else if (newStatus == ApplyStatus.REJECTED) {
+            rejectedApplications++;
+        }
     }
 }

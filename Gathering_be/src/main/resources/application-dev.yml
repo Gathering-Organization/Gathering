@@ -23,6 +23,15 @@ spring:
       host: ${SPRING_REDIS_HOST}
       port: ${SPRING_REDIS_PORT}
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GATHERING_GMAIL_USERNAME}
+    password: ${GATHERING_GMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 jwt:
   secret: ${JWT_SECRET}
   token-validity-in-seconds: 60

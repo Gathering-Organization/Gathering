@@ -39,7 +39,10 @@ public class SecurityConfig {
 
     private static final String[] PERMITTED_API_URL = {
             "/api/auth/**",
-            "/actuator/prometheus"
+            "/api/verify/**",
+            "/actuator/prometheus",
+            "/api/project/pagination",
+            "/api/profile/nickname/**"
     };
 
     @Bean
@@ -47,7 +50,7 @@ public class SecurityConfig {
     public SecurityFilterChain swaggerFilterChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher("/swagger-ui/**", "/v3/api-docs/**")
-                .authorizeHttpRequests(authz -> authz
+                .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> basic
@@ -72,7 +75,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(PERMITTED_API_URL).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/project").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
