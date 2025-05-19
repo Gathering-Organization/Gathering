@@ -36,7 +36,7 @@ const Header: React.FC = () => {
 
           <section className="flex items-center text-[#3f3f3f] text-[20px] font-bold space-x-4">
             <button
-              className="border-[#000000]/20 border-[1px] text-[16px] font-bold border-solid rounded-[20px] px-4 py-1 hover:bg-[#B4B4B4]/30"
+              className="absolute focus:outline-none right-[360px] bg-[#3387E5] hover:bg-[#1c6ed1] text-[16px] text-white font-bold border-solid rounded-[20px] px-4 py-1 transition-all duration-200 shadow-sm hover:shadow-md"
               onClick={onClickPostingButton}
             >
               모집글 작성하기
