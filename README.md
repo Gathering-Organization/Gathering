@@ -7,7 +7,7 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 
 |                                        FE                                        |                                        BE                                        |
 | :------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: |
-| <img width="130px" src="https://avatars.githubusercontent.com/hi2242/" /> | <img width="130px" src="https://avatars.githubusercontent.com/ChoiBoKeun1" /> |
+| <img width="130px" src="https://avatars.githubusercontent.com/hi2242" /> | <img width="130px" src="https://avatars.githubusercontent.com/ChoiBoKeun1" /> |
 | 인하대학교 전기전자공학부 20| 인하대학교 컴퓨터공학부 18|
 |                                      윤종근                                      |                                      최보근                                      |
 |                  [@hi2242](https://github.com/hi2242)                            |                 [@ChoiBoKeun1](https://github.com/ChoiBoKeun1)                   |
