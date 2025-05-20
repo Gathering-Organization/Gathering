@@ -73,11 +73,10 @@ const ApplyModal: React.FC = () => {
       <div className="flex flex-col items-center mt-10">
         <button
           onClick={openModal}
-          className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+          className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
         >
           지원하기
         </button>
-
         {isModalOpen && (
           <div
             className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
