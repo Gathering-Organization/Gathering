@@ -39,14 +39,8 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 > 또한 이 외에도 자신과 비슷한 수준의 실력을 가진 사람들과 프로필을 공유하여 대회를 참가하거나 스터디를 진행할 수도 있습니다.
 
 ## 3. 프로젝트 Workflows
-<pre> ```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
- </pre>
+<pre> ```mermaid flowchart TD %% 스타일 정의 classDef host fill:#cce5ff,stroke:#3399ff,stroke-width:2px; classDef user fill:#d4edda,stroke:#28a745,stroke-width:2px; classDef admin fill:#f8d7da,stroke:#dc3545,stroke-width:2px; %% 시작 A[회원가입] --> B[이메일 로그인] B --> C{로그인} D[구글 로그인] --> C %% 모집자 플로우 C --> T["👤 모집자"] --> P1[프로필 등록] T --> Post[모집글 등록] --> Y[지원서 조회] --> Y2[지원자 승인/거절] Y2 -->|승인| T3[오픈 링크 공유] --> T1[프로젝트 진행] Y2 -->|거절| T2[다른 지원자 모집] class T,T1,T2,T3,Post,P1,Y,Y2 host %% 지원자 플로우 C --> S["🧑‍💻 지원자"] --> P2[프로필 등록] S --> S1[모집글 조회] --> S2[모집자 프로필 조회] --> S3[모집글 지원] S3 -->|승인| N3[오픈 링크 공유] --> N1[프로젝트 진행] S3 -->|거절| N2[다른 모집글 지원] class S,S1,S2,S3,N1,N2,N3,P2 user %% 관리자 플로우 C --> Z["🛠️ 관리자"] Z --> Z1[회원 관리] Z --> Z2[이벤트성 프로젝트] class Z,Z1,Z2 admin ``` </pre>
+
 <!--![image](https://github.com/hi2242/사진링크)-->
 
 ## 4. 프로젝트 기획 의도
