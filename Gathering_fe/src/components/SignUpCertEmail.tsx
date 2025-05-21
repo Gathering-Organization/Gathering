@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { signup, certEmail, certCode } from '@/services/authApi';
 import { SignupRequest } from '@/types/auth';
 import axios from 'axios';
+import { useToast } from '@/contexts/ToastContext';
 
 interface SignUpAgreeProps {
   setStep: React.Dispatch<React.SetStateAction<number>>;
@@ -18,6 +19,9 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [timer, setTimer] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const regexNickname = /[가-힣]{1,6}/;
+  const regexPass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=~`[\]{}|\\:;"'<>,.?/]).{8,}$/;
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (timer === 0) {
@@ -88,7 +92,17 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
   const handleSignUp = async () => {
     if (!isEmailVerified) {
-      alert('이메일 인증을 완료하세요.');
+      showToast('이메일 인증을 완료하세요.', false);
+      return;
+    }
+
+    if (!regexNickname.test(formData.name)) {
+      showToast('한글 6자 이하의 닉네임으로 설정해주세요.', false);
+      return;
+    }
+
+    if (!regexPass.test(formData.password)) {
+      showToast('8자리 이상 영문, 숫자, 특수문자 포함한 패스워드로 설정해주세요.', false);
       return;
     }
 
@@ -188,12 +202,12 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               onChange={handleInputChange}
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
-              placeholder="비밀번호를 입력하세요."
+              placeholder="8자리 이상 영문, 숫자, 특수문자 포함"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-24 font-bold text-[#202123]">이름</div>
+            <div className="w-24 font-bold text-[#202123]">닉네임</div>
             <input
               type="text"
               name="name"
@@ -202,7 +216,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               onChange={handleInputChange}
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
-              placeholder="이름을 입력하세요."
+              placeholder="한글 6자 이하의 닉네임"
             />
           </div>
         </div>

@@ -17,7 +17,7 @@ const SignUpCelebrate: React.FC = () => {
       <div className="mt-20">
         <button
           onClick={() => {
-            nav('/posthome');
+            nav('/');
           }}
           className="font-semibold text-[#FFFFFF] rounded-[20px] text-[18px] px-12 py-2 bg-[#3387E5] hover:bg-blue-700"
         >

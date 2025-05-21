@@ -29,7 +29,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
 
   const handleUpdateNickname = async () => {
     try {
-      if (regex.test(newNickname)) {
+      if (!regex.test(newNickname)) {
         showToast('한글 6자 이하의 닉네임으로 변경해주세요.', false);
       } else {
         const result = await setMyNickname(newNickname);
