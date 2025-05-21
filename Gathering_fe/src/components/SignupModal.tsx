@@ -13,7 +13,8 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose, onLoginClick
   const [formData, setFormData] = useState<SignupRequest>({
     email: '',
     name: '',
-    password: ''
+    password: '',
+    code: ''
   });
   const [confirmPassword, setConfirmPassword] = useState('');
 

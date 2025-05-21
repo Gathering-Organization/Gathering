@@ -15,6 +15,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   const [newNickname, setNewNickname] = useState(nickname);
   const { myProfile, updateProfileData } = useProfile();
   const { showToast } = useToast();
+  const regex = /^[가-힣]{1,6}$/;
   useModalBodyLock(isModalOpen);
   const openModal = () => {
     setIsModalOpen(true);
@@ -28,39 +29,23 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
 
   const handleUpdateNickname = async () => {
     try {
-      const result = await setMyNickname(newNickname);
-      if (result?.success) {
-        console.log(nickname);
-        updateProfileData({ nickname: newNickname });
-        showToast('닉네임이 성공적으로 변경되었습니다.', true);
-        closeModal();
+      if (regex.test(newNickname)) {
+        showToast('한글 6자 이하의 닉네임으로 변경해주세요.', false);
       } else {
-        showToast('닉네임 변경 중 문제가 발생했습니다.', false);
+        const result = await setMyNickname(newNickname);
+        if (result?.success) {
+          console.log(nickname);
+          updateProfileData({ nickname: newNickname });
+          showToast('닉네임이 성공적으로 변경되었습니다.', true);
+          closeModal();
+        } else {
+          showToast('닉네임 변경 중 문제가 발생했습니다.', false);
+        }
       }
     } catch {
       showToast('닉네임 변경 중 문제가 발생했습니다.', false);
     }
   };
-
-  // const handleUpdateNickname = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!nicknameInfo.trim()) {
-  //     alert('닉네임을 입력해주세요.');
-  //     return;
-  //   }
-
-  //   try {
-  //     const result = await setMyNickname(nickname);
-
-  //     if (result?.success) {
-  //       alert('닉네임 저장 성공!');
-  //     } else {
-  //       alert(result?.message || '닉네임 저장 중 문제가 발생했습니다.');
-  //     }
-  //   } catch {
-  //     alert('닉네임 저장 중 오류가 발생했습니다.');
-  //   }
-  // };
 
   const parts = nickname.split(/(#\d+)/);
 
@@ -71,7 +56,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
         onClick={openModal}
       >
         <span className="pr-8">
-          {parts[0]}
+          <span className="pe-1">{parts[0]}</span>
           <span className="text-[#B4B4B4]">{parts[1]}</span>
         </span>
         <img
@@ -120,7 +105,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
                     name="nickname"
                     id="nickname"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder={parts[0]}
+                    placeholder={`${parts[0]} (한글 6자 이하로 변경 가능)`}
                     onChange={e => setNewNickname(e.target.value)}
                     required
                   />
