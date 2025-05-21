@@ -14,10 +14,10 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 
 ## 🛠️ Tech
 ### Front-End
-<img src="https://skillicons.dev/icons?i=ts,react,nodejs,vite,tailwind&perline="/>
+<img src="https://skillicons.dev/icons?i=ts,react,nodejs,vite,tailwind,npm&perline="/>
 
 ### Back-End
-<img src="https://skillicons.dev/icons?i=ts,react,nodejs,vite,tailwindcss,figma&perline="/>
+<img src="https://skillicons.dev/icons?i=java,spring,mysql,redis,aws,githubactions,docker,nginx&perline="/>
 
 ### Communication
 <img src="https://skillicons.dev/icons?i=notion,figma&perline="/>
