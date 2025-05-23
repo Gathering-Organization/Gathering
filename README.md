@@ -61,8 +61,7 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 <!--(GIF 링크)-->
 
 ## 7. 프로젝트 전체 아키텍쳐
-
-<!--![image](https://github.com/hi2242/사진링크)-->
+![프로젝트 아키텍처](https://github.com/user-attachments/assets/6beeb8f5-8525-46cc-8247-fc3a3afc29d0)
 
 ## 8. Commit Convention
 
