@@ -214,7 +214,7 @@ const Apply: React.FC = () => {
                     ) : null;
                   })}
 
-                  {extraStacksCount && extraStacksCount > 0 && (
+                  {typeof extraStacksCount === 'number' && extraStacksCount > 0 && (
                     <div className="relative">
                       <div
                         className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
@@ -226,7 +226,7 @@ const Apply: React.FC = () => {
                       {isTechTooltipOpen === 9999 && (
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
                           <div className="flex space-x-2">
-                            {extraStacks.map((item, i) => {
+                            {extraStacks?.map((item, i) => {
                               const imageSrc = getStackImage(item.toUpperCase());
                               return imageSrc ? (
                                 <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
