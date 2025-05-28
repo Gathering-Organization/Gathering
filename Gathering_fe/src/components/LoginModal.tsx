@@ -66,12 +66,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
   return (
     <div>
       <button
-        className="text-[20px] font-bold focus:outline-none relative inline-block"
         onClick={openModal}
+        className="relative px-4 bg-[#202123] rounded-[30px] transition-all ease-in-out duration-300 hover:scale-[1.02] transform-gpu"
       >
-        <span className="rounded-[20px] px-4 py-1 hover:bg-[#B4B4B4]/30 transition-all duration-200 shadow-sm hover:shadow-md">
-          로그인
-        </span>
+        <div className="flex will-change-transform py-1">
+          <div className="text-[#FFFFFF] font-bold text-[16px]">로그인</div>
+        </div>
       </button>
 
       {isModalOpen && (

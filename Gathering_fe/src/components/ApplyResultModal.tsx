@@ -110,7 +110,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
             className={`mx-auto w-[200px] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] ${
               applyStatus === 'PENDING'
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-[#3387E5] hover:bg-blue-600'
+                : 'bg-[#3387E5] hover:bg-blue-600 transition-colors duration-300 ease-in-out'
             }`}
           >
             결과보기
@@ -181,7 +181,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
                     type="button"
                     className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none ${
                       applyStatus === 'APPROVED'
-                        ? 'bg-[#3387E5] hover:bg-blue-800 text-white'
+                        ? 'bg-[#3387E5] hover:bg-blue-600 text-white transition-colors duration-300 ease-in-out'
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >

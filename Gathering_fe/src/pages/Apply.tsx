@@ -318,13 +318,13 @@ const Apply: React.FC = () => {
             <div className="flex space-x-8">
               <button
                 onClick={onSave}
-                className="px-8 py-2 bg-[#000000] text-[#FFFFFF] rounded-[16px] font-semibold"
+                className="px-8 py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[16px] font-semibold"
               >
                 저장
               </button>
               <button
                 onClick={onView}
-                className="px-8 py-2 bg-[#000000]/10 text-[#202123] rounded-[16px] font-semibold"
+                className="px-8 py-2 bg-[#000000]/10 hover:bg-[#000000]/20 transition-colors duration-300 ease-in-out text-[#202123] rounded-[16px] font-semibold"
               >
                 보기
               </button>
@@ -334,7 +334,7 @@ const Apply: React.FC = () => {
           <section className="justify-self-center py-10">
             <button
               onClick={handleClose}
-              className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-semibold"
+              className="px-10 py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[20px] font-semibold"
             >
               닫기
             </button>

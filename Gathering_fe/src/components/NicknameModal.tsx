@@ -113,7 +113,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
                 <button
                   onClick={handleUpdateNickname}
                   type="button"
-                  className="w-full text-white bg-[#3387E5] hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-[30px] text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="w-full text-white bg-[#3387E5] hover:bg-blue-600 transition-colors duration-300 ease-in-out focus:outline-none font-semibold rounded-[30px] text-sm px-5 py-2.5 text-center"
                 >
                   변경하기
                 </button>

@@ -114,7 +114,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
     <div>
       <button
         onClick={openModal}
-        className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+        className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
       >
         활동 경력 입력하기
       </button>

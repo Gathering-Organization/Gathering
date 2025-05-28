@@ -38,7 +38,7 @@ const Header: React.FC = () => {
             <button
               className="absolute focus:outline-none right-[360px] bg-[#3387E5] 
               text-[16px] text-white font-bold border-solid rounded-[20px] px-4 py-1 
-              transition-all ease-in-out duration-300 hover:shadow-md hover:scale-[1.02] will-change-transform"
+              transition-all ease-in-out duration-300 hover:scale-[1.02] will-change-transform"
               onClick={onClickPostingButton}
             >
               모집글 작성하기
