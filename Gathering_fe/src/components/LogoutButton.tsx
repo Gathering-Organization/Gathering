@@ -21,8 +21,14 @@ const LogoutButton: React.FC = () => {
       const result = await logout();
 
       if (result?.success) {
-        showToast('로그아웃 되었습니다.', true);
-        window.location.reload();
+        localStorage.setItem(
+          'toastMessage',
+          JSON.stringify({
+            message: '로그아웃 되었습니다.',
+            isSuccess: true
+          })
+        );
+        window.location.href = '/';
       } else {
         showToast('로그아웃에 실패했습니다.', false);
       }

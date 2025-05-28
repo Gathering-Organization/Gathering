@@ -1,12 +1,8 @@
 import { useState } from 'react';
 import {} from '@/services/api';
 import { LoginRequest } from '@/types/auth';
-import { useNavigate } from 'react-router-dom';
 import { login } from '@/services/authApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
-import googleIcon from '@/assets/otherIcons/Google.png';
-import loginIcon from '@/assets/otherIcons/Login.png';
-import gatheringLogo from '/gathering_home.svg';
 import LoginInModal from './LoginInModal';
 
 type LoginModalProps = {
@@ -19,7 +15,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
   const [formData, setFormData] = useState<LoginRequest>({ email: '', password: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmailLogin, setIsEmailLogin] = useState(false);
-  const nav = useNavigate();
   useModalBodyLock(isModalOpen);
 
   const openModal = () => {
