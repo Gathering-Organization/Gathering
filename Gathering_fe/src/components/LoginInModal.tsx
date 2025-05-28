@@ -70,7 +70,7 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
               <button
                 onClick={handleGoogle}
                 type="button"
-                className="flex font-inter space-x-4 justify-center items-center w-[300px] border border-[#000000]/20 font-semibold rounded-[100px] text-[20px] px-4 py-3 text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                className="flex font-inter space-x-4 justify-center items-center w-[300px] border border-[#000000]/20 font-semibold rounded-[100px] text-[20px] px-4 py-3 text-center hover:bg-gray-200 transition-colors duration-300 ease-in-out focus:outline-none"
               >
                 <img className="w-8 h-8" src={googleIcon} alt="google login" />
                 <div>Google로 로그인하기</div>
@@ -78,7 +78,7 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
               <button
                 onClick={handleEmailLoginMode}
                 type="button"
-                className="flex font-inter space-x-4 justify-center items-center w-[300px] bg-gray-200 font-semibold rounded-[100px] text-[20px] px-4 py-3 text-center hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                className="flex font-inter space-x-4 justify-center items-center w-[300px] bg-gray-200 font-semibold rounded-[100px] text-[20px] px-4 py-3 text-center hover:bg-gray-300 transition-colors duration-300 ease-in-out focus:outline-none"
               >
                 <img className="w-8 h-8" src={loginIcon} alt="login Icon" />
                 <div>이메일로 로그인하기</div>
@@ -113,7 +113,7 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
               <div className="flex flex-col items-center space-y-4 pt-4">
                 <button
                   type="submit"
-                  className="bg-[#3387E5] font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="bg-[#3387E5] font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-blue-600 transition-colors duration-300 ease-in-out focus:outline-none"
                 >
                   로그인
                 </button>
@@ -123,7 +123,7 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
                     nav('/signup');
                     closeModal();
                   }}
-                  className="bg-[#000000]/15 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                  className="bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none"
                 >
                   회원가입
                 </button>
