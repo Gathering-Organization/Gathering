@@ -1,27 +1,33 @@
 package com.Gathering_be.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
 
     public void sendResultMail(String to, String projectTitle, String applicantName, boolean isApproved) {
-        String subject = "[Gathering] 지원서 " + (isApproved ? "승인" : "거절") + " 안내";
-        String body = String.format(
-                "안녕하세요, %s님!\n\n당신이 지원한 프로젝트 \"%s\"의 지원서가 %s되었습니다.\n감사합니다!",
-                applicantName, projectTitle, isApproved ? "승인" : "거절"
-        );
+        Context context = new Context();
+        context.setVariable("projectTitle", projectTitle);
+        context.setVariable("applicantName", applicantName);
+        context.setVariable("link", "https://www.naver.com");
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        javaMailSender.send(message);
+        String templateName = isApproved ? "approve" : "reject";
+        String htmlContent = templateEngine.process(templateName, context);
+        String subject = "[Gathering] 지원서 " + (isApproved ? "승인" : "거절") + " 안내";
+
+        sendHtmlMail(to, subject, htmlContent);
     }
 
     public void sendCloseMail(String to, String projectTitle, String applicantName) {
@@ -47,5 +53,18 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(body);
         javaMailSender.send(message);
+    }
+
+    private void sendHtmlMail(String to, String subject, String htmlContent) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new IllegalStateException("메일 전송 실패", e);
+        }
     }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게더링 합격 안내</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f4; font-family:'Segoe UI', sans-serif;">
+<table align="center" width="100%" style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+    <!-- Header -->
+    <tr>
+        <td style="background-color:#3387E5; padding:20px 30px; text-align:center;">
+            <h1 style="margin:0; font-size:22px; color:white;">게더링 지원 결과 안내</h1>
+        </td>
+    </tr>
+    <!-- Content -->
+    <tr>
+        <td style="padding:30px; color:#333333;">
+            <p style="font-size:16px; line-height:1.8; margin-top:0;">
+                안녕하십니까, <strong th:text="${applicantName}"></strong>님.<br />
+                게더링 팀입니다.
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">
+                <strong th:text="${projectTitle}"></strong>에 제출해주신 지원서를 모집자님이 검토한 결과,<br />
+                <strong style="color:#3387E5;" th:text="|기쁜 마음으로 ${applicantName}님의 합격 소식을 전해드립니다! 🎉|"></strong>
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">
+                <strong th:text="${applicantName}"></strong>님의 역량과 경험이 본 프로젝트와 매우 잘 부합하여<br />
+                모집자님 또한 함께하게 되어 기대가 크다고 전하셨습니다.
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">
+                향후 진행 일정 및 온보딩 절차는 모집자님과 오픈채팅을 통해 확인하실 수 있습니다.<br />
+                궁금한 사항이 있으시면 언제든지 게더링 팀으로 연락주시기 바랍니다.
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">
+                게더링을 통해 소중한 인연을 맺게 되어 진심으로 감사드리며,<br />
+                앞으로의 여정에서도 함께 성장해 나가기를 기대하겠습니다.
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">감사합니다.<br />게더링 팀 드림</p>
+
+            <!-- Button -->
+            <div style="text-align:center; margin:30px 0;">
+                <a th:href="@{${link}}"
+                   style="background-color:#3387E5; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:bold; display:inline-block;">
+                    채팅 링크 확인하러 가기
+                </a>
+            </div>
+        </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+        <td style="background-color:#f1f1f1; padding:20px; text-align:center; font-size:13px; color:#888888;">
+            ⓒ 2025 Gathering, Inc. All rights reserved.
+        </td>
+    </tr>
+</table>
+</body>
+</html>
