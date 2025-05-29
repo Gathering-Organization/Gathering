@@ -1,12 +1,16 @@
 package com.Gathering_be.service;
 
 import com.Gathering_be.exception.DuplicateEmailException;
+import com.Gathering_be.exception.EmailSendFailedException;
 import com.Gathering_be.exception.InvalidEmailException;
 import com.Gathering_be.exception.InvalidVerificationCodeException;
+import com.Gathering_be.global.exception.BusinessException;
+import com.Gathering_be.global.exception.ErrorCode;
 import com.Gathering_be.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -72,8 +76,8 @@ public class EmailVerificationService {
             helper.setSubject("[Gathering] 인증 코드");
             helper.setText(htmlContent, true);
             javaMailSender.send(message);
-        } catch (MessagingException e) {
-            throw new IllegalStateException("메일 전송 실패", e);
+        } catch (MessagingException | MailException e) {
+            throw new EmailSendFailedException();
         }
     }
 }

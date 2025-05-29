@@ -62,6 +62,9 @@ public enum ErrorCode {
 
     // Enum
     INVALID_ENUM_VALUE(400, "EN001", "잘못된 Enum 입력값입니다."),
+
+    // Mail
+    EMAIL_SEND_FAILED(500, "EM001", "이메일 전송 중 오류가 발생했습니다."),
     ;
 
     private final int status;
