@@ -85,6 +85,10 @@ public class ProjectService {
         Project project = findProjectById(projectId);
         validateMemberAccess(project);
 
+        if (applicationRepository.existsByProjectId(projectId)){
+            throw new ProjectHasApplicantsException();
+        }
+
         project.getProfile().removeProject(project.isClosed());
         projectRepository.deleteById(projectId);
     }

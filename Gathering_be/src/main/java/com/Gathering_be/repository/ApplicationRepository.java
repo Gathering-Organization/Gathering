@@ -12,4 +12,5 @@ import java.util.List;
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findByProjectId(Long projectId);
     List<Application> findAllByProjectAndStatus(Project project, ApplyStatus status);
+    boolean existsByProjectId(Long projectId);
 }
