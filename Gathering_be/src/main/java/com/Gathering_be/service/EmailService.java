@@ -33,28 +33,27 @@ public class EmailService {
     }
 
     public void sendCloseMail(String to, String projectTitle, String applicantName) {
-        String subject = "[Gathering] 지원 프로젝트 마감 안내";
-        String body = String.format(
-                "안녕하세요, %s님!\n\n당신이 지원한 프로젝트 \"%s\"의 모집 기한이 지나 지원이 자동으로 거절되었습니다.\n감사합니다!",
-                applicantName, projectTitle
-        );
+        Context context = new Context();
+        context.setVariable("projectTitle", projectTitle);
+        context.setVariable("applicantName", applicantName);
+        context.setVariable("link", "https://www.naver.com");
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        javaMailSender.send(message);
+        String htmlContent = templateEngine.process("deadline", context);
+        String subject = "[Gathering] 지원 프로젝트 마감 안내";
+
+        sendHtmlMail(to, subject, htmlContent);
     }
 
-    public void sendNewApplyMail(String to, String projectTitle) {
-        String subject = "[Gathering] 새 지원서가 도착했습니다!";
-        String body = String.format("당신의 프로젝트 \"%s\"에 새로운 지원서가 제출되었습니다.", projectTitle);
+    public void sendNewApplyMail(String to, String projectTitle, String authorName) {
+        Context context = new Context();
+        context.setVariable("projectTitle", projectTitle);
+        context.setVariable("authorName", authorName);
+        context.setVariable("link", "https://www.naver.com");
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        javaMailSender.send(message);
+        String htmlContent = templateEngine.process("notify", context);
+        String subject = "[Gathering] 새 지원서가 도착했습니다!";
+
+        sendHtmlMail(to, subject, htmlContent);
     }
 
     private void sendHtmlMail(String to, String subject, String htmlContent) {

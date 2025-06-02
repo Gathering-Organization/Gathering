@@ -61,7 +61,8 @@ public class ApplicationService {
         profile.addApplication();
         applicationRepository.save(application);
 
-        emailService.sendNewApplyMail(project.getProfile().getMember().getEmail(), project.getTitle());
+        emailService.sendNewApplyMail(
+                project.getProfile().getMember().getEmail(), project.getTitle(), project.getProfile().getNickname());
     }
 
     @Transactional(readOnly = true)
