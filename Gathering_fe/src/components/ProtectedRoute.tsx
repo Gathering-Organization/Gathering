@@ -6,6 +6,7 @@ import { useState } from 'react';
 import LoginInModal from './LoginInModal';
 import { LoginRequest } from '@/types/auth';
 import { login } from '@/services/authApi';
+import useModalBodyLock from '@/hooks/UseModalBodyLock';
 
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -18,6 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isEmailLogin, setIsEmailLogin] = useState(false);
   const nav = useNavigate();
+
   const closeModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = 'auto';
@@ -45,7 +47,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       const result = await login(formData);
       if (result?.success) {
         alert('로그인 되었습니다.');
+        window.location.reload();
         setActiveModal(null);
+        setIsModalOpen(false);
       } else {
         alert(result?.message || '로그인에 실패했습니다.');
       }
@@ -58,15 +62,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (myProfile.nickname === '') {
     return (
       <div>
-        <LoginInModal
-          closeModal={closeModal}
-          isEmailLogin={isEmailLogin}
-          handleGoogle={handleGoogle}
-          handleEmailLoginMode={handleEmailLoginMode}
-          handleLogin={handleLogin}
-          handleInputChange={handleInputChange}
-          formData={formData}
-        />
+        {isModalOpen && (
+          <LoginInModal
+            closeModal={closeModal}
+            isEmailLogin={isEmailLogin}
+            handleGoogle={handleGoogle}
+            handleEmailLoginMode={handleEmailLoginMode}
+            handleLogin={handleLogin}
+            handleInputChange={handleInputChange}
+            formData={formData}
+          />
+        )}
       </div>
     );
   }

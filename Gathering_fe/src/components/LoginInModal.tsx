@@ -120,8 +120,8 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    nav('/signup');
                     closeModal();
+                    nav('/signup');
                   }}
                   className="bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none"
                 >
