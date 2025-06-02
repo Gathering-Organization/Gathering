@@ -129,6 +129,8 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
         <div className="text-[24px] font-bold my-6">정보 입력</div>
         <div className="text-[14px] text-[#C7C7C7] mb-8">
           이메일 인증은 유효 메일 확인 이외의 용도로 사용되지 않습니다.
+          <br />
+          (받은 이메일에 인증 메일이 없다면 스팸 메일함을 확인해주세요.)
         </div>
       </div>
       <section>
