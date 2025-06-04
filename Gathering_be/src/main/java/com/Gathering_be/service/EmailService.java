@@ -32,13 +32,25 @@ public class EmailService {
         sendHtmlMail(to, subject, htmlContent);
     }
 
-    public void sendCloseMail(String to, String projectTitle, String applicantName) {
+    public void sendCloseMailToAuthor(String to, String projectTitle, String authorName) {
+        Context context = new Context();
+        context.setVariable("projectTitle", projectTitle);
+        context.setVariable("authorName", authorName);
+        context.setVariable("link", "https://www.naver.com");
+
+        String htmlContent = templateEngine.process("deadline_author", context);
+        String subject = "[Gathering] 프로젝트 마감 안내";
+
+        sendHtmlMail(to, subject, htmlContent);
+    }
+
+    public void sendCloseMailToApplicant(String to, String projectTitle, String applicantName) {
         Context context = new Context();
         context.setVariable("projectTitle", projectTitle);
         context.setVariable("applicantName", applicantName);
         context.setVariable("link", "https://www.naver.com");
 
-        String htmlContent = templateEngine.process("deadline", context);
+        String htmlContent = templateEngine.process("deadline_applicant", context);
         String subject = "[Gathering] 지원 프로젝트 마감 안내";
 
         sendHtmlMail(to, subject, htmlContent);
