@@ -2,6 +2,7 @@ package com.Gathering_be.domain;
 
 import com.Gathering_be.dto.request.WorkExperienceRequest;
 import com.Gathering_be.global.enums.TechStack;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,8 +17,11 @@ import java.util.Set;
 public class WorkExperience {
     private LocalDate startDate;
     private LocalDate endDate;
-    private String activityName;
     private Set<TechStack> techStacks;
+
+    @Column(columnDefinition = "TEXT")
+    private String activityName;
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Builder

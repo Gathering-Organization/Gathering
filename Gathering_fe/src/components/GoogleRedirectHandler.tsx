@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { googleLogin } from '@/services/authApi';
+import { useToast } from '@/contexts/ToastContext';
+import Spinner from '@/components/Spinner';
 
 const GoogleRedirectHandler: React.FC = () => {
   const navigate = useNavigate();
-
+  const { showToast } = useToast();
   const params = new URLSearchParams(window.location.hash.substring(1));
   const code = params.get('access_token');
 
@@ -15,29 +17,32 @@ const GoogleRedirectHandler: React.FC = () => {
           const result = await googleLogin(code);
 
           if (result?.success) {
-            alert('로그인 성공: ' + result.message);
+            showToast('로그인 되었습니다.', true);
             setTimeout(() => {
               window.location.href = '/';
-            }, 100);
+            }, 700);
           } else {
-            alert('로그인 실패: ' + result?.message);
-            navigate('/');
+            showToast('로그인에 실패했습니다.', false);
+            navigate('/', { replace: true });
           }
         } catch (error) {
-          alert('로그인 처리 중 오류가 발생했습니다.');
-          console.error(error);
-          navigate('/');
+          showToast('로그인 처리 중 오류가 발생했습니다.', false);
+          navigate('/', { replace: true });
         }
       } else {
-        alert('Google 인증 코드가 없습니다.');
-        navigate('/');
+        showToast('Google 인증 코드가 없습니다.', false);
+        navigate('/', { replace: true });
       }
     };
 
     handleGoogleLogin();
   }, [code, navigate]);
 
-  return <div>Google 로그인 처리 중...</div>;
+  return (
+    <div className="min-h-[600px] flex items-center justify-center">
+      <Spinner />
+    </div>
+  );
 };
 
 export default GoogleRedirectHandler;

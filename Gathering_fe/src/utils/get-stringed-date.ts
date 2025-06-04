@@ -1,4 +1,5 @@
-export const getStringedDate = (targetDate: Date) => {
+export const getStringedDate = (targetStringDate: string) => {
+  const targetDate = new Date(targetStringDate);
   // 날짜 -> YYYY-MM-DD
   const year = targetDate.getFullYear();
   let month: string = (targetDate.getMonth() + 1).toString();

@@ -31,6 +31,8 @@ public class Application extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private JobPosition position;
+
+    @Column(columnDefinition = "TEXT")
     private String message;
 
     @Enumerated(EnumType.STRING)

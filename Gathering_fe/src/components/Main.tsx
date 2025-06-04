@@ -1,6 +1,8 @@
 import { getUserProfile } from '@/services/profileApi';
+import { useToast } from '@/contexts/ToastContext';
 
 const Main: React.FC = () => {
+  const { showToast } = useToast();
   const handleUserProfile = async () => {
     try {
       // 추후에 매개변수 닉네임으로 보내도록 수정
