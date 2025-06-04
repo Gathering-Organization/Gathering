@@ -1,13 +1,22 @@
 package com.Gathering_be.service;
 
 import com.Gathering_be.exception.DuplicateEmailException;
+import com.Gathering_be.exception.EmailSendFailedException;
 import com.Gathering_be.exception.InvalidEmailException;
 import com.Gathering_be.exception.InvalidVerificationCodeException;
+import com.Gathering_be.global.exception.BusinessException;
+import com.Gathering_be.global.exception.ErrorCode;
 import com.Gathering_be.repository.MemberRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.Duration;
 
@@ -17,6 +26,7 @@ public class EmailVerificationService {
     private final MemberRepository memberRepository;
     private final RedisService redisService;
     private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
 
     private final String VERIFICATION_PREFIX = "email:verification:";
     private final Duration EXPIRATION_TIME = Duration.ofMinutes(5);
@@ -54,10 +64,20 @@ public class EmailVerificationService {
     }
 
     private void sendEmail(String email, String code) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("이메일 인증 코드");
-        message.setText("인증 코드: " + code + "\n5분 내에 입력해주세요.");
-        javaMailSender.send(message);
+        Context context = new Context();
+        context.setVariable("code", code);
+
+        String htmlContent = templateEngine.process("verify", context);
+
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+            helper.setTo(email);
+            helper.setSubject("[Gathering] 인증 코드");
+            helper.setText(htmlContent, true);
+            javaMailSender.send(message);
+        } catch (MessagingException | MailException e) {
+            throw new EmailSendFailedException();
+        }
     }
 }

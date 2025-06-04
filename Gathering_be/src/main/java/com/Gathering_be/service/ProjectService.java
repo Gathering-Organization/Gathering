@@ -194,6 +194,10 @@ public class ProjectService {
 
         for (Project project : expiredProjects) {
             project.closeProject();
+            Profile authorProfile = project.getProfile();
+            String authorEmail = authorProfile.getMember().getEmail();
+            String authorNickname = authorProfile.getNickname();
+            emailService.sendCloseMailToAuthor(authorEmail, project.getTitle(), authorNickname);
 
             List<Application> applications = applicationRepository.findAllByProjectAndStatus(project, ApplyStatus.PENDING);
             for (Application application : applications) {
@@ -201,7 +205,7 @@ public class ProjectService {
                 Profile applicantProfile = application.getProfileFromSnapshot();
                 String email = applicantProfile.getMember().getEmail();
                 String nickname = applicantProfile.getNickname();
-                emailService.sendCloseMail(email, project.getTitle(), nickname);
+                emailService.sendCloseMailToApplicant(email, project.getTitle(), nickname);
             }
         }
     }
