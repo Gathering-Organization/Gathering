@@ -104,7 +104,7 @@ class ProjectControllerTest {
                 .title("Sample Project")
                 .build();
 
-        given(projectService.getProjectById(projectId)).willReturn(response);
+        given(projectService.getProjectDetailsById(projectId)).willReturn(response);
 
         mockMvc.perform(get("/api/project/{id}", projectId))
                 .andDo(print())
