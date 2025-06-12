@@ -82,7 +82,7 @@ public class ProjectService {
 
     @Transactional
     public void deleteProject(Long projectId) {
-        Project project = findProjectById(projectId);
+        Project project = findProjectByIdForUpdate(projectId);
         validateMemberAccess(project);
 
         if (applicationRepository.existsByProjectId(projectId)){
@@ -90,7 +90,7 @@ public class ProjectService {
         }
 
         project.getProfile().removeProject(project.isClosed());
-        projectRepository.deleteById(projectId);
+        project.delete();
     }
 
     public ProjectDetailResponse getProjectById(Long projectId) {
@@ -222,6 +222,11 @@ public class ProjectService {
 
     private Project findProjectById(Long projectId) {
         return projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotFoundException::new);
+    }
+
+    private Project findProjectByIdForUpdate(Long projectId) {
+        return projectRepository.findByIdIncludeDeleted(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
