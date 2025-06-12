@@ -36,7 +36,7 @@ public class ApplicationService {
     public void applyForProject(ApplicationRequest request) {
         Long currentUserId = getCurrentUserId();
         Profile profile = getProfileByMemberId(currentUserId);
-        Project project = findProjectById(request.getProjectId());
+        Project project = getProjectById(request.getProjectId());
 
         if (project.getProfile().getMember().getId().equals(currentUserId)) {
             throw new SelfApplicationNotAllowedException();
@@ -62,7 +62,7 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public List<ApplicationResponse> getApplicationsForProject(Long projectId) {
         Long currentUserId = getCurrentUserId();
-        Project project = findProjectById(projectId);
+        Project project = getProjectById(projectId);
 
         if (!project.getProfile().getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
@@ -189,7 +189,7 @@ public class ApplicationService {
     }
 
 
-    private Project findProjectById(Long projectId) {
+    private Project getProjectById(Long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
     }
