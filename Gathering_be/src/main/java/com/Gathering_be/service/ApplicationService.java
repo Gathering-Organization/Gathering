@@ -35,9 +35,7 @@ public class ApplicationService {
     @Transactional
     public void applyForProject(ApplicationRequest request) {
         Long currentUserId = getCurrentUserId();
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
-
+        Profile profile = getProfileByMemberId(currentUserId);
         Project project = findProjectById(request.getProjectId());
 
         if (project.getProfile().getMember().getId().equals(currentUserId)) {
@@ -79,10 +77,7 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public ApplicationResponse getMyApplicationByProjectId(Long projectId) {
         Long currentUserId = getCurrentUserId();
-
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
-
+        Profile profile = getProfileByMemberId(currentUserId);
         List<Application> applications = applicationRepository.findByProjectId(projectId);
 
         Application myApp = applications.stream()
@@ -121,9 +116,7 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public Page<ProjectSimpleResponse> getMyAppliedProjects(int page, int size, ApplyStatus status) {
         Long currentUserId = getCurrentUserId();
-
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
+        Profile profile = getProfileByMemberId(currentUserId);
 
         List<Application> applications = applicationRepository.findAll().stream()
                 .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
@@ -154,12 +147,10 @@ public class ApplicationService {
     @Transactional
     public void deleteApplication(Long applicationId) {
         Long currentUserId = getCurrentUserId();
+        Profile profile = getProfileByMemberId(currentUserId);
 
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
-
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
 
         if (!profile.getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
@@ -203,10 +194,9 @@ public class ApplicationService {
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
-    private Long getProfileIdByMemberId(Long memberId) {
-        Profile profile = profileRepository.findByMemberId(memberId)
+    private Profile getProfileByMemberId(Long memberId) {
+        return profileRepository.findByMemberId(memberId)
                 .orElseThrow(ProfileNotFoundException::new);
-        return profile.getId();
     }
 
     private Long getCurrentUserId() {
