@@ -7,6 +7,7 @@ import com.Gathering_be.global.enums.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -30,34 +31,48 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
+    // --- 1. 기존 사용자용 검색 메서드 ---
+    // 이제 내부 헬퍼 메서드를 호출하는 역할만 합니다.
     @Override
-    public Page<Project> searchProjectsWithFilters(Pageable pageable,
-                                                   JobPosition position,
-                                                   List<TechStack> techStacks,
-                                                   ProjectType type,
-                                                   ProjectMode mode,
-                                                   Boolean isClosed,
-                                                   SearchType searchType,
-                                                   String keyword) {
+    public Page<Project> searchProjectsWithFilters(Pageable pageable, JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, Boolean isClosed, SearchType searchType, String keyword) {
+        // 공통 로직을 호출하여 조건절 생성
+        BooleanBuilder builder = createCommonWhereBuilder(position, techStacks, type, mode, isClosed, searchType, keyword);
+
+        // 쿼리 실행 로직 호출
+        return executeQuery(builder, pageable);
+    }
+
+    // --- 2. [추가] 관리자용 검색 메서드 ---
+    @Override
+    public Page<Project> searchProjectsForAdmin(Pageable pageable, JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, Boolean isClosed, Boolean isDeleted, SearchType searchType, String keyword) {
+        // 공통 로직을 호출하여 기본 조건절 생성
+        BooleanBuilder builder = createCommonWhereBuilder(position, techStacks, type, mode, isClosed, searchType, keyword);
+
+        // 관리자 전용 조건(isDeleted)을 추가
+        if (isDeleted != null) {
+            builder.and(project.isDeleted.eq(isDeleted));
+        }
+
+        // 쿼리 실행 로직 호출
+        return executeQuery(builder, pageable);
+    }
+
+    // --- 3. [리팩토링] 공통 로직을 담당하는 private 헬퍼 메서드 ---
+    private BooleanBuilder createCommonWhereBuilder(JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, Boolean isClosed, SearchType searchType, String keyword) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (searchType!= null && keyword != null && !keyword.isEmpty()) {
+        // keyword 검색 조건
+        if (searchType != null && keyword != null && !keyword.isEmpty()) {
             switch (searchType) {
-                case TITLE:
-                    builder.and(project.title.containsIgnoreCase(keyword));
-                    break;
-                case CONTENT:
-                    builder.and(project.description.containsIgnoreCase(keyword));
-                    break;
-                case TITLE_CONTENT:
-                    builder.and(project.title.containsIgnoreCase(keyword)
-                            .or(project.description.containsIgnoreCase(keyword)));
-                    break;
-                default:
-                    throw new InvalidSearchTypeException();
+                case TITLE -> builder.and(project.title.containsIgnoreCase(keyword));
+                case CONTENT -> builder.and(project.description.containsIgnoreCase(keyword));
+                case TITLE_CONTENT -> builder.and(project.title.containsIgnoreCase(keyword)
+                        .or(project.description.containsIgnoreCase(keyword)));
+                default -> throw new InvalidSearchTypeException();
             }
         }
 
+        // techStacks 검색 조건
         if (techStacks != null && !techStacks.isEmpty()) {
             BooleanBuilder techStackBuilder = new BooleanBuilder();
             for (TechStack tech : techStacks) {
@@ -66,28 +81,41 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
             builder.and(techStackBuilder);
         }
 
-        if (position != null && !position.equals("ALL")) {
+        // 기타 enum 조건
+        if (position != null) {
             builder.and(project.requiredPositions.contains(position));
         }
-        if (type != null && !type.equals("ALL")) {
+        if (type != null) {
             builder.and(project.projectType.eq(type));
         }
-        if (mode != null && !mode.equals("ALL")) {
+        if (mode != null) {
             builder.and(project.projectMode.eq(mode));
         }
         if (isClosed != null) {
             builder.and(project.isClosed.eq(isClosed));
         }
 
-        QueryResults<Project> results = queryFactory
+        return builder;
+    }
+
+    // --- 4. [리팩토링] 쿼리 실행 로직을 담당하는 private 헬퍼 메서드 ---
+    private Page<Project> executeQuery(BooleanBuilder builder, Pageable pageable) {
+        JPAQuery<Project> query = queryFactory
                 .selectFrom(project)
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(getOrderSpecifier(pageable))
-                .fetchResults();
+                .orderBy(getOrderSpecifier(pageable)); // 정렬 조건 적용
 
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+        List<Project> content = query.fetch();
+
+        // Count 쿼리 최적화
+        JPAQuery<Long> countQuery = queryFactory
+                .select(project.count())
+                .from(project)
+                .where(builder);
+
+        return new PageImpl<>(content, pageable, countQuery.fetchOne());
     }
 
     private OrderSpecifier<?> getOrderSpecifier(Pageable pageable) {
@@ -100,5 +128,4 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
             }
         }
         return project.createdAt.desc();
-    }
 }
