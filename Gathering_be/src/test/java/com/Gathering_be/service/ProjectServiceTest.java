@@ -119,7 +119,7 @@ class ProjectServiceTest {
             given(profileRepository.findByMemberId(1L)).willReturn(Optional.of(testData.getOwner()));
 
             // when
-            ProjectDetailResponse response = projectService.getProjectById(projectId);
+            ProjectDetailResponse response = projectService.getProjectDetailsById(projectId);
 
             // then
             assertProjectDetails(response);
@@ -152,7 +152,7 @@ class ProjectServiceTest {
             given(projectRepository.findById(projectId)).willReturn(Optional.empty());
 
             // when & then
-            assertThatThrownBy(() -> projectService.getProjectById(projectId))
+            assertThatThrownBy(() -> projectService.getProjectDetailsById(projectId))
                     .isInstanceOf(ProjectNotFoundException.class);
         }
 

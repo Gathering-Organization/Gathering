@@ -8,6 +8,7 @@ import com.Gathering_be.global.enums.ProjectType;
 import com.Gathering_be.global.enums.TechStack;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "is_deleted = false")
 public class Project extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +65,9 @@ public class Project extends BaseTimeEntity {
     @Column(name = "tech_stacks")
     private Set<TechStack> techStacks = new HashSet<>();
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
+
     @Builder
     public Project(Profile profile, String title, String description, String kakaoUrl,
                    LocalDateTime deadline, int totalMembers, String duration,
@@ -84,6 +89,7 @@ public class Project extends BaseTimeEntity {
         this.techStacks = techStacks != null ? techStacks : new HashSet<>();
         this.teams = teams != null ? teams : new HashSet<>();
         this.viewCount = 0L;
+        this.isDeleted = false;
     }
 
     public void update(ProjectUpdateRequest request) {
@@ -98,6 +104,10 @@ public class Project extends BaseTimeEntity {
         this.techStacks = request.getTechStacks();
         this.requiredPositions = request.getRequiredPositions();
         this.projectMode = request.getProjectMode();
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
     public void incrementViewCount() { this.viewCount += 1; }

@@ -44,7 +44,7 @@ public class ProjectService {
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
         Long memberId = getCurrentUserId();
-        Profile profile = findProfileByMemberId(memberId);
+        Profile profile = getProfileByMemberId(memberId);
         profile.addProject();
 
         Project project = Project.builder()
@@ -71,7 +71,7 @@ public class ProjectService {
 
     @Transactional
     public void updateProject(Long projectId, ProjectUpdateRequest request) {
-        Project project = findProjectById(projectId);
+        Project project = getProjectById(projectId);
         validateMemberAccess(project);
 
         project.update(request);
@@ -83,7 +83,7 @@ public class ProjectService {
 
     @Transactional
     public void deleteProject(Long projectId) {
-        Project project = findProjectById(projectId);
+        Project project = getProjectByIdForUpdate(projectId);
         validateMemberAccess(project);
 
         if (applicationRepository.existsByProjectId(projectId)){
@@ -91,10 +91,10 @@ public class ProjectService {
         }
 
         project.getProfile().removeProject(project.isClosed());
-        projectRepository.deleteById(projectId);
+        project.delete();
     }
 
-    public ProjectDetailResponse getProjectById(Long projectId) {
+    public ProjectDetailResponse getProjectDetailsById(Long projectId) {
         Long memberId = getCurrentUserId();
         incrementViewCount(projectId, memberId);
 
@@ -182,7 +182,7 @@ public class ProjectService {
 
     @Transactional
     public void toggleProjectRecruitment(Long projectId) {
-        Project project = findProjectById(projectId);
+        Project project = getProjectById(projectId);
         validateMemberAccess(project);
 
         project.toggleIsClosed();
@@ -223,23 +223,28 @@ public class ProjectService {
     }
 
     private void validateMemberAccess(Long currentUserId, String nickname) {
-        Profile profile = findProfileByMemberId(currentUserId);
+        Profile profile = getProfileByMemberId(currentUserId);
         if (!profile.getNickname().equals(nickname)) {
             throw new UnauthorizedAccessException();
         }
     }
 
-    private Project findProjectById(Long projectId) {
+    private Project getProjectById(Long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
-    private Profile findProfileByMemberId(Long memberId) {
+    private Project getProjectByIdForUpdate(Long projectId) {
+        return projectRepository.findByIdIncludeDeleted(projectId)
+                .orElseThrow(ProjectNotFoundException::new);
+    }
+
+    private Profile getProfileByMemberId(Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(ProfileNotFoundException::new);
     }
 
-    private Set<Profile> findProfilesByNicknames(Set<String> teamNicknames) {
+    private Set<Profile> getProfilesByNicknames(Set<String> teamNicknames) {
         List<Profile> profiles = profileRepository.findAllByNicknameIn(teamNicknames);
         if (profiles.size() != teamNicknames.size()) {
             throw new ProfileNotFoundException();
@@ -248,7 +253,7 @@ public class ProjectService {
     }
 
     private Set<ProjectTeams> createProjectTeams(Project project, Set<String> teamNicknames) {
-        Set<Profile> teamProfiles = findProfilesByNicknames(teamNicknames);
+        Set<Profile> teamProfiles = getProfilesByNicknames(teamNicknames);
 
         return teamProfiles.stream()
                 .map(profile -> ProjectTeams.builder().profile(profile).project(project).build())
