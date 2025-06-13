@@ -2,7 +2,7 @@ package com.Gathering_be.controller;
 
 import com.Gathering_be.dto.request.RoleUpdateRequest;
 import com.Gathering_be.dto.response.MemberInfoForAdminResponse;
-import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.dto.response.ProjectResponseForAdmin;
 import com.Gathering_be.global.enums.SearchType;
 import com.Gathering_be.global.response.ResultCode;
 import com.Gathering_be.global.response.ResultResponse;
@@ -38,6 +38,7 @@ public class AdminController {
     }
 
     @GetMapping("/project/pagination")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResultResponse> getAllProjects(@RequestParam(defaultValue = "1") int page,
                                                          @RequestParam(defaultValue = "-createdAt") String sort,
                                                          @RequestParam(defaultValue = "ALL") String position,
@@ -45,14 +46,21 @@ public class AdminController {
                                                          @RequestParam(defaultValue = "ALL") String type,
                                                          @RequestParam(defaultValue = "ALL") String mode,
                                                          @RequestParam(required = false) Boolean isClosed,
+                                                         @RequestParam(required = false) Boolean isDeleted,
                                                          @RequestParam(required = false) SearchType searchType,
                                                          @RequestParam(required = false) String keyword
     ) {
-        Page<ProjectSimpleResponse> projects = adminService.searchProjectsWithFilters(
-                page, 18, sort, position, techStack, type, mode, isClosed, searchType, keyword
+        Page<ProjectResponseForAdmin> projects = adminService.searchProjectsWithFilters(
+                page, 18, sort, position, techStack, type, mode, isClosed, isDeleted, searchType, keyword
         );
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, projects));
     }
 
+    @DeleteMapping("/project/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResultResponse> deleteProject(@PathVariable Long id) {
+        adminService.deleteProject(id);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_DELETE_SUCCESS));
+    }
 
 }

@@ -5,7 +5,6 @@ import com.Gathering_be.domain.QProject;
 import com.Gathering_be.exception.InvalidSearchTypeException;
 import com.Gathering_be.global.enums.*;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -32,19 +31,22 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     }
 
     // --- 1. 기존 사용자용 검색 메서드 ---
-    // 이제 내부 헬퍼 메서드를 호출하는 역할만 합니다.
     @Override
-    public Page<Project> searchProjectsWithFilters(Pageable pageable, JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, Boolean isClosed, SearchType searchType, String keyword) {
-        // 공통 로직을 호출하여 조건절 생성
+    public Page<Project> searchProjectsWithFilters(Pageable pageable, JobPosition position, List<TechStack> techStacks,
+                                                   ProjectType type, ProjectMode mode, Boolean isClosed,
+                                                   SearchType searchType, String keyword) {
+        // 공통 로직을 호출하여 기본 조건절 생성
         BooleanBuilder builder = createCommonWhereBuilder(position, techStacks, type, mode, isClosed, searchType, keyword);
 
         // 쿼리 실행 로직 호출
         return executeQuery(builder, pageable);
     }
 
-    // --- 2. [추가] 관리자용 검색 메서드 ---
+    // --- 2. 관리자용 검색 메서드 ---
     @Override
-    public Page<Project> searchProjectsForAdmin(Pageable pageable, JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, Boolean isClosed, Boolean isDeleted, SearchType searchType, String keyword) {
+    public Page<Project> searchProjectsForAdmin(Pageable pageable, JobPosition position, List<TechStack> techStacks,
+                                                ProjectType type, ProjectMode mode, Boolean isClosed, Boolean isDeleted,
+                                                SearchType searchType, String keyword) {
         // 공통 로직을 호출하여 기본 조건절 생성
         BooleanBuilder builder = createCommonWhereBuilder(position, techStacks, type, mode, isClosed, searchType, keyword);
 
@@ -57,8 +59,10 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         return executeQuery(builder, pageable);
     }
 
-    // --- 3. [리팩토링] 공통 로직을 담당하는 private 헬퍼 메서드 ---
-    private BooleanBuilder createCommonWhereBuilder(JobPosition position, List<TechStack> techStacks, ProjectType type, ProjectMode mode, Boolean isClosed, SearchType searchType, String keyword) {
+    // --- 3. 공통 로직을 담당하는 private 헬퍼 메서드 ---
+    private BooleanBuilder createCommonWhereBuilder(JobPosition position, List<TechStack> techStacks, ProjectType type,
+                                                    ProjectMode mode, Boolean isClosed,
+                                                    SearchType searchType, String keyword) {
         BooleanBuilder builder = new BooleanBuilder();
 
         // keyword 검색 조건
@@ -98,7 +102,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         return builder;
     }
 
-    // --- 4. [리팩토링] 쿼리 실행 로직을 담당하는 private 헬퍼 메서드 ---
+    // --- 4. 쿼리 실행 로직을 담당하는 private 헬퍼 메서드 ---
     private Page<Project> executeQuery(BooleanBuilder builder, Pageable pageable) {
         JPAQuery<Project> query = queryFactory
                 .selectFrom(project)
@@ -118,6 +122,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         return new PageImpl<>(content, pageable, countQuery.fetchOne());
     }
 
+    // 단일 정렬
     private OrderSpecifier<?> getOrderSpecifier(Pageable pageable) {
         for (Sort.Order order : pageable.getSort()) {
             switch (order.getProperty()) {
@@ -128,4 +133,5 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
             }
         }
         return project.createdAt.desc();
+    }
 }

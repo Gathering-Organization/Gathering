@@ -4,10 +4,11 @@ import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
 import com.Gathering_be.dto.response.MemberInfoForAdminResponse;
-import com.Gathering_be.dto.response.ProjectSimpleResponse;
+import com.Gathering_be.dto.response.ProjectResponseForAdmin;
 import com.Gathering_be.exception.InvalidEnumValue;
 import com.Gathering_be.exception.InvalidSortTypeException;
 import com.Gathering_be.exception.MemberNotFoundException;
+import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.global.enums.*;
 import com.Gathering_be.repository.MemberRepository;
 import com.Gathering_be.repository.ProfileRepository;
@@ -42,14 +43,9 @@ public class AdminService {
         member.updateRole(newRole);
     }
 
-    public Page<ProjectSimpleResponse> searchProjectsWithFilters(int page, int size, String sort, String position,
-                                                                 String techStack, String type, String mode, Boolean isClosed,
-                                                                 SearchType searchType, String keyword) {
-        /* 순수한 ProjectSimpleResponse 보다는
-            Admin 전용 response를 만들어서
-            isDeleted 표시도 함께 제공해야 한다
-            또한, 탐색할 때 isDeleted 된것도 같이 찾아와야 함
-        * */
+    public Page<ProjectResponseForAdmin> searchProjectsWithFilters(int page, int size, String sort, String position,
+                                                                   String techStack, String type, String mode, Boolean isClosed,
+                                                                   Boolean isDeleted, SearchType searchType, String keyword) {
         Sort sortCondition = switch (sort) {
             case "-createdAt" -> Sort.by(Sort.Order.desc("createdAt"));
             case "createdAt" -> Sort.by(Sort.Order.asc("createdAt"));
@@ -66,18 +62,30 @@ public class AdminService {
                 ? Arrays.stream(techStack.split(",")).map(TechStack::valueOf).collect(Collectors.toList())
                 : null;
 
-        Page<Project> projectPage = projectRepository.searchProjectsWithFilters(
-                pageable, positionEnum, techStacks, typeEnum, modeEnum, isClosed, searchType, keyword
+        Page<Project> projectPage = projectRepository.searchProjectsForAdmin(
+                pageable, positionEnum, techStacks, typeEnum, modeEnum, isClosed, isDeleted, searchType, keyword
         );
 
         return projectPage
-                .map(project -> ProjectSimpleResponse.from(project, false, null));
+                .map(project -> ProjectResponseForAdmin.from(project, false, null));
     }
 
     @Transactional
     public void deleteProject(Long projectId) {
-        ////
+        Project project = getProjectByIdForUpdate(projectId);
 
+//        if (applicationRepository.existsByProjectId(projectId)){
+//            throw new ProjectHasApplicantsException();
+//        }
+
+        project.getProfile().removeProject(project.isClosed());
+        project.delete();
+
+    }
+
+    private Project getProjectByIdForUpdate(Long projectId) {
+        return projectRepository.findByIdIncludeDeleted(projectId)
+                .orElseThrow(ProjectNotFoundException::new);
     }
 
     private <E extends Enum<E>> E parseEnum(Class<E> enumClass, String value) {
