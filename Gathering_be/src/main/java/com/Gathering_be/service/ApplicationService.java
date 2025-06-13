@@ -36,10 +36,8 @@ public class ApplicationService {
     @Transactional
     public void applyForProject(ApplicationRequest request) {
         Long currentUserId = getCurrentUserId();
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
-
-        Project project = findProjectById(request.getProjectId());
+        Profile profile = getProfileByMemberId(currentUserId);
+        Project project = getProjectById(request.getProjectId());
 
         if (project.getProfile().getMember().getId().equals(currentUserId)) {
             throw new SelfApplicationNotAllowedException();
@@ -68,7 +66,7 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public List<ApplicationResponse> getApplicationsForProject(Long projectId) {
         Long currentUserId = getCurrentUserId();
-        Project project = findProjectById(projectId);
+        Project project = getProjectById(projectId);
 
         if (!project.getProfile().getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
@@ -83,10 +81,7 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public ApplicationResponse getMyApplicationByProjectId(Long projectId) {
         Long currentUserId = getCurrentUserId();
-
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
-
+        Profile profile = getProfileByMemberId(currentUserId);
         List<Application> applications = applicationRepository.findByProjectId(projectId);
 
         Application myApp = applications.stream()
@@ -125,9 +120,7 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public Page<ProjectSimpleResponse> getMyAppliedProjects(int page, int size, ApplyStatus status) {
         Long currentUserId = getCurrentUserId();
-
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
+        Profile profile = getProfileByMemberId(currentUserId);
 
         List<Application> applications = applicationRepository.findAll().stream()
                 .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
@@ -158,12 +151,10 @@ public class ApplicationService {
     @Transactional
     public void deleteApplication(Long applicationId) {
         Long currentUserId = getCurrentUserId();
+        Profile profile = getProfileByMemberId(currentUserId);
 
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
-
-        Profile profile = profileRepository.findByMemberId(currentUserId)
-                .orElseThrow(ProfileNotFoundException::new);
 
         if (!profile.getMember().getId().equals(currentUserId)) {
             throw new UnauthorizedAccessException();
@@ -207,15 +198,14 @@ public class ApplicationService {
     }
 
 
-    private Project findProjectById(Long projectId) {
+    private Project getProjectById(Long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
-    private Long getProfileIdByMemberId(Long memberId) {
-        Profile profile = profileRepository.findByMemberId(memberId)
+    private Profile getProfileByMemberId(Long memberId) {
+        return profileRepository.findByMemberId(memberId)
                 .orElseThrow(ProfileNotFoundException::new);
-        return profile.getId();
     }
 
     private Long getCurrentUserId() {
