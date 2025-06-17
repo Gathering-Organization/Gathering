@@ -4,6 +4,7 @@ import { LoginRequest } from '@/types/auth';
 import { login } from '@/services/authApi';
 import useModalBodyLock from '@/hooks/UseModalBodyLock';
 import LoginInModal from './LoginInModal';
+import { useToast } from '@/contexts/ToastContext';
 
 type LoginModalProps = {
   isOpen: boolean;
@@ -15,6 +16,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
   const [formData, setFormData] = useState<LoginRequest>({ email: '', password: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmailLogin, setIsEmailLogin] = useState(false);
+  const { showToast } = useToast();
   useModalBodyLock(isModalOpen);
 
   const openModal = () => {
@@ -38,14 +40,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
     try {
       const result = await login(formData);
       if (result?.success) {
-        alert('로그인 되었습니다.');
+        showToast('로그인 되었습니다.', true);
         window.location.reload();
         onClose();
       } else {
-        alert(result?.message || '로그인에 실패했습니다.');
+        showToast('로그인에 실패했습니다.', false);
       }
     } catch {
-      alert('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+      showToast('로그인 중 오류가 발생했습니다. 다시 시도해주세요.', false);
     }
   };
 

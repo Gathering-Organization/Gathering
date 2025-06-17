@@ -25,7 +25,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
   useEffect(() => {
     if (timer === 0) {
-      alert('인증 시간이 만료되었습니다. 다시 시도하세요.');
+      showToast('인증 시간이 만료되었습니다. 다시 시도해주세요.', false);
       setIsEmailSent(false);
       setTimer(null);
     } else if (timer !== null) {
@@ -41,7 +41,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
   const handleSendEmail = async () => {
     if (!formData.email.trim()) {
-      alert('이메일을 입력하세요.');
+      showToast('이메일을 입력하세요.', false);
       return;
     }
 
@@ -49,17 +49,23 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
     try {
       const result = await certEmail(formData.email);
       if (result?.success) {
-        alert('인증 메일 전송 완료: ' + result.message);
+        showToast('인증 메일 전송 완료', true);
         setIsEmailSent(true);
         setTimer(300);
       } else {
-        alert('전송 실패: ' + result?.message);
+        showToast('전송에 실패했습니다.', false);
       }
     } catch (error) {
-      alert(
+      // alert(
+      //   axios.isAxiosError(error)
+      //     ? error.response?.data?.message || '이메일 전송 오류 발생'
+      //     : '전송 오류 발생'
+      // );
+      showToast(
         axios.isAxiosError(error)
           ? error.response?.data?.message || '이메일 전송 오류 발생'
-          : '전송 오류 발생'
+          : '전송 오류 발생',
+        false
       );
     } finally {
       setIsLoading(false);
@@ -68,31 +74,37 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
   const handleVerifyCode = async () => {
     if (!formData.code.trim()) {
-      alert('인증번호를 입력하세요.');
+      showToast('인증번호를 입력해주세요.', false);
       return;
     }
 
     try {
       const result = await certCode(formData.email, formData.code);
       if (result?.success) {
-        alert('인증 성공: ' + result.message);
+        showToast('인증 성공', true);
         setIsEmailVerified(true);
         setTimer(null);
       } else {
-        alert('인증 실패: ' + result?.message);
+        showToast('인증 실패', false);
       }
     } catch (error) {
-      alert(
+      showToast(
         axios.isAxiosError(error)
           ? error.response?.data?.message || '인증 오류 발생'
-          : '인증 오류 발생'
+          : '인증 오류 발생',
+        false
       );
+      // alert(
+      //   axios.isAxiosError(error)
+      //     ? error.response?.data?.message || '인증 오류 발생'
+      //     : '인증 오류 발생'
+      // );
     }
   };
 
   const handleSignUp = async () => {
     if (!isEmailVerified) {
-      showToast('이메일 인증을 완료하세요.', false);
+      showToast('이메일 인증을 완료해주세요.', false);
       return;
     }
 
@@ -109,17 +121,23 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
     try {
       const result = await signup(formData);
       if (result?.success) {
-        alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+        showToast('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.', true);
         setStep(3);
       } else {
-        alert('회원가입 실패: ' + result?.message);
+        showToast('회원가입에 실패했습니다.', false);
       }
     } catch (error) {
-      alert(
+      showToast(
         axios.isAxiosError(error)
           ? error.response?.data?.message || '회원가입 오류 발생'
-          : '회원가입 오류 발생'
+          : '회원가입 오류 발생',
+        false
       );
+      // alert(
+      //   axios.isAxiosError(error)
+      //     ? error.response?.data?.message || '회원가입 오류 발생'
+      //     : '회원가입 오류 발생'
+      // );
     }
   };
 

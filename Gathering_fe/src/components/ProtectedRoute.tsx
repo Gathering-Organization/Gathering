@@ -7,6 +7,7 @@ import LoginInModal from './LoginInModal';
 import { LoginRequest } from '@/types/auth';
 import { login } from '@/services/authApi';
 import BeatLoader from 'react-spinners/BeatLoader';
+import { useToast } from '@/contexts/ToastContext';
 
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -19,6 +20,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isEmailLogin, setIsEmailLogin] = useState(false);
   const nav = useNavigate();
+  const { showToast } = useToast();
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -46,15 +48,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     try {
       const result = await login(formData);
       if (result?.success) {
-        alert('로그인 되었습니다.');
+        showToast('로그인 되었습니다.', true);
         window.location.reload();
         setActiveModal(null);
         setIsModalOpen(false);
       } else {
-        alert(result?.message || '로그인에 실패했습니다.');
+        showToast('로그인에 실패했습니다.', false);
       }
     } catch {
-      alert('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+      showToast('로그인 중 오류가 발생했습니다. 다시 시도해주세요.', false);
     }
   };
 
@@ -67,6 +69,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     //   </div>
     // );
   }
+
   // 로그인이 되어 있지 않다면 로그인 모달창 켜기
   if (myProfile.nickname === '') {
     return (

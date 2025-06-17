@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modal from '@/components/Modal';
 import { SignupRequest } from '@/types/auth';
 import { signup } from '@/services/authApi';
+import { useToast } from '@/contexts/ToastContext';
 
 type SignupModalProps = {
   isOpen: boolean;
@@ -16,6 +17,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose, onLoginClick
     password: '',
     code: ''
   });
+  const { showToast } = useToast();
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +29,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose, onLoginClick
     e.preventDefault();
 
     if (formData.password !== confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      showToast('비밀번호가 일치하지 않습니다.', false);
       return;
     }
 
@@ -35,13 +37,14 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose, onLoginClick
       const result = await signup(formData);
 
       if (result?.success) {
-        alert('회원가입 성공!\n' + `${result}`);
+        showToast('회원가입 성공', true);
         onClose();
       } else {
-        alert(result?.message);
+        // alert(result?.message);
+        showToast('회원가입 실패', false);
       }
     } catch {
-      alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      showToast('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.', false);
     }
   };
 
