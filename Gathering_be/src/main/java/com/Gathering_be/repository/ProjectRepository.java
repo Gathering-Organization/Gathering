@@ -16,6 +16,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, Project
     Page<Project> findAllByProfileNickname(String nickname, Pageable pageable);
     Page<Project> findAllByProfileNicknameAndIsClosed(String nickname, boolean isClosed, Pageable pageable);
     List<Project> findAllByDeadlineBeforeAndIsClosedFalse(LocalDateTime now);
-    @Query("SELECT p FROM Project WHERE p.id = :id")
+    @Query(value = "SELECT * FROM project WHERE id = :id", nativeQuery = true)
     Optional<Project> findByIdIncludeDeleted(@Param("id") Long id);
 }
