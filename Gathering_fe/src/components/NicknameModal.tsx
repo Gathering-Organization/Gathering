@@ -37,6 +37,7 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
           console.log(nickname);
           updateProfileData({ nickname: newNickname });
           showToast('닉네임이 성공적으로 변경되었습니다.', true);
+          window.location.reload();
           closeModal();
         } else {
           showToast('닉네임 변경 중 문제가 발생했습니다.', false);

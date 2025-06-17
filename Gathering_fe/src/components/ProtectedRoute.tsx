@@ -6,7 +6,7 @@ import { useState } from 'react';
 import LoginInModal from './LoginInModal';
 import { LoginRequest } from '@/types/auth';
 import { login } from '@/services/authApi';
-import useModalBodyLock from '@/hooks/UseModalBodyLock';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -58,6 +58,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     }
   };
 
+  if (isMyProfileLoading) {
+    return;
+    // (
+    //   <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+    //     <BeatLoader color="#3387E5" size={20} />
+    //     <p className="mt-4 text-gray-700 font-semibold">로그인 확인 중 입니다...</p>
+    //   </div>
+    // );
+  }
   // 로그인이 되어 있지 않다면 로그인 모달창 켜기
   if (myProfile.nickname === '') {
     return (
