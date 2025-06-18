@@ -41,6 +41,11 @@ public enum ResultCode {
     APPLICATION_READ_SUCCESS(200, "AP002", "지원서 조회에 성공하였습니다."),
     APPLICATION_DELETE_SUCCESS(200, "AP003", "지원서 삭제에 성공하였습니다."),
     APPLICATION_STATUS_UPDATED(200, "AP004", "지원자의 지원서 상태를 변경하였습니다."),
+
+    // Admin
+    MEMBER_READ_SUCCESS(200, "AD001", "멤버 목록 호출 성공"),
+    MEMBER_ROLE_CHANGE_SUCCESS(200, "AD001", "멤버 ROLE 전환 성공"),
+    MEMBER_COUNT_READ_SUCCESS(200, "AD003", "멤버 카운트 호출 성공"),
     ;
 
     private final int status;
