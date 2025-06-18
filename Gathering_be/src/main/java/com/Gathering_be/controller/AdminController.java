@@ -1,6 +1,7 @@
 package com.Gathering_be.controller;
 
 import com.Gathering_be.dto.request.RoleUpdateRequest;
+import com.Gathering_be.dto.response.MemberCountForAdminResponse;
 import com.Gathering_be.dto.response.MemberInfoForAdminResponse;
 import com.Gathering_be.dto.response.ProjectResponseForAdmin;
 import com.Gathering_be.global.enums.SearchType;
@@ -61,6 +62,13 @@ public class AdminController {
     public ResponseEntity<ResultResponse> deleteProject(@PathVariable Long id) {
         adminService.deleteProject(id);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_DELETE_SUCCESS));
+    }
+
+    @GetMapping("/members/count")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResultResponse> getMemberCount() {
+        long count = adminService.getMemberCount();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.MEMBER_COUNT_READ_SUCCESS, MemberCountForAdminResponse.from(count)));
     }
 
 }

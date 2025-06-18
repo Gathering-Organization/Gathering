@@ -80,7 +80,11 @@ public class AdminService {
 
         project.getProfile().removeProject(project.isClosed());
         project.delete();
+    }
 
+    @Transactional(readOnly = true)
+    public long getMemberCount() {
+        return memberRepository.count();
     }
 
     private Project getProjectByIdForUpdate(Long projectId) {
