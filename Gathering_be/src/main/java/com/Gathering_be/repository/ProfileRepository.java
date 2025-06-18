@@ -18,7 +18,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByNickname(String nickname);
     boolean existsByNickname(String nickname);
     List<Profile> findAllByNicknameIn(Set<String> nicknames);
-    @Query("SELECT p FROM Profile p JOIN p.member m WHERE " +
-            "(:keyword IS NULL OR p.nickname LIKE %:keyword% OR m.email LIKE %:keyword%)")
-    Page<Profile> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    @Query(value = "SELECT p FROM Profile p JOIN FETCH p.member m",
+            countQuery = "SELECT COUNT(p) FROM Profile p")
+    Page<Profile> findAllWithMember(Pageable pageable);
 }

@@ -32,8 +32,8 @@ public class AdminService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
 
-    public Page<MemberInfoForAdminResponse> findMembers(String keyword, Pageable pageable) {
-        Page<Profile> profiles = profileRepository.findByKeyword(keyword, pageable);
+    public Page<MemberInfoForAdminResponse> findMembers(Pageable pageable) {
+        Page<Profile> profiles = profileRepository.findAllWithMember(pageable);
         return profiles.map(MemberInfoForAdminResponse::from);
     }
 

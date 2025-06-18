@@ -24,10 +24,8 @@ public class AdminController {
 
     @GetMapping("/members")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResultResponse> findMembers(@RequestParam(required = false) String keyword,
-                                                      @PageableDefault(size = 10) Pageable pageable
-    ) {
-        Page<MemberInfoForAdminResponse> members = adminService.findMembers(keyword, pageable);
+    public ResponseEntity<ResultResponse> findMembers(@PageableDefault(size = 10) Pageable pageable) {
+        Page<MemberInfoForAdminResponse> members = adminService.findMembers(pageable);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.MEMBER_READ_SUCCESS, members));
     }
 
