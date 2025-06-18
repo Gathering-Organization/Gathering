@@ -41,18 +41,6 @@ const PostItem: React.FC<
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
   const nav = useNavigate();
   const { showToast } = useToast();
-  // const { profileCache } = useProfileCache();
-
-  // const profileInfo = profileCache[authorNickname] || {
-  //   profileColor: 'cccccc',
-  //   nickname: authorNickname,
-  //   introduction: '',
-  //   techStacks: [],
-  //   portfolio: null,
-  //   public: false,
-  //   workExperiences: [],
-  //   organization: ''
-  // };
 
   const onClickHeart = async (e: React.MouseEvent) => {
     e.stopPropagation();

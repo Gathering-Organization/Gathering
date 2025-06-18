@@ -10,6 +10,8 @@ import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import { useToast } from '@/contexts/ToastContext';
 import { ApplyDetails } from '@/types/apply';
 import { getMyApplication } from '@/services/applicationApi';
+import { ApplyInfo } from '@/types/apply';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 interface TechStack {
   id: string;
@@ -20,6 +22,7 @@ const Apply: React.FC = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
 
+  const [tempApplyInfo, setTempApplyInfo] = useState<ApplyInfo | null>(null);
   const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>(null);
   // const [isPublic, setIsPublic] = useState<boolean>(false);
   // const [stackList] = useState<TechStack[]>([...techStacks]);
@@ -48,6 +51,22 @@ const Apply: React.FC = () => {
   const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
   const { showToast } = useToast();
+
+  useEffect(() => {
+    const loadApplyInfo = async () => {
+      try {
+        if (!projectId) {
+          const stored = localStorage.getItem('tempApplyInfo');
+          if (stored) {
+            setApplyInfo(JSON.parse(stored));
+          }
+        }
+      } catch (error) {
+        console.error('지원서 조회 실패:', error);
+      }
+    };
+    loadApplyInfo();
+  }, [projectId]);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -86,14 +105,18 @@ const Apply: React.FC = () => {
   const needLoading = isLoadingOverall || !info || (!isOwnProfile && !applyInfo);
 
   if (needLoading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+        <BeatLoader color="#3387E5" size={20} />
+        <p className="mt-4 text-gray-700 font-semibold">지원서 조회 중입니다...</p>
+      </div>
+    );
   }
 
   const portfolioFileName = isOwnProfile
     ? info.portfolio?.fileName
     : applyInfo?.portfolio?.fileName;
 
-  console.log(applyInfo);
   const positionTitle =
     positionData.find(position => position.id === applyInfo?.position)?.title ||
     applyInfo?.position;
@@ -152,6 +175,7 @@ const Apply: React.FC = () => {
   };
 
   const handleClose = () => {
+    localStorage.removeItem('tempApplyInfo');
     window.close();
   };
 

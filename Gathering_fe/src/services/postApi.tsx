@@ -112,8 +112,6 @@ export const deletePosting = async (id: number) => {
   try {
     const response = await api.delete(`/project/${id}`);
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };
     }

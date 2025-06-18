@@ -37,6 +37,7 @@ const ApplyModal: React.FC = () => {
   const dummySetSelectedStack = (value: string[]) => {};
 
   const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log(applyInfo);
     setApplyInfo({
       ...applyInfo,
       message: e.target.value
@@ -66,6 +67,7 @@ const ApplyModal: React.FC = () => {
   };
 
   const handleViewApplication = () => {
+    localStorage.setItem('tempApplyInfo', JSON.stringify(applyInfo));
     window.open('/apply/view', '_blank');
   };
 
