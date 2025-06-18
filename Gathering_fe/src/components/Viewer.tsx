@@ -126,10 +126,23 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
-  const onClickDelete = () => {
+  const onClickDelete = async () => {
     if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
-      deletePosting(Number(params.id));
-      nav('/', { replace: true });
+      try {
+        const result = await deletePosting(Number(params.id));
+        if (result.success) {
+          showToast('모집글이 성공적으로 삭제되었습니다.', true);
+          nav('/', { replace: true });
+        } else {
+          if (result.message.includes('지원자가 있는 모집글은 삭제할 수 없습니다')) {
+            showToast('지원자가 있는 모집글은 삭제할 수 없습니다.', false);
+          } else {
+            showToast(result.message || '삭제할 수 없습니다.', false);
+          }
+        }
+      } catch (error) {
+        showToast('모집글 삭제 중 오류가 발생했습니다.', false);
+      }
     }
   };
 
