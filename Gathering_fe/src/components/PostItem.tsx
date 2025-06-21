@@ -3,7 +3,7 @@ import { approxPostInfo } from '@/types/post';
 import { useNavigate } from 'react-router-dom';
 import { getStackImage } from '@/utils/get-stack-image';
 import { getStringedDate } from '@/utils/get-stringed-date';
-import { useProfileCache } from '@/contexts/ProfileCacheContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
 import { useState } from 'react';
 import { projectType as projectEachType } from '@/utils/project-and-apply-type';
 import { positionData } from '@/utils/position-data';
@@ -39,6 +39,7 @@ const PostItem: React.FC<
 }) => {
   const [positionList] = useState<Position[]>([...positionData]);
   const [isInterested, setIsInterested] = useState<boolean>(initialInterested);
+  const { myProfile } = useProfile();
   const nav = useNavigate();
   const { showToast } = useToast();
 
@@ -46,6 +47,7 @@ const PostItem: React.FC<
     e.stopPropagation();
 
     if (closed || !projectId) {
+      console.log(authorNickname, '그리고', myProfile.nickname);
       showToast('마감된 모집 공고입니다.', false);
       return;
     }
@@ -73,7 +75,7 @@ const PostItem: React.FC<
   return (
     <motion.div
       onClick={() => {
-        if (!closed) {
+        if (!closed || authorNickname === myProfile.nickname) {
           nav(`/viewPost/${projectId}`);
         } else {
           showToast('마감된 모집 공고입니다.', false);
