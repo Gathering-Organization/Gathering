@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { googleLogin } from '@/services/authApi';
 import { useToast } from '@/contexts/ToastContext';
-import Spinner from '@/components/Spinner';
 import BeatLoader from 'react-spinners/BeatLoader';
 
 const GoogleRedirectHandler: React.FC = () => {
@@ -18,10 +17,18 @@ const GoogleRedirectHandler: React.FC = () => {
           const result = await googleLogin(code);
 
           if (result?.success) {
-            showToast('로그인 되었습니다.', true);
-            setTimeout(() => {
-              window.location.href = '/';
-            }, 700);
+            // showToast('로그인 되었습니다.', true);
+            // setTimeout(() => {
+            //   window.location.href = '/';
+            // }, 700);
+            localStorage.setItem(
+              'toastMessage',
+              JSON.stringify({
+                message: '로그인 되었습니다.',
+                isSuccess: true
+              })
+            );
+            window.location.href = '/';
           } else {
             showToast('로그인에 실패했습니다.', false);
             navigate('/', { replace: true });
