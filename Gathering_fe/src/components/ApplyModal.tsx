@@ -53,7 +53,14 @@ const ApplyModal: React.FC = () => {
         applyInfo.message
       );
       if (response?.success) {
-        showToast('지원서 제출이 완료되었습니다.', true);
+        // showToast('지원서 제출이 완료되었습니다.', true);
+        localStorage.setItem(
+          'toastMessage',
+          JSON.stringify({
+            message: '지원서 제출이 완료되었습니다.',
+            isSuccess: true
+          })
+        );
         window.location.reload();
         closeModal();
       } else {
@@ -178,7 +185,7 @@ const ApplyModal: React.FC = () => {
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >
-                    {isLoading ? '제출 중...' : '제출하기'}
+                    {/* {isLoading ? '제출 중...' : '제출하기'} */}
                   </button>
                 </form>
               </div>

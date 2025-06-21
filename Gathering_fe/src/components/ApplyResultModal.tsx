@@ -74,6 +74,13 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
       );
       if (response?.success) {
         showToast('지원서 제출이 완료되었습니다.', true);
+        // localStorage.setItem(
+        //   'toastMessage',
+        //   JSON.stringify({
+        //     message: '지원서 제출이 완료되었습니다.',
+        //     isSuccess: true
+        //   })
+        // );
         closeModal();
       } else {
         showToast('지원서 제출 중 오류가 발생했습니다.', false);

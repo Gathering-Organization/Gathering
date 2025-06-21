@@ -73,6 +73,21 @@ const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
     }
   }, [params.id]);
 
+  useEffect(() => {
+    const toastRaw = localStorage.getItem('toastMessage');
+    if (toastRaw) {
+      try {
+        const toast = JSON.parse(toastRaw);
+        if (toast.message) {
+          showToast(toast.message, toast.isSuccess);
+        }
+      } catch (err) {
+        console.error('Invalid toast data:', err);
+      }
+      localStorage.removeItem('toastMessage');
+    }
+  }, []);
+
   const fetchApplicationData = async () => {
     if (!data) return;
     try {
