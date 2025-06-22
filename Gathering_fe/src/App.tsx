@@ -47,16 +47,16 @@ const App: React.FC = () => {
         <ProfileProvider>
           <ToastProvider>
             <Routes>
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <Admin />
-                  </ProtectedRoute>
-                }
-              />
               <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
               <Route element={<Layout />}>
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <Admin />
+                    </ProtectedRoute>
+                  }
+                />
                 {/* <Route path="/" element={<Main />} /> */}
                 <Route path="/SignUp" element={<SignUp />} />
                 <Route path="/" element={<PostHome />} />
