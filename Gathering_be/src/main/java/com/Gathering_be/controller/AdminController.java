@@ -10,11 +10,11 @@ import com.Gathering_be.global.response.ResultResponse;
 import com.Gathering_be.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +24,8 @@ public class AdminController {
 
     @GetMapping("/members")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResultResponse> findMembers(@PageableDefault(size = 10) Pageable pageable) {
-        Page<MemberInfoForAdminResponse> members = adminService.findMembers(pageable);
+    public ResponseEntity<ResultResponse> getMembers() {
+        List<MemberInfoForAdminResponse> members = adminService.getMembers();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.MEMBER_READ_SUCCESS, members));
     }
 

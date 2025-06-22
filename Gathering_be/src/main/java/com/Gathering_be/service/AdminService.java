@@ -32,9 +32,11 @@ public class AdminService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
 
-    public Page<MemberInfoForAdminResponse> findMembers(Pageable pageable) {
-        Page<Profile> profiles = profileRepository.findAllWithMember(pageable);
-        return profiles.map(MemberInfoForAdminResponse::from);
+    public List<MemberInfoForAdminResponse> getMembers() {
+        List<Profile> profiles = profileRepository.findAllWithMember();
+        return profiles.stream()
+                .map(MemberInfoForAdminResponse::from)
+                .collect(Collectors.toList());
     }
 
     public void changeMemberRole(Long memberId, Role newRole) {
