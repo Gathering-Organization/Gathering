@@ -140,9 +140,16 @@ public class Profile extends BaseTimeEntity {
         pendingApplications++;
     }
 
-    public void removePendingApplication() {
+    public void removeApplication(ApplyStatus status) {
         totalApplications--;
-        pendingApplications--;
+
+        if (status == ApplyStatus.PENDING) {
+            pendingApplications--;
+        } else if (status == ApplyStatus.APPROVED) {
+            approvedApplications--;
+        } else if (status == ApplyStatus.REJECTED) {
+            rejectedApplications--;
+        }
     }
 
     public void updateApplicationStatus(ApplyStatus newStatus) {
