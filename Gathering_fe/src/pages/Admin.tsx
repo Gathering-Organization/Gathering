@@ -3,7 +3,7 @@ import { useProfile } from '@/contexts/ProfileStateContext';
 
 const Admin: React.FC = () => {
   const { myProfile } = useProfile();
-  const [adminList, setAdminList] = useState<string[]>(['게더링#758743', '윤종근#771371']);
+  const [adminList, setAdminList] = useState<string[]>(['게더링#758743', '윤종근#771371', 'admin']);
   const [nicknameInput, setNicknameInput] = useState('');
   const [userList, setUserList] = useState<string[]>([
     '게더링#758743',
@@ -91,14 +91,6 @@ const Admin: React.FC = () => {
               className="flex justify-between items-center border px-4 py-2 rounded bg-gray-100"
             >
               <span>{nickname}</span>
-              {nickname !== myProfile.nickname && (
-                <button
-                  className="text-sm text-red-500"
-                  onClick={() => setAdminList(prev => prev.filter(admin => admin !== nickname))}
-                >
-                  삭제
-                </button>
-              )}
             </li>
           ))}
         </ul>
@@ -118,18 +110,7 @@ const Admin: React.FC = () => {
               <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''}`}>
                 {post.title} {post.deleted && '(삭제됨)'}
               </span>
-              {post.deleted ? (
-                <button
-                  className="text-sm text-blue-600"
-                  onClick={() => {
-                    setPostList(prev =>
-                      prev.map(p => (p.id === post.id ? { ...p, deleted: false } : p))
-                    );
-                  }}
-                >
-                  복구
-                </button>
-              ) : (
+              {!post.deleted && (
                 <button
                   className="text-sm text-red-600"
                   onClick={() => {
