@@ -1,5 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProfile } from '@/contexts/ProfileStateContext';
+import {
+  getMembersCountAdmin,
+  getMembersAdmin,
+  getPaginationAdmin,
+  patchRoleAdmin,
+  deleteProjectAdmin
+} from '@/services/adminApi';
+import { useToast } from '@/contexts/ToastContext';
 
 const Admin: React.FC = () => {
   const { myProfile } = useProfile();
@@ -12,12 +20,47 @@ const Admin: React.FC = () => {
     '프론트마스터#2024'
   ]);
   const [searchUser, setSearchUser] = useState('');
+  const { showToast } = useToast();
   const [postList, setPostList] = useState<{ id: number; title: string; deleted: boolean }[]>([
     { id: 1, title: '모집글 A', deleted: false },
     { id: 2, title: '모집글 B', deleted: true },
     { id: 3, title: '모집글 C', deleted: false }
   ]);
-  const [userCount, setUserCount] = useState(3);
+  const [userCount, setUserCount] = useState(0);
+
+  useEffect(() => {
+    if (myProfile) {
+      const fetchMembersCount = async () => {
+        try {
+          const result = await getMembersCountAdmin();
+          if (result?.success) {
+            setUserCount(result.data.totalMemberCount);
+          } else {
+            console.log(result?.message || '유저수 조회 중 오류 발생');
+          }
+        } catch (error) {
+          console.log('유저수 조회 실패:', error);
+        }
+      };
+      fetchMembersCount();
+    }
+  }, [myProfile]);
+
+  const handleReload = async () => {
+    try {
+      const result = await getMembersCountAdmin();
+      if (result?.success) {
+        setUserCount(result.data.totalMemberCount);
+        showToast('새로고침 되었습니다.', true);
+      } else {
+        console.log(result?.message || '유저수 조회 중 오류 발생');
+        showToast('새로고침에 실패했습니다.', false);
+      }
+    } catch (error) {
+      console.log('유저수 조회 실패:', error);
+      showToast('새로고침에 실패했습니다.', false);
+    }
+  };
 
   if (!adminList.includes(myProfile.nickname)) {
     return <div className="text-center mt-20 text-xl font-semibold">접근 권한이 없습니다.</div>;
@@ -28,12 +71,7 @@ const Admin: React.FC = () => {
       <section>
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">유저 수</h2>
-          <button
-            className="px-4 py-1 bg-blue-500 text-white rounded"
-            onClick={() => {
-              console.log('유저 수 새로고침');
-            }}
-          >
+          <button className="px-4 py-1 bg-blue-500 text-white rounded" onClick={handleReload}>
             새로고침
           </button>
         </div>
