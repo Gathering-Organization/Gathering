@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -64,6 +66,20 @@ public class EmailService {
         String subject = "[Gathering] 새 지원서가 도착했습니다!";
 
         sendHtmlMail(to, subject, htmlContent);
+    }
+
+    public void sendProjectDeletionNotice(List<String> recipients) {
+        Context context = new Context();
+        //context.setVariable("projectTitle", projectTitle);
+        //context.setVariable("authorName", authorName);
+        context.setVariable("link", "https://www.gathering.work");
+
+        String htmlContent = templateEngine.process("notify", context);
+        String subject = "[Gathering] 삭제";
+
+        for (String to : recipients) {
+            sendHtmlMail(to, subject, htmlContent);
+        }
     }
 
     private void sendHtmlMail(String to, String subject, String htmlContent) {
