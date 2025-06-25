@@ -60,6 +60,27 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         return executeQuery(builder, pageable);
     }
 
+    @Override
+    public Page<Project> searchMyProjects(Pageable pageable, String nickname, Boolean isClosed) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 삭제되지 않은 프로젝트만 필터링 (isDeleted = false)
+        builder.and(project.isDeleted.eq(false));
+
+        // 특정 사용자의 닉네임으로 필터링
+        if (nickname != null && !nickname.trim().isEmpty()) {
+            builder.and(project.profile.nickname.eq(nickname));
+        }
+
+        // 모집 마감 여부로 필터링 (isClosed 파라미터가 null이 아닐 경우)
+        if (isClosed != null) {
+            builder.and(project.isClosed.eq(isClosed));
+        }
+
+        // 쿼리 실행 로직 호출
+        return executeQuery(builder, pageable);
+    }
+
     // --- 3. 공통 로직을 담당하는 private 헬퍼 메서드 ---
     private BooleanBuilder createCommonWhereBuilder(JobPosition position, List<TechStack> techStacks, ProjectType type,
                                                     ProjectMode mode, Boolean isClosed,
