@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PostList from '@/components/PostList';
 import { getMyPosting, getPartPosting } from '@/services/postApi';
-import { approxPostInfo } from '@/types/post';
+import { ApproxPostInfo } from '@/types/post';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
@@ -16,7 +16,7 @@ const MyApplication: React.FC = () => {
   const location = useLocation();
   const { filter: postingFilter = '' } = location.state || {};
   const [page, setPage] = useState(1);
-  const [post, setPost] = useState<approxPostInfo[]>([]);
+  const [post, setPost] = useState<ApproxPostInfo[]>([]);
   const [selectedType, setSelectedType] = useState<string>(String(postingFilter));
   const [totalPages, setTotalPages] = useState<number>(1);
   const [profileCache, setProfileCache] = useState<{ [nickname: string]: ProfileAllInfo }>({});
@@ -70,7 +70,7 @@ const MyApplication: React.FC = () => {
 
             // const validProjects = projectInfos
             //   .filter(p => p && p.success)
-            //   .map(p => p?.data as approxPostInfo);
+            //   .map(p => p?.data as ApproxPostInfo);
 
             // const projectsWithStatus = validProjects.map(project => ({
             //   ...project,

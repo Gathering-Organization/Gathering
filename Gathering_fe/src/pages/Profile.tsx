@@ -17,7 +17,7 @@ import ProfileColorModal from '@/components/ProfileColorModal';
 import WorkExperienceItem from '@/components/WorkExperienceItem';
 import { useNavigate } from 'react-router-dom';
 import { getMyPosting } from '@/services/postApi';
-import { approxPostInfo } from '@/types/post';
+import { ApproxPostInfo } from '@/types/post';
 import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
 import { useToast } from '@/contexts/ToastContext';
 
@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
     recruiting: 0,
     completed: 0
   });
-  const [post, setPost] = useState<approxPostInfo[]>([]);
+  const [post, setPost] = useState<ApproxPostInfo[]>([]);
   const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',

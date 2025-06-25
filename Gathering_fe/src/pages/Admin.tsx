@@ -9,6 +9,7 @@ import {
 } from '@/services/adminApi';
 import { useToast } from '@/contexts/ToastContext';
 import { UserInfo } from '@/types/profile';
+import { AdminPostInfo } from '@/types/post';
 
 const Admin: React.FC = () => {
   const { myProfile } = useProfile();
@@ -16,46 +17,74 @@ const Admin: React.FC = () => {
   const [nicknameInput, setNicknameInput] = useState('');
   const [userList, setUserList] = useState<UserInfo[]>([]);
   const [searchUser, setSearchUser] = useState('');
+  const [searchPost, setSearchPost] = useState('');
   const { showToast } = useToast();
-  const [postList, setPostList] = useState<{ id: number; title: string; deleted: boolean }[]>([
-    { id: 1, title: '모집글 A', deleted: false },
-    { id: 2, title: '모집글 B', deleted: true },
-    { id: 3, title: '모집글 C', deleted: false }
-  ]);
+  const [postList, setPostList] = useState<AdminPostInfo[]>([]);
   const [userCount, setUserCount] = useState(0);
 
   useEffect(() => {
     if (myProfile) {
-      const fetchMembersCount = async () => {
-        try {
-          const countResult = await getMembersCountAdmin();
-          const membersResult = await getMembersAdmin();
-          if (countResult?.success && membersResult?.success) {
-            setUserCount(countResult.data.totalMemberCount);
-            setUserList(membersResult.data);
-          } else {
-            console.log(countResult?.message || '유저 수, 유저 목록 조회 중 오류 발생');
-          }
-        } catch (error) {
-          console.log('유저 수, 유저 목록 조회 실패:', error);
-        }
-      };
       fetchMembersCount();
+      fetchMemberList();
+      fetchPostList();
     }
   }, [myProfile]);
 
-  const handleReload = async () => {
+  const fetchMembersCount = async () => {
+    try {
+      const result = await getMembersCountAdmin();
+      if (result?.success) setUserCount(result.data.totalMemberCount);
+    } catch (e) {
+      console.error('유저 수 조회 실패:', e);
+    }
+  };
+
+  const fetchMemberList = async () => {
+    try {
+      const result = await getMembersAdmin();
+      if (result?.success) setUserList(result.data);
+    } catch (e) {
+      console.error('유저 목록 조회 실패:', e);
+    }
+  };
+
+  const fetchPostList = async () => {
+    try {
+      const result = await getPaginationAdmin(1, 'TITLE', '');
+      if (result?.success) setPostList(result.data);
+    } catch (e) {
+      console.error('모집글 조회 실패:', e);
+    }
+  };
+
+  const handleUserReload = async () => {
     try {
       const result = await getMembersCountAdmin();
       if (result?.success) {
         setUserCount(result.data.totalMemberCount);
         showToast('새로고침 되었습니다.', true);
       } else {
-        console.log(result?.message || '유저수 조회 중 오류 발생');
+        console.log(result?.message || '유저 수 조회 중 오류 발생');
         showToast('새로고침에 실패했습니다.', false);
       }
     } catch (error) {
-      console.log('유저수 조회 실패:', error);
+      console.log('유저 수 조회 실패:', error);
+      showToast('새로고침에 실패했습니다.', false);
+    }
+  };
+
+  const handlePostReload = async () => {
+    try {
+      const result = await getPaginationAdmin(1, 'TITLE', '');
+      if (result?.success) {
+        setPostList(result.data);
+        showToast('새로고침 되었습니다.', true);
+      } else {
+        console.log(result?.message || '모집글 조회 중 오류 발생');
+        showToast('새로고침에 실패했습니다.', false);
+      }
+    } catch (error) {
+      console.log('모집글 조회 실패:', error);
       showToast('새로고침에 실패했습니다.', false);
     }
   };
@@ -69,7 +98,7 @@ const Admin: React.FC = () => {
       <section>
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">유저 수</h2>
-          <button className="px-4 py-1 bg-blue-500 text-white rounded" onClick={handleReload}>
+          <button className="px-4 py-1 bg-blue-500 text-white rounded" onClick={handleUserReload}>
             새로고침
           </button>
         </div>
@@ -138,31 +167,59 @@ const Admin: React.FC = () => {
       {/* 모집글 조회 및 삭제 */}
       <section>
         <h2 className="text-xl font-bold mb-2">모집글 조회 및 삭제</h2>
+
+        <div className="flex space-x-2 mb-4">
+          <input
+            type="text"
+            placeholder="모집글 제목 검색"
+            className="border px-4 py-2 rounded w-full"
+            value={searchPost}
+            onChange={e => setSearchPost(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded whitespace-nowrap"
+            onClick={handlePostReload}
+          >
+            새로고침
+          </button>
+        </div>
+        {/* {userList
+            .filter(user => user.nickname.includes(searchUser))
+            .map(user => (
+              <li key={user.memberId} className="border p-2 rounded bg-gray-50">
+                {`[${user.memberId}] ${user.nickname} (${user.email}) `}
+                <span className="font-semibold">
+                  {user.role === 'ROLE_ADMIN' ? '관리자' : '회원'}
+                </span>
+              </li>
+            ))} */}
         <ul className="space-y-2">
-          {postList.map(post => (
-            <li
-              key={post.id}
-              className={`flex justify-between items-center border px-4 py-2 rounded ${
-                post.deleted ? 'bg-red-100' : 'bg-white'
-              }`}
-            >
-              <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''}`}>
-                {post.title} {post.deleted && '(삭제됨)'}
-              </span>
-              {!post.deleted && (
-                <button
-                  className="text-sm text-red-600"
-                  onClick={() => {
-                    setPostList(prev =>
-                      prev.map(p => (p.id === post.id ? { ...p, deleted: true } : p))
-                    );
-                  }}
-                >
-                  삭제
-                </button>
-              )}
-            </li>
-          ))}
+          {postList
+            .filter(post => post.title.includes(searchPost))
+            .map(post => (
+              <li
+                key={post.projectId}
+                className={`flex justify-between items-center border px-4 py-2 rounded ${
+                  post.deleted ? 'bg-red-100' : 'bg-white'
+                }`}
+              >
+                <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''}`}>
+                  {post.title} {post.deleted && '(삭제됨)'}
+                </span>
+                {!post.deleted && (
+                  <button
+                    className="text-sm text-red-600"
+                    // onClick={() => {
+                    //   setPostList(prev =>
+                    //     prev.map(p => (p.id === post.id ? { ...p, deleted: true } : p))
+                    //   );
+                    // }}
+                  >
+                    삭제
+                  </button>
+                )}
+              </li>
+            ))}
         </ul>
       </section>
     </div>

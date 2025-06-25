@@ -1,4 +1,4 @@
-import { partPostInfo } from '@/types/post';
+import { PartPostInfo } from '@/types/post';
 import { getStringedDate } from '@/utils/get-stringed-date';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -30,7 +30,7 @@ interface Position {
   title: string;
 }
 
-const Viewer: React.FC<{ data: partPostInfo | null }> = ({ data }) => {
+const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
   const [isToggleOn, setIsToggleOn] = useState(data?.closed);
   const { myProfile, isMyProfileLoading } = useProfile();
   const params = useParams();

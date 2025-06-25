@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useRef, createContext } from 'react';
 import PostList from '@/components/PostList';
 import { getAllPosting } from '@/services/postApi';
-import { approxPostInfo } from '@/types/post';
+import { ApproxPostInfo } from '@/types/post';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import SearchBar from '@/components/SearchBar';
 import MultiLevelDropdown from '@/components/MultiLevelDropdown';
@@ -30,7 +30,7 @@ const PostHome: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [sortType, setSortType] = useState('-createdAt');
-  const [post, setPost] = useState<approxPostInfo[]>([]);
+  const [post, setPost] = useState<ApproxPostInfo[]>([]);
   const [selectedType, setSelectedType] = useState<string>('ALL');
   const [selectedStack, setSelectedStack] = useState<string[]>(['전체']);
   const [selectedPosition, setSelectedPosition] = useState<string>('전체');

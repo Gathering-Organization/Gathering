@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PostList from '@/components/PostList';
 import { getMyPosting } from '@/services/postApi';
-import { approxPostInfo } from '@/types/post';
+import { ApproxPostInfo } from '@/types/post';
 import ProjecTypeFilter from '@/components/ProjectTypeFilter';
 import { getUserProfile } from '@/services/profileApi';
 import { ProfileAllInfo } from '@/types/profile';
@@ -14,7 +14,7 @@ const MyPostHome: React.FC = () => {
   const location = useLocation();
   const { filter: postingFilter = '' } = location.state || {};
   const [page, setPage] = useState(1);
-  const [post, setPost] = useState<approxPostInfo[]>([]);
+  const [post, setPost] = useState<ApproxPostInfo[]>([]);
   const [selectedType, setSelectedType] = useState<string>(String(postingFilter));
   const [totalPages, setTotalPages] = useState<number>(1);
   const [profileCache, setProfileCache] = useState<{ [nickname: string]: ProfileAllInfo }>({});

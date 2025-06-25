@@ -25,7 +25,7 @@ export const getPaginationAdmin = async (page: number, searchType: string, keywo
   try {
     const keywordParam = encodeURIComponent(keyword);
     const response = await api.get(
-      `/admin/project/pagination?page=${page}&sort=-createdAt&position=ALL&type=ALL&mode=ALL&searchType=${searchType}&keyword=${keywordParam}`
+      `/admin/project/pagination?page=${page}&searchType=${searchType}&keyword=${keywordParam}`
     );
 
     console.log('응답 데이터:', response.data.data);
