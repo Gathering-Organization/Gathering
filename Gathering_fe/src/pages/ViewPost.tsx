@@ -1,7 +1,7 @@
 import Viewer from '@/components/Viewer';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { partPostInfo } from '@/types/post';
+import { PartPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
@@ -10,7 +10,7 @@ import { useToast } from '@/contexts/ToastContext';
 import BeatLoader from 'react-spinners/BeatLoader';
 
 const ViewPost: React.FC = () => {
-  const [post, setPost] = useState<partPostInfo | null>(null);
+  const [post, setPost] = useState<PartPostInfo | null>(null);
   const params = useParams();
   const { showToast } = useToast();
 

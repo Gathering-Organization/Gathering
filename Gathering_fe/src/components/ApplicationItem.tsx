@@ -1,5 +1,5 @@
 // import { motion } from 'framer-motion';
-// import { approxPostInfo } from '@/types/post';
+// import { ApproxPostInfo } from '@/types/post';
 // import { useNavigate } from 'react-router-dom';
 // import { getStackImage } from '@/utils/get-stack-image';
 // import { getStringedDate } from '@/utils/get-stringed-date';
@@ -16,7 +16,7 @@
 // }
 
 // const ApplicationItem: React.FC<
-//   approxPostInfo & { onInterestToggle?: (projectId: number, newValue: boolean) => void }
+//   ApproxPostInfo & { onInterestToggle?: (projectId: number, newValue: boolean) => void }
 // > = ({
 //   projectId,
 //   title,
