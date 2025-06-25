@@ -296,7 +296,7 @@ const Posting: React.FC = () => {
         {isLoading && (
           <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
             <BeatLoader color="#3387E5" size={20} />
-            <p className="mt-4 text-gray-700 font-semibold">지원서를 제출 중입니다...</p>
+            <p className="mt-4 text-gray-700 font-semibold">모집글을 작성 중입니다...</p>
           </div>
         )}
       </div>

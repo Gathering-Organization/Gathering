@@ -10,6 +10,7 @@ import {
 import { useToast } from '@/contexts/ToastContext';
 import { UserInfo } from '@/types/profile';
 import { AdminPostInfo } from '@/types/post';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const Admin: React.FC = () => {
   const { myProfile } = useProfile();
@@ -21,6 +22,7 @@ const Admin: React.FC = () => {
   const { showToast } = useToast();
   const [postList, setPostList] = useState<AdminPostInfo[]>([]);
   const [userCount, setUserCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (myProfile) {
@@ -86,6 +88,25 @@ const Admin: React.FC = () => {
     } catch (error) {
       console.log('모집글 조회 실패:', error);
       showToast('새로고침에 실패했습니다.', false);
+    }
+  };
+
+  const deletePost = async (projectId: number) => {
+    setIsLoading(true);
+    try {
+      const result = await deleteProjectAdmin(projectId);
+      if (result?.success) {
+        window.location.reload();
+        showToast('해당 모집글을 삭제했습니다.', true);
+      } else {
+        console.log(result?.message || '모집글 삭제 중 오류 발생');
+        showToast('모집글 삭제에 실패했습니다.', false);
+      }
+    } catch (error) {
+      console.log('모집글 삭제 실패', error);
+      showToast('모집글 삭제에 실패했습니다.', false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -203,17 +224,18 @@ const Admin: React.FC = () => {
                   post.deleted ? 'bg-red-100' : 'bg-white'
                 }`}
               >
-                <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''}`}>
-                  {post.title} {post.deleted && '(삭제됨)'}
+                <span className="flex w-full">
+                  <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''}`}>
+                    {`[${post.projectId}] ${post.title} (작성자 : ${post.authorNickname})`}
+                  </span>
+                  {post.deleted && (
+                    <span className="ml-auto text-red-600 font-semibold">(삭제됨)</span>
+                  )}
                 </span>
                 {!post.deleted && (
                   <button
                     className="text-sm text-red-600"
-                    // onClick={() => {
-                    //   setPostList(prev =>
-                    //     prev.map(p => (p.id === post.id ? { ...p, deleted: true } : p))
-                    //   );
-                    // }}
+                    onClick={() => deletePost(post.projectId)}
                   >
                     삭제
                   </button>
@@ -222,6 +244,12 @@ const Admin: React.FC = () => {
             ))}
         </ul>
       </section>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+          <BeatLoader color="#3387E5" size={20} />
+          <p className="mt-4 text-gray-700 font-semibold">모집글 삭제 처리 중입니다...</p>
+        </div>
+      )}
     </div>
   );
 };
