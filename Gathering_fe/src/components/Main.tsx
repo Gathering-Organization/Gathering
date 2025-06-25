@@ -9,13 +9,12 @@ const Main: React.FC = () => {
       const result = await getUserProfile('유진');
 
       if (result?.success) {
-        alert('유저 정보 불러오기 성공!' + result.data);
-        console.log(result.data);
+        showToast('유저 정보 불러오기를 성공했습니다.', true);
       } else {
-        alert(result?.message || '로그아웃에 실패했습니다.');
+        showToast('로그아웃에 실패했습니다.', false);
       }
     } catch {
-      alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
+      showToast('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.', false);
     }
   };
 

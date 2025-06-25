@@ -21,8 +21,14 @@ const LogoutButton: React.FC = () => {
       const result = await logout();
 
       if (result?.success) {
-        showToast('로그아웃 되었습니다.', true);
-        nav('/');
+        localStorage.setItem(
+          'toastMessage',
+          JSON.stringify({
+            message: '로그아웃 되었습니다.',
+            isSuccess: true
+          })
+        );
+        window.location.href = '/';
       } else {
         showToast('로그아웃에 실패했습니다.', false);
       }
@@ -45,7 +51,7 @@ const LogoutButton: React.FC = () => {
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <button
-        className={`w-48 h-[48px] focus:outline-none border border-transparent border-r-[5px] border-b-[5px] rounded-[10px] ${
+        className={`w-[200px] h-[48px] focus:outline-none border border-transparent border-r-[5px] border-b-[5px] rounded-[10px] ${
           isDropdownOpen ? 'border-[#000000]' : ''
         }`}
         onClick={() => setIsDropdownOpen(prev => !prev)}

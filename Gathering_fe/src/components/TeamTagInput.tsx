@@ -140,7 +140,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               placeholder="팀원 태그 (입력 후 Enter) ex) 게더링#546931"
-              className="w-full px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+              className="w-full px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 focus:outline-none dark:border-gray-700 rounded-md"
             />
           </div>
         </div>

@@ -60,6 +60,18 @@ const PostHome: React.FC = () => {
   };
 
   useEffect(() => {
+    const toastRaw = localStorage.getItem('toastMessage');
+    if (toastRaw) {
+      try {
+        const toast = JSON.parse(toastRaw);
+        if (toast.message) {
+          showToast(toast.message, toast.isSuccess);
+        }
+      } catch (err) {
+        console.error('Invalid toast data:', err);
+      }
+      localStorage.removeItem('toastMessage');
+    }
     const getAllPost = async () => {
       try {
         window.scrollTo(0, 0);

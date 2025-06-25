@@ -46,14 +46,7 @@ const App: React.FC = () => {
               <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
               <Route element={<Layout />}>
                 {/* <Route path="/" element={<Main />} /> */}
-                <Route
-                  path="/SignUp"
-                  element={
-                    <ProtectedRoute>
-                      <SignUp />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path="/SignUp" element={<SignUp />} />
                 <Route path="/" element={<PostHome />} />
                 <Route
                   path="/myPostHome"

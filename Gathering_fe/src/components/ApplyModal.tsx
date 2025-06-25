@@ -6,12 +6,14 @@ import { ApplyInfo } from '@/types/apply';
 import { DropdownDispatchContext } from '@/pages/PostHome';
 import { useParams } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const ApplyModal: React.FC = () => {
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [applyInfo, setApplyInfo] = useState<ApplyInfo>({
     projectId: Number(params.id),
     position: '',
@@ -35,6 +37,7 @@ const ApplyModal: React.FC = () => {
   const dummySetSelectedStack = (value: string[]) => {};
 
   const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log(applyInfo);
     setApplyInfo({
       ...applyInfo,
       message: e.target.value
@@ -42,6 +45,7 @@ const ApplyModal: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const response = await postApplication(
         applyInfo.projectId,
@@ -49,17 +53,28 @@ const ApplyModal: React.FC = () => {
         applyInfo.message
       );
       if (response?.success) {
-        showToast('지원서 제출이 완료되었습니다.', true);
+        // showToast('지원서 제출이 완료되었습니다.', true);
+        localStorage.setItem(
+          'toastMessage',
+          JSON.stringify({
+            message: '지원서 제출이 완료되었습니다.',
+            isSuccess: true
+          })
+        );
+        window.location.reload();
         closeModal();
       } else {
         showToast('지원서 제출 중 오류가 발생했습니다.', false);
       }
     } catch (error) {
       showToast('지원서 제출 중 오류가 발생했습니다.', false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleViewApplication = () => {
+    localStorage.setItem('tempApplyInfo', JSON.stringify(applyInfo));
     window.open('/apply/view', '_blank');
   };
 
@@ -73,11 +88,10 @@ const ApplyModal: React.FC = () => {
       <div className="flex flex-col items-center mt-10">
         <button
           onClick={openModal}
-          className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+          className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
         >
           지원하기
         </button>
-
         {isModalOpen && (
           <div
             className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
@@ -164,17 +178,23 @@ const ApplyModal: React.FC = () => {
                   <button
                     onClick={handleSubmit}
                     type="button"
-                    disabled={!isChecked}
+                    disabled={!isChecked || isLoading}
                     className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none ${
-                      isChecked
+                      isChecked && !isLoading
                         ? 'bg-[#3387E5] hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >
-                    제출하기
+                    {/* {isLoading ? '제출 중...' : '제출하기'} */}
                   </button>
                 </form>
               </div>
+              {isLoading && (
+                <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+                  <BeatLoader color="#3387E5" size={20} />
+                  <p className="mt-4 text-gray-700 font-semibold">지원서를 제출 중입니다...</p>
+                </div>
+              )}
             </div>
           </div>
         )}
