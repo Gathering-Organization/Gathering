@@ -8,17 +8,13 @@ import {
   deleteProjectAdmin
 } from '@/services/adminApi';
 import { useToast } from '@/contexts/ToastContext';
+import { UserInfo } from '@/types/profile';
 
 const Admin: React.FC = () => {
   const { myProfile } = useProfile();
   const [adminList, setAdminList] = useState<string[]>(['게더링#758743', '윤종근#771371', 'admin']);
   const [nicknameInput, setNicknameInput] = useState('');
-  const [userList, setUserList] = useState<string[]>([
-    '게더링#758743',
-    '코딩왕#1234',
-    '디자인여왕#5678',
-    '프론트마스터#2024'
-  ]);
+  const [userList, setUserList] = useState<UserInfo[]>([]);
   const [searchUser, setSearchUser] = useState('');
   const { showToast } = useToast();
   const [postList, setPostList] = useState<{ id: number; title: string; deleted: boolean }[]>([
@@ -32,14 +28,16 @@ const Admin: React.FC = () => {
     if (myProfile) {
       const fetchMembersCount = async () => {
         try {
-          const result = await getMembersCountAdmin();
-          if (result?.success) {
-            setUserCount(result.data.totalMemberCount);
+          const countResult = await getMembersCountAdmin();
+          const membersResult = await getMembersAdmin();
+          if (countResult?.success && membersResult?.success) {
+            setUserCount(countResult.data.totalMemberCount);
+            setUserList(membersResult.data);
           } else {
-            console.log(result?.message || '유저수 조회 중 오류 발생');
+            console.log(countResult?.message || '유저 수, 유저 목록 조회 중 오류 발생');
           }
         } catch (error) {
-          console.log('유저수 조회 실패:', error);
+          console.log('유저 수, 유저 목록 조회 실패:', error);
         }
       };
       fetchMembersCount();
@@ -79,7 +77,7 @@ const Admin: React.FC = () => {
       </section>
 
       <section>
-        <h2 className="text-xl font-bold mb-2">멤버 ID 조회</h2>
+        <h2 className="text-xl font-bold mb-2">멤버 조회</h2>
         <input
           type="text"
           placeholder="닉네임 검색"
@@ -87,12 +85,15 @@ const Admin: React.FC = () => {
           value={searchUser}
           onChange={e => setSearchUser(e.target.value)}
         />
-        <ul className="space-y-1">
+        <ul className="space-y-1 max-h-[500px] overflow-y-auto pr-2">
           {userList
-            .filter(nickname => nickname.includes(searchUser))
-            .map((nickname, idx) => (
-              <li key={idx} className="border p-2 rounded bg-gray-50">
-                {nickname}
+            .filter(user => user.nickname.includes(searchUser))
+            .map(user => (
+              <li key={user.memberId} className="border p-2 rounded bg-gray-50">
+                {`[${user.memberId}] ${user.nickname} (${user.email}) `}
+                <span className="font-semibold">
+                  {user.role === 'ROLE_ADMIN' ? '관리자' : '회원'}
+                </span>
               </li>
             ))}
         </ul>
@@ -123,14 +124,14 @@ const Admin: React.FC = () => {
         </div>
         <h3 className="font-semibold mb-1">현재 관리자 목록</h3>
         <ul className="space-y-1">
-          {adminList.map((nickname, idx) => (
+          {/* {adminList.map((memberId, email, nickname, role) => (
             <li
               key={idx}
               className="flex justify-between items-center border px-4 py-2 rounded bg-gray-100"
             >
-              <span>{nickname}</span>
+              <span>{`${memberId} ${nickname} (${email})_${role}`}</span>
             </li>
-          ))}
+          ))} */}
         </ul>
       </section>
 
