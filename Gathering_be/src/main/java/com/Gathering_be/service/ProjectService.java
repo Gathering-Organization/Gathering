@@ -83,7 +83,7 @@ public class ProjectService {
 
     @Transactional
     public void deleteProject(Long projectId) {
-        Project project = getProjectByIdForUpdate(projectId);
+        Project project = getProjectById(projectId);
         validateMemberAccess(project);
 
         if (applicationRepository.existsByProjectId(projectId)){

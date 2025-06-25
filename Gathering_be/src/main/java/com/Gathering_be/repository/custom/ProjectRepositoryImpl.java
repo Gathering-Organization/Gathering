@@ -37,6 +37,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                                    SearchType searchType, String keyword) {
         // 공통 로직을 호출하여 기본 조건절 생성
         BooleanBuilder builder = createCommonWhereBuilder(position, techStacks, type, mode, isClosed, searchType, keyword);
+        builder.and(project.isDeleted.eq(false));
 
         // 쿼리 실행 로직 호출
         return executeQuery(builder, pageable);

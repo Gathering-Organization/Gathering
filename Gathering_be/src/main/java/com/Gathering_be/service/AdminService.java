@@ -86,7 +86,7 @@ public class AdminService {
         Set<String> recipientEmails = new HashSet<>();
 
         Profile authorProfile = project.getProfile();
-        recipientEmails.add(authorProfile.getMember().getEmail());
+        /*recipientEmails.add(authorProfile.getMember().getEmail());
 
         List<Application> applications = applicationRepository.findAllByProjectId(projectId);
 
@@ -100,7 +100,7 @@ public class AdminService {
         }
 
         emailService.sendProjectDeletionNotice(new ArrayList<>(recipientEmails));
-
+        */
         authorProfile.removeProject(project.isClosed());
         project.delete();
     }
