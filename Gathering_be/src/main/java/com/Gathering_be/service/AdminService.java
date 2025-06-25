@@ -42,6 +42,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void changeMemberRole(Long memberId, Role newRole) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
