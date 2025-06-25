@@ -83,7 +83,7 @@ public class ProjectService {
 
     @Transactional
     public void deleteProject(Long projectId) {
-        Project project = getProjectByIdForUpdate(projectId);
+        Project project = getProjectById(projectId);
         validateMemberAccess(project);
 
         if (applicationRepository.existsByProjectId(projectId)){
@@ -162,12 +162,7 @@ public class ProjectService {
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Order.desc("createdAt")));
 
-        Page<Project> projectPage;
-        if (isClosed == null) {
-            projectPage = projectRepository.findAllByProfileNickname(nickname, pageable);
-        } else {
-            projectPage = projectRepository.findAllByProfileNicknameAndIsClosed(nickname, isClosed, pageable);
-        }
+        Page<Project> projectPage = projectRepository.searchMyProjects(pageable, nickname, isClosed);
 
         Set<Long> interestedProjectIds = (currentUserId != null)
                 ? interestProjectRepository.findAllByProfileId(getProfileIdByMemberId(currentUserId))

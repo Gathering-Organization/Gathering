@@ -1,5 +1,6 @@
 package com.Gathering_be.service;
 
+import com.Gathering_be.domain.Application;
 import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
@@ -10,6 +11,7 @@ import com.Gathering_be.exception.InvalidSortTypeException;
 import com.Gathering_be.exception.MemberNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.global.enums.*;
+import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.repository.MemberRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
@@ -21,8 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,8 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
+    private final ApplicationRepository applicationRepository;
+    private final EmailService emailService;
 
     public List<MemberInfoForAdminResponse> getMembers() {
         List<Profile> profiles = profileRepository.findAllWithMember();
@@ -76,11 +79,29 @@ public class AdminService {
     public void deleteProject(Long projectId) {
         Project project = getProjectByIdForUpdate(projectId);
 
-//        if (applicationRepository.existsByProjectId(projectId)){
-//            throw new ProjectHasApplicantsException();
-//        }
+        if (project.isDeleted()) {
+            return;
+        }
 
-        project.getProfile().removeProject(project.isClosed());
+        Set<String> recipientEmails = new HashSet<>();
+
+        Profile authorProfile = project.getProfile();
+        /*recipientEmails.add(authorProfile.getMember().getEmail());
+
+        List<Application> applications = applicationRepository.findAllByProjectId(projectId);
+
+        for (Application application : applications) {
+            Profile applicantProfile = application.getProfileFromSnapshot();
+
+            if (applicantProfile != null) {
+                recipientEmails.add(applicantProfile.getMember().getEmail());
+                applicantProfile.removeApplication(application.getStatus());
+            }
+        }
+
+        emailService.sendProjectDeletionNotice(new ArrayList<>(recipientEmails));
+        */
+        authorProfile.removeProject(project.isClosed());
         project.delete();
     }
 
