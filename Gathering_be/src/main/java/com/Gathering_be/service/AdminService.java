@@ -84,24 +84,22 @@ public class AdminService {
             return;
         }
 
-        Set<String> recipientEmails = new HashSet<>();
-
         Profile authorProfile = project.getProfile();
-        /*recipientEmails.add(authorProfile.getMember().getEmail());
+        emailService.sendProjectDeletetionNotice(
+                authorProfile.getMember().getEmail(), project.getTitle(), authorProfile.getNickname());
 
+        Map<String, String> applicants = new HashMap<>();
         List<Application> applications = applicationRepository.findAllByProjectId(projectId);
-
         for (Application application : applications) {
             Profile applicantProfile = application.getProfileFromSnapshot();
 
             if (applicantProfile != null) {
-                recipientEmails.add(applicantProfile.getMember().getEmail());
+                applicants.put(applicantProfile.getMember().getEmail(), applicantProfile.getNickname());
                 applicantProfile.removeApplication(application.getStatus());
             }
         }
+        emailService.sendProjectDeletionNotice(applicants, project.getTitle());
 
-        emailService.sendProjectDeletionNotice(new ArrayList<>(recipientEmails));
-        */
         authorProfile.removeProject(project.isClosed());
         project.delete();
     }
