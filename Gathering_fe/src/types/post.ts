@@ -1,4 +1,5 @@
 import { Portfolio, WorkExperience } from '@/types/profile';
+import { ProfileAllInfo } from '@/types/profile';
 
 export interface TeamInfo {
   introduction: string;
@@ -29,6 +30,8 @@ export interface PostingInfo {
 }
 
 export interface GetPostingInfo {
+  projectId: number; // 프로젝트 ID
+  interested: boolean; // 관심 체크 여부
   title: string; // 제목
   description: string; // 설명
   kakaoUrl: string; // 카카오톡 오픈채팅 URL
@@ -48,30 +51,56 @@ export interface GetPostingInfo {
 
 export interface approxPostInfo {
   projectId: number; // 프로젝트 아이디 번호
+  profileColor: string;
   authorNickname: string;
   closed: boolean;
+  interested: boolean;
   title: string;
   projectType: string;
   createdAt: string;
   deadline: string;
   techStacks: string[];
   requiredPositions: string[];
+  viewCount: number;
+  applyStatus?: string;
 }
 
 export interface partPostInfo {
+  viewCount: number;
   projectId: number;
-  authorNickname: string;
+  author: ProfileAllInfo;
   closed: boolean;
+  interested: boolean;
+  kakaoUrl: string;
   title: string;
   description: string;
   projectMode: string;
   projectType: string;
+  duration: string;
   totalMembers: number;
   startDate: string;
-  teams: { id: number; nickname: string }[];
+  teams: {
+    profileColor: string;
+    nickname: string;
+    introduction: string;
+    techStacks: string[];
+    portfolio?: Portfolio | null;
+    public: boolean;
+    workExperiences: WorkExperience[];
+    organization: string;
+    totalProjects: number;
+    openedProjects: number;
+    closedProjects: number;
+    totalApplications: number;
+    pendingApplications: number;
+    approvedApplications: number;
+    rejectedApplications: number;
+  }[];
   createdAt: string;
   updatedAt: string;
   deadline: string;
   techStacks: string[];
   requiredPositions: string[];
+  applied: boolean;
+  applyStatus: string | null;
 }

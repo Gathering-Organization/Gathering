@@ -1,78 +1,67 @@
 import Viewer from '@/components/Viewer';
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { partPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
+import Spinner from '@/components/Spinner';
+import { useToast } from '@/contexts/ToastContext';
 
 const ViewPost: React.FC = () => {
   const [post, setPost] = useState<partPostInfo | null>(null);
-  const nav = useNavigate();
   const params = useParams();
-  const [userNickname, setUserNickname] = useState<string>('');
-
-  const onClickDelete = () => {
-    if (params.id && window.confirm('모집글을 삭제하시겠습니까?')) {
-      deletePosting(Number(params.id));
-      nav('/', { replace: true });
-    }
-  };
-
-  const onClickUpdate = () => {
-    if (params.id && window.confirm('모집글을 수정하시겠습니까?')) {
-      nav(`/postEdit/${params.id}`);
-    }
-  };
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [profileResult, postResult] = await Promise.all([
-          getMyProfile(),
-          getPartPosting(Number(params.id))
-        ]);
+        window.scrollTo(0, 0);
+        const postResult = await getPartPosting(Number(params.id));
 
-        // 프로필 정보 설정
-        if (profileResult?.success) {
-          setUserNickname(profileResult.data.nickname);
-        } else {
-          alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
-        }
-
-        // 모집글 정보 설정
         if (postResult?.success) {
           setPost(postResult.data);
         } else {
-          alert('모집글 정보를 불러오는 중 오류가 발생했습니다.');
+          showToast('모집글 정보를 불러오는 중 오류가 발생했습니다.', false);
         }
       } catch {
-        alert('데이터를 불러오는 중 오류가 발생했습니다.');
+        showToast('데이터를 불러오는 중 오류가 발생했습니다.', false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [params.id]);
 
   return (
-    <div className="pb-10">
-      {post ? <Viewer data={post} /> : <p>로딩 중...</p>}
-      {post?.authorNickname === userNickname && (
-        <section className="grid grid-cols-2 gap-4">
-          <button
-            onClick={onClickUpdate}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            수정하기
+    <motion.div
+      className="flex flex-col min-h-screen pb-10"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex flex-col min-h-screen pb-10">
+        <div className="flex-grow">
+          {post ? (
+            <Viewer data={post} />
+          ) : (
+            <div className="min-h-[600px] flex items-center justify-center">
+              <Spinner />
+            </div>
+          )}
+        </div>
+        {/* {post?.authorNickname === userNickname && (
+        <section className="flex gap-4 mt-4 justify-center">
+          <button onClick={onClickUpdate} className="duration-200 ease-in-out hover:scale-110">
+            <img src={editButton} alt="edit" className="" />
           </button>
-          <button
-            onClick={onClickDelete}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            삭제하기
+          <button onClick={onClickDelete} className="duration-200 ease-in-out hover:scale-110">
+            <img src={deleteButton} alt="delete" className="" />
           </button>
         </section>
-      )}
-    </div>
+      )} */}
+      </div>
+    </motion.div>
   );
 };
 
