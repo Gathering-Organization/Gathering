@@ -292,7 +292,7 @@ public class ProjectService {
             project.incrementViewCount();
             projectRepository.save(project);
 
-            redisService.setValues(redisKey, "viewed", Duration.ofSeconds(1));
+            redisService.setValues(redisKey, "viewed", Duration.ofHours(12));
         }
     }
 
