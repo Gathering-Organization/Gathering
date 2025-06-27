@@ -87,26 +87,15 @@ jobs:
           target: "~/gathering-prod/" # 파일을 저장할 디렉터리 (없으면 자동 생성)
 
       # 9. EC2 서버에 접속하여 디버깅 및 애플리케이션 배포
-      - name: Debug and Deploy to Production EC2
+      - name: Deploy to Production EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.PROD_EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.PROD_EC2_SSH_KEY }}
           script: |
-            echo "====== 1. Verifying current path ======"
-            pwd
-            
             cd ~/gathering-prod/Gathering_be
-            echo "====== 2. Verifying files in deployment directory ======"
-            
-            echo "====== 3. Verifying content of .env.prod file ======"
-            cat .env.prod
-            
-            echo "====== 4. Validating docker-compose configuration ======"
-            sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod config
-            
-            echo "====== 5. Starting deployment ======"
+            sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod down || true            
             sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod pull
             sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --remove-orphans
             sudo docker system prune -af
