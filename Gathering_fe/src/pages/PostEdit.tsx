@@ -21,6 +21,7 @@ import {
 import ReactQuill from 'react-quill';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { motion } from 'framer-motion';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 interface Position {
   id: string;
@@ -68,6 +69,7 @@ const PostEdit: React.FC = () => {
   const [selectedPositions, setSelectedPositions] = useState<string[]>([...post.requiredPositions]);
   const [stackList] = useState<TechStack[]>([...techStacks]);
   const [selectedStacks, setSelectedStacks] = useState<string[]>([...post.techStacks]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { showToast } = useToast();
 
@@ -129,8 +131,12 @@ const PostEdit: React.FC = () => {
   };
 
   const onUpdate = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     if (!isValidKakaoUrl(post.kakaoUrl)) {
       showToast('올바른 카카오 오픈채팅 URL을 입력해주세요.', false);
+      setIsLoading(false);
       return;
     }
     try {
@@ -344,6 +350,12 @@ const PostEdit: React.FC = () => {
             수정완료
           </button>
         </div>
+        {isLoading && (
+          <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+            <BeatLoader color="#3387E5" size={20} />
+            <p className="mt-4 text-gray-700 font-semibold">모집글을 작성 중입니다...</p>
+          </div>
+        )}
       </div>
     </motion.div>
   );
