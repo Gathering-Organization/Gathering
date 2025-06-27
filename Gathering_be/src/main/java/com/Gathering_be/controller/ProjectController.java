@@ -27,7 +27,7 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResultResponse> getProjectById(@PathVariable Long id) {
-        ProjectDetailResponse project = projectService.getProjectById(id);
+        ProjectDetailResponse project = projectService.getProjectDetailsById(id);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.PROJECT_READ_SUCCESS, project));
     }
 

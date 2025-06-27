@@ -11,4 +11,8 @@ public interface ProjectRepositoryCustom {
     Page<Project> searchProjectsWithFilters(Pageable pageable, JobPosition position, List<TechStack> techStacks,
                                             ProjectType type, ProjectMode mode, Boolean isClosed,
                                             SearchType searchType, String keyword);
+    Page<Project> searchProjectsForAdmin(Pageable pageable, JobPosition position, List<TechStack> techStacks,
+                                            ProjectType type, ProjectMode mode, Boolean isClosed, Boolean isDeleted,
+                                            SearchType searchType, String keyword);
+    Page<Project> searchMyProjects(Pageable pageable, String nickname, Boolean isClosed);
 }

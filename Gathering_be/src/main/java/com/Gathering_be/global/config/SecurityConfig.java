@@ -74,6 +74,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers(PERMITTED_API_URL).permitAll()
                                 .anyRequest().authenticated()
                 )

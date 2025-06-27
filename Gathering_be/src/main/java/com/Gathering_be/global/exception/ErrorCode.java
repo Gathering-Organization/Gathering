@@ -49,6 +49,7 @@ public enum ErrorCode {
     PROJECT_NOT_FOUND(404, "PJ001", "존재하지 않는 프로젝트입니다."),
     INVALID_SEARCH_TYPE(400, "PJ002", "잘못된 검색 타입입니다."),
     INVALID_SORT_TYPE(400, "PJ003", "잘못된 정렬 타입입니다."),
+    PROJECT_HAS_APPLICANTS(409, "PJ004", "해당 모집글에 지원한 사용자가 있어 삭제할 수 없습니다."),
 
     // Interest Project
     INTEREST_PROJECT_NOT_FOUND(404, "IP001", "관심 프로젝트를 찾을 수 없습니다."),
@@ -62,6 +63,9 @@ public enum ErrorCode {
 
     // Enum
     INVALID_ENUM_VALUE(400, "EN001", "잘못된 Enum 입력값입니다."),
+
+    // Mail
+    EMAIL_SEND_FAILED(500, "EM001", "이메일 전송 중 오류가 발생했습니다."),
     ;
 
     private final int status;
