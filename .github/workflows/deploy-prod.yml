@@ -91,6 +91,6 @@ jobs:
           key: ${{ secrets.PROD_EC2_SSH_KEY }}
           script: |
             cd ~/gathering-prod
-            docker-compose -f docker-compose.prod.yml --env-file .env.prod pull
-            docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
+            docker-compose -f docker-compose.prod.yml --env-file Gathering_be/.env.prod pull
+            docker-compose -f docker-compose.prod.yml --env-file Gathering_be/.env.prod up -d
             docker system prune -af
