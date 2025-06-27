@@ -43,7 +43,6 @@ public class SecurityConfig {
             "/actuator/prometheus",
             "/api/project/pagination",
             "/api/profile/nickname/**",
-            "/api/debug/**"
     };
 
     @Bean
