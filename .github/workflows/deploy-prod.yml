@@ -82,7 +82,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.PROD_EC2_SSH_KEY }}
           source: "Gathering_be/.env.prod,Gathering_be/docker-compose.prod.yml"
-          target: "~/gathering-prod" # 파일을 저장할 디렉터리 (없으면 자동 생성)
+          target: "~/gathering-prod/Gathering_be" # 파일을 저장할 디렉터리 (없으면 자동 생성)
 
       # 9. EC2 서버에 접속하여 애플리케이션 배포
       - name: Deploy to Production EC2
