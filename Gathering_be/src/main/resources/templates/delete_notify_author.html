@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게더링 모집글 삭제 처리</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f4; font-family:'Segoe UI', sans-serif;">
+<table align="center" width="100%" style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+    <!-- Header -->
+    <tr>
+        <td style="background-color:#3387E5; padding:20px 30px; text-align:center;">
+            <h1 style="margin:0; font-size:22px; color:white;">게더링 모집글 삭제 안내</h1>
+        </td>
+    </tr>
+    <!-- Content -->
+    <tr>
+        <td style="padding:30px; color:#333333;">
+            <p style="font-size:16px; line-height:1.8; margin-top:0;">
+                안녕하십니까, <strong th:text="${authorName}"></strong>님.<br />
+                게더링 팀입니다.
+            </p>
+
+            <strong style="color:#E53E3E; font-size:16px; line-height:1.8;">
+                <strong th:text="${authorName}"></strong>님의 모집글인
+                <strong th:text="${projectTitle}"></strong>에 부적절한 부분이 있다고 판단되어 <br /> 삭제되었습니다.<br />
+            </strong>
+
+            <p style="font-size:16px; line-height:1.8;">
+                해당 모집글은 프로필 보기의 모집 현황에서 확인하실 수 없습니다.
+                <br /> 지원하신 회원님이 있다면 안내 메일을 발송할 예정입니다.
+                <br />궁금한 사항이 있으시면 언제든지 게더링 팀으로 연락주시기 바랍니다.
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">
+                게더링을 통해 소중한 인연을 맺게 되기를 진심으로 바라며,<br />
+                앞으로의 여정에서도 함께 성장해 나가기를 기대하겠습니다.
+            </p>
+
+            <p style="font-size:16px; line-height:1.8;">감사합니다.<br />게더링 팀 드림</p>
+
+            <!-- Button -->
+            <div style="text-align:center; margin:30px 0;">
+                <div style="background-color:#3387E5; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:bold; display:inline-block;">
+                    메일 문의 : gatheringcrew1820@gmail.com
+                </div>
+            </div>
+        </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+        <td style="background-color:#f1f1f1; padding:20px; text-align:center; font-size:13px; color:#888888;">
+            ⓒ 2025 Gathering, Inc. All rights reserved.
+        </td>
+    </tr>
+</table>
+</body>
+</html>
