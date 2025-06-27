@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,25 +50,15 @@ public class SecurityConfig {
             "/api/profile/nickname/**"
     };
 
-    // [추가] CORS 설정을 위한 Bean을 직접 정의합니다.
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        // 프론트엔드 도메인 주소를 정확하게 허용 목록에 추가합니다.
-        configuration.setAllowedOrigins(List.of("https://gathering.work"));
-
-        // 허용할 HTTP 메서드를 지정합니다.
+        configuration.setAllowedOrigins(List.of("https://gathering.work", "https://www.gathering.work"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-
-        // 모든 헤더를 허용하고, 자격 증명(쿠키 등)을 포함한 요청을 허용합니다.
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // 모든 경로에 대해 위 CORS 설정을 적용합니다.
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 
@@ -77,7 +68,7 @@ public class SecurityConfig {
         return http
                 .securityMatcher("/swagger-ui/**", "/v3/api-docs/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .httpBasic(basic -> basic.realmName("Swagger UI"))
+                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
@@ -87,8 +78,7 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .securityMatcher("/api/**")
-                // [수정] yml 파일 대신 직접 만든 corsConfigurationSource() Bean을 사용하도록 명시합니다.
+                // [수정] securityMatcher를 제거하여, 이 필터 체인이 모든 요청에 대한 기본 필터가 되도록 합니다.
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -99,9 +89,9 @@ public class SecurityConfig {
                                 .requestMatchers(PERMITTED_API_URL).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                // [추가] OAuth2 로그인 기능을 이 필터 체인에 활성화합니다.
+                .oauth2Login(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
