@@ -22,9 +22,9 @@
 
     /* Linting */
     "strict": true,
+    "incremental": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "incremental": true
+    "noUnusedParameters": false
   },
   "include": ["src"]
 }
