@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import LoginModal from '@/components/LoginModal';
-import SignupModal from '@/components/SignUpModal';
+import SignupModal from '@/components/SignupModal';
 import LogoutButton from '@/components/LogoutButton';
 import gatheringLogo from '/gathering_home.svg';
 
