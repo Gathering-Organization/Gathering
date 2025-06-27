@@ -68,6 +68,8 @@ jobs:
           echo "PROD_SWAGGER_PASSWORD=${{ secrets.PROD_SWAGGER_PASSWORD }}" >> Gathering_be/.env.prod
           echo "GATHERING_GMAIL_USERNAME=${{ secrets.GATHERING_GMAIL_USERNAME }}" >> Gathering_be/.env.prod
           echo "GATHERING_GMAIL_PASSWORD=${{ secrets.GATHERING_GMAIL_PASSWORD }}" >> Gathering_be/.env.prod
+          echo "PROD_GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> Gathering_be/.env.prod
+          echo "PROD_GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}" >> Gathering_be/.env.prod
           echo "GOOGLE_RESOURCE_URI=${{ secrets.GOOGLE_RESOURCE_URI }}" >> Gathering_be/.env.prod
           echo "PROD_CORS_ALLOWED_ORIGINS=${{ secrets.PROD_CORS_ALLOWED_ORIGINS }}" >> Gathering_be/.env.prod
           echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> Gathering_be/.env.prod
