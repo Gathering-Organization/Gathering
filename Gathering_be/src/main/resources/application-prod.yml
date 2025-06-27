@@ -61,9 +61,6 @@ oauth2:
   google:
     resource-uri: ${GOOGLE_RESOURCE_URI}
 
-cors:
-  allowed-origins: ${PROD_CORS_ALLOWED_ORIGINS}
-
 cloud:
   aws:
     credentials:
