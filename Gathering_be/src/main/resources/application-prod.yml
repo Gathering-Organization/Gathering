@@ -29,7 +29,7 @@ spring:
       mail.smtp.starttls.enable: true
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${PROD_JWT_SECRET}
   token-validity-in-seconds: 3600
 
 springdoc:

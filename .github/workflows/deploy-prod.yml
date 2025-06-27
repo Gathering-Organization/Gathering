@@ -63,7 +63,7 @@ jobs:
           echo "PROD_SPRING_DATASOURCE_PASSWORD=${{ secrets.PROD_SPRING_DATASOURCE_PASSWORD }}" >> Gathering_be/.env.prod
           echo "SPRING_REDIS_HOST=${{ secrets.SPRING_REDIS_HOST }}" >> Gathering_be/.env.prod
           echo "SPRING_REDIS_PORT=${{ secrets.SPRING_REDIS_PORT }}" >> Gathering_be/.env.prod
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> Gathering_be/.env.prod
+          echo "JWT_SECRET=${{ secrets.PROD_JWT_SECRET }}" >> Gathering_be/.env.prod
           echo "PROD_SWAGGER_USERNAME=${{ secrets.SWAGGER_USERNAME }}" >> Gathering_be/.env.prod
           echo "PROD_SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" >> Gathering_be/.env.prod
           echo "GATHERING_GMAIL_USERNAME=${{ secrets.GATHERING_GMAIL_USERNAME }}" >> Gathering_be/.env.prod
