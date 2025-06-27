@@ -31,10 +31,10 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${swagger.username}")
+    @Value("${PROD_SWAGGER_USERNAME}")
     private String swaggerUser;
 
-    @Value("${swagger.password}")
+    @Value("${PROD_SWAGGER_PASSWORD}")
     private String swaggerPassword;
 
     private static final String[] PERMITTED_API_URL = {

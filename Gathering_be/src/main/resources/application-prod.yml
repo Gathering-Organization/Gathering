@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: false
@@ -31,6 +31,20 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   token-validity-in-seconds: 3600
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: false
+  default-produces-media-type: application/json
+
+swagger:
+  username: ${PROD_SWAGGER_USERNAME}
+  password: ${PROD_SWAGGER_PASSWORD}
 
 oauth2:
   google:
