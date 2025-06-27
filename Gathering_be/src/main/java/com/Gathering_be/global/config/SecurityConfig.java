@@ -42,7 +42,7 @@ public class SecurityConfig {
             "/api/verify/**",
             "/actuator/prometheus",
             "/api/project/pagination",
-            "/api/profile"
+            "/api/profile/**"
     };
 
     @Bean
