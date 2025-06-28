@@ -51,22 +51,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
     }
   };
 
-  // const handleGoogle = () => {
-  //   window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
-  //   closeModal();
-  // };
-
   const handleGoogle = () => {
-    const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI;
-
-    const scope = encodeURIComponent(
-      'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
-    );
-
-    const url = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
-
-    window.location.href = url;
+    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
     closeModal();
   };
 
