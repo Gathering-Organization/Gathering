@@ -7,8 +7,10 @@ import BeatLoader from 'react-spinners/BeatLoader';
 const GoogleRedirectHandler: React.FC = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const params = new URLSearchParams(window.location.hash.substring(1));
-  const code = params.get('access_token');
+  // const params = new URLSearchParams(window.location.hash.substring(1));
+  // const code = params.get('access_token');
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
 
   useEffect(() => {
     const handleGoogleLogin = async () => {
