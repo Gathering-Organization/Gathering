@@ -60,19 +60,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
     const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
     const redirectUri = import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI;
 
-    const scope = [
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://www.googleapis.com/auth/userinfo.profile'
-    ].join(' ');
+    const scope = encodeURIComponent(
+      'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+    );
 
-    const url =
-      `https://accounts.google.com/o/oauth2/auth` +
-      `?client_id=${encodeURIComponent(clientId)}` +
-      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-      `&response_type=code` +
-      `&scope=${encodeURIComponent(scope)}` +
-      `&access_type=offline` +
-      `&prompt=consent`; // refresh_token 받기 위함
+    const url = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
 
     window.location.href = url;
     closeModal();
