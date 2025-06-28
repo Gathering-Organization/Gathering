@@ -29,8 +29,29 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     nav('/');
   };
 
+  // const handleGoogle = () => {
+  //   window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+  //   closeModal();
+  // };
   const handleGoogle = () => {
-    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+    const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
+    const redirectUri = import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI;
+
+    const scope = [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile'
+    ].join(' ');
+
+    const url =
+      `https://accounts.google.com/o/oauth2/auth` +
+      `?client_id=${encodeURIComponent(clientId)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=code` +
+      `&scope=${encodeURIComponent(scope)}` +
+      `&access_type=offline` +
+      `&prompt=consent`; // refresh_token 받기 위함
+
+    window.location.href = url;
     closeModal();
   };
 
