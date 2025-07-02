@@ -1,0 +1,101 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "Gathering_be/**"
+      - ".github/workflows/deploy-prod.yml"
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: choibokeun/gathering
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 소스 코드 체크아웃
+      - uses: actions/checkout@v3
+
+      # 2. JDK 17 설정
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      # 3. gradlew 실행 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x Gathering_be/gradlew
+
+      # 4. Gradle로 프로젝트 빌드 (테스트는 제외)
+      - name: Build with Gradle
+        run: cd Gathering_be && ./gradlew build -x test
+
+      # 5. DockerHub 로그인
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 6. Docker 이미지 빌드 및 DockerHub에 푸시
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./Gathering_be
+          push: true
+          # 운영용 이미지 태그를 지정합니다. 'latest'와 git commit 해시를 사용합니다.
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:prod-latest
+            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+
+      # 7. 운영용 .env.prod 파일 생성
+      # GitHub 리포지터리의 Secrets에서 비밀 값들을 가져옵니다.
+      - name: Create .env.prod file
+        run: |
+          echo "IMAGE_TAG=${{ github.sha }}" > Gathering_be/.env.prod
+          echo "PROD_SPRING_DATASOURCE_URL=${{ secrets.PROD_SPRING_DATASOURCE_URL }}" >> Gathering_be/.env.prod
+          echo "PROD_SPRING_DATASOURCE_USERNAME=${{ secrets.PROD_SPRING_DATASOURCE_USERNAME }}" >> Gathering_be/.env.prod
+          echo "PROD_SPRING_DATASOURCE_PASSWORD=${{ secrets.PROD_SPRING_DATASOURCE_PASSWORD }}" >> Gathering_be/.env.prod
+          echo "SPRING_REDIS_HOST=${{ secrets.SPRING_REDIS_HOST }}" >> Gathering_be/.env.prod
+          echo "SPRING_REDIS_PORT=${{ secrets.SPRING_REDIS_PORT }}" >> Gathering_be/.env.prod
+          echo "PROD_JWT_SECRET=${{ secrets.PROD_JWT_SECRET }}" >> Gathering_be/.env.prod
+          echo "PROD_SWAGGER_USERNAME=${{ secrets.PROD_SWAGGER_USERNAME }}" >> Gathering_be/.env.prod
+          echo "PROD_SWAGGER_PASSWORD=${{ secrets.PROD_SWAGGER_PASSWORD }}" >> Gathering_be/.env.prod
+          echo "GATHERING_GMAIL_USERNAME=${{ secrets.GATHERING_GMAIL_USERNAME }}" >> Gathering_be/.env.prod
+          echo "GATHERING_GMAIL_PASSWORD=${{ secrets.GATHERING_GMAIL_PASSWORD }}" >> Gathering_be/.env.prod
+          echo "PROD_GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> Gathering_be/.env.prod
+          echo "PROD_GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}" >> Gathering_be/.env.prod
+          echo "GOOGLE_RESOURCE_URI=${{ secrets.GOOGLE_RESOURCE_URI }}" >> Gathering_be/.env.prod
+          echo "PROD_CORS_ALLOWED_ORIGINS=${{ secrets.PROD_CORS_ALLOWED_ORIGINS }}" >> Gathering_be/.env.prod
+          echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> Gathering_be/.env.prod
+          echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> Gathering_be/.env.prod
+
+      # 8. 운영용 파일들을 EC2 서버에 복사
+      - name: Copy files to Production EC2
+        uses: appleboy/scp-action@master
+        with:
+          # GitHub Secrets에 등록된 운영 서버 정보를 사용합니다.
+          host: ${{ secrets.PROD_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.PROD_EC2_SSH_KEY }}
+          source: "Gathering_be/.env.prod,Gathering_be/docker-compose.prod.yml"
+          target: "~/gathering-prod/" # 파일을 저장할 디렉터리 (없으면 자동 생성)
+
+      # 9. EC2 서버에 접속하여 디버깅 및 애플리케이션 배포
+      - name: Deploy to Production EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.PROD_EC2_SSH_KEY }}
+          script: |
+            cd ~/gathering-prod/Gathering_be
+            sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod down || true            
+            sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod pull
+            sudo docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --remove-orphans
+            sudo docker system prune -af

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,10 +31,10 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${swagger.username}")
+    @Value("${PROD_SWAGGER_USERNAME}")
     private String swaggerUser;
 
-    @Value("${swagger.password}")
+    @Value("${PROD_SWAGGER_PASSWORD}")
     private String swaggerPassword;
 
     private static final String[] PERMITTED_API_URL = {
@@ -42,7 +42,8 @@ public class SecurityConfig {
             "/api/verify/**",
             "/actuator/prometheus",
             "/api/project/pagination",
-            "/api/profile/nickname/**"
+            "/api/profile/nickname/**",
+            "/api/debug/**"
     };
 
     @Bean
@@ -67,7 +68,6 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configure(httpSecurity))
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -80,6 +80,10 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .oauth2Login(Customizer.withDefaults())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint((request, response, authException) -> {
