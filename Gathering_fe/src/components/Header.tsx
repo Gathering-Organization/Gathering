@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import LoginModal from '@/components/LoginModal';
-import SignupModal from '@/components/SignUpModal';
+import SignUpModal from '@/components/SignUpModal';
 import LogoutButton from '@/components/LogoutButton';
 import gatheringLogo from '/gathering_home.svg';
 
@@ -56,7 +56,7 @@ const Header: React.FC = () => {
           </section>
         </div>
 
-        <SignupModal
+        <SignUpModal
           isOpen={activeModal === 'signup'}
           onClose={() => setActiveModal(null)}
           onLoginClick={() => setActiveModal('login')}
