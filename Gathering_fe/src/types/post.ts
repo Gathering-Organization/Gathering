@@ -49,7 +49,7 @@ export interface GetPostingInfo {
   closed?: boolean; // 모집 마감 여부
 }
 
-export interface approxPostInfo {
+export interface ApproxPostInfo {
   projectId: number; // 프로젝트 아이디 번호
   profileColor: string;
   authorNickname: string;
@@ -65,7 +65,7 @@ export interface approxPostInfo {
   applyStatus?: string;
 }
 
-export interface partPostInfo {
+export interface PartPostInfo {
   viewCount: number;
   projectId: number;
   author: ProfileAllInfo;
@@ -103,4 +103,12 @@ export interface partPostInfo {
   requiredPositions: string[];
   applied: boolean;
   applyStatus: string | null;
+}
+
+export interface AdminPostInfo {
+  projectId: number;
+  title: string;
+  authorNickname: string;
+  profileColor: string;
+  deleted: string;
 }

@@ -6,6 +6,7 @@ import useModalBodyLock from '@/hooks/UseModalBodyLock';
 import { positionData } from '@/utils/position-data';
 import Badge from '@/components/Badge';
 import { useToast } from '@/contexts/ToastContext';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 type OtherApplicationModalProps = {
   apply: ApplyDetails[];
@@ -13,6 +14,7 @@ type OtherApplicationModalProps = {
 };
 
 const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, onStatusChange }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showToast } = useToast();
@@ -54,6 +56,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
   // };
 
   const handleApprove = async (id: number) => {
+    setIsLoading(true);
     try {
       const response = await patchApplication(id, 'APPROVED');
       if (response?.success) {
@@ -64,10 +67,13 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
       }
     } catch (error) {
       showToast('승인 처리 중 오류가 발생했습니다.', false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleReject = async (id: number) => {
+    setIsLoading(true);
     try {
       const response = await patchApplication(id, 'REJECTED');
       if (response?.success) {
@@ -78,6 +84,8 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
       }
     } catch (error) {
       showToast('거절 처리 중 오류가 발생했습니다.', false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,10 +99,12 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
       <div>
         <button
           onClick={openModal}
-          className="flex justify-self-center space-x-4 items-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px]"
+          className="relative flex justify-self-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px] transition-all ease-in-out duration-300 hover:scale-[1.02] transform-gpu will-change-transform"
         >
-          <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>
-          <Badge count={apply.length} />
+          <div className="flex space-x-4 items-center">
+            <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>
+            <Badge count={apply.length} />
+          </div>
         </button>
       </div>
 
@@ -151,7 +161,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
                           <button
                             onClick={() => handleViewApplication(item)}
                             type="button"
-                            className="text-[12px] bg-[#000000] font-bold px-6 py-2 rounded-[20px] text-white whitespace-nowrap"
+                            className="text-[12px] bg-[#2C2C2C] font-bold px-6 py-2 rounded-[20px] text-white hover:bg-[#444] transition-colors duration-300 ease-in-out whitespace-nowrap"
                           >
                             보기
                           </button>
@@ -159,13 +169,13 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
                             <>
                               <button
                                 onClick={() => handleApprove(item.id)}
-                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 whitespace-nowrap"
+                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 hover:bg-blue-600 transition-colors duration-300 ease-in-out whitespace-nowrap"
                               >
                                 승인
                               </button>
                               <button
                                 onClick={() => handleReject(item.id)}
-                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
+                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 hover:bg-blue-600 transition-colors duration-300 ease-in-out whitespace-nowrap"
                               >
                                 거절
                               </button>
@@ -189,6 +199,12 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
               </div>
             </div>
           </div>
+          {isLoading && (
+            <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+              <BeatLoader color="#3387E5" size={20} />
+              <p className="mt-4 text-gray-700 font-semibold">승인/거절 처리 중입니다...</p>
+            </div>
+          )}
         </div>
       )}
     </div>

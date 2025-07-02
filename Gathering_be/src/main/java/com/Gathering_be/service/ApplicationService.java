@@ -72,7 +72,7 @@ public class ApplicationService {
             throw new UnauthorizedAccessException();
         }
 
-        return applicationRepository.findByProjectId(projectId)
+        return applicationRepository.findAllByProjectId(projectId)
                 .stream()
                 .map(app -> ApplicationResponse.from(app, s3Service))
                 .collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class ApplicationService {
     public ApplicationResponse getMyApplicationByProjectId(Long projectId) {
         Long currentUserId = getCurrentUserId();
         Profile profile = getProfileByMemberId(currentUserId);
-        List<Application> applications = applicationRepository.findByProjectId(projectId);
+        List<Application> applications = applicationRepository.findAllByProjectId(projectId);
 
         Application myApp = applications.stream()
                 .filter(app -> app.getProfileFromSnapshot().getId().equals(profile.getId()))
@@ -164,7 +164,7 @@ public class ApplicationService {
             throw new ApplicationAlreadyProcessedException();
         }
 
-        profile.removePendingApplication();
+        profile.removeApplication(ApplyStatus.PENDING);
         applicationRepository.delete(application);
     }
 

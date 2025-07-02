@@ -1,15 +1,16 @@
 import Viewer from '@/components/Viewer';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { partPostInfo } from '@/types/post';
+import { PartPostInfo } from '@/types/post';
 import { getPartPosting, modifyPosting, deletePosting } from '@/services/postApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMyProfile } from '@/services/profileApi';
 import Spinner from '@/components/Spinner';
 import { useToast } from '@/contexts/ToastContext';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const ViewPost: React.FC = () => {
-  const [post, setPost] = useState<partPostInfo | null>(null);
+  const [post, setPost] = useState<PartPostInfo | null>(null);
   const params = useParams();
   const { showToast } = useToast();
 
@@ -45,8 +46,9 @@ const ViewPost: React.FC = () => {
           {post ? (
             <Viewer data={post} />
           ) : (
-            <div className="min-h-[600px] flex items-center justify-center">
-              <Spinner />
+            <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+              <BeatLoader color="#3387E5" size={20} />
+              <p className="mt-4 text-gray-700 font-semibold">로딩 중입니다...</p>
             </div>
           )}
         </div>

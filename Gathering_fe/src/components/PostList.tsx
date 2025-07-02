@@ -1,8 +1,8 @@
 import PostItem from '@/components/PostItem';
-import { approxPostInfo } from '@/types/post';
+import { ApproxPostInfo } from '@/types/post';
 
 interface PostListProps {
-  data: approxPostInfo[];
+  data: ApproxPostInfo[];
   onInterestToggle?: (projectId: number, newValue: boolean) => void;
 }
 

@@ -1,3 +1,12 @@
+export interface UserInfo {
+  memberId: number;
+  email: string;
+  memberName: string;
+  nickname: string;
+  role: string;
+  createAt: string;
+}
+
 export interface WorkExperience {
   startDate: string;
   endDate: string;

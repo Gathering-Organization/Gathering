@@ -37,6 +37,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                                    SearchType searchType, String keyword) {
         // 공통 로직을 호출하여 기본 조건절 생성
         BooleanBuilder builder = createCommonWhereBuilder(position, techStacks, type, mode, isClosed, searchType, keyword);
+        builder.and(project.isDeleted.eq(false));
 
         // 쿼리 실행 로직 호출
         return executeQuery(builder, pageable);
@@ -53,6 +54,27 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         // 관리자 전용 조건(isDeleted)을 추가
         if (isDeleted != null) {
             builder.and(project.isDeleted.eq(isDeleted));
+        }
+
+        // 쿼리 실행 로직 호출
+        return executeQuery(builder, pageable);
+    }
+
+    @Override
+    public Page<Project> searchMyProjects(Pageable pageable, String nickname, Boolean isClosed) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 삭제되지 않은 프로젝트만 필터링 (isDeleted = false)
+        builder.and(project.isDeleted.eq(false));
+
+        // 특정 사용자의 닉네임으로 필터링
+        if (nickname != null && !nickname.trim().isEmpty()) {
+            builder.and(project.profile.nickname.eq(nickname));
+        }
+
+        // 모집 마감 여부로 필터링 (isClosed 파라미터가 null이 아닐 경우)
+        if (isClosed != null) {
+            builder.and(project.isClosed.eq(isClosed));
         }
 
         // 쿼리 실행 로직 호출

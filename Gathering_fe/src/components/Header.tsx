@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import LoginModal from '@/components/LoginModal';
-import SignupModal from '@/components/SignupModal';
+import SignUpModal from '@/components/SignUpModal';
 import LogoutButton from '@/components/LogoutButton';
 import gatheringLogo from '/gathering_home.svg';
 
@@ -36,7 +36,9 @@ const Header: React.FC = () => {
 
           <section className="flex items-center text-[#3f3f3f] text-[20px] font-bold space-x-4">
             <button
-              className="border-[#000000]/20 border-[1px] text-[16px] font-bold border-solid rounded-[20px] px-4 py-1 hover:bg-[#B4B4B4]/30"
+              className="absolute focus:outline-none right-[360px] bg-[#3387E5] 
+              text-[16px] text-white font-bold border-solid rounded-[20px] px-4 py-1 
+              transition-all ease-in-out duration-300 hover:scale-[1.02] will-change-transform"
               onClick={onClickPostingButton}
             >
               모집글 작성하기
@@ -54,7 +56,7 @@ const Header: React.FC = () => {
           </section>
         </div>
 
-        <SignupModal
+        <SignUpModal
           isOpen={activeModal === 'signup'}
           onClose={() => setActiveModal(null)}
           onLoginClick={() => setActiveModal('login')}

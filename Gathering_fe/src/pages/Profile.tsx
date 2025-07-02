@@ -17,7 +17,7 @@ import ProfileColorModal from '@/components/ProfileColorModal';
 import WorkExperienceItem from '@/components/WorkExperienceItem';
 import { useNavigate } from 'react-router-dom';
 import { getMyPosting } from '@/services/postApi';
-import { approxPostInfo } from '@/types/post';
+import { ApproxPostInfo } from '@/types/post';
 import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
 import { useToast } from '@/contexts/ToastContext';
 
@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
     recruiting: 0,
     completed: 0
   });
-  const [post, setPost] = useState<approxPostInfo[]>([]);
+  const [post, setPost] = useState<ApproxPostInfo[]>([]);
   const [info, setInfo] = useState<ProfileAllInfo>({
     nickname: '',
     introduction: '',
@@ -257,7 +257,7 @@ const Profile: React.FC = () => {
             <NicknameModal nickname={info.nickname || ''} />
             <button
               onClick={handleUpdateProfile}
-              className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600"
+              className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
             >
               프로필 저장
             </button>
@@ -369,7 +369,7 @@ const Profile: React.FC = () => {
               <div className="flex space-x-4">
                 <button
                   onClick={handleFileSelect}
-                  className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600"
+                  className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 transition-colors duration-300 ease-in-out"
                 >
                   업로드
                 </button>
@@ -379,7 +379,7 @@ const Profile: React.FC = () => {
                   disabled={!uploadedFile}
                   className={`text-[12px] font-bold px-6 py-2 rounded-[20px] ${
                     uploadedFile
-                      ? 'bg-[#F24E1E] text-white hover:bg-red-600'
+                      ? 'bg-[#F24E1E] text-white hover:bg-red-600 transition-colors duration-300 ease-in-out'
                       : 'bg-gray-300 text-gray-500'
                   }`}
                 >
@@ -392,8 +392,8 @@ const Profile: React.FC = () => {
           <section className="mt-20 p-6 flex flex-col items-center text-center">
             <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
 
-            <div className="self-end space-x-2 inline-flex items-center cursor-pointer">
-              <span className="ms-3 text-sm font-semibold text-[#B4B4B4] dark:text-gray-300">
+            <div className="self-end space-x-2 inline-flex items-center">
+              <span className="ms-3 text-sm font-semibold text-[#B4B4B4]">
                 상세 프로필 공개 여부
               </span>
               <label className="inline-flex items-center cursor-pointer">
@@ -405,7 +405,7 @@ const Profile: React.FC = () => {
                   className="sr-only peer"
                 />
 
-                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3387E5]"></div>
               </label>
             </div>
           </section>
