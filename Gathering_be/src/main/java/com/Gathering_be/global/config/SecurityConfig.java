@@ -31,10 +31,10 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${PROD_SWAGGER_USERNAME}")
+    @Value("${gathering.swagger.username}")
     private String swaggerUser;
 
-    @Value("${PROD_SWAGGER_PASSWORD}")
+    @Value("${gathering.swagger.password}")
     private String swaggerPassword;
 
     private static final String[] PERMITTED_API_URL = {
@@ -43,7 +43,6 @@ public class SecurityConfig {
             "/actuator/prometheus",
             "/api/project/pagination",
             "/api/profile/nickname/**",
-            "/api/debug/**"
     };
 
     @Bean
