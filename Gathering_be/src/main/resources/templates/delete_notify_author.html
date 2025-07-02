@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>게더링 지원서 접수</title>
+    <title>게더링 모집글 삭제 처리</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f4f4f4; font-family:'Segoe UI', sans-serif;">
 <table align="center" width="100%" style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
     <!-- Header -->
     <tr>
         <td style="background-color:#3387E5; padding:20px 30px; text-align:center;">
-            <h1 style="margin:0; font-size:22px; color:white;">게더링 지원서 접수 안내</h1>
+            <h1 style="margin:0; font-size:22px; color:white;">게더링 모집글 삭제 안내</h1>
         </td>
     </tr>
     <!-- Content -->
@@ -21,19 +21,15 @@
                 게더링 팀입니다.
             </p>
 
-            <p style="color:#3387E5; font-size:22px;">
-                <strong th:text="${projectTitle}"></strong>에 지원서가 제출되었습니다. 🎉
-            </p>
-
-            <p style="font-size:16px; line-height:1.8;">
+            <strong style="color:#E53E3E; font-size:16px; line-height:1.8;">
                 <strong th:text="${authorName}"></strong>님의 모집글인
-                <strong th:text="${projectTitle}"></strong>에 관심이 있는 회원이 지원서를 접수했습니다.<br />
-                지원자님이 <strong th:text="${authorName}"></strong>님과 함께 하기를 원한다고 전하셨습니다.
-            </p>
+                <strong th:text="${projectTitle}"></strong>에 부적절한 부분이 있다고 판단되어 <br /> 삭제되었습니다.<br />
+            </strong>
 
             <p style="font-size:16px; line-height:1.8;">
-                승인을 할 경우 향후 진행 일정 및 온보딩 절차는 지원자님과 <br />오픈채팅을 통해 조율하실 수 있습니다. <br />
-                궁금한 사항이 있으시면 언제든지 게더링 팀으로 연락주시기 바랍니다.
+                해당 모집글은 프로필 보기의 모집 현황에서 확인하실 수 없습니다.
+                <br /> 지원하신 회원님이 있다면 안내 메일을 발송할 예정입니다.
+                <br />궁금한 사항이 있으시면 언제든지 게더링 팀으로 연락주시기 바랍니다.
             </p>
 
             <p style="font-size:16px; line-height:1.8;">
@@ -45,10 +41,9 @@
 
             <!-- Button -->
             <div style="text-align:center; margin:30px 0;">
-                <a th:href="@{${link}}"
-                   style="background-color:#3387E5; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:bold; display:inline-block;">
-                    지원서 확인하러 가기
-                </a>
+                <div style="background-color:#3387E5; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:bold; display:inline-block;">
+                    메일 문의 : gatheringcrew1820@gmail.com
+                </div>
             </div>
         </td>
     </tr>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { signup, certEmail, certCode } from '@/services/authApi';
 import { SignupRequest } from '@/types/auth';
 import axios from 'axios';
+import { useToast } from '@/contexts/ToastContext';
 
 interface SignUpAgreeProps {
   setStep: React.Dispatch<React.SetStateAction<number>>;
@@ -18,10 +19,13 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [timer, setTimer] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const regexNickname = /[가-힣]{1,6}/;
+  const regexPass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=~`[\]{}|\\:;"'<>,.?/]).{8,}$/;
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (timer === 0) {
-      alert('인증 시간이 만료되었습니다. 다시 시도하세요.');
+      showToast('인증 시간이 만료되었습니다. 다시 시도해주세요.', false);
       setIsEmailSent(false);
       setTimer(null);
     } else if (timer !== null) {
@@ -37,7 +41,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
   const handleSendEmail = async () => {
     if (!formData.email.trim()) {
-      alert('이메일을 입력하세요.');
+      showToast('이메일을 입력하세요.', false);
       return;
     }
 
@@ -45,17 +49,23 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
     try {
       const result = await certEmail(formData.email);
       if (result?.success) {
-        alert('인증 메일 전송 완료: ' + result.message);
+        showToast('인증 메일 전송 완료', true);
         setIsEmailSent(true);
         setTimer(300);
       } else {
-        alert('전송 실패: ' + result?.message);
+        showToast('전송에 실패했습니다.', false);
       }
     } catch (error) {
-      alert(
+      // alert(
+      //   axios.isAxiosError(error)
+      //     ? error.response?.data?.message || '이메일 전송 오류 발생'
+      //     : '전송 오류 발생'
+      // );
+      showToast(
         axios.isAxiosError(error)
           ? error.response?.data?.message || '이메일 전송 오류 발생'
-          : '전송 오류 발생'
+          : '전송 오류 발생',
+        false
       );
     } finally {
       setIsLoading(false);
@@ -64,48 +74,70 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
   const handleVerifyCode = async () => {
     if (!formData.code.trim()) {
-      alert('인증번호를 입력하세요.');
+      showToast('인증번호를 입력해주세요.', false);
       return;
     }
 
     try {
       const result = await certCode(formData.email, formData.code);
       if (result?.success) {
-        alert('인증 성공: ' + result.message);
+        showToast('인증 성공', true);
         setIsEmailVerified(true);
         setTimer(null);
       } else {
-        alert('인증 실패: ' + result?.message);
+        showToast('인증 실패', false);
       }
     } catch (error) {
-      alert(
+      showToast(
         axios.isAxiosError(error)
           ? error.response?.data?.message || '인증 오류 발생'
-          : '인증 오류 발생'
+          : '인증 오류 발생',
+        false
       );
+      // alert(
+      //   axios.isAxiosError(error)
+      //     ? error.response?.data?.message || '인증 오류 발생'
+      //     : '인증 오류 발생'
+      // );
     }
   };
 
   const handleSignUp = async () => {
     if (!isEmailVerified) {
-      alert('이메일 인증을 완료하세요.');
+      showToast('이메일 인증을 완료해주세요.', false);
+      return;
+    }
+
+    if (!regexNickname.test(formData.name)) {
+      showToast('한글 6자 이하의 닉네임으로 설정해주세요.', false);
+      return;
+    }
+
+    if (!regexPass.test(formData.password)) {
+      showToast('8자리 이상 영문, 숫자, 특수문자 포함한 패스워드로 설정해주세요.', false);
       return;
     }
 
     try {
       const result = await signup(formData);
       if (result?.success) {
-        alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+        showToast('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.', true);
         setStep(3);
       } else {
-        alert('회원가입 실패: ' + result?.message);
+        showToast('회원가입에 실패했습니다.', false);
       }
     } catch (error) {
-      alert(
+      showToast(
         axios.isAxiosError(error)
           ? error.response?.data?.message || '회원가입 오류 발생'
-          : '회원가입 오류 발생'
+          : '회원가입 오류 발생',
+        false
       );
+      // alert(
+      //   axios.isAxiosError(error)
+      //     ? error.response?.data?.message || '회원가입 오류 발생'
+      //     : '회원가입 오류 발생'
+      // );
     }
   };
 
@@ -115,6 +147,8 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
         <div className="text-[24px] font-bold my-6">정보 입력</div>
         <div className="text-[14px] text-[#C7C7C7] mb-8">
           이메일 인증은 유효 메일 확인 이외의 용도로 사용되지 않습니다.
+          <br />
+          (받은 이메일에 인증 메일이 없다면 스팸 메일함을 확인해주세요.)
         </div>
       </div>
       <section>
@@ -188,12 +222,12 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               onChange={handleInputChange}
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
-              placeholder="비밀번호를 입력하세요."
+              placeholder="8자리 이상 영문, 숫자, 특수문자 포함"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-24 font-bold text-[#202123]">이름</div>
+            <div className="w-24 font-bold text-[#202123]">닉네임</div>
             <input
               type="text"
               name="name"
@@ -202,7 +236,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               onChange={handleInputChange}
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
-              placeholder="이름을 입력하세요."
+              placeholder="한글 6자 이하의 닉네임"
             />
           </div>
         </div>

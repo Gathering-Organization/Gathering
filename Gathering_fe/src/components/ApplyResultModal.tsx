@@ -74,6 +74,13 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
       );
       if (response?.success) {
         showToast('지원서 제출이 완료되었습니다.', true);
+        // localStorage.setItem(
+        //   'toastMessage',
+        //   JSON.stringify({
+        //     message: '지원서 제출이 완료되었습니다.',
+        //     isSuccess: true
+        //   })
+        // );
         closeModal();
       } else {
         showToast('지원서 제출 중 오류가 발생했습니다.', false);
@@ -103,17 +110,26 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
   return (
     <DropdownDispatchContext.Provider value={dropdownContextValue}>
       <div className="flex flex-col items-center mt-10">
-        <button
-          onClick={applyStatus === 'PENDING' ? undefined : openModal}
-          disabled={applyStatus === 'PENDING'}
-          className={`mx-auto w-[200px] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] ${
-            applyStatus === 'PENDING'
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-[#3387E5] hover:bg-blue-600'
-          }`}
-        >
-          결과보기
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={applyStatus === 'PENDING' ? undefined : openModal}
+            disabled={applyStatus === 'PENDING'}
+            className={`mx-auto w-[200px] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] ${
+              applyStatus === 'PENDING'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-[#3387E5] hover:bg-blue-600 transition-colors duration-300 ease-in-out'
+            }`}
+          >
+            결과보기
+          </button>
+          <button
+            onClick={handleViewApplication}
+            type="button"
+            className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
+          >
+            지원서 보기
+          </button>
+        </div>
 
         {isModalOpen && (
           <div
@@ -164,13 +180,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
                       )}
                     </div>
                   </section>
-                  <button
-                    onClick={handleViewApplication}
-                    type="button"
-                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    제출 당시 내 지원서 보기
-                  </button>
+
                   <button
                     // onClick={handleSubmit}
                     onClick={handleOpenChat}
@@ -178,7 +188,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
                     type="button"
                     className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none ${
                       applyStatus === 'APPROVED'
-                        ? 'bg-[#3387E5] hover:bg-blue-800 text-white'
+                        ? 'bg-[#3387E5] hover:bg-blue-600 text-white transition-colors duration-300 ease-in-out'
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >

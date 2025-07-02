@@ -19,6 +19,7 @@ import {
 import TeamTagInput from '@/components/TeamTagInput';
 import { useToast } from '@/contexts/ToastContext';
 import { motion } from 'framer-motion';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 interface Position {
   id: string;
@@ -63,6 +64,7 @@ const Posting: React.FC = () => {
     teams: [],
     requiredPositions: []
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const { showToast } = useToast();
 
@@ -72,8 +74,12 @@ const Posting: React.FC = () => {
   };
 
   const onCreate = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     if (!isValidKakaoUrl(post.kakaoUrl)) {
       showToast('올바른 카카오 오픈채팅 URL을 입력해주세요.', false);
+      setIsLoading(false);
       return;
     }
     try {
@@ -102,6 +108,8 @@ const Posting: React.FC = () => {
       }
     } catch (error) {
       showToast('모집글 작성 중 오류가 발생했습니다.', false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -278,12 +286,19 @@ const Posting: React.FC = () => {
         </section>
         <div className="flex justify-center mt-6">
           <button
-            className="bg-[#3387E5] font-bold px-10 py-2 text-white justify-items-center rounded-[30px] hover:bg-blue-600"
+            disabled={isLoading}
+            className={`bg-[#3387E5] font-bold px-10 py-2 text-white justify-items-center rounded-[30px] hover:bg-blue-600 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={onCreate}
           >
             작성하기
           </button>
         </div>
+        {isLoading && (
+          <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+            <BeatLoader color="#3387E5" size={20} />
+            <p className="mt-4 text-gray-700 font-semibold">모집글을 작성 중입니다...</p>
+          </div>
+        )}
       </div>
     </motion.div>
   );

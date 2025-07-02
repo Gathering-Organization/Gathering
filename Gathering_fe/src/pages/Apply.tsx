@@ -10,6 +10,8 @@ import { useOtherProfile } from '@/hooks/UseOtherProfile';
 import { useToast } from '@/contexts/ToastContext';
 import { ApplyDetails } from '@/types/apply';
 import { getMyApplication } from '@/services/applicationApi';
+import { ApplyInfo } from '@/types/apply';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 interface TechStack {
   id: string;
@@ -20,6 +22,7 @@ const Apply: React.FC = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
 
+  const [tempApplyInfo, setTempApplyInfo] = useState<ApplyInfo | null>(null);
   const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>(null);
   // const [isPublic, setIsPublic] = useState<boolean>(false);
   // const [stackList] = useState<TechStack[]>([...techStacks]);
@@ -48,6 +51,22 @@ const Apply: React.FC = () => {
   const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
   const { showToast } = useToast();
+
+  useEffect(() => {
+    const loadApplyInfo = async () => {
+      try {
+        if (!projectId) {
+          const stored = localStorage.getItem('tempApplyInfo');
+          if (stored) {
+            setApplyInfo(JSON.parse(stored));
+          }
+        }
+      } catch (error) {
+        console.error('지원서 조회 실패:', error);
+      }
+    };
+    loadApplyInfo();
+  }, [projectId]);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -86,14 +105,18 @@ const Apply: React.FC = () => {
   const needLoading = isLoadingOverall || !info || (!isOwnProfile && !applyInfo);
 
   if (needLoading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+        <BeatLoader color="#3387E5" size={20} />
+        <p className="mt-4 text-gray-700 font-semibold">지원서 조회 중입니다...</p>
+      </div>
+    );
   }
 
   const portfolioFileName = isOwnProfile
     ? info.portfolio?.fileName
     : applyInfo?.portfolio?.fileName;
 
-  console.log(applyInfo);
   const positionTitle =
     positionData.find(position => position.id === applyInfo?.position)?.title ||
     applyInfo?.position;
@@ -152,6 +175,7 @@ const Apply: React.FC = () => {
   };
 
   const handleClose = () => {
+    localStorage.removeItem('tempApplyInfo');
     window.close();
   };
 
@@ -214,7 +238,7 @@ const Apply: React.FC = () => {
                     ) : null;
                   })}
 
-                  {extraStacksCount && extraStacksCount > 0 && (
+                  {typeof extraStacksCount === 'number' && extraStacksCount > 0 && (
                     <div className="relative">
                       <div
                         className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
@@ -226,7 +250,7 @@ const Apply: React.FC = () => {
                       {isTechTooltipOpen === 9999 && (
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
                           <div className="flex space-x-2">
-                            {extraStacks.map((item, i) => {
+                            {extraStacks?.map((item, i) => {
                               const imageSrc = getStackImage(item.toUpperCase());
                               return imageSrc ? (
                                 <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
@@ -318,13 +342,13 @@ const Apply: React.FC = () => {
             <div className="flex space-x-8">
               <button
                 onClick={onSave}
-                className="px-8 py-2 bg-[#000000] text-[#FFFFFF] rounded-[16px] font-semibold"
+                className="px-8 py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[16px] font-semibold"
               >
                 저장
               </button>
               <button
                 onClick={onView}
-                className="px-8 py-2 bg-[#000000]/10 text-[#202123] rounded-[16px] font-semibold"
+                className="px-8 py-2 bg-[#000000]/10 hover:bg-[#000000]/20 transition-colors duration-300 ease-in-out text-[#202123] rounded-[16px] font-semibold"
               >
                 보기
               </button>
@@ -334,7 +358,7 @@ const Apply: React.FC = () => {
           <section className="justify-self-center py-10">
             <button
               onClick={handleClose}
-              className="px-10 py-2 bg-[#000000] text-[#FFFFFF] rounded-[20px] font-semibold"
+              className="px-10 py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[20px] font-semibold"
             >
               닫기
             </button>

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -21,7 +24,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("projectTitle", projectTitle);
         context.setVariable("applicantName", applicantName);
-        context.setVariable("link", "https://www.naver.com");
+        context.setVariable("link", "https://www.gathering.work");
 
         String templateName = isApproved ? "approve" : "reject";
         String htmlContent = templateEngine.process(templateName, context);
@@ -34,7 +37,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("projectTitle", projectTitle);
         context.setVariable("authorName", authorName);
-        context.setVariable("link", "https://www.naver.com");
+        context.setVariable("link", "https://www.gathering.work");
 
         String htmlContent = templateEngine.process("deadline_author", context);
         String subject = "[Gathering] 프로젝트 마감 안내";
@@ -46,7 +49,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("projectTitle", projectTitle);
         context.setVariable("applicantName", applicantName);
-        context.setVariable("link", "https://www.naver.com");
+        context.setVariable("link", "https://www.gathering.work");
 
         String htmlContent = templateEngine.process("deadline_applicant", context);
         String subject = "[Gathering] 지원 프로젝트 마감 안내";
@@ -58,12 +61,40 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("projectTitle", projectTitle);
         context.setVariable("authorName", authorName);
-        context.setVariable("link", "https://www.naver.com");
+        context.setVariable("link", "https://www.gathering.work");
 
         String htmlContent = templateEngine.process("notify", context);
         String subject = "[Gathering] 새 지원서가 도착했습니다!";
 
         sendHtmlMail(to, subject, htmlContent);
+    }
+
+    public void sendProjectDeletetionNotice(String authorEmail, String projectTitle, String authorName) {
+        Context context = new Context();
+        context.setVariable("projectTitle", projectTitle);
+        context.setVariable("authorName", authorName);
+
+        String htmlContent = templateEngine.process("delete_notify_author", context);
+        String subject = "[Gathering] 게더링 모집글 삭제 안내";
+
+        sendHtmlMail(authorEmail, subject, htmlContent);
+    }
+
+    public void sendProjectDeletionNotice(Map<String, String> recipients, String projectTitle) {
+        String subject = "[Gathering] 모집글 삭제 안내";
+
+        for (Map.Entry<String, String> recipient : recipients.entrySet()) {
+            String emailAddress = recipient.getKey();
+            String applicantName = recipient.getValue();
+
+            Context context = new Context();
+            context.setVariable("projectTitle", projectTitle);
+            context.setVariable("applicantName", applicantName);
+
+            String htmlContent = templateEngine.process("delete_notify_applicant", context);
+
+            sendHtmlMail(emailAddress, subject, htmlContent);
+        }
     }
 
     private void sendHtmlMail(String to, String subject, String htmlContent) {

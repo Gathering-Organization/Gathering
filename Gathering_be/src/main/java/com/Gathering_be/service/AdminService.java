@@ -1,5 +1,6 @@
 package com.Gathering_be.service;
 
+import com.Gathering_be.domain.Application;
 import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
@@ -10,6 +11,7 @@ import com.Gathering_be.exception.InvalidSortTypeException;
 import com.Gathering_be.exception.MemberNotFoundException;
 import com.Gathering_be.exception.ProjectNotFoundException;
 import com.Gathering_be.global.enums.*;
+import com.Gathering_be.repository.ApplicationRepository;
 import com.Gathering_be.repository.MemberRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import com.Gathering_be.repository.ProjectRepository;
@@ -21,8 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,12 +32,17 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
+    private final ApplicationRepository applicationRepository;
+    private final EmailService emailService;
 
-    public Page<MemberInfoForAdminResponse> findMembers(Pageable pageable) {
-        Page<Profile> profiles = profileRepository.findAllWithMember(pageable);
-        return profiles.map(MemberInfoForAdminResponse::from);
+    public List<MemberInfoForAdminResponse> getMembers() {
+        List<Profile> profiles = profileRepository.findAllWithMember();
+        return profiles.stream()
+                .map(MemberInfoForAdminResponse::from)
+                .collect(Collectors.toList());
     }
 
+    @Transactional
     public void changeMemberRole(Long memberId, Role newRole) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
@@ -74,11 +80,27 @@ public class AdminService {
     public void deleteProject(Long projectId) {
         Project project = getProjectByIdForUpdate(projectId);
 
-//        if (applicationRepository.existsByProjectId(projectId)){
-//            throw new ProjectHasApplicantsException();
-//        }
+        if (project.isDeleted()) {
+            return;
+        }
 
-        project.getProfile().removeProject(project.isClosed());
+        Profile authorProfile = project.getProfile();
+        emailService.sendProjectDeletetionNotice(
+                authorProfile.getMember().getEmail(), project.getTitle(), authorProfile.getNickname());
+
+        Map<String, String> applicants = new HashMap<>();
+        List<Application> applications = applicationRepository.findAllByProjectId(projectId);
+        for (Application application : applications) {
+            Profile applicantProfile = application.getProfileFromSnapshot();
+
+            if (applicantProfile != null) {
+                applicants.put(applicantProfile.getMember().getEmail(), applicantProfile.getNickname());
+                applicantProfile.removeApplication(application.getStatus());
+            }
+        }
+        emailService.sendProjectDeletionNotice(applicants, project.getTitle());
+
+        authorProfile.removeProject(project.isClosed());
         project.delete();
     }
 

@@ -112,16 +112,20 @@ export const deletePosting = async (id: number) => {
   try {
     const response = await api.delete(`/project/${id}`);
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };
+    } else {
+      return { success: false, message: response.data.message };
     }
   } catch (error: unknown) {
     console.error('모집글 삭제 실패:', error);
 
     if (error instanceof AxiosError) {
       console.error('서버 응답:', error.response?.data);
+      return {
+        success: false,
+        message: error.response?.data?.message || '삭제 중 오류가 발생했습니다.'
+      };
     }
 
     throw error;

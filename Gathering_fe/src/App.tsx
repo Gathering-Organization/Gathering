@@ -16,6 +16,7 @@ import OtherUserProfile from '@/pages/OtherUserProfile';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import MyApplication from '@/pages/MyApplication';
 import { ToastProvider } from '@/contexts/ToastContext';
+import Admin from '@/pages/Admin';
 
 // 0. 회원 정보 관련 사이트
 // - "/profile" : 회원의 프로필 정보를 조회 및 수정하는 Profile 페이지
@@ -36,6 +37,9 @@ import { ToastProvider } from '@/contexts/ToastContext';
 // - "/profile" : 내 프로필을 조회 및 수정하는 Profile 페이지
 // - "/otherUserProfile" : 타인의 프로필을 조회하는 OtherUserProfile 페이지
 
+// 4. 관리자 관련 페이지
+// - "/admin" : 유저 수, 멤버 id 조회, 멤버 역할 전환, 모집글 search (isDeleted 포함), 모집글 삭제를 할 수 있는 Admin 페이지
+
 const App: React.FC = () => {
   return (
     <>
@@ -45,15 +49,16 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
               <Route element={<Layout />}>
-                {/* <Route path="/" element={<Main />} /> */}
                 <Route
-                  path="/SignUp"
+                  path="/admin"
                   element={
                     <ProtectedRoute>
-                      <SignUp />
+                      <Admin />
                     </ProtectedRoute>
                   }
                 />
+                {/* <Route path="/" element={<Main />} /> */}
+                <Route path="/SignUp" element={<SignUp />} />
                 <Route path="/" element={<PostHome />} />
                 <Route
                   path="/myPostHome"
