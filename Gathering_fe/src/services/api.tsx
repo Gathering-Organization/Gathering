@@ -14,8 +14,10 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   config => {
-    const accessToken = cookies.get('accessToken');
-    const refreshToken = cookies.get('refreshToken');
+    // const accessToken = cookies.get('accessToken');
+    // const refreshToken = cookies.get('refreshToken');
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
 
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -70,19 +72,24 @@ api.interceptors.response.use(
 
         const { accessToken, refreshToken: newRefreshToken } = refreshResponse.data.data;
 
-        cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
-        cookies.set('refreshToken', newRefreshToken, {
-          path: '/',
-          secure: true,
-          sameSite: 'strict'
-        });
+        // cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
+        // cookies.set('refreshToken', newRefreshToken, {
+        //   path: '/',
+        //   secure: true,
+        //   sameSite: 'strict'
+        // });
+
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', newRefreshToken);
 
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         return await api(originalRequest);
       } catch (refreshError) {
         console.error('Refresh token을 이용한 토큰 재발급 실패:', refreshError);
-        cookies.remove('accessToken', { path: '/' });
-        cookies.remove('refreshToken', { path: '/' });
+        // cookies.remove('accessToken', { path: '/' });
+        // cookies.remove('refreshToken', { path: '/' });
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         return Promise.reject(refreshError);
       }
     }
