@@ -16,9 +16,14 @@ const Header: React.FC = () => {
     nav('/posting');
   };
 
+  // useEffect(() => {
+  //   setIsLoggedIn(!!cookies.accessToken);
+  // }, [cookies.accessToken]);
+
   useEffect(() => {
-    setIsLoggedIn(!!cookies.accessToken);
-  }, [cookies.accessToken]);
+    const token = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!token);
+  }, []);
 
   const onLogoClick = () => {
     if (window.location.pathname === '/') {
