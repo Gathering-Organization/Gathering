@@ -12,6 +12,7 @@ const GoogleRedirectHandler: React.FC = () => {
 
   useEffect(() => {
     const handleGoogleLogin = async () => {
+      console.log(code);
       if (code) {
         try {
           console.log(code);
