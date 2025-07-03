@@ -98,8 +98,8 @@ export const googleLogin = async (accessToken: string) => {
     if (response.data.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
 
-      cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
-      cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'strict' });
+      cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'lax' });
+      cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'lax' });
 
       return { success: true, message: response.data.message };
     }
