@@ -80,8 +80,11 @@ export const logout = async () => {
     const response = await api.post('/auth/logout');
 
     if (response.data.status === 200) {
-      cookies.remove('accessToken', { path: '/' });
-      cookies.remove('refreshToken', { path: '/' });
+      // cookies.remove('accessToken', { path: '/' });
+      // cookies.remove('refreshToken', { path: '/' });
+
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
 
       return { success: true, message: response.data.message };
     }
@@ -97,7 +100,7 @@ export const googleLogin = async (accessToken: string) => {
 
     if (response.data.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
-
+      console.log('백엔드 응답:', response.data);
       // cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
       // cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'strict' });
 
