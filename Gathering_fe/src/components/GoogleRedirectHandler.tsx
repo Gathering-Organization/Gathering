@@ -14,6 +14,7 @@ const GoogleRedirectHandler: React.FC = () => {
     const handleGoogleLogin = async () => {
       if (code) {
         try {
+          console.log(code);
           const result = await googleLogin(code);
 
           if (result?.success) {

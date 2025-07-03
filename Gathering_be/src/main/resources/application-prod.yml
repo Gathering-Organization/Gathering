@@ -54,9 +54,10 @@ springdoc:
   show-actuator: false
   default-produces-media-type: application/json
 
-swagger:
-  username: ${PROD_SWAGGER_USERNAME}
-  password: ${PROD_SWAGGER_PASSWORD}
+gathering:
+  swagger:
+    username: ${PROD_SWAGGER_USERNAME}
+    password: ${PROD_SWAGGER_PASSWORD}
 
 oauth2:
   google:
