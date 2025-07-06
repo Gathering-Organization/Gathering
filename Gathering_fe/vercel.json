@@ -1,8 +1,13 @@
 {
-  "rewrites": [
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "headers": [
+        {
+          "key": "X-Vercel-Json-Test",
+          "value": "success"
+        }
+      ]
     }
   ]
 }
