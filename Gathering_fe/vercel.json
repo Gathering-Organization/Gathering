@@ -1,13 +1,8 @@
 {
-  "headers": [
+  "redirects": [
     {
       "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Vercel-Json-Test",
-          "value": "success"
-        }
-      ]
+      "destination": "/index.html"
     }
   ]
 }
