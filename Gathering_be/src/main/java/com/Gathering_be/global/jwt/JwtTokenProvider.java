@@ -32,7 +32,7 @@ public class JwtTokenProvider {
             ObjectMapper objectMapper) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000 * 30;
-        this.refreshTokenValidityInMilliseconds = tokenValidityInSeconds * 14 * 24 * 60 * 60 * 1000;
+        this.refreshTokenValidityInMilliseconds = tokenValidityInSeconds * 14 * 24 * 60 * 1000;
         this.objectMapper = objectMapper;
     }
 
