@@ -110,31 +110,6 @@ const PostHome: React.FC = () => {
     keyword
   ]);
 
-  // useEffect(() => {
-  //   if (post.length > 0) {
-  //     const uniqueAuthors = Array.from(new Set(post.map(p => p.authorNickname)));
-  //     const fetchProfiles = async () => {
-  //       const newCache = { ...profileCache };
-  //       await Promise.all(
-  //         uniqueAuthors.map(async nickname => {
-  //           if (!newCache[nickname]) {
-  //             try {
-  //               const result = await getUserProfile(nickname);
-  //               if (result?.success) {
-  //                 newCache[nickname] = result.data as ProfileAllInfo;
-  //               }
-  //             } catch (error) {
-  //               console.error(`프로필 정보 불러오기 실패: ${nickname}`);
-  //             }
-  //           }
-  //         })
-  //       );
-  //       setProfileCache(newCache);
-  //     };
-  //     fetchProfiles();
-  //   }
-  // }, [post]);
-
   const handleSearch = useCallback(
     ({ searchType, keyword }: { searchType: string; keyword: string }) => {
       setSearchType(searchType);
