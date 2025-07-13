@@ -12,12 +12,15 @@ import eye from '@/assets/otherIcons/eye.png';
 import blueEye from '@/assets/otherIcons/Blue_Eye.png';
 import blueHeart from '@/assets/otherIcons/Blue_Heart.png';
 import heart from '@/assets/otherIcons/heart.png';
-import { getUserProfile } from '@/services/profileApi';
+import banner1 from '@/assets/stackIcons/react.svg';
+import banner2 from '@/assets/stackIcons/react.svg';
+import banner3 from '@/assets/stackIcons/react.svg';
 import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
 import OptionalDropdown from '@/components/OptionalDropdown';
 import { useToast } from '@/contexts/ToastContext';
+import EmblaCarouselComponent from '@/components/BannerCarousel';
 
 interface DropdownDispatchContextType {
   setSelectedStack: (value: string[]) => void;
@@ -48,6 +51,18 @@ const PostHome: React.FC = () => {
     if (showInterested && !p.interested) return false;
     return true;
   });
+
+  const slides = [
+    <div className="h-64 bg-blue-300 flex items-center justify-center text-3xl text-white rounded-xl">
+      Slide 1
+    </div>,
+    <div className="h-64 bg-blue-400 flex items-center justify-center text-3xl text-white rounded-xl">
+      Slide 2
+    </div>,
+    <div className="h-64 bg-blue-500 flex items-center justify-center text-3xl text-white rounded-xl">
+      Slide 3
+    </div>
+  ];
 
   const { showToast } = useToast();
 
@@ -152,6 +167,9 @@ const PostHome: React.FC = () => {
     <ProfileCacheContext.Provider value={{ profileCache }}>
       <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
         <div className="mx-36 space-y-6">
+          <div className="pb-4">
+            <EmblaCarouselComponent slides={slides} options={{ loop: true }} />
+          </div>
           <div className="mx-6 flex justify-between items-center pb-4">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
             <div className="flex justify-end w-[600px]">

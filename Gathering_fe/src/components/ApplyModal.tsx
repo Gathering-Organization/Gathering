@@ -126,8 +126,8 @@ const ApplyModal: React.FC = () => {
                 </button>
               </div>
               <div className="p-6 md:p-7">
-                <form className="space-y-6">
-                  <div className="flex items-center gap-4">
+                <form className="space-y-4">
+                  <div className="flex pb-2 items-center gap-4">
                     <label className="w-36 font-semibold dark:text-white">지원 포지션</label>
                     <div className="flex-1 font-bold">
                       <MultiLevelDropdown
@@ -185,7 +185,7 @@ const ApplyModal: React.FC = () => {
                         : 'bg-gray-400 cursor-not-allowed text-white'
                     }`}
                   >
-                    {/* {isLoading ? '제출 중...' : '제출하기'} */}
+                    {isLoading ? '제출 중...' : '제출하기'}
                   </button>
                 </form>
               </div>
