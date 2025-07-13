@@ -89,7 +89,7 @@ const PostHome: React.FC = () => {
     }
     const getAllPost = async () => {
       try {
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
         const result = await getAllPosting(
           page,
           sortType,
