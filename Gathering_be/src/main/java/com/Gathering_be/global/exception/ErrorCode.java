@@ -66,6 +66,9 @@ public enum ErrorCode {
 
     // Mail
     EMAIL_SEND_FAILED(500, "EM001", "이메일 전송 중 오류가 발생했습니다."),
+
+    // Notification
+    NOTIFICATION_NOT_FOUND(404, "NT001", "존재하지 않는 알림입니다."),
     ;
 
     private final int status;

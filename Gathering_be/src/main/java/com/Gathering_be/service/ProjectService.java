@@ -1,9 +1,6 @@
 package com.Gathering_be.service;
 
-import com.Gathering_be.domain.Application;
-import com.Gathering_be.domain.Profile;
-import com.Gathering_be.domain.Project;
-import com.Gathering_be.domain.ProjectTeams;
+import com.Gathering_be.domain.*;
 import com.Gathering_be.dto.request.ProjectCreateRequest;
 import com.Gathering_be.dto.request.ProjectUpdateRequest;
 import com.Gathering_be.dto.response.ProjectDetailResponse;
@@ -11,10 +8,7 @@ import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.exception.*;
 import com.Gathering_be.global.enums.*;
 import com.Gathering_be.global.service.S3Service;
-import com.Gathering_be.repository.ApplicationRepository;
-import com.Gathering_be.repository.InterestProjectRepository;
-import com.Gathering_be.repository.ProfileRepository;
-import com.Gathering_be.repository.ProjectRepository;
+import com.Gathering_be.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.domain.Page;
@@ -37,9 +31,12 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final InterestProjectRepository interestProjectRepository;
     private final ApplicationRepository applicationRepository;
+    private final NotificationRepository notificationRepository;
+
     private final RedisService redisService;
     private final S3Service s3Service;
     private final EmailService emailService;
+    private final NotificationService notificationService;
 
     @Transactional
     public ProjectDetailResponse createProject(ProjectCreateRequest request) {
@@ -192,19 +189,43 @@ public class ProjectService {
         List<Project> expiredProjects = projectRepository.findAllByDeadlineBeforeAndIsClosedFalse(now);
 
         for (Project project : expiredProjects) {
+            // 모집자에게 이메일 전송
             project.closeProject();
             Profile authorProfile = project.getProfile();
             String authorEmail = authorProfile.getMember().getEmail();
             String authorNickname = authorProfile.getNickname();
             emailService.sendCloseMailToAuthor(authorEmail, project.getTitle(), authorNickname);
 
+            // 모집자에게 알림 전송
+            Notification authorNotification = Notification.builder()
+                    .receiver(project.getProfile())
+                    .content("'" + project.getTitle() + "' 모집글의 기한이 마감되었습니다.")
+                    .notificationType(NotificationType.PROJECT_CLOSED)
+                    .relatedUrl("gathering.work/api/projects/" + project.getId())
+                    .build();
+            Notification savedAuthorNotification = notificationRepository.save(authorNotification);
+            notificationService.send(savedAuthorNotification);
+
             List<Application> applications = applicationRepository.findAllByProjectAndStatus(project, ApplyStatus.PENDING);
             for (Application application : applications) {
                 application.reject();
+
                 Profile applicantProfile = application.getProfileFromSnapshot();
                 String email = applicantProfile.getMember().getEmail();
                 String nickname = applicantProfile.getNickname();
+
+                // 지원자에게 이메일 전송
                 emailService.sendCloseMailToApplicant(email, project.getTitle(), nickname);
+
+                // 지원자에게 알림 전송
+                Notification applicantNotification = Notification.builder()
+                        .receiver(applicantProfile)
+                        .content("'" + project.getTitle() + "' 모집글의 기한이 마감되었습니다.")
+                        .notificationType(NotificationType.PROJECT_CLOSED)
+                        .relatedUrl("gathering.work/api/projects/" + project.getId())
+                        .build();
+                Notification savedApplicantNotification = notificationRepository.save(applicantNotification);
+                notificationService.send(savedApplicantNotification);
             }
         }
     }
