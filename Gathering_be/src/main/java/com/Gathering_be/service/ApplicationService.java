@@ -1,6 +1,7 @@
 package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Application;
+import com.Gathering_be.domain.Notification;
 import com.Gathering_be.domain.Profile;
 import com.Gathering_be.domain.Project;
 import com.Gathering_be.dto.request.ApplicationRequest;
@@ -8,11 +9,9 @@ import com.Gathering_be.dto.response.ApplicationResponse;
 import com.Gathering_be.dto.response.ProjectSimpleResponse;
 import com.Gathering_be.exception.*;
 import com.Gathering_be.global.enums.ApplyStatus;
+import com.Gathering_be.global.enums.NotificationType;
 import com.Gathering_be.global.service.S3Service;
-import com.Gathering_be.repository.ApplicationRepository;
-import com.Gathering_be.repository.InterestProjectRepository;
-import com.Gathering_be.repository.ProfileRepository;
-import com.Gathering_be.repository.ProjectRepository;
+import com.Gathering_be.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,8 +29,11 @@ public class ApplicationService {
     private final ProfileRepository profileRepository;
     private final ProjectRepository projectRepository;
     private final InterestProjectRepository interestProjectRepository;
+    private final NotificationRepository notificationRepository;
+
     private final S3Service s3Service;
     private final EmailService emailService;
+    private final NotificationService notificationService;
 
     @Transactional
     public void applyForProject(ApplicationRequest request) {
@@ -59,8 +61,19 @@ public class ApplicationService {
         profile.addApplication();
         applicationRepository.save(application);
 
+        // 모집자에게 이메일 전송
         emailService.sendNewApplyMail(
                 project.getProfile().getMember().getEmail(), project.getTitle(), project.getProfile().getNickname());
+
+        // 모집자에게 알림 전송
+        Notification notification = Notification.builder()
+                .receiver(project.getProfile())
+                .content(profile.getNickname() + "님이 '" + project.getTitle() + "' 모집글에 지원했습니다.")
+                .notificationType(NotificationType.NEW_APPLICATION)
+                .relatedUrl("gathering.work/api/projects/" + project.getId())
+                .build();
+        Notification savedNotification = notificationRepository.save(notification);
+        notificationService.send(savedNotification);
     }
 
     @Transactional(readOnly = true)
@@ -191,10 +204,24 @@ public class ApplicationService {
         applicantProfile.updateApplicationStatus(newStatus);
         application.updateStatus(newStatus);
 
+        // 지원자에게 이메일 전송
         String email = applicantProfile.getMember().getEmail();
         String nickname = applicantProfile.getNickname();
         boolean result = newStatus == ApplyStatus.APPROVED ? true : false;
         emailService.sendResultMail(email, project.getTitle(), nickname, result);
+
+        // 지원자에게 알림 전송
+        String content = "'" + project.getTitle() + "' 모집글 지원이 " +
+                (newStatus == ApplyStatus.APPROVED ? "승인" : "거절") + "되었습니다.";
+
+        Notification notification = Notification.builder()
+                .receiver(applicantProfile)
+                .content(content)
+                .notificationType(NotificationType.APPLICATION_RESULT)
+                .relatedUrl("gathering.work/api/projects/" + project.getId())
+                .build();
+        Notification savedNotification = notificationRepository.save(notification);
+        notificationService.send(savedNotification);
     }
 
 
