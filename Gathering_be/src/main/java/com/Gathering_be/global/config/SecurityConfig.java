@@ -77,7 +77,6 @@ public class SecurityConfig {
                                 .requestMatchers(PERMITTED_API_URL).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .oauth2Login(Customizer.withDefaults())
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
