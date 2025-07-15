@@ -92,7 +92,6 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
   const handleViewApplication = (item: ApplyDetails) => {
     localStorage.setItem('applyInfo', JSON.stringify(item));
     window.open(`/apply/view?nickname=${encodeURIComponent(item.nickname)}`, '_blank');
-    // window.open('/apply/view', '_blank');
   };
   return (
     <div>

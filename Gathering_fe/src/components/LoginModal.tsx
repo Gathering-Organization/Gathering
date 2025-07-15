@@ -40,7 +40,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
     try {
       const result = await login(formData);
       if (result?.success) {
-        showToast('로그인 되었습니다.', true);
+        localStorage.setItem(
+          'toastMessage',
+          JSON.stringify({
+            message: '로그인 되었습니다.',
+            isSuccess: true
+          })
+        );
         window.location.reload();
         onClose();
       } else {

@@ -9,6 +9,7 @@
     "prettier": "^3.4.2"
   },
   "dependencies": {
+    "embla-carousel": "^8.6.0",
     "react-spinners": "^0.17.0"
   }
 }
