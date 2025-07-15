@@ -46,6 +46,13 @@ public enum ResultCode {
     MEMBER_READ_SUCCESS(200, "AD001", "멤버 목록 호출 성공"),
     MEMBER_ROLE_CHANGE_SUCCESS(200, "AD001", "멤버 ROLE 전환 성공"),
     MEMBER_COUNT_READ_SUCCESS(200, "AD003", "멤버 카운트 호출 성공"),
+
+    // Notification
+    SUBSCRIBE_SUCCESS(200, "NT001", "SSE 연결에 성공하였습니다."),
+    NOTIFICATION_READ_SUCCESS(200, "NT002", "알림 조회에 성공하였습니다."),
+    NOTIFICATION_COUNT_GET_SUCCESS(200, "NT003", "알림 개수 조회에 성공하였습니다."),
+    NOTIFICATION_MARK_AS_READ_SUCCESS(200, "NT004", "알림 읽음 처리에 성공하였습니다."),
+    NOTIFICATION_MARK_ALL_AS_READ_SUCCESS(200, "NT005", "모든 알림 읽음 처리에 성공하였습니다."),
     ;
 
     private final int status;
