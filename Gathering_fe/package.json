@@ -12,6 +12,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
+    "embla-carousel": "^8.6.0",
     "framer-motion": "^12.5.0",
     "postcss": "^8.5.1",
     "react": "^18.3.1",
