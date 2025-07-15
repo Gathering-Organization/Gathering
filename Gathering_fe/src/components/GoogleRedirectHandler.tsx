@@ -11,12 +11,9 @@ const GoogleRedirectHandler: React.FC = () => {
   const code = params.get('access_token');
 
   useEffect(() => {
-    console.log('이전', code);
     const handleGoogleLogin = async () => {
-      console.log(code);
       if (code) {
         try {
-          console.log(code);
           const result = await googleLogin(code);
           console.log('googleLogin 응답', result);
           if (result?.success) {
