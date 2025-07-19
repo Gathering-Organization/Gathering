@@ -5,8 +5,7 @@
 <summary>🔹 정규표현식으로 닉네임 유효성 검사</summary>
 
 - **상황**
-    - 간단한 설명 또는 발생한 문제
-    - (예: 닉네임 입력값이 한글 1~6자리인지 검증이 필요했음)
+    - 닉네임 입력값이 한글 1~6자리인지를 정규표현식을 이용하여 확인
 
 - **코드**
 
@@ -48,11 +47,13 @@
 <details>
 <summary>🔹 다크모드</summary>
 
-- tailwind.config.js 파일에서 module.exports에 darkMode 설정을 넣지 않으면 다크모드 관련 유틸리티 클래스를 생성하지 않으므로 다크모드가 적용되지 않는다.
-- darkMode의 값을 **“media”** 로 설정하면 시스템 다크 모드 설정에 따라 자동으로 적용된다.
-- darkMode의 값을 **“class”** 로 설정하면 클래스를 루트 요소나 특정 요소에 수동으로 붙여서 다크 모드를 적용하게 된다.
-- darkMode의 값을 **“selector”** darkMode.selector를 직접 지정하여 다크 모드 토글 기준을 커스터마이징할 수 있다. (Tailwind CSS 3.4 이상에서 도입된 방식)
+- tailwind.config.js 파일에서 moudle.exports에 darkMode 설정을 넣지 않으면 다크모드 관련 유틸리티 클래스를 생성하지 않으므로 다크모드가 적용되지 않는다.
 
+- darkMode의 값을 "media"로 설정하면 시스템 다크모드 설정에 따라 자동으로 적용된다.
+  
+- darkMode의 값을 "class"로 설정하면 클래스를 루트 요소나 특정 요소에 수동으로 붙여서 다크모드를 적용하게 된다.
+
+- darkMode의 값을 "selector" darkMode.selector를 직접 지정하여 다크 모드 토글 기준을 커스터마이징할 수 있다. (Tailwind CSS 3.4 이상에서 도입된 방식)
 </details>
 
 <details>
@@ -63,8 +64,11 @@
   <summary>전체 배포 흐름 개요</summary>
   
 - 프론트엔드 → 빌드 → 정적 파일 생성 → 서버(EC2) 내 Nginx가 정적 파일 서빙
+
 - 백엔드 → JAR/WAR 빌드 → 서버(EC2)에서 실행
+
 - 도메인 구매 및 DNS 설정 → 도메인 연결 → Nginx에서 프론트/백엔드 요청 분기 처리
+  
 - HTTPS 인증서 (Let’s Encrypt) 적용
 </details>
 <details>
@@ -119,6 +123,7 @@
 - 도메인 구매 후 DNS 관리 페이지에서
   - A 레코드에 EC2 퍼블릭 IP 설정
   - (필요시) CNAME 설정 등 추가
+    
 - 도메인 네임이 EC2 IP를 가리키도록 설정 확인
 </details>
 </details>
@@ -153,7 +158,45 @@
     ```
 
 </details>
+<details>
+<summary>🔹 새로운 기능 브랜치 만들기</summary>
 
+- **상황**
+    - fe/feat/project에서 개발하던 중 관리자 모드를 개발하기 위해 fe/feat/admin을 만들어서 기능별 브랜치 분리를 하고 싶다.
+    - 현재 혼자 개발중이다.
+
+- **방법**
+  
+1. 현재 작업 중인 브랜치 (fe/feat/project) 작업 커밋 여부 확인
+   ```
+    // 현재 작업까지 커밋하는 방식
+    git status
+    git add -A
+    git commit -m "커밋할 메시지"
+
+    // 임시저장 방식
+    git stash
+   ```
+
+2. 새 브랜치 만들고 이동
+   ```
+   git checkout -b fe/feat/admin
+   ```
+   
+3. 작업 완료 후 커밋 & 푸쉬
+    ```
+    git add -A
+    git commit -m "커밋할 메시지"
+    git push origin fe/feat/admin
+    ```
+    
+4. fe/feat/admin 브랜치 작업을 fe/feat/project에 반영
+   ```
+   git checkout fe/feat/project
+   git merge fe/feat/admin
+   ```
+
+</details>
 ---
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=footer" />
