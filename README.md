@@ -11,6 +11,8 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 | 인하대학교 전기전자공학부 20| 인하대학교 컴퓨터공학부 18|
 |                                      윤종근                                      |                                      최보근                                      |
 |                  [@hi2242](https://github.com/hi2242)                            |                 [@ChoiBoKeun1](https://github.com/ChoiBoKeun1)                   |
+|                  [FE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_fe#readme)                            |                 [BE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_be#readme)                   |
+
 
 ## 🛠️ Tech
 ### Front-End
