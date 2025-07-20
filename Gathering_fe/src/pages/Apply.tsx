@@ -74,7 +74,6 @@ const Apply: React.FC = () => {
         if (projectId) {
           const result = await getMyApplication(Number(projectId));
           if (result?.success) {
-            console.log('파파파', result.data, isOwnProfile);
             setApplyInfo(result.data);
 
             setWorkExperiences(result.data.workExperiences);

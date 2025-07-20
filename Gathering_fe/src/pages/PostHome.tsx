@@ -103,7 +103,6 @@ const PostHome: React.FC = () => {
         );
         if (result?.success) {
           // showToast('모집글 조회가 완료되었습니다.', true);
-          console.log(result.data);
           setPost(result.data);
           setTotalPages(result.pagination.totalPages);
         } else {

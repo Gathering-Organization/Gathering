@@ -5,8 +5,6 @@ export const postApplication = async (projectId: number, position: string, messa
   try {
     const response = await api.post('/application', { projectId, position, message });
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 201) {
       return { success: true, message: response.data.message };
     }
@@ -25,8 +23,6 @@ export const getOtherApplication = async (projectId: number) => {
   try {
     const response = await api.get(`/application/received/project/${projectId}`);
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };
     }
@@ -44,9 +40,6 @@ export const getOtherApplication = async (projectId: number) => {
 export const getMyAllApplication = async (page: number, status: string) => {
   try {
     const response = await api.get(`/application/my?page=${page}&status=${status}`);
-    console.log('요청 API:', `/application/my?page=${page}&status=${status}`);
-
-    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
       return {
@@ -75,7 +68,6 @@ export const getMyAllApplication = async (page: number, status: string) => {
 export const getMyApplication = async (projectId: number) => {
   try {
     const response = await api.get(`/application/my/project/${projectId}`);
-    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };
@@ -95,7 +87,6 @@ export const patchApplication = async (applicationId: number, status: string) =>
   try {
     const response = await api.patch(`/application/${applicationId}/status?status=${status}`);
 
-    console.log(`/application/${applicationId}/status`);
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };
     }
@@ -113,8 +104,6 @@ export const patchApplication = async (applicationId: number, status: string) =>
 export const deleteApplication = async (applicationId: number) => {
   try {
     const response = await api.delete(`/application/${applicationId}`);
-
-    console.log('응답 데이터:', response.data);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };

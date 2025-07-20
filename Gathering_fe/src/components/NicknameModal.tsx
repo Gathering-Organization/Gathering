@@ -34,7 +34,6 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
       } else {
         const result = await setMyNickname(newNickname);
         if (result?.success) {
-          console.log(nickname);
           updateProfileData({ nickname: newNickname });
           showToast('닉네임이 성공적으로 변경되었습니다.', true);
           window.location.reload();

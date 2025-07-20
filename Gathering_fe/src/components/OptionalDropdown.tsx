@@ -81,9 +81,9 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
 
   useEffect(() => {
     if (selectedItems.length > 0) {
-      console.log('API 호출: 선택된 항목들:', selectedItems);
+      // console.log('API 호출: 선택된 항목들:', selectedItems);
     } else {
-      console.log('선택된 항목이 없습니다.');
+      // console.log('선택된 항목이 없습니다.');
     }
   }, [selectedItems]);
 

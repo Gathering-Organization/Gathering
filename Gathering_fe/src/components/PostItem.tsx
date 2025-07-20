@@ -47,7 +47,6 @@ const PostItem: React.FC<
     e.stopPropagation();
 
     if (closed || !projectId) {
-      console.log(authorNickname, '그리고', myProfile.nickname);
       showToast('마감된 모집 공고입니다.', false);
       return;
     }
