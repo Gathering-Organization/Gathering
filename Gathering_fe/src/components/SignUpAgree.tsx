@@ -18,7 +18,7 @@ const SignUpAgree: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   };
 
   return (
-    <div className="text-center">
+    <div className="text-center px-4 sm:px-0">
       <div>
         <div className="text-[24px] font-bold my-6">안내 사항</div>
         <div className="text-[14px] text-[#C7C7C7] mb-8">
@@ -26,7 +26,7 @@ const SignUpAgree: React.FC<SignUpAgreeProps> = ({ setStep }) => {
         </div>
       </div>
       <section>
-        <div className="text-justify border-[2px] rounded-[6px] border-[#D9D9D9] p-8 h-64 overflow-y-scroll space-y-4">
+        <div className="text-justify border-[2px] rounded-[6px] border-[#D9D9D9] px-4 py-6 sm:p-8 h-48 sm:h-64 overflow-y-scroll space-y-4 text-[12px] sm:text-[14px]">
           <p>
             제 1 장 총칙 제 1조 (목적) 본 약관은 서비스(이하 "회사"라 한다)는 홈페이지에서 제공하는
             서비스(이하 "서비스"라 한다)를 제공함에 있어 회사와 이용자의 권리, 의무 및 책임사항을
@@ -45,7 +45,6 @@ const SignUpAgree: React.FC<SignUpAgreeProps> = ({ setStep }) => {
             '회원탈퇴(이하 "탈퇴"라 한다)'란 회원이 이용계약을 해지하는 것을 의미합니다.
           </p>
           <p>
-            {' '}
             2. 본 약관에서 사용하는 용어의 정의는 제1항에서 정하는 것을 제외하고는 관계법령 및
             서비스 별 안내에서 정하는 바에 의합니다.
           </p>
@@ -74,24 +73,27 @@ const SignUpAgree: React.FC<SignUpAgreeProps> = ({ setStep }) => {
             5. 변경된 약관에 대한 정보를 알지 못해 발생하는 회원 피해는 회사가 책임지지 않습니다.
           </p>
         </div>
-        <div className="mt-4 flex items-center justify-end">
+        <div className="mt-4 flex items-start sm:items-center justify-start sm:justify-end gap-2">
           <input
             type="checkbox"
             id="agree"
-            className="mr-2 w-[16px] h-[16px]"
+            className="mt-1 sm:mt-0 w-4 h-4"
             checked={isAgreed}
             onChange={handleCheckboxChange}
           />
-          <label htmlFor="agree" className="text-[14px] text-[#202123]">
+          <label
+            htmlFor="agree"
+            className="text-[13px] sm:text-[14px] text-[#202123] leading-tight"
+          >
             위 안내 사항을 확인하였고 개인정보 수집에 동의합니다.
           </label>
         </div>
       </section>
-      <div className="my-10">
+      <div className="my-8 sm:my-10">
         <button
           disabled={!isAgreed}
           onClick={handleNextStep}
-          className={`font-semibold text-[#FFFFFF] rounded-[20px] text-[18px] px-12 py-2 text-center focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 ${
+          className={`w-full sm:w-auto font-semibold text-white rounded-[20px] text-[16px] sm:text-[18px] px-6 sm:px-12 py-2 sm:py-2 text-center focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 ${
             isAgreed ? 'bg-[#3387E5] hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
           }`}
         >

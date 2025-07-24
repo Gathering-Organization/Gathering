@@ -152,13 +152,17 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
         </div>
       </div>
       <section>
-        <div className="border-2 rounded-[30px] border-[#D9D9D9] p-8 space-y-4 max-w-lg mx-auto">
+        <div className="border-2 rounded-[30px] border-[#D9D9D9] p-6 sm:p-8 space-y-6 max-w-lg mx-auto">
           {isEmailVerified ? (
-            <div className="text-[#3387E5] font-bold">{formData.email} 인증 완료</div>
+            <div className="text-[#3387E5] font-bold text-sm sm:text-base">
+              {formData.email} 인증 완료
+            </div>
           ) : (
             <>
-              <div className="flex items-center gap-2">
-                <div className="w-24 font-bold text-[#202123]">이메일 인증</div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <label className="sm:w-24 font-bold text-[#202123] text-sm sm:text-base shrink-0">
+                  이메일 인증
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -166,16 +170,16 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
+                  className="flex-1 bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm focus:outline-none rounded-lg w-full p-2.5"
                   placeholder="이메일을 입력하세요."
                 />
                 <button
                   onClick={handleSendEmail}
-                  className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 py-2 rounded-[16px] flex items-center"
+                  className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 mt-2 py-1 sm:mt-0 sm:py-2 rounded-[16px] w-full sm:w-auto flex justify-center items-center min-h-[40px]"
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full" />
                   ) : (
                     '전송'
                   )}
@@ -184,8 +188,10 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
 
               {isEmailSent && (
                 <>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 font-bold text-[#202123]">인증번호</div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <label className="sm:w-24 font-bold text-[#202123] text-sm sm:text-base shrink-0">
+                      인증번호
+                    </label>
                     <input
                       type="text"
                       name="code"
@@ -193,27 +199,30 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
                       value={formData.code}
                       onChange={handleInputChange}
                       required
-                      className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
+                      className="flex-1 bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg  w-full p-2.5"
                       placeholder="인증번호를 입력하세요."
                     />
                     <button
                       onClick={handleVerifyCode}
-                      className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 py-2 rounded-[16px]"
+                      className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 py-2 rounded-[16px] w-full sm:w-auto"
                     >
                       인증
                     </button>
                   </div>
-                  {/* 타이머를 추가하여 남은 시간을 표시 */}
                   {timer !== null && (
-                    <div className="mt-2 text-red-500 font-semibold">남은 시간: {timer}초</div>
+                    <div className="mt-2 text-red-500 font-semibold text-sm sm:text-base">
+                      남은 시간: {timer}초
+                    </div>
                   )}
                 </>
               )}
             </>
           )}
 
-          <div className="flex items-center gap-2">
-            <div className="w-24 font-bold text-[#202123]">비밀번호</div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label className="sm:w-24 font-bold text-[#202123] text-sm sm:text-base shrink-0">
+              비밀번호
+            </label>
             <input
               type="password"
               name="password"
@@ -221,13 +230,15 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
+              className="flex-1 bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm focus:outline-none rounded-lg w-full p-2.5"
               placeholder="8자리 이상 영문, 숫자, 특수문자 포함"
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-24 font-bold text-[#202123]">닉네임</div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label className="sm:w-24 font-bold text-[#202123] text-sm sm:text-base shrink-0">
+              닉네임
+            </label>
             <input
               type="text"
               name="name"
@@ -235,16 +246,17 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[250px] p-2.5"
+              className="flex-1 bg-gray-50 border border-gray-300 text-gray-900 font-normal text-sm focus:outline-none rounded-lg w-full p-2.5"
               placeholder="한글 6자 이하의 닉네임"
             />
           </div>
         </div>
       </section>
-      <div className="my-10">
+
+      <div className="my-10 px-4">
         <button
           onClick={handleSignUp}
-          className="font-semibold text-[#FFFFFF] rounded-[20px] text-[18px] px-12 py-2 bg-[#3387E5] hover:bg-blue-700"
+          className="w-full sm:w-auto font-semibold text-[#FFFFFF] rounded-[20px] text-[18px] px-12 py-2 bg-[#3387E5] hover:bg-blue-700"
         >
           회원가입
         </button>
