@@ -92,7 +92,7 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
       {/* 드롭다운 버튼 */}
       <button
         type="button"
-        className={`inline-flex items-center justify-between min-w-[160px] px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none ${buttonClassName}`}
+        className={`inline-flex items-center justify-between min-w-[150px] sm:min-w-[150px] px-3 py-2 sm:px-4 sm:py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none ${buttonClassName}`}
         onClick={toggleMainDropdown}
       >
         <span className="truncate">{label}</span>
@@ -109,15 +109,15 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
       {/* 드롭다운 메뉴 */}
       {isMainDropdownOpen && (
         <div
-          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-[600px] rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 overflow-hidden animate-fadeDown`}
+          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-[330px] sm:max-w-[450px] md:max-w-[550px] lg:w-[600px] rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 overflow-hidden animate-fadeDown`}
         >
-          <div className="grid grid-cols-[200px_200px_1fr]">
+          <div className="grid grid-cols-3">
             {/* 1단계 메뉴 */}
-            <div className="w-[200px] border-r border-gray-300 dark:border-gray-600 py-1">
+            <div className="border-r border-gray-300 dark:border-gray-600 py-1">
               {menuData.map(item => (
                 <div
                   key={item.id}
-                  className={`px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
+                  className={`px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
                     activeSubmenuId === item.id ? 'bg-gray-200 dark:bg-gray-700' : ''
                   }`}
                   onClick={() => {
@@ -134,14 +134,14 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
             </div>
 
             {/* 2단계 메뉴 */}
-            <div className="w-[200px] border-r border-gray-300 dark:border-gray-600 py-1">
+            <div className="border-r border-gray-300 dark:border-gray-600 py-1">
               {activeSubmenuId &&
                 menuData
                   .find(item => item.id === activeSubmenuId)
                   ?.items?.map(subItem => (
                     <div
                       key={subItem.id}
-                      className={`px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
+                      className={`px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
                         activeSubmenuId2 === subItem.id ? 'bg-gray-200 dark:bg-gray-700' : ''
                       }`}
                       onClick={() =>
@@ -154,7 +154,7 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
             </div>
 
             {/* 3단계 메뉴 */}
-            <div className="w-[200px] py-1">
+            <div className="py-1">
               {activeSubmenuId2 &&
                 menuData
                   .find(item => item.id === activeSubmenuId)
@@ -166,19 +166,19 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
                       <div
                         key={subItem.id}
                         onClick={() => handleItemClick(subItem.id, subItem.label)}
-                        className={`flex items-center px-4 py-2 text-sm text-black dark:text-white cursor-pointer 
-              ${
-                selectedItems.includes(subItem.id)
-                  ? 'bg-[#3387E5] text-white'
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-              } // hover 효과`}
+                        className={`flex items-center px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white cursor-pointer
+                          ${
+                            selectedItems.includes(subItem.id)
+                              ? 'bg-[#3387E5] text-white'
+                              : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                          }`}
                       >
                         {/* 스택 아이콘 표시 */}
                         {iconSrc && (
                           <img
                             src={iconSrc}
                             alt={subItem.label}
-                            className="w-5 h-5 mr-2 object-contain"
+                            className="w-4 h-4 mr-1 sm:w-5 sm:h-5 sm:mr-2 object-contain"
                           />
                         )}
                         {subItem.label}
@@ -198,10 +198,10 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
                 <button
                   key={index}
                   onClick={() => handleRemoveItem(selectedItems[index])}
-                  className="flex items-center bg-blue-200 text-blue-800 px-2 py-1 rounded-full m-1 hover:bg-blue-300 transition"
+                  className="flex items-center bg-blue-200 text-blue-800 px-2 py-1 rounded-full m-1 hover:bg-blue-300 transition text-xs"
                 >
-                  <span className="text-sm">{label}</span>
-                  <span className="ml-2 text-gray-500">✕</span>
+                  <span className="text-xs sm:text-sm">{label}</span>
+                  <span className="ml-1 sm:ml-2 text-gray-500 text-xs sm:text-sm">✕</span>
                 </button>
               ))}
             </div>
