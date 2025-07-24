@@ -24,13 +24,14 @@ const Layout: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen select-none">
-      {!shouldHideHeader ? <Header /> : <div className="h-[100px]" />}
+      {!shouldHideHeader ? <Header /> : <div className="h-[56px] sm:h-[64px] md:h-[72px]" />}
       <main
-        className={`flex-grow ${!shouldHideHeader ? 'pt-[72px]' : ''} min-h-[calc(150vh-72px)]`}
+        className={`flex-grow ${!shouldHideHeader ? 'pt-[56px] sm:pt-[64px] md:pt-[72px]' : ''} 
+        min-h-[calc(150vh-56px)] sm:min-h-[calc(150vh-64px)] md:min-h-[calc(150vh-72px)]`}
       >
         <Outlet />
       </main>
-      <div className="pt-[120px]" />
+      <div className="pt-20 sm:pt-24 lg:pt-32" />
       <Footer />
       {showScrollTop && (
         <button

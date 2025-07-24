@@ -4,10 +4,7 @@ import { AxiosError } from 'axios';
 
 export const setPosting = async (postInfo: PostingInfo) => {
   try {
-    console.log('보낼 데이터:', postInfo);
     const response = await api.post('/project', { ...postInfo });
-
-    console.log('응답 데이터:', response.data);
 
     if (response.data.status === 201) {
       return { success: true, message: response.data.message };
@@ -39,11 +36,6 @@ export const getAllPosting = async (
     const response = await api.get(
       `/project/pagination?page=${page}&sort=${sort}&position=${position}&techStack=${techStackParam}&type=${type}&mode=${mode}&isClosed=${isClosed}&searchType=${searchType}&keyword=${keyword}`
     );
-    console.log(
-      '요청 API:',
-      `/project/pagination?page=${page}&sort=${sort}&position=${position}&techStack=${techStackParam}&type=${type}&mode=${mode}&isClosed=${isClosed}&searchType=${searchType}&keyword=${keyword}`
-    );
-    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
       return {
@@ -71,8 +63,6 @@ export const getPartPosting = async (id: number) => {
   try {
     const response = await api.get(`/project/${id}`);
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };
     }
@@ -91,10 +81,7 @@ export const modifyPosting = async (id: number, postInfo: PostingInfo) => {
   try {
     const response = await api.put(`/project/${id}`, { ...postInfo });
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
-      console.log('모디파이:', response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error: unknown) {
@@ -156,11 +143,6 @@ export const getMyPosting = async (nickname: string, page: number, isClosed: boo
     const response = await api.get(
       `/project/pagination/my-project?nickname=${nicknameParam}&page=${page}&isClosed=${isClosed}`
     );
-    console.log(
-      '요청 API:',
-      `/project/pagination/my-project?nickname=${nicknameParam}&page=${page}&isClosed=${isClosed}`
-    );
-    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
       return {

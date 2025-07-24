@@ -97,7 +97,6 @@ export const googleLogin = async (accessToken: string) => {
 
     if (response.data.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
-      console.log('백엔드 응답:', response.data);
       cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
       cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'strict' });
 

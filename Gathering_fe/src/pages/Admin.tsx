@@ -79,11 +79,9 @@ const Admin: React.FC = () => {
         setUserCount(result.data.totalMemberCount);
         showToast('새로고침 되었습니다.', true);
       } else {
-        console.log(result?.message || '유저 수 조회 중 오류 발생');
         showToast('새로고침에 실패했습니다.', false);
       }
     } catch (error) {
-      console.log('유저 수 조회 실패:', error);
       showToast('새로고침에 실패했습니다.', false);
     }
   };
@@ -95,11 +93,9 @@ const Admin: React.FC = () => {
         setPostList(result.data);
         showToast('새로고침 되었습니다.', true);
       } else {
-        console.log(result?.message || '모집글 조회 중 오류 발생');
         showToast('새로고침에 실패했습니다.', false);
       }
     } catch (error) {
-      console.log('모집글 조회 실패:', error);
       showToast('새로고침에 실패했습니다.', false);
     }
   };
@@ -112,11 +108,9 @@ const Admin: React.FC = () => {
         window.location.reload();
         showToast('해당 모집글을 삭제했습니다.', true);
       } else {
-        console.log(result?.message || '모집글 삭제 중 오류 발생');
         showToast('모집글 삭제에 실패했습니다.', false);
       }
     } catch (error) {
-      console.log('모집글 삭제 실패', error);
       showToast('모집글 삭제에 실패했습니다.', false);
     } finally {
       setIsDeletingPost(false);
@@ -131,11 +125,9 @@ const Admin: React.FC = () => {
         window.location.reload();
         showToast('유저의 역할을 변경했습니다.', true);
       } else {
-        console.log(result?.message || '유저의 역할 변경 중 오류 발생');
         showToast('유저의 역할 변경에 실패했습니다.', false);
       }
     } catch (error) {
-      console.log('유저의 역할 변경 실패', error);
       showToast('유저의 역할 변경에 실패했습니다.', false);
     } finally {
       setIsChangingRole(false);

@@ -5,8 +5,6 @@ export const getMembersAdmin = async () => {
   try {
     const response = await api.get(`/admin/members`);
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };
     }
@@ -27,8 +25,6 @@ export const getPaginationAdmin = async (page: number, searchType: string, keywo
     const response = await api.get(
       `/admin/project/pagination?page=${page}&searchType=${searchType}&keyword=${keywordParam}`
     );
-
-    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
       return {
@@ -53,7 +49,6 @@ export const getPaginationAdmin = async (page: number, searchType: string, keywo
 export const getMembersCountAdmin = async () => {
   try {
     const response = await api.get('/admin/members/count');
-    console.log('응답 데이터:', response.data.data);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };
@@ -90,8 +85,6 @@ export const patchRoleAdmin = async (memberId: number, newRole: string) => {
 export const deleteProjectAdmin = async (projectId: number) => {
   try {
     const response = await api.delete(`/admin/project/${projectId}`);
-
-    console.log('응답 데이터:', response.data);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };

@@ -15,7 +15,7 @@ const FilteringButton: React.FC<ButtonFilter> = ({ title, option, onClick, icon,
       onClick={onClick}
       style={{ willChange: 'transform' }}
       className={`
-        flex items-center space-x-2 border-solid rounded-lg border-2 px-4 py-1
+        flex items-center space-x-1 sm:space-x-2 border-solid rounded-lg border-2 px-3 py-1 sm:px-4 sm:py-1.5
         transition-all duration-300 ease-in-out hover:scale-[1.02]
         ${option ? 'border-[#3387E5] text-[#3387E5] bg-[#EAF3FF]' : 'border-[#B4B4B4] bg-white'}
         active:scale-95
