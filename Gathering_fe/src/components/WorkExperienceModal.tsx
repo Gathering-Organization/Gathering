@@ -58,14 +58,12 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
   // };
 
   const handleAddExperience = () => {
-    console.log('저장된 경험:', newExperience);
     if (
       !newExperience.activityName ||
       !newExperience.startDate ||
       !newExperience.endDate ||
       !newExperience.description
     ) {
-      console.log(newExperience);
       showToast('모든 필드를 입력해주세요.', false);
       return;
     }

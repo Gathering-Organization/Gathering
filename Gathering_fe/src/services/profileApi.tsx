@@ -7,7 +7,6 @@ export const getMyProfile = async () => {
     const response = await api.get('/profile');
 
     if (response.data.status === 200) {
-      console.log('getMyProfile API : ', response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error) {
@@ -37,7 +36,6 @@ export const getUserProfile = async (nickname: string) => {
     const response = await api.get(`/profile/nickname/${encodedNickname}`);
 
     if (response.data.status === 200) {
-      console.log('getUserProfile API : ', response.data.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
 
@@ -96,8 +94,6 @@ export const setMyProfileColor = async (profileColor: string) => {
 export const toggleProfileVisibility = async () => {
   try {
     const response = await api.put('/profile/visibility');
-
-    console.log(response);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };

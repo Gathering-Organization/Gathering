@@ -47,7 +47,6 @@ const PostItem: React.FC<
     e.stopPropagation();
 
     if (closed || !projectId) {
-      console.log(authorNickname, '그리고', myProfile.nickname);
       showToast('마감된 모집 공고입니다.', false);
       return;
     }
@@ -81,7 +80,7 @@ const PostItem: React.FC<
           showToast('마감된 모집 공고입니다.', false);
         }
       }}
-      className="relative cursor-pointer select-none w-[380px] will-change-transform"
+      className="relative cursor-pointer select-none w-full sm:w-80 md:w-96 lg:w-[380px] xl:w-[380px] max-w-full mx-auto will-change-transform"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -89,7 +88,8 @@ const PostItem: React.FC<
       whileHover={{ scale: 1.03 }}
     >
       <section
-        className={`h-[420px] border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
+        // className={`h-[420px] border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative ${closed ? 'opacity-50' : ''}`}
+        className={`h-[420px] border-[2px] border-[#B4B4B4] bg-white rounded-[30px] relative overflow-hidden ${closed ? 'opacity-50' : ''}`}
       >
         {applyStatus ? (
           <div
@@ -107,7 +107,8 @@ const PostItem: React.FC<
           </div>
         ) : (
           <label
-            className="absolute right-6 top-4 cursor-pointer"
+            // className="absolute right-6 top-4 cursor-pointer"
+            className="absolute right-6 top-4 cursor-pointer z-10"
             onClick={e => e.stopPropagation()}
           >
             <input
@@ -131,17 +132,18 @@ const PostItem: React.FC<
         )}
 
         {closed && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          // <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-[30px] pointer-events-none z-20">
             <span className="text-[24px] font-semibold text-white bg-black bg-opacity-50 py-2 px-8 rounded-[30px]">
               모집 마감
             </span>
           </div>
         )}
 
-        <section className="h-[337px] px-8">
-          <div className="w-[110px] bg-[#3387E5] rounded-b-[20px] justify-items-center">
+        <section className="h-[337px] px-6 sm:px-8">
+          <div className="w-[110px] bg-[#3387E5] rounded-b-[20px] text-center">
             <div
-              className="font-semibold py-2 text-[#FFFFFF] items-center text-[20px]"
+              className="font-semibold py-2 text-[#FFFFFF] text-[20px]"
               style={{ willChange: 'transform' }}
             >
               {projectEachType.map(item =>
@@ -150,12 +152,12 @@ const PostItem: React.FC<
             </div>
           </div>
 
-          <section className="py-8 text-[#B4B4B4] text-[12px]">
+          <section className="py-8 text-[#B4B4B4] text-[12px] sm:text-sm">
             <div className="font-semibold pb-0.1">생성일 | {getStringedDate(createdAt)}</div>
             <div className="font-semibold">마감일 | {getStringedDate(deadline)}</div>
           </section>
 
-          <div className="line-clamp-2 font-semibold text-[18px] max-w-85 h-[50px] mb-6">
+          <div className="line-clamp-2 font-semibold text-lg sm:text-xl md:text-[18px] max-w-full sm:max-w-85 h-[50px] mb-6">
             {title}
           </div>
           <div className="flex flex-wrap gap-2">
@@ -165,28 +167,29 @@ const PostItem: React.FC<
               return (
                 <div
                   key={index}
-                  className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
+                  className="font-bold p-1 px-3 text-xs sm:px-4 sm:text-[14px] xl:py-1.5 text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
                 >
                   {positionTitle}
                 </div>
               );
             })}
             {extraPositionsCount > 0 && (
-              <div className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block">
+              <div className="font-bold p-1 px-3 text-xs sm:px-4 sm:text-[14px] xl:py-1.5 text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block">
                 +{extraPositionsCount}
               </div>
             )}
           </div>
           <div className="font-semibold py-4">
-            <div className="font-semibold py-2 flex flex-wrap gap-4">
+            <div className="font-semibold py-2 flex flex-wrap gap-3 sm:gap-4">
               {visibleTechStacks.map((item, index) => {
                 const imageSrc = getStackImage(item.toUpperCase());
                 return imageSrc ? (
-                  <img key={index} src={imageSrc} alt={item} className="w-10 h-10" />
+                  <img key={index} src={imageSrc} alt={item} className="w-9 h-9 sm:w-10 sm:h-10" />
                 ) : null;
               })}
               {extraTechStacksCount > 0 && (
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px]">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-200 text-sm sm:text-[16px] font-semibold rounded-[8px]">
+                  {' '}
                   +{extraTechStacksCount}
                 </div>
               )}
@@ -197,11 +200,13 @@ const PostItem: React.FC<
         <section className="border-t border-[#B4B4B4] flex justify-between items-center p-2 px-4">
           <div className="flex font-semibold p-4 items-center gap-4">
             <div
-              className="w-8 h-8 rounded-[30px]"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-[30px]"
               style={{ backgroundColor: `#${profileColor}` }}
             ></div>
             {/* w-[200px] 속성을 뺐으므로 닉네임 오버플로우 오류가 발생할 수도 있음 */}
-            <div className="whitespace-nowrap truncate">{parts[0]}</div>
+            <div className="whitespace-nowrap truncate max-w-[120px] text-sm sm:text-base">
+              {parts[0]}
+            </div>
           </div>
           <div className="flex space-x-2 font-semibold text-[#000000]/30 items-center p-4">
             <div className="w-6 h-6 aspect-square">

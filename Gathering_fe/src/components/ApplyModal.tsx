@@ -37,7 +37,6 @@ const ApplyModal: React.FC = () => {
   const dummySetSelectedStack = (value: string[]) => {};
 
   const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log(applyInfo);
     setApplyInfo({
       ...applyInfo,
       message: e.target.value

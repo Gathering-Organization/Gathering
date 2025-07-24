@@ -5,8 +5,6 @@ export const setInterest = async (projectId: number) => {
   try {
     const response = await api.post('/project/interest', { projectId });
 
-    console.log('응답 데이터:', response.data);
-
     if (response.data.status === 200) {
       return { success: true, message: response.data.message };
     }
@@ -24,8 +22,6 @@ export const setInterest = async (projectId: number) => {
 export const getInterestList = async (nickname: string) => {
   try {
     const response = await api.get(`/project/interest/${nickname}`);
-
-    console.log('응답 데이터:', response.data);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };

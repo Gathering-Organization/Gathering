@@ -224,7 +224,6 @@ const PostEdit: React.FC = () => {
               readOnly={true}
               value={startDate}
               onChange={newValue => {
-                console.log(startDate);
                 if (newValue) {
                   setStartDate(newValue);
                   setPost({ ...post, startDate: new Date(newValue.startDate || '').toISOString() });

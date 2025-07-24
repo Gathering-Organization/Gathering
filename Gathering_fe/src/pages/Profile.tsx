@@ -79,7 +79,6 @@ const Profile: React.FC = () => {
         profileColor: info.profileColor,
         public: isPublic
       };
-      console.log(updatedInfo, workExperiences);
       const result = await setMyProfile(updatedInfo, workExperiences);
 
       if (result?.success) {

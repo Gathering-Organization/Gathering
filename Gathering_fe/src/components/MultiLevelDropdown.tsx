@@ -53,10 +53,10 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
   };
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block text-left select-none" ref={dropdownRef}>
       <button
         type="button"
-        className={`inline-flex items-center justify-between min-w-[160px] px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none ${buttonClassName}`}
+        className={`inline-flex items-center justify-between min-w-[150px] sm:min-w-[150px] px-3 py-2 sm:px-4 sm:py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none ${buttonClassName}`}
         onClick={toggleMainDropdown}
       >
         <span className="truncate">{selectedLabel}</span> {/* 선택된 항목 텍스트 */}
@@ -72,7 +72,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
 
       {isMainDropdownOpen && (
         <div
-          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-56 rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 animate-fadeDown`}
+          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} mt-2 w-full max-w-[160px] sm:max-w-56 rounded-lg shadow-lg bg-white dark:bg-[#1E2028] ring-1 ring-black ring-opacity-5 animate-fadeDown`}
         >
           <div className="py-1">
             <a
@@ -80,7 +80,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
               onClick={event => {
                 handleItemClick('전체', event);
               }}
-              className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="block px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               전체
             </a>
@@ -90,7 +90,7 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
                   <a
                     href="#"
                     onClick={event => handleItemClick(item.title, event)}
-                    className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                    className="block px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     {item.title}
                   </a>
@@ -101,17 +101,17 @@ const MultiLevelDropdown: React.FC<MultiLevelDropdownProps> = ({
                     <a
                       href="#"
                       onClick={event => handleItemClick(item.title, event)}
-                      className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                      className="block px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
                       {item.title}
                     </a>
-                    <div className="pl-4">
+                    <div className="pl-3 sm:pl-4">
                       {item.items.map(subItem => (
                         <a
                           key={subItem.id}
                           href="#"
                           onClick={event => handleItemClick(subItem.label, event)}
-                          className="block px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                          className="block px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                           {subItem.label}
                         </a>

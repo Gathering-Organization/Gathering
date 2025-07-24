@@ -34,7 +34,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       const result = await getMyProfile();
       if (result?.success) {
-        console.log('Profile fetched:', result.data);
         setProfile({
           nickname: result.data.nickname || '',
           introduction: result.data.introduction || '',

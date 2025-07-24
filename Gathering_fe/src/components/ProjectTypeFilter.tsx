@@ -52,7 +52,7 @@ const ProjecTypeFilter: React.FC<ProjecTypeFilterProps> = ({
   }
 
   return (
-    <div className="text-[28px] font-bold space-x-8 flex">
+    <div className="w-full text-[20px] md:text-[28px] px-4 md:px-8 font-bold flex gap-x-6 md:gap-x-8 justify-center md:justify-start  whitespace-nowrap no-scrollbar">
       {filterItems.map(item => (
         <button
           style={{ willChange: 'transform' }}

@@ -53,14 +53,14 @@ const PostHome: React.FC = () => {
   });
 
   const slides = [
-    <div className="h-64 bg-blue-300 flex items-center justify-center text-3xl text-white rounded-xl">
-      Slide 1
+    <div className="h-48 sm:h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
+      🌟 새로운 프로젝트를 시작해보세요! 🌟
     </div>,
-    <div className="h-64 bg-blue-400 flex items-center justify-center text-3xl text-white rounded-xl">
-      Slide 2
+    <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
+      💡 아이디어를 공유하고 팀원을 찾아보세요! 💡
     </div>,
-    <div className="h-64 bg-blue-500 flex items-center justify-center text-3xl text-white rounded-xl">
-      Slide 3
+    <div className="h-48 sm:h-64 bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
+      🚀 당신의 기술 스택을 뽐내보세요! 🚀
     </div>
   ];
 
@@ -103,7 +103,6 @@ const PostHome: React.FC = () => {
         );
         if (result?.success) {
           // showToast('모집글 조회가 완료되었습니다.', true);
-          console.log(result.data);
           setPost(result.data);
           setTotalPages(result.pagination.totalPages);
         } else {
@@ -166,30 +165,34 @@ const PostHome: React.FC = () => {
   return (
     <ProfileCacheContext.Provider value={{ profileCache }}>
       <DropdownDispatchContext.Provider value={{ setSelectedStack, setSelectedPosition }}>
-        <div className="mx-36 space-y-6">
+        <div className="container mx-auto max-w-[1400px] px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 space-y-8">
           <div className="pb-4">
             <EmblaCarouselComponent slides={slides} options={{ loop: true }} />
           </div>
-          <div className="mx-6 flex justify-between items-center pb-4">
+          <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 px-2 sm:px-0 xl:mx-4">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
-            <div className="flex justify-end w-[600px]">
+            <div className="w-full md:w-auto md:max-w-xl flex justify-end xl:w-[600px]">
               <SearchBar onSearch={handleSearch} />
             </div>
           </div>
-          <div className="mx-4 flex justify-between items-center relative">
-            <section className="flex text-[16px] font-bold space-x-8 text-[#B4B4B4] z-10">
-              <OptionalDropdown
-                menuData={stackData}
-                label="기술 스택"
-                align="left"
-                buttonClassName="custom-button-class"
-              />
-              <MultiLevelDropdown
-                menuData={positionData}
-                label="포지션"
-                align="left"
-                buttonClassName="custom-button-class"
-              />
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 relative z-10 px-0 xl:mx-4">
+            <section className="w-full flex flex-wrap mb-3 justify-center lg:justify-start gap-3 sm:gap-4 text-base font-bold text-[#B4B4B4] xl:space-x-4">
+              <div className="relative z-20">
+                <OptionalDropdown
+                  menuData={stackData}
+                  label="기술 스택"
+                  align="left"
+                  buttonClassName="custom-button-class"
+                />
+              </div>
+              <div className="relative z-20">
+                <MultiLevelDropdown
+                  menuData={positionData}
+                  label="포지션"
+                  align="left"
+                  buttonClassName="custom-button-class"
+                />
+              </div>
               <FilteringButton
                 title="관심글 모아보기"
                 option={showInterested}
@@ -198,7 +201,7 @@ const PostHome: React.FC = () => {
                 afterIcon={<img src={blueHeart} alt="BlueHeart" className="w-5 h-5" />}
               />
               <FilteringButton
-                title="모집완료 제외하기"
+                title="완료글 제외하기"
                 option={hideClosed}
                 onClick={() => setHideClosed(prev => !prev)}
                 icon={<img src={eye} alt="Eye" className="w-5 h-5" />}
@@ -212,7 +215,7 @@ const PostHome: React.FC = () => {
                 e.stopPropagation();
                 setIsDropdownOpen(!isDropdownOpen);
               }}
-              className="inline-flex items-center justify-between min-w-[160px] px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none"
+              className="inline-flex items-center justify-between w-full lg:w-auto min-w-[160px] px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               {sortType === '-createdAt'
                 ? '최신순'
@@ -238,7 +241,7 @@ const PostHome: React.FC = () => {
             {isDropdownOpen && (
               <div
                 ref={dropdownRef}
-                className="absolute top-full mt-2 right-0 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20 animate-fadeDown"
+                className="absolute top-full mt-2 right-0 lg:left-auto lg:right-0 w-full lg:w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20 animate-fadeDown"
               >
                 <ul className="py-1 text-sm text-black font-bold text-gray-700 dark:text-gray-200">
                   <li>
@@ -269,7 +272,7 @@ const PostHome: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="z-0 mx-4 space-y-24 pt-4">
+          <div className="z-0 space-y-24 sm:space-y-20 pt-0 px-0 xl:pt-4 xl:mx-4">
             <PostList data={displayedPosts} onInterestToggle={updatePostInterest} />
             <Pagination
               currentPage={page}

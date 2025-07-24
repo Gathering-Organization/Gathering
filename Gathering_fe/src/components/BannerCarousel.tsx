@@ -57,7 +57,7 @@ const EmblaCarouselComponent: React.FC<EmblaCarouselProps> = ({ options, slides 
       {/* Navigation Arrows */}
       <button
         onClick={scrollPrev}
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow-md p-3 rounded-full transition"
+        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow-md p-3 rounded-full transition"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +72,7 @@ const EmblaCarouselComponent: React.FC<EmblaCarouselProps> = ({ options, slides 
 
       <button
         onClick={scrollNext}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow-md p-3 rounded-full transition"
+        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow-md p-3 rounded-full transition"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

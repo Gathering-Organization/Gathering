@@ -60,7 +60,6 @@ const SubmenuLevel1: React.FC<SubmenuLevel1Props> = ({
                   key={item.id}
                   href="#"
                   onClick={() => {
-                    console.log(item.id);
                     onItemClick(item.label);
                   }}
                   className="flex items-center px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
