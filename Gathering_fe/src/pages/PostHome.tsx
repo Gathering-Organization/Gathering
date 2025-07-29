@@ -53,13 +53,13 @@ const PostHome: React.FC = () => {
   });
 
   const slides = [
-    <div className="h-48 sm:h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
+    <div className="h-48 sm:h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
       🌟 새로운 프로젝트를 시작해보세요! 🌟
     </div>,
-    <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
+    <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center text-lg sm:text-3xl font-bold text-white rounded-xl shadow-lg">
       💡 아이디어를 공유하고 팀원을 찾아보세요! 💡
     </div>,
-    <div className="h-48 sm:h-64 bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
+    <div className="h-48 sm:h-64 bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center text-xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
       🚀 당신의 기술 스택을 뽐내보세요! 🚀
     </div>
   ];

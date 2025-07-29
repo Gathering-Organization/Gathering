@@ -179,23 +179,23 @@ const PostEdit: React.FC = () => {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="mx-48 space-y-2">
+      <div className="px-4 sm:px-10 md:px-20 lg:px-48 py-6 space-y-0 sm:space-y-6">
         <section className="p-6">
-          <label className="block font-semibold mb-4">제목</label>
+          <label className="hidden sm:block font-semibold mb-4">제목</label>
           <input
             onChange={e => setPost({ ...post, title: e.target.value })}
             type="text"
             value={post.title}
             name="title"
-            className="border border-gray-300 rounded w-full p-4 mb-4 focus:outline-none"
+            className="border border-gray-300 rounded-md w-full p-4 focus:outline-none"
             placeholder="모집글의 제목을 입력하세요."
           />
         </section>
-        <hr className="w-[1050px] justify-self-center border-[#000000]/15" />
+        <hr className="w-4/5 sm:w-[1050px] mx-auto border-[#000000]/15" />
 
-        <div className="grid grid-cols-2 gap-2 py-10">
+        <div className="grid py-4 sm:grid-cols-2 gap-4 sm:gap-2">
           <section className="px-6 py-2">
-            <label className="block mb-2">모집 구분</label>
+            <label className="hidden sm:block mb-2">모집 구분</label>
             <SingleSelection
               title="모집 구분"
               options={projectTypeOptions}
@@ -207,7 +207,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">진행 방식</label>
+            <label className="hidden sm:block mb-2">진행 방식</label>
             <SingleSelection
               title="진행 방식"
               options={projectModeOptions}
@@ -219,7 +219,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">시작 날짜</label>
+            <label className="hidden sm:block mb-2">시작 날짜</label>
             <DatePicker
               readOnly={true}
               value={startDate}
@@ -236,7 +236,7 @@ const PostEdit: React.FC = () => {
           </section>
 
           <section className="px-6 py-2">
-            <label className="block mb-2">모집 마감 기한</label>
+            <label className="hidden sm:block mb-2">모집 마감 기한</label>
             <DatePicker
               minDate={MIN_DATE}
               readOnly={true}
@@ -253,7 +253,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">모집 인원</label>
+            <label className="hidden sm:block mb-2">모집 인원</label>
             <SingleSelection
               title="모집 인원"
               options={totalMemberOptions}
@@ -266,7 +266,7 @@ const PostEdit: React.FC = () => {
           </section>
 
           <section className="px-6 py-2">
-            <label className="block mb-2">카카오톡 오픈채팅 URL</label>
+            <label className="hidden sm:block mb-2">카카오톡 오픈채팅 URL</label>
             <input
               onChange={e => setPost({ ...post, kakaoUrl: e.target.value })}
               type="text"
@@ -277,11 +277,11 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">팀원 태그</label>
+            <label className="hidden sm:block mb-2">팀원 태그</label>
             <TeamTagInput teams={post.teams} setTeams={teams => setPost({ ...post, teams })} />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">예상 기간</label>
+            <label className="hidden sm:block mb-2">예상 기간</label>
             <SingleSelection
               title="예상 기간"
               options={durationOptions}
@@ -293,7 +293,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">모집 포지션</label>
+            <label className="hidden sm:block mb-2">모집 포지션</label>
             <MultiSelection
               title="모집 포지션을 선택하세요."
               options={positionList.map(pos => pos.title)}
@@ -311,7 +311,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="block mb-2">사용 스택</label>
+            <label className="hidden sm:block mb-2">사용 스택</label>
             <MultiSelection
               title="사용 스택을 선택하세요."
               options={stackList.map(tech => tech.title)}
@@ -328,22 +328,23 @@ const PostEdit: React.FC = () => {
             />
           </section>
         </div>
-        <hr className="w-[1050px] justify-self-center border-[#000000]/15" />
+        <hr className="w-4/5 sm:w-[1050px] mx-auto border-[#000000]/15" />
         <section className="p-6 mb-4">
           <label className="block font-semibold mb-4">모집 소개</label>
-          <div className="h-[280px]">
+          <div className="h-[350px] md:h-[280px]">
             <ReactQuill
               theme="snow"
               value={post.description}
               onChange={(content: string) => setPost({ ...post, description: content })}
-              className="h-[240px] bg-white"
+              className="h-[250px] bg-white"
               placeholder="모집 내용을 입력하세요..."
             />
           </div>
         </section>
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-8">
           <button
-            className="bg-[#3387E5] font-bold px-10 py-2 text-white justify-items-center rounded-[30px] hover:bg-blue-600"
+            disabled={isLoading}
+            className={`bg-[#3387E5] text-white font-semibold px-10 py-2 rounded-full hover:bg-blue-600 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={onUpdate}
           >
             수정완료
