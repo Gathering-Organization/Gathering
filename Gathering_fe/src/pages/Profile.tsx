@@ -263,9 +263,12 @@ const Profile: React.FC = () => {
             </button>
           </section>
 
-          <section className="p-4 sm:p-6 mb-4">
-            <div className="flex items-center justify-between mb-10">
-              <label htmlFor="organization" className="hidden md:block text-[18px] font-semibold">
+          <section className="p-4 sm:p-6 md:mb-4">
+            <div className="flex items-center justify-between mb-6 md:mb-10 md:space-x-8">
+              <label
+                htmlFor="organization"
+                className="hidden md:block text-[18px] font-semibold whitespace-nowrap"
+              >
                 소속
               </label>
               <input
@@ -274,15 +277,18 @@ const Profile: React.FC = () => {
                 value={info.organization || ''}
                 placeholder="소속을 입력해주세요. ex) OO회사 OO 부서, OO대학교 OO학과"
                 onChange={e => setInfo({ ...info, organization: e.target.value })}
-                className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-gray-300 rounded-[20px] focus:outline-none"
+                className="self-end w-full sm:w-[650px] p-3 px-6 border bg-gray-50 placeholder:text-xs lg:placeholder:text-sm placeholder-gray-500 border-gray-300 rounded-[20px] focus:outline-none"
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <label htmlFor="tech-stack" className="hidden md:block text-[18px] font-semibold">
+            <div className="flex items-center justify-between md:space-x-8">
+              <label
+                htmlFor="tech-stack"
+                className="hidden md:block text-[18px] font-semibold whitespace-nowrap"
+              >
                 사용 기술 스택
               </label>
-              <div className="w-[650px]">
+              <div className="w-full sm:w-[650px]">
                 <MultiSelection
                   title="기술 스택을 선택하세요."
                   options={stackList.map(tech => tech.title)}
