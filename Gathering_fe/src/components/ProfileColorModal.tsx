@@ -47,7 +47,7 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
   return (
     <div>
       <button
-        className="w-[80px] md:w-[100px] h-[80px] md:h-[80px] rounded-full mb-8 relative"
+        className="w-[80px] md:w-[100px] h-[80px] md:h-[100px] rounded-full mb-8 relative"
         onClick={openModal}
         style={{ backgroundColor: `#${profileColor}` }}
       >
