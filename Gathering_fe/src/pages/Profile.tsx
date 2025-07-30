@@ -257,7 +257,7 @@ const Profile: React.FC = () => {
             <button
               onClick={handleUpdateProfile}
               // className="mt-8 px-8 py-3 bg-[#3387E5] text-white font-semibold rounded-full hover:bg-blue-600 transition-colors duration-300 ease-in-out shadow-md"
-              className="md:self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
+              className="md:self-end text-sm sm:text-[16px] bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
             >
               프로필 저장
             </button>

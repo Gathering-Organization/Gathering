@@ -175,7 +175,7 @@ const Posting: React.FC = () => {
               }}
               asSingle={true}
               useRange={false}
-              inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
+              inputClassName="text-gray-500 text-xs lg:text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
             />
           </section>
           <section className="px-6 py-2">
@@ -192,7 +192,7 @@ const Posting: React.FC = () => {
               }}
               asSingle={true}
               useRange={false}
-              inputClassName="text-gray-500 text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
+              inputClassName="text-gray-500 text-xs lg:text-sm w-full cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
             />
           </section>
           <section className="px-6 py-2">
@@ -213,7 +213,7 @@ const Posting: React.FC = () => {
               onChange={e => setPost({ ...post, kakaoUrl: e.target.value })}
               type="text"
               name="kakaoUrl"
-              className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-sm focus:outline-none"
+              className="border border-gray-300 rounded w-full placeholder-gray-500 bg-gray-50 rounded-[20px] p-3 px-6 text-xs lg:text-sm focus:outline-none"
               placeholder="카카오톡 오픈채팅 URL ex) https://open.kakao.com/o/.../"
             />
           </section>
