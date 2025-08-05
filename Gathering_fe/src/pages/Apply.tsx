@@ -213,21 +213,13 @@ const Apply: React.FC = () => {
         <hr className="mt-4 sm:mt-6 w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
 
         <section className="flex space-x-12 p-8 items-center">
-          <div className="font-bold text-base sm:text-xl sm:w-[200px]">지원 포지션</div>
+          <div className="font-bold text-sm sm:text-xl sm:w-[200px]">지원 포지션</div>
           <div className="text-sm sm:text-lg">{positionTitle}</div>
         </section>
         <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[1px] bg-[#000000]/60 border-none" />
         <div className="">
           <section className="flex space-x-12 px-8 py-4 sm:p-8 items-center">
-            <div className="font-bold text-base sm:text-xl sm:w-[200px]">소속</div>
-            {isOwnProfile ? (
-              <div className="text-sm sm:text-lg">{info.organization}</div>
-            ) : (
-              <div className="text-sm sm:text-lg">{applyInfo?.organization}</div>
-            )}
-          </section>
-          <section className="flex space-x-12 px-8 py-4 sm:p-8 items-center">
-            <div className="font-bold text-base sm:text-xl sm:w-[200px]">사용 기술 스택</div>
+            <div className="font-bold text-sm sm:text-xl sm:w-[200px]">사용 기술 스택</div>
             <div className="text-sm sm:text-lg">
               {
                 <div className="flex items-center space-x-4">
@@ -265,8 +257,17 @@ const Apply: React.FC = () => {
               }
             </div>
           </section>
+          <section className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-12 px-8 py-4 sm:p-8">
+            <div className="font-bold text-sm sm:text-xl sm:w-[200px]">소속</div>
+            {isOwnProfile ? (
+              <div className="text-sm sm:text-lg">{info.organization}</div>
+            ) : (
+              <div className="text-sm sm:text-lg">{applyInfo?.organization}</div>
+            )}
+          </section>
+
           <section className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-12 sm:p-8 font-inter">
-            <div className="font-bold text-base sm:text-xl sm:w-[200px] px-8 py-2 sm:px-0">
+            <div className="font-bold text-sm sm:text-xl sm:w-[200px] px-8 py-2 sm:px-0">
               활동 내역
             </div>
             <div className="flex-grow px-6 sm:px-0">
@@ -277,38 +278,40 @@ const Apply: React.FC = () => {
           </section>
 
           <hr className="mt-4 sm:mt-6 w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[1px] bg-[#000000]/60 border-none" />
-          <section className="flex space-x-12 p-8 items-center font-inter">
-            <div className="font-bold text-sm sm:text-lg sm:w-[200px]">간단 자기 어필</div>
+          <section className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-12 sm:p-8 px-8 py-4 font-inter">
+            <div className="font-bold text-sm sm:text-xl sm:w-[200px]">간단 자기 어필</div>
             <div className="text-[#202123] max-w-[550px] break-words text-balance whitespace-pre-line text-sm sm:text-lg">
               {applyInfo?.message}
             </div>
           </section>
           <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
-          <div className="p-8 text-lg sm:text-[28px] font-black font-inter">PORTFOLIO.</div>
+          <div className="px-8 py-4 sm:p-8 text-lg sm:text-[28px] font-black font-inter">
+            PORTFOLIO.
+          </div>
           <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
           <section className="flex justify-between m-10 items-center">
             <div className="font-bold text-sm sm:text-lg sm:w-[200px]">{portfolioFileName}</div>
 
-            <div className="flex space-x-8">
+            <div className="flex text-xs sm:text-sm space-x-2 sm:space-x-8">
               <button
                 onClick={onSave}
-                className="px-8 py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[16px] font-semibold"
+                className="px-4 py-1 sm:px-8 sm:py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[16px] font-semibold"
               >
                 저장
               </button>
               <button
                 onClick={onView}
-                className="px-8 py-2 bg-[#000000]/10 hover:bg-[#000000]/20 transition-colors duration-300 ease-in-out text-[#202123] rounded-[16px] font-semibold"
+                className="px-4 py-1 sm:px-8 sm:py-2 bg-[#000000]/10 hover:bg-[#000000]/20 transition-colors duration-300 ease-in-out text-[#202123] rounded-[16px] font-semibold"
               >
                 보기
               </button>
             </div>
           </section>
           <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
-          <section className="justify-self-center py-10">
+          <section className="text-xs sm:text-base justify-self-center py-10">
             <button
               onClick={handleClose}
-              className="px-10 py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[20px] font-semibold"
+              className="px-6 py-1.5 sm:px-10 sm:py-2 bg-[#000000] hover:bg-[#444] transition-colors duration-300 ease-in-out text-[#FFFFFF] rounded-[20px] font-semibold"
             >
               닫기
             </button>
