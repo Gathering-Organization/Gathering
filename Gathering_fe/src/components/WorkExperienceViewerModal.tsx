@@ -59,12 +59,12 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center overflow-y-auto backdrop-blur-sm"
           aria-hidden="true"
         >
-          <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn">
+          <div className="relative overflow-y-auto sm:overflow-hidden p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 animate-fadeIn">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                 활동 경력을 확인하세요.
               </h3>
               <button
@@ -92,22 +92,24 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
             </div>
             <div className="p-6 md:p-7">
               <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <label className="w-36 font-semibold text-gray-700 dark:text-white">활동명</label>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <label className="sm:w-36 font-semibold text-gray-700 dark:text-white">
+                    활동명
+                  </label>
                   <div className="flex-1 px-6 bg-gray-50 border border-[#000000]/20 text-gray-700 placeholder-gray-500 text-sm rounded-[30px] block w-full p-3 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-700 focus:outline-none">
                     {activityName}
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <label className="w-36 font-semibold text-gray-700 dark:text-white">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <label className="sm:w-36 font-semibold text-gray-700 dark:text-white">
                     활동 기간
                   </label>
                   <div className="flex-1 px-6 bg-gray-50 border border-[#000000]/20 text-gray-700 placeholder-gray-500 text-sm rounded-[30px] block w-full p-3 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-700 focus:outline-none">
                     {startDate} ~ {endDate}
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <label className="w-36 font-semibold text-gray-700 dark:text-white">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <label className="sm:w-36 font-semibold text-gray-700 dark:text-white">
                     사용 기술 스택
                   </label>
                   <div className="flex-1 px-6 bg-gray-50 border border-[#000000]/20 text-gray-700 placeholder-gray-500 text-sm rounded-[30px] block w-full p-3 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-700 focus:outline-none max-h-24 overflow-y-auto">
@@ -119,8 +121,8 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
                   </div>
                 </div>
                 <section className="bg-white">
-                  <h3 className="font-semibold mb-4">세부 설명</h3>
-                  <div className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[180px] p-4 px-6 h-24 resize-none focus:outline-none">
+                  <h3 className="font-semibold mb-4 text-gray-700">세부 설명</h3>
+                  <div className="border-[#000000]/50 text-base border border-e-[3px] border-b-[3px] rounded-[10px] w-full min-h-[180px] p-4 px-6 resize-none focus:outline-none">
                     {description || '설명이 없습니다.'}
                   </div>
                 </section>

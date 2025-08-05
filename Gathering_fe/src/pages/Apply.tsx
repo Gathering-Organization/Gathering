@@ -199,11 +199,11 @@ const Apply: React.FC = () => {
             ></div>
           )}
           {isOwnProfile ? (
-            <div className="text-sm sm:text-2xl font-bold">
+            <div className="text-base sm:text-2xl font-bold truncate">
               {info.nickname.split(/(#\d+)/)}님의 지원서입니다.
             </div>
           ) : (
-            <div className="text-sm sm:text-2xl font-bold">
+            <div className="text-base sm:text-2xl font-bold truncate">
               {applyInfo?.nickname.split(/(#\d+)/)}님의 지원서입니다.
             </div>
           )}
