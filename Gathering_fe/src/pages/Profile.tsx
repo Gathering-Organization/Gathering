@@ -349,7 +349,6 @@ const Profile: React.FC = () => {
           </section>
           <section className="p-4 sm:p-6 mb-4 md:mb-8 border-t border-gray-100 md:pt-8">
             <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
-            {/* <div className="p-4 sm:p-6 min-h-[96px]"> Adjusted min-h for consistent height */}
 
             <div className="items-center flex flex-col md:flex-row border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 sm:p-6 min-h-[96px]">
               <div className="flex-grow text-center sm:text-left mb-4 sm:mb-0">
