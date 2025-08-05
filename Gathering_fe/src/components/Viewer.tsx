@@ -252,21 +252,29 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 mb-4 gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-            <button
-              onClick={openProfileModal}
-              className="flex items-center space-x-2 md:space-x-4 hover:bg-gray-100 p-2 rounded-lg"
-            >
-              <div
-                className="w-[24px] sm:w-[30px] h-[24px] sm:h-[30px] rounded-full"
-                style={{ backgroundColor: `#${data.author.profileColor}` }}
-              />
-              <span className="font-bold text-base sm:text-lg whitespace-nowrap">{parts[0]}</span>
-            </button>
+            <div className="flex">
+              <button
+                onClick={openProfileModal}
+                className="flex items-center space-x-2 md:space-x-4 hover:bg-gray-100 py-1 sm:p-2 rounded-lg"
+              >
+                <div
+                  className="w-[24px] sm:w-[30px] h-[24px] sm:h-[30px] rounded-full"
+                  style={{ backgroundColor: `#${data.author.profileColor}` }}
+                />
+                <span className="font-bold text-base sm:text-lg whitespace-nowrap">{parts[0]}</span>
+              </button>
+              <div className="ml-auto px-1 flex sm:hidden items-center gap-1 font-bold text-sm text-[#000000]/50">
+                <img src={eye} alt="watched" className="w-5 h-5" />
+                <div>{data.viewCount}</div>
+              </div>
+            </div>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm sm:text-base text-[#000000]/50">
               <span className="font-semibold">생성일: {getStringedDate(data.createdAt)}</span>
-              <span className="font-semibold">최종 수정일: {getStringedDate(data.updatedAt)}</span>
+              <span className="ml-auto font-semibold">
+                최종 수정일: {getStringedDate(data.updatedAt)}
+              </span>
               <span className="font-semibold">마감일: {getStringedDate(data.deadline)}</span>
-              <div className="flex items-center gap-1 font-bold">
+              <div className="hidden sm:flex items-center gap-1 font-bold ml-auto sm:ml-0">
                 <img src={eye} alt="watched" className="w-5 h-5" />
                 <div>{data.viewCount}</div>
               </div>
