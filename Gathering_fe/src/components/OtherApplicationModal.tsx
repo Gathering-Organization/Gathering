@@ -98,10 +98,10 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
       <div>
         <button
           onClick={openModal}
-          className="relative flex justify-self-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px] transition-all ease-in-out duration-300 hover:scale-[1.02] transform-gpu will-change-transform"
+          className="relative flex justify-self-center py-2 px-8 sm:px-[100px] mt-10 bg-[#202123] rounded-[30px] transition-all ease-in-out duration-300 hover:scale-[1.02] transform-gpu will-change-transform"
         >
           <div className="flex space-x-4 items-center">
-            <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>
+            <div className="text-[#FFFFFF] font-bold text-sm sm:text-lg">지원자 보기</div>
             <Badge count={apply.length} />
           </div>
         </button>

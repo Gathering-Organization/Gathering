@@ -110,34 +110,6 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
     return () => document.removeEventListener('click', closeTooltips);
   }, []);
 
-  // useEffect(() => {
-  //   const fetchProfiles = async () => {
-  //     if (!data?.teams.length) return;
-
-  //     setLoading(true);
-
-  //     try {
-  //       const profilesData: { [key: string]: string } = {};
-
-  //       const profilePromises = data.teams.map(async member => {
-  //         const response = await getUserProfile(member.nickname);
-  //         if (response?.success) {
-  //           profilesData[member.nickname] = response.data.author.profileColor;
-  //         }
-  //       });
-
-  //       await Promise.all(profilePromises);
-  //       setTeamProfiles(profilesData);
-  //     } catch (error) {
-  //       console.error('Error fetching team profiles:', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProfiles();
-  // }, [data?.teams]);
-
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
@@ -200,11 +172,15 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
     }
   };
 
-  const visibleTechStacks = data.techStacks.slice(0, 3);
-  const extraTechStacksCount = data.techStacks.length - 3;
+  const isMobile = window.innerWidth < 640;
 
-  const visiblePositions = data.requiredPositions.slice(0, 2);
-  const extraPositionsCount = data.requiredPositions.length - 2;
+  const visibleTechStackLimit = isMobile ? 0 : 3;
+  const visibleTechStacks = data.techStacks.slice(0, visibleTechStackLimit);
+  const extraTechStacksCount = data.techStacks.length - visibleTechStackLimit;
+
+  const visiblePositionLimit = isMobile ? 0 : 2;
+  const visiblePositions = data.requiredPositions.slice(0, visiblePositionLimit);
+  const extraPositionsCount = data.requiredPositions.length - visiblePositionLimit;
 
   // 포지션 툴팁 토글
   const togglePositionTooltip = (e: React.MouseEvent) => {
@@ -236,14 +212,14 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
     | undefined;
 
   return (
-    <div className="mx-48 space-y-2 min-h-screen">
-      <section className="bg-white p-6 mb-4">
-        <div className="flex items-center mb-16 justify-between">
-          <div className="block select-text me-10 text-justify text-[36px] font-extrabold px-6">
+    <div className="mx-4 sm:mx-10 md:mx-20 lg:mx-48 space-y-2 min-h-screen">
+      <section className="bg-white p-4 sm:p-6 mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center mb-10 sm:mb-16 justify-between">
+          <div className="block select-text me-10 text-justify text-2xl sm:text-3xl md:text-4xl font-extrabold px-2 sm:px-6 mb-4 sm:mb-0 break-words">
             {data.title}
           </div>
           {data?.author.nickname === userNickname && (
-            <label className="inline-flex items-center cursor-pointer">
+            <label className="inline-flex items-center cursor-pointer self-end sm:self-auto">
               <input
                 type="checkbox"
                 value=""
@@ -252,16 +228,19 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                 className="sr-only peer"
               />
               <div
-                className="relative w-[110px] h-10 bg-gray-200 peer-focus:outline-none 
-  dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
-  peer-checked:after:translate-x-[70px] rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white 
-  after:content-[''] after:absolute after:top-1/2 after:-translate-y-1/2 after:start-[4px] after:bg-white 
-  after:border-gray-300 after:border after:rounded-full after:h-8 after:w-8 after:transition-all after:duration-200
-  dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"
+                className="relative w-[90px] sm:w-[110px] h-8 sm:h-10 bg-gray-200 peer-focus:outline-none 
+                dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
+                peer-checked:after:translate-x-[60px] sm:peer-checked:after:translate-x-[70px] 
+                rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white 
+                after:content-[''] after:absolute after:top-1/2 after:-translate-y-1/2 after:start-[4px] after:bg-white 
+                after:border-gray-300 after:border after:rounded-full after:h-6 sm:after:h-8 after:w-6 sm:after:w-8 
+                after:transition-all after:duration-200 dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"
               >
                 <span
-                  className={`absolute inset-y-0 flex items-center text-sm font-bold ${
-                    isToggleOn ? 'left-4 text-white' : 'right-6 text-[#000000]/50'
+                  className={`absolute inset-y-0 flex items-center text-xs sm:text-sm font-bold ${
+                    isToggleOn
+                      ? 'left-3 sm:left-4 text-white'
+                      : 'right-4 sm:right-6 text-[#000000]/50'
                   }`}
                 >
                   {isToggleOn ? '모집 완료' : '모집 중'}
@@ -271,39 +250,39 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
           )}
         </div>
 
-        <div className="flex items-center justify-between p-4 mb-4">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 mb-4 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <button
               onClick={openProfileModal}
-              className="flex items-center space-x-4 hover:bg-gray-100 p-2 rounded-lg"
+              className="flex items-center space-x-2 md:space-x-4 hover:bg-gray-100 p-2 rounded-lg"
             >
               <div
-                className="w-[30px] h-[30px] rounded-full"
+                className="w-[24px] sm:w-[30px] h-[24px] sm:h-[30px] rounded-full"
                 style={{ backgroundColor: `#${data.author.profileColor}` }}
               />
-              <span className="font-bold text-[20px] whitespace-nowrap">{parts[0]}</span>
+              <span className="font-bold text-base sm:text-lg whitespace-nowrap">{parts[0]}</span>
             </button>
-            <div className="flex space-x-4 text-[#000000]/50">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm sm:text-base text-[#000000]/50">
               <span className="font-semibold">생성일: {getStringedDate(data.createdAt)}</span>
               <span className="font-semibold">최종 수정일: {getStringedDate(data.updatedAt)}</span>
               <span className="font-semibold">마감일: {getStringedDate(data.deadline)}</span>
-              <div className="flex items-center space-x-1 font-bold">
-                <img src={eye} alt="watched" className="w-[24px] h-[24px]" />
+              <div className="flex items-center gap-1 font-bold">
+                <img src={eye} alt="watched" className="w-5 h-5" />
                 <div>{data.viewCount}</div>
               </div>
             </div>
           </div>
           {data?.author.nickname === userNickname && (
-            <section className="flex gap-4 items-center">
+            <section className="flex gap-3 sm:gap-4 items-center self-end sm:self-auto">
               <button
                 onClick={onClickUpdate}
-                className="w-[50px] h-[50px] duration-200 ease-in-out hover:scale-110"
+                className="w-9 sm:w-[50px] h-9 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
               >
                 <img src={editButton} alt="edit" />
               </button>
               <button
                 onClick={onClickDelete}
-                className="w-[50px] h-[50px] duration-200 ease-in-out hover:scale-110"
+                className="w-9 sm:w-[50px] h-9 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
               >
                 <img src={deleteButton} alt="delete" />
               </button>
@@ -317,9 +296,9 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
         />
         <hr className="w-full justify-self-center border-[#000000]/60" />
 
-        <div className="grid grid-cols-2 gap-6 py-10 mb-4 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-8 mb-4 px-2 sm:px-4">
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">모집 구분</div>
+            <div className="w-24 sm:w-28 whitespace-nowrap">모집 구분</div>
 
             <label className="block text-[#000000]/50">
               {projectType.find(item => item.projectType === data.projectType)?.projectTypeName ||
@@ -327,21 +306,21 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">진행 방식</div>
+            <div className="w-24 sm:w-28 whitespace-nowrap">진행 방식</div>
             <label className="block text-[#000000]/50">
               {projectModeOptions.find(item => item.value === data.projectMode)?.label}
             </label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">모집 인원</div>
+            <div className="w-24 sm:w-28 whitespace-nowrap">모집 인원</div>
             <label className="block text-[#000000]/50">{data.totalMembers}명</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">시작 예정</div>
+            <div className="w-24 sm:w-28 whitespace-nowrap">시작 예정</div>
             <label className="block text-[#000000]/50">{data.startDate}</label>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">팀원 태그</div>
+            <div className="w-24 sm:w-28 whitespace-nowrap">팀원 태그</div>
             <div className="flex flex-wrap gap-2">
               {data.teams.map(member => (
                 <button
@@ -363,15 +342,17 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </div>
           </div>
           <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">예상 기간</div>
+            <div className="w-24 sm:w-28 whitespace-nowrap">예상 기간</div>
             <label className="block text-[#000000]/50">
               {durationOptions.find(option => option.value === data.duration)?.label ||
                 '알 수 없음'}
             </label>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">모집 포지션</div>
-            <div className="flex flex-wrap gap-2">
+          <div
+            className={`flex items-center space-x-12 text-[20px] font-bold ${isMobile ? `relative` : ``}`}
+          >
+            <div className="w-24 sm:w-28 whitespace-nowrap">모집 포지션</div>
+            <div className={`flex flex-wrap gap-2 ${isMobile ? `` : `relative`}`}>
               {visiblePositions.map((positionId, index) => {
                 const positionTitle =
                   positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
@@ -385,7 +366,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                 );
               })}
               {extraPositionsCount > 0 && (
-                <div className="relative">
+                <div className="">
                   <div
                     className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] cursor-pointer inline-bloc"
                     onClick={togglePositionTooltip}
@@ -393,7 +374,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                     +{extraPositionsCount}
                   </div>
                   {isPositionTooltipOpen && (
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto animate-fadeDown">
+                    <div className="absolute top-full left-0 -translate-x-1/2 transform mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                       <div className="flex space-x-2">
                         {data.requiredPositions.slice(2).map((positionId, index) => {
                           const positionTitle =
@@ -414,9 +395,11 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
-            <div className="w-28">사용 스택</div>
-            <div className="">
+          <div
+            className={`flex items-center space-x-12 text-[20px] font-bold ${isMobile ? 'relative' : ''}`}
+          >
+            <div className="w-24 sm:w-28 whitespace-nowrap">사용 스택</div>
+            <div className={isMobile ? '' : 'relative'}>
               <div className="font-semibold py-2 flex flex-wrap gap-4">
                 {visibleTechStacks.map((item, index) => {
                   const imageSrc = getStackImage(item.toUpperCase());
@@ -433,7 +416,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                   ) : null;
                 })}
                 {extraTechStacksCount > 0 && (
-                  <div className="relative">
+                  <div className="">
                     <div
                       className="w-10 h-10 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
                       onClick={toggleTechTooltip}
@@ -442,7 +425,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                     </div>
                     {/* 기술스택 툴팁 */}
                     {isTechTooltipOpen && (
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow max-w-[300px] overflow-x-auto animate-fadeDown">
+                      <div className="absolute top-full left-0 -translate-x-1/2 transform mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                         <div className="flex space-x-2">
                           {data.techStacks.slice(3).map((item, index) => {
                             const imageSrc = getStackImage(item.toUpperCase());
