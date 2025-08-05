@@ -93,17 +93,17 @@ const ApplyModal: React.FC = () => {
         </button>
         {isModalOpen && (
           <div
-            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm p-4 sm:p-6"
             aria-hidden="true"
           >
-            <div className="relative p-4 w-full max-w-[800px] max-h-full bg-white rounded-[20px] shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn">
+            <div className="relative md:p-4 w-full max-w-[800px] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn will-change-[opacity]">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-[20px] font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                   지원서를 입력해주세요.
                 </h3>
                 <button
                   type="button"
-                  className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   onClick={closeModal}
                 >
                   <svg
@@ -124,10 +124,13 @@ const ApplyModal: React.FC = () => {
                   <span className="sr-only">Close modal</span>
                 </button>
               </div>
-              <div className="p-6 md:p-7">
+              <div className="p-4 md:p-6">
                 <form className="space-y-4">
                   <div className="flex pb-2 items-center gap-4">
-                    <label className="w-36 font-semibold dark:text-white">지원 포지션</label>
+                    {/* w-full sm:w-36 font-semibold text-gray-700 dark:text-white */}
+                    <label className="w-full font-semibold text-gray-700 dark:text-white">
+                      지원 포지션
+                    </label>
                     <div className="flex-1 font-bold">
                       <MultiLevelDropdown
                         menuData={positionData}
@@ -138,7 +141,7 @@ const ApplyModal: React.FC = () => {
                     </div>
                   </div>
                   <section className="bg-white">
-                    <h3 className="font-semibold mb-4">모집글에 대한 자기 어필</h3>
+                    <h3 className="font-semibold text-gray-700 mb-4">모집글에 대한 자기 어필</h3>
                     <textarea
                       value={applyInfo.message}
                       placeholder={
@@ -146,9 +149,9 @@ const ApplyModal: React.FC = () => {
                       }
                       maxLength={300}
                       onChange={handleChangeIntroduction}
-                      className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 resize-none focus:outline-none"
+                      className="border-[#000000]/50 border border-e-[3px] border-b-[3px] placeholder:text-xs sm:placeholder:text-base rounded-[10px] w-full h-48 md:h-56 p-4 px-6 resize-none focus:outline-none"
                     ></textarea>
-                    <div className="text-right mt-1 text-gray-600">
+                    <div className="text-right mt-1 text-gray-600 text-xs sm:text-sm">
                       {applyInfo.message.length}/300
                     </div>
                   </section>
@@ -158,11 +161,11 @@ const ApplyModal: React.FC = () => {
                       type="checkbox"
                       checked={isChecked}
                       onChange={e => setIsChecked(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:border-gray-600"
+                      className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:border-gray-600"
                     />
                     <label
                       htmlFor="default-checkbox"
-                      className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="ms-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       지원서를 제출한 이후에는 내용을 수정할 수 없습니다.
                     </label>
@@ -170,7 +173,7 @@ const ApplyModal: React.FC = () => {
                   <button
                     onClick={handleViewApplication}
                     type="button"
-                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-xs sm:text-sm px-6 py-2 sm:py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     내 지원서 보기
                   </button>
@@ -178,7 +181,7 @@ const ApplyModal: React.FC = () => {
                     onClick={handleSubmit}
                     type="button"
                     disabled={!isChecked || isLoading}
-                    className={`w-full font-medium rounded-lg text-sm px-6 py-3 text-center focus:outline-none ${
+                    className={`w-full font-medium rounded-lg text-xs sm:text-sm px-6 py-2 sm:py-3 text-center focus:outline-none ${
                       isChecked && !isLoading
                         ? 'bg-[#3387E5] hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
                         : 'bg-gray-400 cursor-not-allowed text-white'

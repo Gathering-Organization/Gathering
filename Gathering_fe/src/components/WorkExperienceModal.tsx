@@ -246,7 +246,7 @@ const WorkExperienceModal: React.FC<WorkExperienceModalProps> = ({ onSave }) => 
                   <button
                     onClick={handleAddExperience}
                     type="button"
-                    className="w-full sm:w-auto px-8 sm:px-[180px] py-2 bg-[#3387E5] text-white rounded-[20px] font-semibold text-sm sm:text-base hover:bg-blue-600 transition-colors"
+                    className="w-full text-white bg-[#3387E5] hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-xs sm:text-sm px-6 py-2 sm:py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     저장하기
                   </button>
