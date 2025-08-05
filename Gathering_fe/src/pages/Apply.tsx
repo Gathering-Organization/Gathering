@@ -12,6 +12,7 @@ import { ApplyDetails } from '@/types/apply';
 import { getMyApplication } from '@/services/applicationApi';
 import { ApplyInfo } from '@/types/apply';
 import BeatLoader from 'react-spinners/BeatLoader';
+import WorkExperienceItem from '@/components/WorkExperienceItem';
 
 interface TechStack {
   id: string;
@@ -51,6 +52,7 @@ const Apply: React.FC = () => {
   const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
   const { showToast } = useToast();
+  const isMobile = window.innerWidth < 640;
 
   useEffect(() => {
     const loadApplyInfo = async () => {
@@ -120,17 +122,16 @@ const Apply: React.FC = () => {
     positionData.find(position => position.id === applyInfo?.position)?.title ||
     applyInfo?.position;
 
-  const stackLists = isOwnProfile
-    ? info.techStacks.map(id => {
-        const stack = techStacks.find(stack => stack.id === id);
-        return stack ? stack.title : id;
-      })
-    : applyInfo?.techStacks.map(id => {
-        const stack = techStacks.find(stack => stack.id === id);
-        return stack ? stack.title : id;
-      });
-  const visibleStacks = stackLists?.slice(0, 3);
-  const extraStacks = stackLists?.slice(3);
+  const stackLists =
+    (isOwnProfile ? info : applyInfo)?.techStacks.map(id => {
+      const stack = techStacks.find(stack => stack.id === id);
+      return stack ? stack.title : id;
+    }) || [];
+
+  const visibleTechStackLimit = isMobile ? 0 : 3;
+
+  const visibleStacks = stackLists.slice(0, visibleTechStackLimit);
+  const extraStacks = stackLists.slice(visibleTechStackLimit);
   const extraStacksCount = extraStacks?.length;
 
   const toggleTechTooltip = (index: number, e: React.MouseEvent) => {
@@ -183,51 +184,51 @@ const Apply: React.FC = () => {
   }
 
   return (
-    <div className="mx-60">
-      <div className="border-[#000000]/20 border-2 rounded-xl p-10 px-20 min-h-screen">
-        <section className="flex space-x-4 items-center">
+    <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-0 sm:space-y-6">
+      <div className="border-[#000000]/20 border-2 rounded-xl py-4 sm:p-8 lg:p-10 min-h-screen">
+        <section className="flex p-2 px-6 sm:p-0 space-x-2 sm:space-x-4 items-center">
           {isOwnProfile ? (
             <div
-              className="w-[36px] h-[36px] rounded-full"
+              className="w-6 h-6 md:w-[36px] md:h-[36px] rounded-full"
               style={{ backgroundColor: `#${info.profileColor}` }}
             ></div>
           ) : (
             <div
-              className="w-[36px] h-[36px] rounded-full"
+              className="w-6 h-6 md:w-[36px] md:h-[36px] rounded-full"
               style={{ backgroundColor: `#${applyInfo?.profileColor}` }}
             ></div>
           )}
           {isOwnProfile ? (
-            <div className="text-[24px] font-bold">
+            <div className="text-sm sm:text-2xl font-bold">
               {info.nickname.split(/(#\d+)/)}님의 지원서입니다.
             </div>
           ) : (
-            <div className="text-[24px] font-bold">
+            <div className="text-sm sm:text-2xl font-bold">
               {applyInfo?.nickname.split(/(#\d+)/)}님의 지원서입니다.
             </div>
           )}
         </section>
 
-        <div className="mt-16 px-8 text-[28px] font-black">RESUME.</div>
-        <hr className="mt-6 w-full h-[2px] bg-[#000000]/60 border-none" />
+        <div className="mt-8 sm:mt-16 px-6 sm:px-8 text-lg sm:text-[28px] font-black">RESUME.</div>
+        <hr className="mt-4 sm:mt-6 w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
 
         <section className="flex space-x-12 p-8 items-center">
-          <div className="font-bold text-[20px] w-[200px]">지원 포지션</div>
-          <div className="text-[18px]">{positionTitle}</div>
+          <div className="font-bold text-base sm:text-xl sm:w-[200px]">지원 포지션</div>
+          <div className="text-sm sm:text-lg">{positionTitle}</div>
         </section>
-        <hr className="w-full h-[1px] bg-[#000000]/60 border-none" />
+        <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[1px] bg-[#000000]/60 border-none" />
         <div className="">
-          <section className="flex space-x-12 p-8 items-center">
-            <div className="font-bold text-[20px] w-[200px]">소속</div>
+          <section className="flex space-x-12 px-8 py-4 sm:p-8 items-center">
+            <div className="font-bold text-base sm:text-xl sm:w-[200px]">소속</div>
             {isOwnProfile ? (
-              <div className="text-[18px]">{info.organization}</div>
+              <div className="text-sm sm:text-lg">{info.organization}</div>
             ) : (
-              <div className="text-[18px]">{applyInfo?.organization}</div>
+              <div className="text-sm sm:text-lg">{applyInfo?.organization}</div>
             )}
           </section>
-          <section className="flex space-x-12 p-8 items-center">
-            <div className="font-bold text-[20px] w-[200px]">사용 기술 스택</div>
-            <div className="text-[18px]">
+          <section className="flex space-x-12 px-8 py-4 sm:p-8 items-center">
+            <div className="font-bold text-base sm:text-xl sm:w-[200px]">사용 기술 스택</div>
+            <div className="text-sm sm:text-lg">
               {
                 <div className="flex items-center space-x-4">
                   {visibleStacks?.map((item, index) => {
@@ -264,79 +265,29 @@ const Apply: React.FC = () => {
               }
             </div>
           </section>
-          <section className="flex space-x-12 p-8 items-start font-inter">
-            <div className="font-bold text-[20px] w-[200px]">활동 내역</div>
-            <div className="flex flex-col">
-              {workExperiences.map((exp, index) => {
-                const visibleTechStacks = exp.techStacks.slice(0, 3); // 상위 3개만 보이기
-                const extraTechStacks = exp.techStacks.slice(3); // 나머지 숨김
-                const extraTechStacksCount = extraTechStacks.length;
-
-                return (
-                  <div key={index}>
-                    {index > 0 && (
-                      <hr className="w-full h-[1px] bg-[#000000]/20 border-none my-8" />
-                    )}
-                    <div className="font-semibold text-[18px]">
-                      {exp.activityName} ({exp.startDate} ~ {exp.endDate})
-                    </div>
-
-                    {/* 기술 스택 리스트 */}
-                    <div className="flex items-center space-x-4 mt-4">
-                      {/* 보이는 기술 스택 */}
-                      {visibleTechStacks.map((item, index) => {
-                        const imageSrc = getStackImage(item.toUpperCase());
-                        return imageSrc ? (
-                          <img key={index} src={imageSrc} alt={item} className="w-8 h-8" />
-                        ) : null;
-                      })}
-
-                      {/* 추가 기술 스택 버튼 */}
-                      {extraTechStacksCount > 0 && (
-                        <div className="relative">
-                          <div
-                            className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
-                            onClick={e => toggleTechTooltip(index, e)}
-                          >
-                            +{extraTechStacksCount}
-                          </div>
-
-                          {/* 기술 스택 툴팁 */}
-                          {isTechTooltipOpen === index && (
-                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
-                              <div className="flex space-x-2">
-                                {extraTechStacks.map((item, i) => {
-                                  const imageSrc = getStackImage(item.toUpperCase());
-                                  return imageSrc ? (
-                                    <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
-                                  ) : null;
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mt-10 text-[#202123]">{exp.description}</div>
-                  </div>
-                );
-              })}
+          <section className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-12 sm:p-8 font-inter">
+            <div className="font-bold text-base sm:text-xl sm:w-[200px] px-8 py-2 sm:px-0">
+              활동 내역
+            </div>
+            <div className="flex-grow px-6 sm:px-0">
+              {info.workExperiences.slice(0, 3).map((experience, index) => (
+                <WorkExperienceItem key={`experience-${index}`} {...experience} />
+              ))}
             </div>
           </section>
 
-          <hr className="mt-6 w-full h-[1px] bg-[#000000]/60 border-none" />
+          <hr className="mt-4 sm:mt-6 w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[1px] bg-[#000000]/60 border-none" />
           <section className="flex space-x-12 p-8 items-center font-inter">
-            <div className="font-bold text-[20px] w-[200px]">간단 자기 어필</div>
-            <div className="text-[#202123] max-w-[550px] break-words text-balance whitespace-pre-line text-[18px]">
+            <div className="font-bold text-sm sm:text-lg sm:w-[200px]">간단 자기 어필</div>
+            <div className="text-[#202123] max-w-[550px] break-words text-balance whitespace-pre-line text-sm sm:text-lg">
               {applyInfo?.message}
             </div>
           </section>
-          <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
-          <div className="p-8 text-[28px] font-black font-inter">PORTFOLIO.</div>
-          <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
+          <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
+          <div className="p-8 text-lg sm:text-[28px] font-black font-inter">PORTFOLIO.</div>
+          <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
           <section className="flex justify-between m-10 items-center">
-            <div className="font-bold text-[18px] w-[200px]">{portfolioFileName}</div>
+            <div className="font-bold text-sm sm:text-lg sm:w-[200px]">{portfolioFileName}</div>
 
             <div className="flex space-x-8">
               <button
@@ -353,7 +304,7 @@ const Apply: React.FC = () => {
               </button>
             </div>
           </section>
-          <hr className="w-full h-[2px] bg-[#000000]/60 border-none" />
+          <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[2px] bg-[#000000]/60 border-none" />
           <section className="justify-self-center py-10">
             <button
               onClick={handleClose}
