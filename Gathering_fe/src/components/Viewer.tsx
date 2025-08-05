@@ -214,8 +214,8 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
   return (
     <div className="mx-4 sm:mx-10 md:mx-20 lg:mx-48 space-y-2 min-h-screen">
       <section className="bg-white p-4 sm:p-6 mb-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center mb-10 sm:mb-16 justify-between">
-          <div className="block select-text me-10 text-justify text-2xl sm:text-3xl md:text-4xl font-extrabold px-2 sm:px-6 mb-4 sm:mb-0 break-words">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6 sm:mb-16 justify-between">
+          <div className="block select-text me-10 text-justify text-2xl sm:text-3xl md:text-4xl font-extrabold px-2 sm:px-6 break-words">
             {data.title}
           </div>
           {data?.author.nickname === userNickname && (
@@ -258,17 +258,17 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                 className="flex items-center space-x-2 md:space-x-4 hover:bg-gray-100 py-1 sm:p-2 rounded-lg"
               >
                 <div
-                  className="w-[24px] sm:w-[30px] h-[24px] sm:h-[30px] rounded-full"
+                  className="w-[20px] sm:w-[30px] h-[20px] sm:h-[30px] rounded-full"
                   style={{ backgroundColor: `#${data.author.profileColor}` }}
                 />
-                <span className="font-bold text-base sm:text-lg whitespace-nowrap">{parts[0]}</span>
+                <span className="font-bold text-sm sm:text-lg whitespace-nowrap">{parts[0]}</span>
               </button>
               <div className="ml-auto px-1 flex sm:hidden items-center gap-1 font-bold text-sm text-[#000000]/50">
                 <img src={eye} alt="watched" className="w-5 h-5" />
                 <div>{data.viewCount}</div>
               </div>
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm sm:text-base text-[#000000]/50">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-base text-[#000000]/50">
               <span className="font-semibold">생성일: {getStringedDate(data.createdAt)}</span>
               <span className="ml-auto font-semibold">
                 최종 수정일: {getStringedDate(data.updatedAt)}
@@ -304,8 +304,8 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
         />
         <hr className="w-full justify-self-center border-[#000000]/60" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-8 mb-4 px-2 sm:px-4">
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 py-4 sm:py-8 mb-4 px-2 sm:px-4">
+          <div className="flex items-center space-x-12 text-base sm:text-xl font-bold">
             <div className="w-24 sm:w-28 whitespace-nowrap">모집 구분</div>
 
             <label className="block text-[#000000]/50">
@@ -313,21 +313,21 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                 '알 수 없음'}
             </label>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
+          <div className="flex items-center space-x-12 text-base sm:text-xl font-bold">
             <div className="w-24 sm:w-28 whitespace-nowrap">진행 방식</div>
             <label className="block text-[#000000]/50">
               {projectModeOptions.find(item => item.value === data.projectMode)?.label}
             </label>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
+          <div className="flex items-center space-x-12 text-base sm:text-xl font-bold">
             <div className="w-24 sm:w-28 whitespace-nowrap">모집 인원</div>
             <label className="block text-[#000000]/50">{data.totalMembers}명</label>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
+          <div className="flex items-center space-x-12 text-base sm:text-xl font-bold">
             <div className="w-24 sm:w-28 whitespace-nowrap">시작 예정</div>
             <label className="block text-[#000000]/50">{data.startDate}</label>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
+          <div className="flex items-center space-x-12 text-base sm:text-xl font-bold">
             <div className="w-24 sm:w-28 whitespace-nowrap">팀원 태그</div>
             <div className="flex flex-wrap gap-2">
               {data.teams.map(member => (
@@ -349,7 +349,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
               ))}
             </div>
           </div>
-          <div className="flex items-center space-x-12 text-[20px] font-bold">
+          <div className="flex items-center space-x-12 text-base sm:text-xl font-bold">
             <div className="w-24 sm:w-28 whitespace-nowrap">예상 기간</div>
             <label className="block text-[#000000]/50">
               {durationOptions.find(option => option.value === data.duration)?.label ||
@@ -357,7 +357,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </label>
           </div>
           <div
-            className={`flex items-center space-x-12 text-[20px] font-bold ${isMobile ? `relative` : ``}`}
+            className={`flex items-center space-x-12 text-base sm:text-xl font-bold ${isMobile ? `relative` : ``}`}
           >
             <div className="w-24 sm:w-28 whitespace-nowrap">모집 포지션</div>
             <div className={`flex flex-wrap gap-2 ${isMobile ? `` : `relative`}`}>
@@ -367,7 +367,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                 return (
                   <div
                     key={index}
-                    className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
+                    className="font-bold p-1 px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block"
                   >
                     {positionTitle}
                   </div>
@@ -376,7 +376,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
               {extraPositionsCount > 0 && (
                 <div className="">
                   <div
-                    className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] cursor-pointer inline-bloc"
+                    className="font-bold p-1 px-3 sm:px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] cursor-pointer inline-bloc"
                     onClick={togglePositionTooltip}
                   >
                     +{extraPositionsCount}
@@ -390,7 +390,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                           return positionTitle ? (
                             <div
                               key={index}
-                              className="font-bold p-1 px-4 text-[14px] text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
+                              className="font-bold p-1 px-3 sm:px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
                             >
                               {positionTitle}
                             </div>
@@ -404,11 +404,11 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </div>
           </div>
           <div
-            className={`flex items-center space-x-12 text-[20px] font-bold ${isMobile ? 'relative' : ''}`}
+            className={`flex items-center space-x-12 text-base sm:text-xl font-bold ${isMobile ? 'relative' : ''}`}
           >
             <div className="w-24 sm:w-28 whitespace-nowrap">사용 스택</div>
             <div className={isMobile ? '' : 'relative'}>
-              <div className="font-semibold py-2 flex flex-wrap gap-4">
+              <div className="font-semibold flex flex-wrap gap-4">
                 {visibleTechStacks.map((item, index) => {
                   const imageSrc = getStackImage(item.toUpperCase());
                   const tech = techStacks.find(stack => stack.id === item);
@@ -419,14 +419,14 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                       title={techTitle}
                       src={imageSrc}
                       alt={item}
-                      className="w-10 h-10"
+                      className="w-8 h-8 sm:w-10 sm:h-10"
                     />
                   ) : null;
                 })}
                 {extraTechStacksCount > 0 && (
                   <div className="">
                     <div
-                      className="w-10 h-10 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
+                      className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-200 text-sm sm:text-base font-semibold rounded-[8px] cursor-pointer"
                       onClick={toggleTechTooltip}
                     >
                       +{extraTechStacksCount}
@@ -445,7 +445,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                                 title={techTitle}
                                 src={imageSrc}
                                 alt={item}
-                                className="w-10 h-10"
+                                className="w-8 h-8 sm:w-10 sm:h-10"
                               />
                             ) : null;
                           })}
@@ -458,7 +458,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </div>
           </div>
         </div>
-        <div className="block font-bold text-[24px] mb-4 px-4">모집 소개</div>
+        <div className="block font-bold text-lg sm:text-2xl mb-4 px-2 sm:px-4">모집 소개</div>
         <hr className="w-full justify-self-center border-[#000000]/60 py-4" />
         <div
           className="block px-4 select-text cursor-text min-h-[300px]"
@@ -477,15 +477,6 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
         ) : (
           <ApplyModal />
         )}
-
-        {/* <div>
-          <button className="flex justify-self-center space-x-4 items-center py-2 px-[100px] mt-10 bg-[#202123] rounded-[30px]">
-            <div className="text-[#FFFFFF] font-bold text-[20px]">지원자 보기</div>
-            <div className="flex items-center justify-center min-w-[24px] h-[24px] px-2 bg-[#FFFF33] rounded-full text-black font-bold">
-              999+
-            </div>
-          </button>
-        </div> */}
       </section>
       <OtherUserProfileModal
         isOpen={!!selectedTeamMember}

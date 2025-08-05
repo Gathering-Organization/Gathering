@@ -19,7 +19,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [timer, setTimer] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const regexNickname = /[가-힣]{1,6}/;
+  const regexNickname = /^[가-힣]{1,6}$/;
   const regexPass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=~`[\]{}|\\:;"'<>,.?/]).{8,}$/;
   const { showToast } = useToast();
 
@@ -144,8 +144,8 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
   return (
     <div className="text-center">
       <div>
-        <div className="text-[24px] font-bold my-6">정보 입력</div>
-        <div className="text-[14px] text-[#C7C7C7] mb-8">
+        <div className="text-xl sm:text-2xl font-bold my-6">정보 입력</div>
+        <div className="text-xs sm:text-sm text-[#C7C7C7] mb-8">
           이메일 인증은 유효 메일 확인 이외의 용도로 사용되지 않습니다.
           <br />
           (받은 이메일에 인증 메일이 없다면 스팸 메일함을 확인해주세요.)
@@ -175,7 +175,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
                 />
                 <button
                   onClick={handleSendEmail}
-                  className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 mt-2 py-1 sm:mt-0 sm:py-2 rounded-[16px] w-full sm:w-auto flex justify-center items-center min-h-[40px]"
+                  className="text-[#3387E5] font-bold border-2 border-[#3387E5] text-sm sm:text-base px-4 mt-2 py-1.5 sm:mt-0 sm:py-2 rounded-[16px] w-full sm:w-auto flex justify-center items-center"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -189,7 +189,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
               {isEmailSent && (
                 <>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <label className="sm:w-24 font-bold text-[#202123] text-sm sm:text-base shrink-0">
+                    <label className="hidden sm:block sm:w-24 font-bold text-[#202123] text-sm sm:text-base shrink-0">
                       인증번호
                     </label>
                     <input
@@ -204,7 +204,7 @@ const SignUpCertEmail: React.FC<SignUpAgreeProps> = ({ setStep }) => {
                     />
                     <button
                       onClick={handleVerifyCode}
-                      className="text-[#3387E5] font-bold border-2 border-[#3387E5] px-4 py-2 rounded-[16px] w-full sm:w-auto"
+                      className="text-[#3387E5] font-bold border-2 mt-2 sm:mt-0 text-sm sm:text-base border-[#3387E5] px-4 py-1.5 sm:py-2 rounded-[16px] w-full sm:w-auto"
                     >
                       인증
                     </button>

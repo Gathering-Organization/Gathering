@@ -324,7 +324,7 @@ const Profile: React.FC = () => {
               ))}
             </div>
             {info.workExperiences.length > 3 && (
-              <div className="bg-white py-3">
+              <div className="bg-white">
                 <MoreWorkExperiencesModal
                   workExperiences={info.workExperiences}
                   nickname={parts[0]}

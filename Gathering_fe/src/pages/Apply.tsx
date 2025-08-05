@@ -22,9 +22,8 @@ interface TechStack {
 const Apply: React.FC = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
+  const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>();
 
-  const [tempApplyInfo, setTempApplyInfo] = useState<ApplyInfo | null>(null);
-  const [applyInfo, setApplyInfo] = useState<ApplyDetails | null>(null);
   // const [isPublic, setIsPublic] = useState<boolean>(false);
   // const [stackList] = useState<TechStack[]>([...techStacks]);
   const [isTechTooltipOpen, setIsTechTooltipOpen] = useState<number | null>(null);
@@ -48,55 +47,84 @@ const Apply: React.FC = () => {
   });
   const [workExperiences, setWorkExperiences] = useState<Array<WorkExperience>>([]);
   const { myProfile, isMyProfileLoading } = useProfile();
-  const isOwnProfile = !projectId;
+  const isOwnProfile = !projectId && !!localStorage.getItem('tempApplyInfo');
   const isLoadingOverall = isOwnProfile ? isMyProfileLoading : applyInfo === null;
 
   const { showToast } = useToast();
   const isMobile = window.innerWidth < 640;
 
   useEffect(() => {
-    const loadApplyInfo = async () => {
-      try {
-        if (!projectId) {
-          const stored = localStorage.getItem('tempApplyInfo');
-          if (stored) {
-            setApplyInfo(JSON.parse(stored));
-          }
-        }
-      } catch (error) {
-        console.error('지원서 조회 실패:', error);
-      }
-    };
-    loadApplyInfo();
-  }, [projectId]);
-
-  useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        if (projectId) {
+    if (projectId) {
+      // 과거에 쓴 내 지원서 보기 → 서버에서 fetch
+      const fetchApplications = async () => {
+        try {
           const result = await getMyApplication(Number(projectId));
           if (result?.success) {
             setApplyInfo(result.data);
-
             setWorkExperiences(result.data.workExperiences);
           }
+        } catch (error) {
+          console.error('지원서 조회 실패:', error);
         }
-      } catch (error) {
-        console.error('지원서 조회 실패:', error);
-      }
-    };
-
-    fetchApplications();
-  }, [projectId]);
-
-  useEffect(() => {
-    if (!projectId) {
-      if (myProfile) {
+      };
+      fetchApplications();
+    } else {
+      // 내 지원서 미리보기 or 남의 지원서 보기 → localStorage or 내 프로필에서 가져옴
+      const myStored = localStorage.getItem('tempApplyInfo');
+      const otherStored = localStorage.getItem('applyInfo');
+      if (myStored && myProfile) {
         setInfo(myProfile);
         setWorkExperiences(myProfile.workExperiences);
+      } else if (otherStored) {
+        const parsed: ApplyDetails = JSON.parse(otherStored);
+        setApplyInfo(parsed);
+        setWorkExperiences(parsed.workExperiences);
       }
     }
   }, [projectId, myProfile]);
+
+  // useEffect(() => {
+  //   const loadApplyInfo = async () => {
+  //     try {
+  //       if (!projectId) {
+  //         const stored = localStorage.getItem('tempApplyInfo');
+  //         if (stored) {
+  //           setApplyInfo(JSON.parse(stored));
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('지원서 조회 실패:', error);
+  //     }
+  //   };
+  //   loadApplyInfo();
+  // }, [projectId]);
+
+  // useEffect(() => {
+  //   const fetchApplications = async () => {
+  //     try {
+  //       if (projectId) {
+  //         const result = await getMyApplication(Number(projectId));
+  //         if (result?.success) {
+  //           setApplyInfo(result.data);
+  //           setWorkExperiences(result.data.workExperiences);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('지원서 조회 실패:', error);
+  //     }
+  //   };
+
+  //   fetchApplications();
+  // }, [projectId]);
+
+  // useEffect(() => {
+  //   if (!projectId) {
+  //     if (myProfile) {
+  //       setInfo(myProfile);
+  //       setWorkExperiences(myProfile.workExperiences);
+  //     }
+  //   }
+  // }, [projectId, myProfile]);
 
   useEffect(() => {
     const closeTooltips = () => setIsTechTooltipOpen(null);
@@ -271,9 +299,21 @@ const Apply: React.FC = () => {
               활동 내역
             </div>
             <div className="flex-grow px-6 sm:px-0">
-              {info.workExperiences.slice(0, 3).map((experience, index) => (
-                <WorkExperienceItem key={`experience-${index}`} {...experience} />
-              ))}
+              {isOwnProfile ? (
+                <div>
+                  {info.workExperiences.slice(0, 3).map((experience, index) => (
+                    <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  {applyInfo?.workExperiences
+                    .slice(0, 3)
+                    .map((experience, index) => (
+                      <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                    ))}
+                </div>
+              )}
             </div>
           </section>
 

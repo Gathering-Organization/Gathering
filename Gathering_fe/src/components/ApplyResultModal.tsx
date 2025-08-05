@@ -102,7 +102,26 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
 
   const handleOpenChat = () => {
     const url = kakaoUrl.startsWith('http') ? kakaoUrl : `https://${kakaoUrl}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // 모바일: location.href로 바꾸면 카카오톡 앱으로 연결 시도
+      const now = Date.now();
+      // 카카오톡 딥링크 시도
+      window.location.href = url.replace(/^https?:\/\//, 'kakaoopen://');
+
+      // fallback: 앱이 실행되지 않으면 웹 링크로 이동
+      setTimeout(() => {
+        const elapsed = Date.now() - now;
+        if (elapsed < 2000) {
+          // 앱이 실행되지 않은 경우로 간주
+          window.location.href = url;
+        }
+      }, 1500);
+    } else {
+      // PC: 새 탭에서 열기
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const parts = nickname.split(/(#\d+)/);
@@ -114,7 +133,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
           <button
             onClick={applyStatus === 'PENDING' ? undefined : openModal}
             disabled={applyStatus === 'PENDING'}
-            className={`mx-auto w-[200px] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] ${
+            className={`mx-auto sm:w-[200px] justify-center whitespace-nowrap text-white text-sm sm:text-lg font-semibold px-6 py-2 rounded-[30px] ${
               applyStatus === 'PENDING'
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-[#3387E5] hover:bg-blue-600 transition-colors duration-300 ease-in-out'
@@ -125,7 +144,7 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
           <button
             onClick={handleViewApplication}
             type="button"
-            className="mx-auto w-[200px] bg-[#3387E5] justify-center text-white text-[18px] font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
+            className="mx-auto sm:w-[200px] whitespace-nowrap  bg-[#3387E5] justify-center text-white text-sm sm:text-lg font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
           >
             지원서 보기
           </button>
@@ -167,16 +186,31 @@ const ApplyResultModal: React.FC<ApplyResultProps> = ({
               <div className="p-6 md:p-7">
                 <form className="space-y-6">
                   <section className="bg-white">
-                    <div className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 resize-none focus:outline-none">
+                    <div className="w-full min-h-[200px] max-h-[300px] border border-[#000000]/50 border-e-[3px] border-b-[3px] rounded-[10px] p-4 sm:p-5 md:p-6 overflow-y-auto">
                       {applyStatus === 'APPROVED' && (
-                        <>
-                          {`${parts[0]}님은 ${position} 포지션에 합격하셨습니다. 귀하의 소중한 지원에 감사드리며, 최종 합격 소식을 전하게 되어 매우 기쁩니다. 앞으로 함께 성장할 수 있기를 기대합니다. 하단 오픈 채팅 링크를 통해 모집자에게 연락을 해보세요.`}
-                        </>
+                        <div className="text-gray-800 text-sm sm:text-base leading-relaxed">
+                          <p className="mb-2 font-semibold">
+                            {parts[0]}님, {position} 포지션에{' '}
+                            <span className="text-green-600">합격</span>하셨습니다!
+                          </p>
+                          <p className="mb-2">
+                            귀하의 소중한 지원에 감사드리며, 최종 합격 소식을 전하게 되어 매우
+                            기쁩니다. 앞으로 함께 성장할 수 있기를 기대합니다.
+                          </p>
+                          <p>하단의 오픈채팅 링크를 통해 모집자에게 연락해보세요.</p>
+                        </div>
                       )}
                       {applyStatus === 'REJECTED' && (
-                        <>
-                          {`${parts[0]}님은 아쉽게도 이번 ${position} 포지션 모집에서는 함께하지 못하게 되었습니다. 게더링을 통해 지원해주셔서 진심으로 감사드립니다. 앞으로의 건승을 기원합니다.`}
-                        </>
+                        <div className="text-gray-800 text-sm sm:text-base leading-relaxed">
+                          <p className="mb-2 font-semibold">
+                            {parts[0]}님, 아쉽게도 {position} 포지션 모집에는 함께하지 못하게
+                            되었습니다.
+                          </p>
+                          <p>
+                            게더링을 통해 지원해주셔서 진심으로 감사드립니다. 앞으로의 건승을
+                            기원합니다.
+                          </p>
+                        </div>
                       )}
                     </div>
                   </section>

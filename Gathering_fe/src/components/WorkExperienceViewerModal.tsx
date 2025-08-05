@@ -52,7 +52,7 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
     <div>
       <button
         onClick={openModal}
-        className="text-[12px] bg-[#000000] font-bold px-4 sm:px-6 py-1 sm:py-2 rounded-[20px] text-white whitespace-nowrap"
+        className="text-[9px] sm:text-[12px] bg-[#000000] font-bold px-4 sm:px-6 py-1 sm:py-2 rounded-[20px] text-white whitespace-nowrap"
       >
         보기
       </button>

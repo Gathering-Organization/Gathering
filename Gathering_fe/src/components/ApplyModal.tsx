@@ -149,7 +149,7 @@ const ApplyModal: React.FC = () => {
                       }
                       maxLength={300}
                       onChange={handleChangeIntroduction}
-                      className="border-[#000000]/50 border border-e-[3px] border-b-[3px] placeholder:text-xs sm:placeholder:text-base rounded-[10px] w-full h-48 md:h-56 p-4 px-6 resize-none focus:outline-none"
+                      className="border-[#000000]/50 border text-sm sm:text-base border-e-[3px] border-b-[3px] placeholder:text-xs sm:placeholder:text-base rounded-[10px] w-full h-48 md:h-56 p-4 px-6 resize-none focus:outline-none"
                     ></textarea>
                     <div className="text-right mt-1 text-gray-600 text-xs sm:text-sm">
                       {applyInfo.message.length}/300

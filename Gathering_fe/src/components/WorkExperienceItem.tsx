@@ -21,7 +21,7 @@ const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
   };
   return (
     <div>
-      <section className="bg-white pb-5">
+      <section className="bg-white pb-3 sm:pb-5">
         <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-3 px-4 sm:p-4 sm:px-6 sm:h-24">
           <div className="w-full">
             <div className="font-bold text-xs sm:text-base sm:pb-2">{activityName}</div>
@@ -41,7 +41,7 @@ const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
             {onDelete && (
               <button
                 onClick={handleDeleteClick}
-                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
+                className="text-[9px] sm:text-[12px] font-bold px-4 sm:px-6 py-1 sm:py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 whitespace-nowrap"
               >
                 삭제
               </button>

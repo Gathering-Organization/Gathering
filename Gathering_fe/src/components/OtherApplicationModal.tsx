@@ -44,17 +44,6 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
     document.body.style.overflow = 'auto';
   };
 
-  // const handleSelectedPosition = (value: string) => {
-  //   setApplyDetails(prev => ({ ...prev, position: value }));
-  // };
-
-  // const handleChangeIntroduction = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   setApplyDetails({
-  //     ...applyDetails,
-  //     message: e.target.value
-  //   });
-  // };
-
   const handleApprove = async (id: number) => {
     setIsLoading(true);
     try {
@@ -109,7 +98,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center overflow-y-auto sm:overflow-hidden backdrop-blur-sm"
           aria-hidden="true"
         >
           <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn">
@@ -139,28 +128,27 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
               </button>
             </div>
 
-            <div className="p-6">
-              <div className="mt-3 max-h-[70vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
+              <div className="mt-3 max-h-[65vh] overflow-y-auto space-y-4">
                 {apply.length > 0 ? (
                   <div className="space-y-4">
                     {apply.map((item, index) => (
                       <div
                         key={index}
-                        className="flex items-center border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] p-4 px-6 h-24"
+                        className="flex flex-col sm:flex-row items-center border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] p-4 sm:px-6 h-24"
                       >
-                        <div className="w-[60%]">
-                          <div className="font-bold pb-2">
+                        <div className="w-full sm:w-[60%]">
+                          <div className="font-semibold pb-3 sm:pb-0 text-sm sm:text-base break-words">
                             {item.nickname.split(/(#\d+)/)[0]}님의 [
                             {positionData.find(position => position.id === item.position)?.title ||
                               item.position}
                             ] 지원서
                           </div>
                         </div>
-                        <div className="flex space-x-4 w-[40%] justify-end">
+                        <div className="w-full sm:w-[40%] flex flex-wrap justify-end gap-2 sm:gap-4">
                           <button
                             onClick={() => handleViewApplication(item)}
-                            type="button"
-                            className="text-[12px] bg-[#2C2C2C] font-bold px-6 py-2 rounded-[20px] text-white hover:bg-[#444] transition-colors duration-300 ease-in-out whitespace-nowrap"
+                            className="text-[10px] sm:text-xs bg-[#2C2C2C] font-bold px-4 sm:px-6 py-1.5 sm:py-2 rounded-[20px] text-white hover:bg-[#444] transition"
                           >
                             보기
                           </button>
@@ -168,13 +156,13 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
                             <>
                               <button
                                 onClick={() => handleApprove(item.id)}
-                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 hover:bg-blue-600 transition-colors duration-300 ease-in-out whitespace-nowrap"
+                                className="text-[10px] sm:text-xs font-bold px-4 sm:px-6 py-1.5 sm:py-2 rounded-[20px] bg-[#3387E5] text-white hover:bg-blue-600 transition"
                               >
                                 승인
                               </button>
                               <button
                                 onClick={() => handleReject(item.id)}
-                                className="text-[12px] font-bold px-6 py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 hover:bg-blue-600 transition-colors duration-300 ease-in-out whitespace-nowrap"
+                                className="text-[10px] sm:text-xs font-bold px-4 sm:px-6 py-1.5 sm:py-2 rounded-[20px] bg-[#F24E1E] text-white hover:bg-red-600 transition"
                               >
                                 거절
                               </button>
