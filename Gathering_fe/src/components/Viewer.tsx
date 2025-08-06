@@ -384,18 +384,21 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                   {isPositionTooltipOpen && (
                     <div className="absolute top-full left-0 -translate-x-1/2 transform mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                       <div className="flex space-x-2">
-                        {data.requiredPositions.slice(2).map((positionId, index) => {
-                          const positionTitle =
-                            positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
-                          return positionTitle ? (
-                            <div
-                              key={index}
-                              className="font-bold p-1 px-3 sm:px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
-                            >
-                              {positionTitle}
-                            </div>
-                          ) : null;
-                        })}
+                        {data.requiredPositions
+                          .slice(visiblePositionLimit)
+                          .map((positionId, index) => {
+                            const positionTitle =
+                              positionList.find(pos => pos.id === positionId)?.title ||
+                              '알 수 없음';
+                            return positionTitle ? (
+                              <div
+                                key={index}
+                                className="font-bold p-1 px-3 sm:px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
+                              >
+                                {positionTitle}
+                              </div>
+                            ) : null;
+                          })}
                       </div>
                     </div>
                   )}
@@ -435,8 +438,9 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                     {isTechTooltipOpen && (
                       <div className="absolute top-full left-0 -translate-x-1/2 transform mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                         <div className="flex space-x-2">
-                          {data.techStacks.slice(3).map((item, index) => {
-                            const imageSrc = getStackImage(item.toUpperCase());
+                          {data.techStacks.slice(visibleTechStackLimit).map((item, index) => {
+                            const cleanedItem = item.replace(/[^a-zA-Z0-9]/g, '');
+                            const imageSrc = getStackImage(cleanedItem.toUpperCase());
                             const tech = techStacks.find(stack => stack.id === item);
                             const techTitle = tech ? tech.title : item;
                             return imageSrc ? (

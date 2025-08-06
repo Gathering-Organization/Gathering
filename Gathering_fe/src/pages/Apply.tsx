@@ -271,7 +271,8 @@ const Apply: React.FC = () => {
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
                           <div className="flex space-x-2">
                             {extraStacks?.map((item, i) => {
-                              const imageSrc = getStackImage(item.toUpperCase());
+                              const cleanedItem = item.replace(/[^a-zA-Z0-9]/g, '');
+                              const imageSrc = getStackImage(cleanedItem.toUpperCase());
                               return imageSrc ? (
                                 <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
                               ) : null;
