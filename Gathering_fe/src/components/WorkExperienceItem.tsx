@@ -25,7 +25,7 @@ const WorkExperienceItem: React.FC<WorkExperienceItemProps> = ({
         <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-3 px-4 sm:p-4 sm:px-6 sm:h-24">
           <div className="w-full">
             <div className="font-bold text-xs sm:text-base sm:pb-2">{activityName}</div>
-            <div className="hidden sm:block text-[#000000]/50 text-[12px]">
+            <div className="hidden xl:block text-[#000000]/50 text-[12px]">
               활동일 | {startDate} ~ {endDate}
             </div>
           </div>

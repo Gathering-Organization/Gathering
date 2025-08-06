@@ -4,13 +4,17 @@ import { logout } from '@/services/authApi';
 import { useNavigate } from 'react-router-dom';
 import triangleArrowIcon from '@/assets/otherIcons/Triangle Arrow.png';
 import { useToast } from '@/contexts/ToastContext';
+import { useDropdown } from '@/contexts/DropdownContext';
 
 const LogoutButton: React.FC = () => {
   const { myProfile, isMyProfileLoading } = useProfile();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const nav = useNavigate();
   const { showToast } = useToast();
+
+  const { activeDropdown, setActiveDropdown } = useDropdown();
+
+  const isOpen = activeDropdown === 'menu';
 
   const userNickname = myProfile?.nickname || '';
   const userColor = myProfile?.profileColor || 'ccc';
@@ -39,7 +43,7 @@ const LogoutButton: React.FC = () => {
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsDropdownOpen(false);
+      setActiveDropdown(null);
     }
   };
 
@@ -52,9 +56,9 @@ const LogoutButton: React.FC = () => {
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         className={`h-[48px] px-3 sm:px-4 focus:outline-none border border-transparent border-r-[5px] border-b-[5px] rounded-[10px] ${
-          isDropdownOpen ? 'border-[#000000]' : ''
+          isOpen ? 'border-[#000000]' : ''
         }`}
-        onClick={() => setIsDropdownOpen(prev => !prev)}
+        onClick={() => setActiveDropdown(activeDropdown === 'menu' ? null : 'menu')}
       >
         <div className="flex justify-center items-center space-x-3">
           <div
@@ -63,18 +67,18 @@ const LogoutButton: React.FC = () => {
           />
           <div className="font-bold hidden sm:block">{parts[0]}</div>
           <img
-            className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
             src={triangleArrowIcon}
             alt="Dropdown arrow"
           />
         </div>
       </button>
-      {isDropdownOpen && (
+      {isOpen && (
         <div className="absolute border-[#000000] right-0 shadow-lg ring-1 ring-black ring-opacity-5 mt-2 w-48 bg-white rounded-[10px] z-50 overflow-hidden animate-fadeDown">
           <button
             className="block w-full text-[16px] text-center px-4 py-2 hover:bg-gray-100"
             onClick={() => {
-              setIsDropdownOpen(false);
+              setActiveDropdown(null);
               nav('/profile');
             }}
           >

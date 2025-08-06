@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { MultiLevelDropdownProps } from '@/types/menu';
 import { DropdownDispatchContext } from '@/pages/PostHome';
-import { techStacks, TechStack } from '@/utils/tech-stacks';
 import { getStackImage } from '@/utils/get-stack-image';
 
 const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
@@ -138,19 +137,52 @@ const OptionalDropdown: React.FC<MultiLevelDropdownProps> = ({
               {activeSubmenuId &&
                 menuData
                   .find(item => item.id === activeSubmenuId)
-                  ?.items?.map(subItem => (
-                    <div
-                      key={subItem.id}
-                      className={`px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
-                        activeSubmenuId2 === subItem.id ? 'bg-gray-200 dark:bg-gray-700' : ''
-                      }`}
-                      onClick={() =>
-                        setActiveSubmenuId2(activeSubmenuId2 === subItem.id ? null : subItem.id)
+                  ?.items?.map(subItem => {
+                    const isAllButton = subItem.id.startsWith('ALL');
+                    const isActive = activeSubmenuId2 === subItem.id;
+
+                    const handleClick = () => {
+                      if (isAllButton) {
+                        // 해당 카테고리의 모든 subItems 수집
+                        const allSubItems =
+                          menuData
+                            .find(item => item.id === activeSubmenuId)
+                            ?.items?.flatMap(it => it.subItems || []) || [];
+
+                        const allIds = allSubItems.map(it => it.id);
+                        const allLabels = allSubItems.map(it => it.label);
+
+                        // 이미 다 선택돼 있으면 해제, 아니면 추가
+                        const isAllSelected = allIds.every(id => selectedItems.includes(id));
+
+                        const newSelectedItems = isAllSelected
+                          ? selectedItems.filter(id => !allIds.includes(id)) // 해제
+                          : Array.from(new Set([...selectedItems, ...allIds])); // 추가
+
+                        const newSelectedLabels = isAllSelected
+                          ? selectedLabels.filter(label => !allLabels.includes(label))
+                          : Array.from(new Set([...selectedLabels, ...allLabels]));
+
+                        setSelectedItems(newSelectedItems);
+                        setSelectedLabels(newSelectedLabels);
+                        setSelectedStack(newSelectedItems);
+                      } else {
+                        setActiveSubmenuId2(isActive ? null : subItem.id);
                       }
-                    >
-                      {subItem.label}
-                    </div>
-                  ))}
+                    };
+
+                    return (
+                      <div
+                        key={subItem.id}
+                        className={`px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
+                          isActive ? 'bg-gray-200 dark:bg-gray-700' : ''
+                        }`}
+                        onClick={handleClick}
+                      >
+                        {subItem.label}
+                      </div>
+                    );
+                  })}
             </div>
 
             {/* 3단계 메뉴 */}

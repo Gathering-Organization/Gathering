@@ -187,15 +187,15 @@ const PostEdit: React.FC = () => {
             type="text"
             value={post.title}
             name="title"
-            className="border border-gray-300 rounded-md w-full p-4 focus:outline-none"
+            className="border border-gray-300 rounded-md w-full p-4 focus:outline-none placeholder:text-sm sm:placeholder:text-base"
             placeholder="모집글의 제목을 입력하세요."
           />
         </section>
         <hr className="w-4/5 sm:w-[1050px] mx-auto border-[#000000]/15" />
 
-        <div className="grid py-4 sm:grid-cols-2 gap-4 sm:gap-2">
+        <div className="grid py-4 sm:grid-cols-2 gap-2">
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">모집 구분</label>
+            <label className="text-sm sm:text-base">모집 구분</label>
             <SingleSelection
               title="모집 구분"
               options={projectTypeOptions}
@@ -207,7 +207,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">진행 방식</label>
+            <label className="text-sm sm:text-base">진행 방식</label>
             <SingleSelection
               title="진행 방식"
               options={projectModeOptions}
@@ -219,7 +219,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">시작 날짜</label>
+            <label className="text-sm sm:text-base">시작 날짜</label>
             <DatePicker
               readOnly={true}
               value={startDate}
@@ -236,7 +236,7 @@ const PostEdit: React.FC = () => {
           </section>
 
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">모집 마감 기한</label>
+            <label className="text-sm sm:text-base">모집 마감 기한</label>
             <DatePicker
               minDate={MIN_DATE}
               readOnly={true}
@@ -253,7 +253,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">모집 인원</label>
+            <label className="text-sm sm:text-base">모집 인원</label>
             <SingleSelection
               title="모집 인원"
               options={totalMemberOptions}
@@ -266,7 +266,7 @@ const PostEdit: React.FC = () => {
           </section>
 
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">카카오톡 오픈채팅 URL</label>
+            <label className="text-sm sm:text-base">카카오톡 오픈채팅 URL</label>
             <input
               onChange={e => setPost({ ...post, kakaoUrl: e.target.value })}
               type="text"
@@ -277,11 +277,11 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">팀원 태그</label>
+            <label className="text-sm sm:text-base">팀원 태그</label>
             <TeamTagInput teams={post.teams} setTeams={teams => setPost({ ...post, teams })} />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">예상 기간</label>
+            <label className="text-sm sm:text-base">예상 기간</label>
             <SingleSelection
               title="예상 기간"
               options={durationOptions}
@@ -293,7 +293,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">모집 포지션</label>
+            <label className="text-sm sm:text-base">모집 포지션</label>
             <MultiSelection
               title="모집 포지션을 선택하세요."
               options={positionList.map(pos => pos.title)}
@@ -311,7 +311,7 @@ const PostEdit: React.FC = () => {
             />
           </section>
           <section className="px-6 py-2">
-            <label className="hidden sm:block mb-2">사용 스택</label>
+            <label className="text-sm sm:text-base">사용 스택</label>
             <MultiSelection
               title="사용 스택을 선택하세요."
               options={stackList.map(tech => tech.title)}

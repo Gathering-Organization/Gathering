@@ -17,17 +17,6 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
 
   const toggleDropdown = () => setIsOpen(prev => !prev);
 
-  //   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-  //     if (e.key === 'Enter') {
-  //       e.preventDefault();
-  //       const trimmedValue: string = inputValue.trim();
-  //       if (trimmedValue !== '') {
-  //         setTeams([...teams, trimmedValue]);
-  //         setInputValue('');
-  //       }
-  //     }
-  //   };
-
   const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>): Promise<void> => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -141,6 +130,8 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
               onKeyDown={handleKeyDown}
               placeholder="팀원 태그 (입력 후 Enter) ex) 게더링#546931"
               className="w-full px-3 py-1.5 text-xs lg:text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 focus:outline-none dark:border-gray-700 rounded-md"
+              enterKeyHint="done"
+              onSubmit={e => e.preventDefault()}
             />
           </div>
         </div>

@@ -12,9 +12,7 @@ import eye from '@/assets/otherIcons/eye.png';
 import blueEye from '@/assets/otherIcons/Blue_Eye.png';
 import blueHeart from '@/assets/otherIcons/Blue_Heart.png';
 import heart from '@/assets/otherIcons/heart.png';
-import banner1 from '@/assets/stackIcons/react.svg';
-import banner2 from '@/assets/stackIcons/react.svg';
-import banner3 from '@/assets/stackIcons/react.svg';
+import { useDropdown } from '@/contexts/DropdownContext';
 import { ProfileAllInfo } from '@/types/profile';
 import { ProfileCacheContext } from '@/contexts/ProfileCacheContext';
 import Pagination from '@/components/Pagination';
@@ -44,7 +42,7 @@ const PostHome: React.FC = () => {
   const [searchType, setSearchType] = useState('TITLE');
   const [keyword, setKeyword] = useState('');
 
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const { activeDropdown, setActiveDropdown } = useDropdown();
 
   const isOpen = activeDropdown === 'sort';
 
@@ -175,11 +173,7 @@ const PostHome: React.FC = () => {
           <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 px-2 sm:px-0 xl:mx-4">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
             <div className="w-full md:w-auto md:max-w-xl flex justify-end xl:w-[600px]">
-              <SearchBar
-                onSearch={handleSearch}
-                activeDropdown={activeDropdown}
-                setActiveDropdown={setActiveDropdown}
-              />
+              <SearchBar onSearch={handleSearch} />
             </div>
           </div>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 relative z-10 px-0 xl:mx-4">
