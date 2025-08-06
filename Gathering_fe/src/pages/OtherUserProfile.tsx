@@ -60,7 +60,7 @@ const OtherUserProfile: React.FC = () => {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-0 sm:space-y-6">
+      <div className="px-4 mx-auto sm:px-6 md:px-12 lg:px-30 xl:px-60 py-6 space-y-0 sm:space-y-6">
         <div className="border-[#000000]/20 border-2 rounded-xl py-4 sm:p-8 lg:p-10 min-h-screen">
           <section className="pb-6 md:p-6 flex flex-col items-center text-center md:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold mb-8">기본 프로필</h1>

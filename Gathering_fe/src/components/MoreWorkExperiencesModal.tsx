@@ -20,16 +20,16 @@ const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
   nickname,
   onDelete
 }) => {
-  const [stackList] = useState<TechStack[]>([...techStacks]);
-  const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
-  const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
-    startDate: null,
-    endDate: null
-  });
-  const [dateRange, setDateRange] = useState<{
-    startDate: string;
-    endDate: string;
-  }>({ startDate: '', endDate: '' });
+  // const [stackList] = useState<TechStack[]>([...techStacks]);
+  // const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
+  // const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
+  //   startDate: null,
+  //   endDate: null
+  // });
+  // const [dateRange, setDateRange] = useState<{
+  //   startDate: string;
+  //   endDate: string;
+  // }>({ startDate: '', endDate: '' });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 

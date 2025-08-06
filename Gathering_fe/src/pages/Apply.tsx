@@ -13,6 +13,7 @@ import { getMyApplication } from '@/services/applicationApi';
 import { ApplyInfo } from '@/types/apply';
 import BeatLoader from 'react-spinners/BeatLoader';
 import WorkExperienceItem from '@/components/WorkExperienceItem';
+import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
 
 interface TechStack {
   id: string;
@@ -82,49 +83,6 @@ const Apply: React.FC = () => {
       }
     }
   }, [projectId, myProfile]);
-
-  // useEffect(() => {
-  //   const loadApplyInfo = async () => {
-  //     try {
-  //       if (!projectId) {
-  //         const stored = localStorage.getItem('tempApplyInfo');
-  //         if (stored) {
-  //           setApplyInfo(JSON.parse(stored));
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('지원서 조회 실패:', error);
-  //     }
-  //   };
-  //   loadApplyInfo();
-  // }, [projectId]);
-
-  // useEffect(() => {
-  //   const fetchApplications = async () => {
-  //     try {
-  //       if (projectId) {
-  //         const result = await getMyApplication(Number(projectId));
-  //         if (result?.success) {
-  //           setApplyInfo(result.data);
-  //           setWorkExperiences(result.data.workExperiences);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('지원서 조회 실패:', error);
-  //     }
-  //   };
-
-  //   fetchApplications();
-  // }, [projectId]);
-
-  // useEffect(() => {
-  //   if (!projectId) {
-  //     if (myProfile) {
-  //       setInfo(myProfile);
-  //       setWorkExperiences(myProfile.workExperiences);
-  //     }
-  //   }
-  // }, [projectId, myProfile]);
 
   useEffect(() => {
     const closeTooltips = () => setIsTechTooltipOpen(null);
@@ -212,7 +170,7 @@ const Apply: React.FC = () => {
   }
 
   return (
-    <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-0 sm:space-y-6">
+    <div className="px-4 mx-auto sm:px-6 md:px-12 lg:px-30 xl:px-60 py-6 space-y-0 sm:space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl py-4 sm:p-8 lg:p-10 min-h-screen">
         <section className="flex p-2 px-6 sm:p-0 space-x-2 sm:space-x-4 items-center">
           {isOwnProfile ? (
@@ -246,9 +204,11 @@ const Apply: React.FC = () => {
         </section>
         <hr className="w-[calc(100%-2rem)] mx-4 sm:mx-0 sm:w-full h-[1px] bg-[#000000]/60 border-none" />
         <div className="">
-          <section className="flex space-x-12 px-8 py-4 sm:p-8 items-center">
+          <section
+            className={`flex space-x-12 px-8 py-4 sm:p-8 items-center ${isMobile ? 'relative' : ''}`}
+          >
             <div className="font-bold text-sm sm:text-xl sm:w-[200px]">사용 기술 스택</div>
-            <div className="text-sm sm:text-lg">
+            <div className={`text-sm sm:text-lg ${isMobile ? '' : 'relative'}`}>
               {
                 <div className="flex items-center space-x-4">
                   {visibleStacks?.map((item, index) => {
@@ -259,19 +219,20 @@ const Apply: React.FC = () => {
                   })}
 
                   {typeof extraStacksCount === 'number' && extraStacksCount > 0 && (
-                    <div className="relative">
+                    <div className="">
                       <div
-                        className="w-8 h-8 flex items-center justify-center bg-gray-200 text-[16px] font-semibold rounded-[8px] cursor-pointer"
+                        className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-200 text-sm sm:text-base font-semibold rounded-[8px] cursor-pointer"
                         onClick={e => toggleTechTooltip(9999, e)}
                       >
                         +{extraStacksCount}
                       </div>
 
                       {isTechTooltipOpen === 9999 && (
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto">
+                        <div className="absolute top-full left-0 -translate-x-1/2 transform ms-4 sm:ms-0 sm:mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                           <div className="flex space-x-2">
                             {extraStacks?.map((item, i) => {
-                              const imageSrc = getStackImage(item.toUpperCase());
+                              const cleanedItem = item.replace(/[^a-zA-Z0-9]/g, '');
+                              const imageSrc = getStackImage(cleanedItem.toUpperCase());
                               return imageSrc ? (
                                 <img key={i} src={imageSrc} alt={item} className="w-8 h-8" />
                               ) : null;
@@ -301,17 +262,37 @@ const Apply: React.FC = () => {
             <div className="flex-grow px-6 sm:px-0">
               {isOwnProfile ? (
                 <div>
-                  {info.workExperiences.slice(0, 3).map((experience, index) => (
-                    <WorkExperienceItem key={`experience-${index}`} {...experience} />
-                  ))}
+                  <div>
+                    {info.workExperiences.slice(0, 3).map((experience, index) => (
+                      <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                    ))}
+                  </div>
+                  {info.workExperiences.length > 3 && (
+                    <div className="bg-white">
+                      <MoreWorkExperiencesModal
+                        workExperiences={info.workExperiences}
+                        nickname={info.nickname.split(/(#\d+)/)[0]}
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div>
-                  {applyInfo?.workExperiences
-                    .slice(0, 3)
-                    .map((experience, index) => (
-                      <WorkExperienceItem key={`experience-${index}`} {...experience} />
-                    ))}
+                  <div>
+                    {applyInfo?.workExperiences
+                      .slice(0, 3)
+                      .map((experience, index) => (
+                        <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                      ))}
+                  </div>
+                  {applyInfo && applyInfo.workExperiences.length > 3 && (
+                    <div className="bg-white">
+                      <MoreWorkExperiencesModal
+                        workExperiences={applyInfo?.workExperiences}
+                        nickname={applyInfo?.nickname.split(/(#\d+)/)[0]}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

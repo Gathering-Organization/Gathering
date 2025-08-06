@@ -250,7 +250,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 mb-4 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 sm:mb-4 sm:gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <div className="flex">
               <button
@@ -281,16 +281,16 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </div>
           </div>
           {data?.author.nickname === userNickname && (
-            <section className="flex gap-3 sm:gap-4 items-center self-end sm:self-auto">
+            <section className="flex gap-2 sm:gap-4 items-center self-end sm:self-auto">
               <button
                 onClick={onClickUpdate}
-                className="w-9 sm:w-[50px] h-9 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
+                className="w-8 sm:w-[50px] h-8 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
               >
                 <img src={editButton} alt="edit" />
               </button>
               <button
                 onClick={onClickDelete}
-                className="w-9 sm:w-[50px] h-9 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
+                className="w-8 sm:w-[50px] h-8 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
               >
                 <img src={deleteButton} alt="delete" />
               </button>
@@ -384,18 +384,21 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                   {isPositionTooltipOpen && (
                     <div className="absolute top-full left-0 -translate-x-1/2 transform mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                       <div className="flex space-x-2">
-                        {data.requiredPositions.slice(2).map((positionId, index) => {
-                          const positionTitle =
-                            positionList.find(pos => pos.id === positionId)?.title || '알 수 없음';
-                          return positionTitle ? (
-                            <div
-                              key={index}
-                              className="font-bold p-1 px-3 sm:px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
-                            >
-                              {positionTitle}
-                            </div>
-                          ) : null;
-                        })}
+                        {data.requiredPositions
+                          .slice(visiblePositionLimit)
+                          .map((positionId, index) => {
+                            const positionTitle =
+                              positionList.find(pos => pos.id === positionId)?.title ||
+                              '알 수 없음';
+                            return positionTitle ? (
+                              <div
+                                key={index}
+                                className="font-bold p-1 px-3 sm:px-4 text-xs sm:text-sm text-[#3387E5] bg-[#3387E5]/15 rounded-[30px] inline-block whitespace-nowrap"
+                              >
+                                {positionTitle}
+                              </div>
+                            ) : null;
+                          })}
                       </div>
                     </div>
                   )}
@@ -435,8 +438,9 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
                     {isTechTooltipOpen && (
                       <div className="absolute top-full left-0 -translate-x-1/2 transform mt-2 z-10 p-2 bg-white border border-gray-300 rounded shadow w-[300px] overflow-x-auto animate-fadeDown">
                         <div className="flex space-x-2">
-                          {data.techStacks.slice(3).map((item, index) => {
-                            const imageSrc = getStackImage(item.toUpperCase());
+                          {data.techStacks.slice(visibleTechStackLimit).map((item, index) => {
+                            const cleanedItem = item.replace(/[^a-zA-Z0-9]/g, '');
+                            const imageSrc = getStackImage(cleanedItem.toUpperCase());
                             const tech = techStacks.find(stack => stack.id === item);
                             const techTitle = tech ? tech.title : item;
                             return imageSrc ? (
