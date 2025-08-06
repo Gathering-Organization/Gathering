@@ -49,8 +49,8 @@ const MoreWorkExperiencesModal: React.FC<MoreWorkExperiencesModalProps> = ({
         onClick={openModal}
         className="flex items-center space-x-2 justify-center border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full py-1 px-6"
       >
-        <div>더보기</div>
-        <img src={moreIcon} className="w-6 h-6" />
+        <div className="text-xs sm:text-base">더보기</div>
+        <img src={moreIcon} className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
       {isModalOpen && (
         <div

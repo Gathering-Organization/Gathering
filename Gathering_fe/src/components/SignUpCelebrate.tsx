@@ -5,21 +5,19 @@ const SignUpCelebrate: React.FC = () => {
   const nav = useNavigate();
 
   return (
-    <div className="text-center mt-10">
-      <div className="flex justify-center items-center space-x-4 py-20">
-        <img className="w-14 h-14" src={celebrateIcon} />
-        <div className="font-bold text-[30px]">Gathering 가입을 축하합니다!</div>
+    <div className="text-center mt-10 px-4">
+      <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-4 space-y-4 sm:space-y-0 py-10 sm:py-20">
+        <img className="w-12 h-12 sm:w-14 sm:h-14" src={celebrateIcon} alt="축하" />
+        <div className="font-bold text-xl sm:text-[30px]">Gathering 가입을 축하합니다!</div>
       </div>
-      <div className="space-y-6 text-[#000000]/50 text-[18px] font-medium">
+      <div className="space-y-4 text-[#000000]/50 text-base sm:text-[18px] font-medium">
         <p>회원가입이 완료되었습니다.</p>
         <p>Gathering을 통해 팀원을 모집하고 참여해보세요!</p>
       </div>
-      <div className="mt-20">
+      <div className="mt-12 sm:mt-20">
         <button
-          onClick={() => {
-            nav('/');
-          }}
-          className="font-semibold text-[#FFFFFF] rounded-[20px] text-[18px] px-12 py-2 bg-[#3387E5] hover:bg-blue-700"
+          onClick={() => nav('/')}
+          className="w-full sm:w-auto font-semibold text-white rounded-[20px] text-base sm:text-[18px] px-6 sm:px-12 py-3 bg-[#3387E5] hover:bg-blue-700"
         >
           홈으로 가기
         </button>

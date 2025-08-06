@@ -5,7 +5,10 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-  // totalPages = 120;
+  if (totalPages <= 1) {
+    return null;
+  }
+
   const renderPageButtons = () => {
     const windowSize = 10;
     let startPage = 1;

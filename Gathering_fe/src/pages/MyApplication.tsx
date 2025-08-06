@@ -116,7 +116,7 @@ const MyApplication: React.FC = () => {
 
   return (
     <ProfileCacheContext.Provider value={{ profileCache }}>
-      <div className="mx-36 space-y-6">
+      <div className="md:mx-36 space-y-2 md:space-y-6">
         <div className="mx-6 flex justify-between items-center">
           <ProjecTypeFilter
             selectedType={selectedType}

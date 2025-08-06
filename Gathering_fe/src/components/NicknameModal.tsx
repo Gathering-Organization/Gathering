@@ -52,17 +52,17 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ nickname }) => {
   return (
     <div>
       <button
-        className="text-[24px] font-bold mb-8 relative left-4 inline-block"
+        className="text-lg sm:text-xl md:text-2xl font-bold mb-8 relative left-4 inline-block"
         onClick={openModal}
       >
-        <span className="pr-8">
+        <span className="pr-6 md:pr-8">
           <span className="pe-1">{parts[0]}</span>
           <span className="text-[#B4B4B4]">{parts[1]}</span>
         </span>
         <img
           src={penSquared}
           alt="Edit"
-          className="w-6 h-6 absolute right-0 top-1/2 -translate-y-1/2"
+          className="w-5 h-5 md:w-6 md:h-6 absolute right-0 top-1/2 -translate-y-1/2"
         />
       </button>
 

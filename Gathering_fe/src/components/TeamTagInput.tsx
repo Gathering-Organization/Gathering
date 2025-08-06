@@ -82,7 +82,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
       >
         <div className="flex flex-wrap gap-1 max-h-12 overflow-auto items-center">
           {teams.length === 0 ? (
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-xs lg:text-sm text-gray-500 dark:text-gray-400">
               {`팀원을 태그하세요. (선택)`}
             </span>
           ) : (
@@ -93,7 +93,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
                   removeTag(idx);
                 }}
                 key={idx}
-                className="inline-flex items-center px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400"
+                className="inline-flex items-center px-2 py-0.5 rounded-md text-xs lg:text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400"
               >
                 {tag}
                 <span
@@ -140,7 +140,7 @@ const TeamTagInput: React.FC<TeamTagInputProps> = ({ teams, setTeams }) => {
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               placeholder="팀원 태그 (입력 후 Enter) ex) 게더링#546931"
-              className="w-full px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 focus:outline-none dark:border-gray-700 rounded-md"
+              className="w-full px-3 py-1.5 text-xs lg:text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 focus:outline-none dark:border-gray-700 rounded-md"
             />
           </div>
         </div>

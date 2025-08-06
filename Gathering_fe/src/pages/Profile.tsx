@@ -248,23 +248,27 @@ const Profile: React.FC = () => {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="mx-60 space-y-6">
-        <div className="border-[#000000]/20 border-2 rounded-xl p-4 px-20 min-h-screen">
-          <section className="p-6 flex flex-col items-center text-center">
-            <h1 className="text-[30px] font-bold mb-8">기본 프로필</h1>
+      <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-0 sm:space-y-6">
+        <div className="border-[#000000]/20 border-2 rounded-xl py-4 sm:p-8 lg:p-10 min-h-screen">
+          <section className="pb-6 md:p-6 flex flex-col items-center text-center md:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-8">기본 프로필</h1>
             <ProfileColorModal profileColor={info.profileColor} />
             <NicknameModal nickname={info.nickname || ''} />
             <button
               onClick={handleUpdateProfile}
-              className="self-end bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
+              // className="mt-8 px-8 py-3 bg-[#3387E5] text-white font-semibold rounded-full hover:bg-blue-600 transition-colors duration-300 ease-in-out shadow-md"
+              className="md:self-end text-sm sm:text-[16px] bg-[#3387E5] text-white font-semibold px-6 py-2 rounded-[30px] hover:bg-blue-600 transition-colors duration-300 ease-in-out"
             >
               프로필 저장
             </button>
           </section>
 
-          <section className="bg-white p-6 mb-4">
-            <div className="flex items-center justify-between mb-10">
-              <label htmlFor="organization" className="text-[18px] font-semibold">
+          <section className="p-4 sm:p-6 md:mb-4">
+            <div className="flex items-center justify-between mb-6 md:mb-10 md:space-x-8">
+              <label
+                htmlFor="organization"
+                className="hidden md:block text-[18px] font-semibold whitespace-nowrap"
+              >
                 소속
               </label>
               <input
@@ -273,15 +277,18 @@ const Profile: React.FC = () => {
                 value={info.organization || ''}
                 placeholder="소속을 입력해주세요. ex) OO회사 OO 부서, OO대학교 OO학과"
                 onChange={e => setInfo({ ...info, organization: e.target.value })}
-                className="self-end w-[650px] p-3 px-6 border bg-gray-50 placeholder-gray-500 border-[#000000]/20 rounded-[30px] focus:outline-none"
+                className="self-end w-full sm:w-[650px] p-3 px-6 border bg-gray-50 placeholder:text-xs lg:placeholder:text-sm placeholder-gray-500 border-gray-300 rounded-[20px] focus:outline-none"
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <label htmlFor="tech-stack" className="text-[18px] font-semibold">
+            <div className="flex items-center justify-between md:space-x-8">
+              <label
+                htmlFor="tech-stack"
+                className="hidden md:block text-[18px] font-semibold whitespace-nowrap"
+              >
                 사용 기술 스택
               </label>
-              <div className="w-[650px]">
+              <div className="w-full sm:w-[650px]">
                 <MultiSelection
                   title="기술 스택을 선택하세요."
                   options={stackList.map(tech => tech.title)}
@@ -302,7 +309,7 @@ const Profile: React.FC = () => {
             </div>
           </section>
 
-          <section className="bg-white p-6 mb-4">
+          <section className="bg-white p-6 md:mb-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">활동 경력</h3>
               <WorkExperienceModal onSave={handleAddExperience} />
@@ -317,7 +324,7 @@ const Profile: React.FC = () => {
               ))}
             </div>
             {info.workExperiences.length > 3 && (
-              <div className="bg-white py-3">
+              <div className="bg-white">
                 <MoreWorkExperiencesModal
                   workExperiences={info.workExperiences}
                   nickname={parts[0]}
@@ -327,8 +334,8 @@ const Profile: React.FC = () => {
             )}
           </section>
 
-          <section className="bg-white p-6 mb-4">
-            <h3 className="text-lg font-semibold mb-4">간단 자기소개</h3>
+          <section className="p-4 sm:p-6 mb-0 md:mb-8 border-t border-gray-100 md:pt-8">
+            <h3 className="hidden md:block text-lg font-semibold mb-4">간단 자기소개</h3>
             <textarea
               value={info.introduction || ''}
               maxLength={300}
@@ -336,12 +343,15 @@ const Profile: React.FC = () => {
               onChange={e => setInfo({ ...info, introduction: e.target.value })}
               className="border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full h-[250px] p-4 px-6 h-24 resize-none focus:outline-none"
             ></textarea>
-            <div className="text-right mt-1 text-gray-600">{info.introduction.length}/300</div>
+            <div className="text-right mt-2 text-sm text-gray-600">
+              {info.introduction.length}/300
+            </div>
           </section>
-          <section className="bg-white p-6">
+          <section className="p-4 sm:p-6 mb-4 md:mb-8 border-t border-gray-100 md:pt-8">
             <h3 className="text-lg font-semibold mb-4">포트폴리오</h3>
-            <div className="items-center flex border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-6 h-24">
-              <div className="w-[600px]">
+
+            <div className="items-center flex flex-col md:flex-row border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 sm:p-6 min-h-[96px]">
+              <div className="flex-grow text-center sm:text-left mb-4 sm:mb-0">
                 {uploadedFile ? (
                   <a
                     href={uploadedFile.url}
@@ -388,8 +398,10 @@ const Profile: React.FC = () => {
             </div>
           </section>
 
-          <section className="mt-20 p-6 flex flex-col items-center text-center">
-            <h1 className="text-[30px] font-bold mb-8">상세 프로필</h1>
+          <section className="md:mt-20 p-6 flex flex-col items-center text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-gray-800 text-center">
+              상세 프로필
+            </h1>
 
             <div className="self-end space-x-2 inline-flex items-center">
               <span className="ms-3 text-sm font-semibold text-[#B4B4B4]">
@@ -410,13 +422,13 @@ const Profile: React.FC = () => {
           </section>
           <section className="bg-white p-6">
             <h3 className="text-lg font-semibold mb-4">모집 현황</h3>
-            <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
+            <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-8 md:px-28 h-24">
               <button
                 className="flex flex-col items-center"
                 onClick={() => nav('/myPostHome', { state: { filter: '' } })}
               >
-                <div className="font-bold text-[20px]">{info.totalProjects}</div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
+                <div className="font-bold text-lg sm:text-2xl">{info.totalProjects}</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">전체</div>
               </button>
 
               <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
@@ -425,8 +437,8 @@ const Profile: React.FC = () => {
                 className="flex flex-col items-center"
                 onClick={() => nav('/myPostHome', { state: { filter: false } })}
               >
-                <div className="font-bold text-[20px]">{info.openedProjects}</div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">모집중</div>
+                <div className="font-bold text-lg sm:text-2xl">{info.openedProjects}</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">모집중</div>
               </button>
 
               <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
@@ -435,20 +447,20 @@ const Profile: React.FC = () => {
                 className="flex flex-col items-center"
                 onClick={() => nav('/myPostHome', { state: { filter: true } })}
               >
-                <div className="font-bold text-[20px]">{info.closedProjects}</div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">완료</div>
+                <div className="font-bold text-lg sm:text-2xl">{info.closedProjects}</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">완료</div>
               </button>
             </div>
           </section>
           <section className="bg-white p-6">
             <h3 className="text-lg font-semibold mb-4">지원 현황</h3>
-            <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-28 h-24">
+            <div className="flex items-center justify-between border-[#000000]/50 border border-e-[3px] border-b-[3px] rounded-[10px] w-full p-4 px-8 md:px-28 h-24">
               <button
                 onClick={() => nav('/myApplication', { state: { filter: '' } })}
                 className="flex flex-col items-center"
               >
-                <div className="font-bold text-[20px]">{info.totalApplications}</div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">전체</div>
+                <div className="font-bold text-lg sm:text-2xl">{info.totalApplications}</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">전체</div>
               </button>
 
               <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
@@ -457,8 +469,8 @@ const Profile: React.FC = () => {
                 onClick={() => nav('/myApplication', { state: { filter: 'PENDING' } })}
                 className="flex flex-col items-center"
               >
-                <div className="font-bold text-[20px]">{info.pendingApplications}</div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">대기중</div>
+                <div className="font-bold text-lg sm:text-2xl">{info.pendingApplications}</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">대기중</div>
               </button>
 
               <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
@@ -467,10 +479,10 @@ const Profile: React.FC = () => {
                 onClick={() => nav('/myApplication', { state: { filter: 'APPROVED' } })}
                 className="flex flex-col items-center"
               >
-                <div className="font-bold text-[20px] text-[#3387E5]">
+                <div className="font-bold text-lg sm:text-2xl text-[#3387E5]">
                   {info.approvedApplications}
                 </div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">승인</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">승인</div>
               </button>
               <hr className="w-[1px] h-12 bg-[#B4B4B4] border-none" />
 
@@ -478,10 +490,10 @@ const Profile: React.FC = () => {
                 onClick={() => nav('/myApplication', { state: { filter: 'REJECTED' } })}
                 className="flex flex-col items-center"
               >
-                <div className="font-bold text-[20px] text-[#F24E1E]">
+                <div className="font-bold text-lg sm:text-2xl text-[#F24E1E]">
                   {info.rejectedApplications}
                 </div>
-                <div className="font-semibold text-[#B4B4B4] text-[12px]">거절</div>
+                <div className="font-semibold text-[#B4B4B4] text-[10px] sm:text-ms">거절</div>
               </button>
             </div>
           </section>

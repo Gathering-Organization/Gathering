@@ -65,7 +65,7 @@ const MultiSelection: React.FC<MultiSelectionProps> = ({
       >
         <div className="flex flex-wrap gap-1 max-h-12 overflow-auto items-center">
           {selectedOptions.length === 0 ? (
-            <span className="text-sm text-gray-500 dark:text-gray-400">{title}</span>
+            <span className="text-xs lg:text-sm text-gray-500 dark:text-gray-400">{title}</span>
           ) : (
             selectedOptions.map(option => (
               <span

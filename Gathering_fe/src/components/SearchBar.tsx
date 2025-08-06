@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 
 interface SearchBarProps {
   onSearch: (params: { searchType: string; keyword: string }) => void;
+  activeDropdown: string | null;
+  setActiveDropdown: React.Dispatch<React.SetStateAction<string | null>>;
 }
 const searchOptions = [
   { value: 'TITLE', label: '제목' },
@@ -9,11 +11,12 @@ const searchOptions = [
   { value: 'TITLE_CONTENT', label: '제목+내용' }
 ];
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, activeDropdown, setActiveDropdown }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [keyword, setKeyword] = useState('');
   const [searchType, setSearchType] = useState('TITLE');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const isOpen = activeDropdown === 'search';
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -26,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+        setActiveDropdown(null);
       }
     };
 
@@ -34,7 +37,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  }, [setActiveDropdown]);
 
   return (
     <form
@@ -49,7 +52,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           type="button"
           onClick={e => {
             e.stopPropagation();
-            setIsDropdownOpen(!isDropdownOpen);
+            setActiveDropdown(isOpen ? null : 'search');
           }}
           className="shrink-0 z-20 w-[100px] sm:w-[120px] inline-flex items-center justify-between py-2 px-3 sm:py-2.5 sm:px-4 
                      text-sm sm:text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200"
@@ -72,7 +75,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         </button>
 
         {/* 드롭다운 메뉴 */}
-        {isDropdownOpen && (
+        {isOpen && (
           <div
             ref={dropdownRef}
             className="absolute mt-10 sm:mt-12 w-36 sm:w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md dark:bg-gray-700 z-20 animate-fadeDown"
@@ -83,7 +86,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
                   <button
                     onClick={() => {
                       setSearchType(option.value);
-                      setIsDropdownOpen(false);
+                      setActiveDropdown(null);
                     }}
                     className="block w-full text-left px-4 py-1 xl:py-2 hover:bg-gray-100"
                   >
