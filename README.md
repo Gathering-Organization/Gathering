@@ -1,6 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" />
 
-# IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
+# IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering) Ver 1.1.1
 IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 개발 저장소입니다.
 
 ## 🔥Team Gathering
