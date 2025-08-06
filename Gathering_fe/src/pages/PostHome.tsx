@@ -39,11 +39,14 @@ const PostHome: React.FC = () => {
   const [selectedPosition, setSelectedPosition] = useState<string>('전체');
   const [showInterested, setShowInterested] = useState<boolean>(false);
   const [hideClosed, setHideClosed] = useState<boolean>(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const closedOption = hideClosed ? false : '';
   const [searchType, setSearchType] = useState('TITLE');
   const [keyword, setKeyword] = useState('');
+
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  const isOpen = activeDropdown === 'sort';
 
   const [profileCache, setProfileCache] = useState<{ [nickname: string]: ProfileAllInfo }>({});
 
@@ -135,7 +138,7 @@ const PostHome: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+        setActiveDropdown(null);
       }
     };
 
@@ -153,7 +156,7 @@ const PostHome: React.FC = () => {
     } else if (option === '인기순') {
       setSortType('viewCount');
     }
-    setIsDropdownOpen(false);
+    setActiveDropdown(null);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -172,7 +175,11 @@ const PostHome: React.FC = () => {
           <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 px-2 sm:px-0 xl:mx-4">
             <ProjecTypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
             <div className="w-full md:w-auto md:max-w-xl flex justify-end xl:w-[600px]">
-              <SearchBar onSearch={handleSearch} />
+              <SearchBar
+                onSearch={handleSearch}
+                activeDropdown={activeDropdown}
+                setActiveDropdown={setActiveDropdown}
+              />
             </div>
           </div>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 relative z-10 px-0 xl:mx-4">
@@ -213,7 +220,7 @@ const PostHome: React.FC = () => {
               type="button"
               onClick={e => {
                 e.stopPropagation();
-                setIsDropdownOpen(!isDropdownOpen);
+                setActiveDropdown(activeDropdown === 'sort' ? null : 'sort');
               }}
               className="inline-flex items-center justify-between w-full lg:w-auto min-w-[160px] px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none"
             >
@@ -223,7 +230,7 @@ const PostHome: React.FC = () => {
                   ? '오래된순'
                   : '인기순'}
               <svg
-                className={`w-4 h-4 ml-2 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                className={`w-4 h-4 ml-2 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -238,7 +245,7 @@ const PostHome: React.FC = () => {
             </button>
 
             {/* 드롭다운 메뉴 */}
-            {isDropdownOpen && (
+            {isOpen && (
               <div
                 ref={dropdownRef}
                 className="absolute top-full mt-2 right-0 lg:left-auto lg:right-0 w-full lg:w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700 z-20 animate-fadeDown"
