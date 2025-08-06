@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDropdown } from '@/contexts/DropdownContext';
 
 interface SearchBarProps {
   onSearch: (params: { searchType: string; keyword: string }) => void;
-  activeDropdown: string | null;
-  setActiveDropdown: React.Dispatch<React.SetStateAction<string | null>>;
 }
 const searchOptions = [
   { value: 'TITLE', label: '제목' },
@@ -11,10 +10,12 @@ const searchOptions = [
   { value: 'TITLE_CONTENT', label: '제목+내용' }
 ];
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, activeDropdown, setActiveDropdown }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [keyword, setKeyword] = useState('');
   const [searchType, setSearchType] = useState('TITLE');
+
+  const { activeDropdown, setActiveDropdown } = useDropdown();
 
   const isOpen = activeDropdown === 'search';
 
