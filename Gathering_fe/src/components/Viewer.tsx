@@ -250,7 +250,7 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 mb-4 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 sm:mb-4 sm:gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <div className="flex">
               <button
@@ -281,16 +281,16 @@ const Viewer: React.FC<{ data: PartPostInfo | null }> = ({ data }) => {
             </div>
           </div>
           {data?.author.nickname === userNickname && (
-            <section className="flex gap-3 sm:gap-4 items-center self-end sm:self-auto">
+            <section className="flex gap-2 sm:gap-4 items-center self-end sm:self-auto">
               <button
                 onClick={onClickUpdate}
-                className="w-9 sm:w-[50px] h-9 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
+                className="w-8 sm:w-[50px] h-8 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
               >
                 <img src={editButton} alt="edit" />
               </button>
               <button
                 onClick={onClickDelete}
-                className="w-9 sm:w-[50px] h-9 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
+                className="w-8 sm:w-[50px] h-8 sm:h-[50px] duration-200 ease-in-out hover:scale-110"
               >
                 <img src={deleteButton} alt="delete" />
               </button>
