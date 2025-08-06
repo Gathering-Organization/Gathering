@@ -47,11 +47,15 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
   return (
     <div>
       <button
-        className="w-[100px] h-[100px] rounded-full mb-8 relative"
+        className="w-[80px] md:w-[100px] h-[80px] md:h-[100px] rounded-full mb-8 relative"
         onClick={openModal}
         style={{ backgroundColor: `#${profileColor}` }}
       >
-        <img src={changeMark} alt="Edit" className="w-8 h-8 absolute bottom-1 right-1" />
+        <img
+          src={changeMark}
+          alt="Edit"
+          className="w-6 md:w-8 h-6 md:h-8 absolute bottom-1 right-1"
+        />
       </button>
 
       {isModalOpen && (
@@ -94,7 +98,7 @@ const ProfileColorModal: React.FC<ProfileColorModalProps> = ({ profileColor }) =
                     <button
                       key={color.id}
                       type="button"
-                      className={`w-14 h-14 rounded-full relative flex items-center justify-center 
+                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full relative flex items-center justify-center 
         ${selectedColor === color.color ? 'outline outline-4 outline-[#3387E5] outline-offset-2' : ''}`}
                       style={{ backgroundColor: `#${color.color}` }}
                       onClick={e => {

@@ -33,7 +33,7 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(prev => !prev)}
-        className="w-full text-left cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-sm rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
+        className="w-full text-left cursor-pointer bg-gray-50 dark:bg-[#1E2028] border border-gray-300 text-gray-500 text-xs lg:text-sm rounded-[20px] p-3 px-6 pr-10 focus:outline-none"
       >
         {selectedLabel}
       </button>
@@ -60,7 +60,7 @@ const SingleSelection: React.FC<SingleSelectionProps> = ({
                 setSelectedValue(option.value);
                 setIsOpen(false);
               }}
-              className="cursor-pointer px-6 py-2 text-sm text-gray-500 dark:text-white hover:bg-[#3387E5]/20 dark:hover:bg-gray-800"
+              className="cursor-pointer px-6 py-2 text-xs lg:text-sm text-gray-500 dark:text-white hover:bg-[#3387E5]/20 dark:hover:bg-gray-800"
             >
               {option.label}
             </div>

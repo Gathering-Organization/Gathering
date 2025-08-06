@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     >
       <div className="mb-4 sm:mb-0 text-center sm:text-left">
         <div>How to contact?</div>
-        <div>Email : inhagrad2242@gmail.com</div>
+        <div>Email : gatheringcrew1820@gmail.com</div>
       </div>
       <hr className="hidden sm:block w-[1px] h-16 sm:h-20 md:h-24 bg-[#D9D9D9]/70 border-none mx-4 sm:mx-6 md:mx-10" />
       <div className="text-center sm:text-right">

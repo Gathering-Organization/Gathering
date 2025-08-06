@@ -51,7 +51,7 @@ const LogoutButton: React.FC = () => {
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <button
-        className={`w-[200px] h-[48px] focus:outline-none border border-transparent border-r-[5px] border-b-[5px] rounded-[10px] ${
+        className={`h-[48px] px-3 sm:px-4 focus:outline-none border border-transparent border-r-[5px] border-b-[5px] rounded-[10px] ${
           isDropdownOpen ? 'border-[#000000]' : ''
         }`}
         onClick={() => setIsDropdownOpen(prev => !prev)}
@@ -61,7 +61,7 @@ const LogoutButton: React.FC = () => {
             className="w-[28px] h-[28px] rounded-full"
             style={{ backgroundColor: `#${userColor}` }}
           />
-          <div className="font-bold">{parts[0]}</div>
+          <div className="font-bold hidden sm:block">{parts[0]}</div>
           <img
             className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
             src={triangleArrowIcon}

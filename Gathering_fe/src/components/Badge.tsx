@@ -11,8 +11,10 @@ const Badge: React.FC<BadgeProps> = ({ count }) => {
   return (
     <div
       className={`flex items-center justify-center bg-[#FFFF33] rounded-full text-black font-bold ${
-        isSingleDigit ? 'w-[25px] h-[25px]' : 'min-w-[25px] h-[25px] px-2'
-      }`}
+        isSingleDigit
+          ? 'w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]'
+          : 'min-w-[20px] h-[20px] sm:min-w-[25px] sm:h-[25px] px-[6px] sm:px-2'
+      } text-xs sm:text-base`}
     >
       {displayCount}
     </div>

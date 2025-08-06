@@ -8,7 +8,7 @@ const SignUp: React.FC = () => {
   const [step, setStep] = useState(1);
 
   return (
-    <div className="mx-60">
+    <div className="mx-4 sm:mx-20 md:mx-40 lg:mx-60">
       {step === 1 && (
         <div className="space-y-20">
           <SignUpOrder order={step} />
