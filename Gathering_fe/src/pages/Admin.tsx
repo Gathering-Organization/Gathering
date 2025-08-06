@@ -148,7 +148,7 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <div className="mx-36 space-y-12 py-10">
+    <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-10">
       <section>
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">유저 수</h2>
@@ -174,17 +174,12 @@ const Admin: React.FC = () => {
             .map(user => (
               <li
                 key={user.memberId}
-                className="flex justify-between items-center border px-4 py-2 rounded"
+                className="flex justify-between items-center border px-4 py-2 rounded text-sm sm:text-base gap-2"
               >
-                <span>
-                  {`[${user.memberId}] ${user.nickname} (${user.email}) `}
-                  <span className="font-semibold">
-                    {user.role === 'ROLE_ADMIN' ? '관리자' : '회원'}
-                  </span>
-                </span>
+                <span className="break-all">{`[${user.memberId}] ${user.nickname} (${user.email}) `}</span>
                 {user.nickname !== myProfile.nickname && (
                   <button
-                    className="text-sm text-green-500 font-semibold"
+                    className="text-green-500 font-semibold whitespace-nowrap"
                     onClick={() =>
                       changeRole(
                         user.memberId,
@@ -206,9 +201,9 @@ const Admin: React.FC = () => {
         <h2 className="text-xl font-bold mb-2">현재 관리자 목록</h2>
         <ul className="space-y-1 max-h-[500px] overflow-y-auto pr-2">
           {adminList.map(user => (
-            <li key={user.memberId} className="border p-2 rounded bg-gray-50">
+            <li key={user.memberId} className="border p-2 rounded bg-gray-50 text-sm sm:text-base">
               {`[${user.memberId}] ${user.nickname} (${user.email}) `}
-              <span className="font-semibold">
+              <span className="font-semibold text-sm sm:text-base">
                 {user.role === 'ROLE_ADMIN' ? '관리자' : '회원'}
               </span>
             </li>
@@ -241,21 +236,24 @@ const Admin: React.FC = () => {
             .map(post => (
               <li
                 key={post.projectId}
-                className={`flex justify-between items-center border px-4 py-2 rounded ${
+                className={`flex justify-between items-center border px-4 py-2 rounded text-sm sm:text-base gap-2 ${
                   post.deleted ? 'bg-red-100' : 'bg-white'
                 }`}
               >
-                <span className="flex w-full">
-                  <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''}`}>
+                <div className="flex flex-col sm:flex-row sm:justify-between w-full">
+                  <span className={`${post.deleted ? 'text-red-600 font-semibold' : ''} break-all`}>
                     {`[${post.projectId}] ${post.title} (작성자 : ${post.authorNickname})`}
                   </span>
                   {post.deleted && (
-                    <span className="ml-auto text-red-600 font-semibold">(삭제됨)</span>
+                    <span className="text-red-600 font-semibold sm:ml-auto whitespace-nowrap">
+                      (삭제됨)
+                    </span>
                   )}
-                </span>
+                </div>
+
                 {!post.deleted && (
                   <button
-                    className="text-sm text-red-600"
+                    className="text-red-600 font-semibold text-sm sm:text-base whitespace-nowrap"
                     onClick={() => deletePost(post.projectId)}
                   >
                     삭제
