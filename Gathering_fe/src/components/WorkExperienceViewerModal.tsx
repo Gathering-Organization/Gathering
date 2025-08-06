@@ -18,25 +18,25 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
     const stack = techStacks.find(stack => stack.id === id);
     return stack ? stack.title : id;
   });
-  const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
-  const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
-    startDate: null,
-    endDate: null
-  });
-  const [dateRange, setDateRange] = useState<{
-    startDate: string;
-    endDate: string;
-  }>({ startDate: '', endDate: '' });
+  // const [selectedStacks, setSelectedStacks] = useState<string[]>([]);
+  // const [value, setValue] = useState<{ startDate: Date | null; endDate: Date | null }>({
+  //   startDate: null,
+  //   endDate: null
+  // });
+  // const [dateRange, setDateRange] = useState<{
+  //   startDate: string;
+  //   endDate: string;
+  // }>({ startDate: '', endDate: '' });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [newExperience, setNewExperience] = useState<WorkExperience>({
-    activityName: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    techStacks: []
-  });
+  // const [newExperience, setNewExperience] = useState<WorkExperience>({
+  //   activityName: '',
+  //   startDate: '',
+  //   endDate: '',
+  //   description: '',
+  //   techStacks: []
+  // });
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -59,10 +59,10 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center overflow-y-auto backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
           aria-hidden="true"
         >
-          <div className="relative overflow-y-auto sm:overflow-hidden p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 animate-fadeIn">
+          <div className="relative sm:overflow-hidden p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 animate-fadeIn">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
               <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                 활동 경력을 확인하세요.
@@ -90,7 +90,7 @@ const WorkExperienceViewerModal: React.FC<WorkExperience> = ({
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <div className="p-6 md:p-7">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6 md:p-7">
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                   <label className="sm:w-36 font-semibold text-gray-700 dark:text-white">

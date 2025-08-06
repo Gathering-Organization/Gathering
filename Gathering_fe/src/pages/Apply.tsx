@@ -13,6 +13,7 @@ import { getMyApplication } from '@/services/applicationApi';
 import { ApplyInfo } from '@/types/apply';
 import BeatLoader from 'react-spinners/BeatLoader';
 import WorkExperienceItem from '@/components/WorkExperienceItem';
+import MoreWorkExperiencesModal from '@/components/MoreWorkExperiencesModal';
 
 interface TechStack {
   id: string;
@@ -82,49 +83,6 @@ const Apply: React.FC = () => {
       }
     }
   }, [projectId, myProfile]);
-
-  // useEffect(() => {
-  //   const loadApplyInfo = async () => {
-  //     try {
-  //       if (!projectId) {
-  //         const stored = localStorage.getItem('tempApplyInfo');
-  //         if (stored) {
-  //           setApplyInfo(JSON.parse(stored));
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('지원서 조회 실패:', error);
-  //     }
-  //   };
-  //   loadApplyInfo();
-  // }, [projectId]);
-
-  // useEffect(() => {
-  //   const fetchApplications = async () => {
-  //     try {
-  //       if (projectId) {
-  //         const result = await getMyApplication(Number(projectId));
-  //         if (result?.success) {
-  //           setApplyInfo(result.data);
-  //           setWorkExperiences(result.data.workExperiences);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('지원서 조회 실패:', error);
-  //     }
-  //   };
-
-  //   fetchApplications();
-  // }, [projectId]);
-
-  // useEffect(() => {
-  //   if (!projectId) {
-  //     if (myProfile) {
-  //       setInfo(myProfile);
-  //       setWorkExperiences(myProfile.workExperiences);
-  //     }
-  //   }
-  // }, [projectId, myProfile]);
 
   useEffect(() => {
     const closeTooltips = () => setIsTechTooltipOpen(null);
@@ -212,7 +170,7 @@ const Apply: React.FC = () => {
   }
 
   return (
-    <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-0 sm:space-y-6">
+    <div className="px-4 mx-auto sm:px-6 md:px-12 lg:px-30 xl:px-60 py-6 space-y-0 sm:space-y-6">
       <div className="border-[#000000]/20 border-2 rounded-xl py-4 sm:p-8 lg:p-10 min-h-screen">
         <section className="flex p-2 px-6 sm:p-0 space-x-2 sm:space-x-4 items-center">
           {isOwnProfile ? (
@@ -304,17 +262,37 @@ const Apply: React.FC = () => {
             <div className="flex-grow px-6 sm:px-0">
               {isOwnProfile ? (
                 <div>
-                  {info.workExperiences.slice(0, 3).map((experience, index) => (
-                    <WorkExperienceItem key={`experience-${index}`} {...experience} />
-                  ))}
+                  <div>
+                    {info.workExperiences.slice(0, 3).map((experience, index) => (
+                      <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                    ))}
+                  </div>
+                  {info.workExperiences.length > 3 && (
+                    <div className="bg-white">
+                      <MoreWorkExperiencesModal
+                        workExperiences={info.workExperiences}
+                        nickname={info.nickname.split(/(#\d+)/)[0]}
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div>
-                  {applyInfo?.workExperiences
-                    .slice(0, 3)
-                    .map((experience, index) => (
-                      <WorkExperienceItem key={`experience-${index}`} {...experience} />
-                    ))}
+                  <div>
+                    {applyInfo?.workExperiences
+                      .slice(0, 3)
+                      .map((experience, index) => (
+                        <WorkExperienceItem key={`experience-${index}`} {...experience} />
+                      ))}
+                  </div>
+                  {applyInfo && applyInfo.workExperiences.length > 3 && (
+                    <div className="bg-white">
+                      <MoreWorkExperiencesModal
+                        workExperiences={applyInfo?.workExperiences}
+                        nickname={applyInfo?.nickname.split(/(#\d+)/)[0]}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

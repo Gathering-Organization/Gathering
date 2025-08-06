@@ -148,7 +148,7 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <div className="px-4 mx-auto sm:px-10 md:px-20 lg:px-60 py-6 space-y-10">
+    <div className="px-4 mx-auto sm:px-6 md:px-12 lg:px-30 xl:px-60 py-6 space-y-10">
       <section>
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">유저 수</h2>

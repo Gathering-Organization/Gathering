@@ -98,7 +98,7 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center overflow-y-auto sm:overflow-hidden backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center sm:overflow-hidden backdrop-blur-sm"
           aria-hidden="true"
         >
           <div className="relative p-4 w-full max-w-[800px] max-h-[90vh] rounded-[20px] bg-white shadow-lg dark:bg-gray-700 overflow-hidden animate-fadeIn">
@@ -128,8 +128,8 @@ const OtherApplicationModal: React.FC<OtherApplicationModalProps> = ({ apply, on
               </button>
             </div>
 
-            <div className="p-4 sm:p-6">
-              <div className="mt-3 max-h-[65vh] overflow-y-auto space-y-4">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6 md:p-7">
+              <div className="mt-3 space-y-4">
                 {apply.length > 0 ? (
                   <div className="space-y-4">
                     {apply.map((item, index) => (
