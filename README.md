@@ -3,6 +3,12 @@
 # IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering) Ver 1.1.1
 IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 개발 저장소입니다.
 
+## 🌐 사이트
+[IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)](https://www.gathering.work)
+
+## 📧 문의
+[![Email](https://img.shields.io/badge/Email-gatheringcrew1820%40gmail.com-blue?style=for-the-badge&logo=gmail&logoColor=white)](mailto:gatheringcrew1820@gmail.com)
+
 ## 🔥Team Gathering
 
 |                                        FE                                        |                                        BE                                        |
