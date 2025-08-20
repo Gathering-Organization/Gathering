@@ -2,6 +2,7 @@ package com.Gathering_be.service;
 
 import com.Gathering_be.domain.Member;
 import com.Gathering_be.domain.Profile;
+import com.Gathering_be.dto.request.LinkAccountRequest;
 import com.Gathering_be.dto.request.LoginRequest;
 import com.Gathering_be.dto.request.SignUpRequest;
 import com.Gathering_be.dto.response.TokenResponse;
@@ -12,15 +13,17 @@ import com.Gathering_be.repository.MemberRepository;
 import com.Gathering_be.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,18 +64,35 @@ public class AuthService {
         String email = (String) userInfo.get("email");
         String name = (String) userInfo.get("name");
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseGet(() -> {
-                    Member newMember = Member.oAuthBuilder()
-                            .email(email)
-                            .name(name)
-                            .provider(OAuthProvider.GOOGLE)
-                            .build();
-                    Member savedMember = memberRepository.save(newMember);
-                    createDefaultProfile(savedMember);
-                    return savedMember;
-                });
+        Optional<Member> existingMemberOpt = memberRepository.findByEmail(email);
 
+        if (existingMemberOpt.isPresent()) {
+            // --- 이미 해당 이메일로 가입된 회원이 있을 경우 ---
+            Member member = existingMemberOpt.get();
+
+            if (member.getProviders().contains(OAuthProvider.GOOGLE)) {
+                // [시나리오 1] 이미 Google 계정이 연결된 경우 -> 정상 로그인 처리
+                return createAndSaveTokens(member);
+            } else {
+                // [시나리오 2] Google 계정이 연결되지 않은 경우 (예: BASIC 가입자)
+                // "계정 연결이 필요합니다" 라는 특정 예외를 발생시켜 프론트엔드에 알려줍니다.
+                throw new AccountNeedsLinkingException();
+            }
+        } else {
+            // --- 신규 회원일 경우 ---
+            Member newMember = Member.oAuthBuilder()
+                    .email(email)
+                    .name(name)
+                    .provider(OAuthProvider.GOOGLE)
+                    .build();
+            Member savedMember = memberRepository.save(newMember);
+            createDefaultProfile(savedMember);
+            return createAndSaveTokens(savedMember);
+        }
+    }
+
+    // 토큰 생성 및 저장을 위한 private 헬퍼 메서드
+    private TokenResponse createAndSaveTokens(Member member) {
         String jwtToken = jwtTokenProvider.createAccessToken(member.getId(), member.getRole());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
         redisService.setValues(REFRESH_TOKEN_PREFIX + member.getId(), refreshToken);
@@ -105,7 +125,7 @@ public class AuthService {
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialsException::new);
 
-        if (member.getProvider() != OAuthProvider.BASIC) {
+        if (!member.getProviders().contains(OAuthProvider.BASIC)) {
             throw new SocialMemberLoginException();
         }
 
@@ -120,8 +140,6 @@ public class AuthService {
 
         return new TokenResponse(accessToken, refreshToken);
     }
-
-
 
     private Map<String, Object> getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
@@ -176,5 +194,27 @@ public class AuthService {
     private Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    /**
+     * 사용자가 비밀번호를 입력하여 기존 계정에 Google 계정을 연결합니다.
+     * @param request 이메일과 비밀번호가 담긴 DTO
+     */
+    @Transactional
+    public void linkGoogleAccount(LinkAccountRequest request) {
+        String email = request.getEmail();
+        String password = request.getPassword();
+
+        // 1. 해당 이메일로 기존 회원을 찾습니다.
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+
+        // 2. 입력된 비밀번호가 맞는지 확인합니다.
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+
+        // 3. 비밀번호가 맞으면, 이 회원의 로그인 방식에 GOOGLE을 추가합니다.
+        member.addProvider(OAuthProvider.GOOGLE);
     }
 }

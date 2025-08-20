@@ -28,6 +28,7 @@ public enum ErrorCode {
     INVALID_VERIFICATION_CODE(400, "AU008", "올바르지 않은 인증 코드입니다."),
     EMAIL_NOT_VERIFIED(400, "AU009", "이메일 인증이 완료되지 않았습니다."),
     INVALID_EMAIL(400, "AU009", "유효하지 않은 이메일 형식입니다."),
+    ACCOUNT_NEEDS_LINKING(400, "AU010", "이미 해당 이메일로 회원가입이 되어있어 구글 로그인과의 연동이 필요합니다."),
 
     // Member
     MEMBER_NOT_FOUND(404, "M001", "존재하지 않는 유저입니다."),
