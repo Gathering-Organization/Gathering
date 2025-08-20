@@ -15,6 +15,7 @@ const GoogleRedirectHandler: React.FC = () => {
       if (code) {
         try {
           const result = await googleLogin(code);
+
           if (result?.success) {
             // showToast('로그인 되었습니다.', true);
             // setTimeout(() => {
