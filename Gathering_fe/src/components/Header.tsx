@@ -24,8 +24,10 @@ const Header: React.FC = () => {
   const onLogoClick = () => {
     if (window.location.pathname === '/') {
       window.location.reload();
+      window.scrollTo(0, 0);
     } else {
       nav('/');
+      window.scrollTo(0, 0);
     }
   };
 
