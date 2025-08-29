@@ -19,6 +19,8 @@ import Pagination from '@/components/Pagination';
 import OptionalDropdown from '@/components/OptionalDropdown';
 import { useToast } from '@/contexts/ToastContext';
 import EmblaCarouselComponent from '@/components/BannerCarousel';
+import banner1 from '/banner1.png';
+import banner2 from '/banner2.png';
 
 interface DropdownDispatchContextType {
   setSelectedStack: (value: string[]) => void;
@@ -54,14 +56,39 @@ const PostHome: React.FC = () => {
   });
 
   const slides = [
-    <div className="h-48 sm:h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
-      🌟 새로운 프로젝트를 시작해보세요! 🌟
+    <div
+      onClick={() =>
+        window.open(
+          'https://diligent-cloudberry-302.notion.site/Gathering-25545ef4e6838014a912cd391552ab99?source=copy_link',
+          '_blank'
+        )
+      }
+      className="relative cursor-pointer h-48 sm:h-64 rounded-xl overflow-hidden shadow-lg group transform transition-transform duration-300 hover:scale-[1.005] will-change-transform"
+    >
+      <img src={banner2} alt="사용 설명서 배너" className="w-full h-full object-cover" />
+      <div className="absolute inset-16 flex flex-col items-start justify-center pl-6 sm:pl-10 text-[#fafbfc] text-left">
+        <h2 className="text-xl sm:text-3xl font-bold">
+          사용 방법을 배우면 프로젝트의 매칭 확률이 올라가요!
+        </h2>
+        <p className="text-sm sm:text-lg mt-2 font-medium">
+          게더링 서비스의 사용설명서 보러가기 &gt;&gt;
+        </p>
+      </div>
     </div>,
-    <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center text-lg sm:text-3xl font-bold text-white rounded-xl shadow-lg">
-      💡 아이디어를 공유하고 팀원을 찾아보세요! 💡
-    </div>,
-    <div className="h-48 sm:h-64 bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center text-xl sm:text-3xl font-bold text-white rounded-xl shadow-lg">
-      🚀 당신의 기술 스택을 뽐내보세요! 🚀
+
+    <div
+      onClick={() => window.open('https://github.com/Gathering-Organization/Gathering', '_blank')}
+      className="relative cursor-pointer h-48 sm:h-64 rounded-xl overflow-hidden shadow-lg group transform transition-transform duration-300 hover:scale-[1.005] will-change-transform"
+    >
+      <img src={banner1} alt="깃허브 배너" className="w-full h-full object-cover" />
+      <div className="absolute inset-16 flex flex-col items-start justify-center pl-6 sm:pl-10 text-[#fafbfc] text-left">
+        <h2 className="text-xl sm:text-3xl font-bold">
+          IT 초심자를 위한 팀원 모집 웹서비스, 게더링
+        </h2>
+        <p className="text-sm sm:text-lg mt-2 font-medium">
+          게더링 서비스의 오픈소스 보러가기 &gt;&gt;
+        </p>
+      </div>
     </div>
   ];
 

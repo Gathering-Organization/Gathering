@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -26,7 +29,9 @@ public class Member extends BaseTimeEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private OAuthProvider provider;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_providers", joinColumns = @JoinColumn(name = "member_id"))
+    private Set<OAuthProvider> providers = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -35,7 +40,7 @@ public class Member extends BaseTimeEntity {
     public Member(String email, String name, OAuthProvider provider) {
         this.email = email;
         this.name = name;
-        this.provider = provider;
+        this.providers.add(provider);
         this.role = Role.ROLE_USER;
     }
 
@@ -44,10 +49,11 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.provider = OAuthProvider.BASIC;
+        this.providers.add(OAuthProvider.BASIC);
         this.role = Role.ROLE_USER;
     }
 
+    public void addProvider(OAuthProvider provider) { this.providers.add(provider); }
     public void updateRole(Role role) {
         this.role = role;
     }

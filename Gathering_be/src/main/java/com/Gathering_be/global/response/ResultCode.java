@@ -15,6 +15,7 @@ public enum ResultCode {
     LOGOUT_SUCCESS(200, "AU006", "로그아웃에 성공하였습니다."),
     EMAIL_SENT_SUCCESS(200, "AU007", "이메일로 인증코드 전송을 성공하였습니다."),
     EMAIL_VERIFY_SUCCESS(200, "AU008", "이메일 인증코드 인증을 성공하였습니다."),
+    ACCOUNT_LINK_SUCCESS(200, "AU009", "기존 계정과 Google 계정이 성공적으로 연결되었습니다."),
 
     //Profile
     PROFILE_READ_SUCCESS(200, "P001", "프로필 조회에 성공하였습니다."),
