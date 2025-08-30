@@ -100,7 +100,7 @@ export const googleLogin = async (accessToken: string) => {
       cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
       cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'strict' });
 
-      return { success: true, message: response.data.message };
+      return { success: true, message: response.data.message, code: response.data.code };
     }
   } catch (error) {
     console.error('구글 로그인 API 요청 실패:', error);
