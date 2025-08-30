@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface IntergrationModalProps {
   closeModal: () => void;
+  onClick: () => void;
 }
 
-const IntergrationModal: React.FC<IntergrationModalProps> = ({ closeModal }) => {
+const IntergrationModal: React.FC<IntergrationModalProps> = ({ closeModal, onClick }) => {
   const nav = useNavigate();
 
   return (
@@ -47,6 +48,7 @@ const IntergrationModal: React.FC<IntergrationModalProps> = ({ closeModal }) => 
           <div className="flex flex-col items-center space-y-4 pt-4">
             <button
               type="submit"
+              onClick={onClick}
               className="bg-[#3387E5] font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-blue-600 transition-colors duration-300 ease-in-out focus:outline-none"
             >
               예
@@ -55,7 +57,6 @@ const IntergrationModal: React.FC<IntergrationModalProps> = ({ closeModal }) => 
               type="button"
               onClick={() => {
                 closeModal();
-                nav('/signup');
               }}
               className="bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none"
             >

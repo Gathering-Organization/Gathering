@@ -4,11 +4,13 @@ import { googleLogin } from '@/services/authApi';
 import { useToast } from '@/contexts/ToastContext';
 import BeatLoader from 'react-spinners/BeatLoader';
 import IntergrationModal from '@/components/IntergrationModal';
+import LoginInModal from '@/components/LoginInModal';
 
 const GoogleRedirectHandler: React.FC = () => {
   const nav = useNavigate();
   const { showToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const params = new URLSearchParams(window.location.hash.substring(1));
   const code = params.get('access_token');
   const didRunRef = useRef(false);
@@ -55,7 +57,7 @@ const GoogleRedirectHandler: React.FC = () => {
     };
 
     handleGoogleLogin();
-  }, [code]);
+  }, [code, nav]);
 
   return (
     <div>
@@ -63,7 +65,22 @@ const GoogleRedirectHandler: React.FC = () => {
         <BeatLoader color="#3387E5" size={20} />
         <p className="mt-4 text-gray-700 font-semibold">로그인 중입니다...</p>
       </div>
-      {isModalOpen && <IntergrationModal closeModal={closeModal} />}
+      {isModalOpen && (
+        <IntergrationModal closeModal={closeModal} onClick={() => setIsLoginModalOpen(true)} />
+      )}
+      {isLoginModalOpen && (
+        <LoginInModal
+          closeModal={() => setIsLoginModalOpen(false)}
+          type="통합하기"
+          formData={{ email: '', password: '' }}
+          handleInputChange={() => {}}
+          handleLogin={async () => {
+            // 통합 처리 API 호출
+            setIsLoginModalOpen(false);
+            nav('/');
+          }}
+        />
+      )}
     </div>
   );
 };

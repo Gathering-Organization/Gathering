@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 type LoginInModalProps = {
   closeModal: () => void;
-  isEmailLogin: boolean;
-  handleGoogle: () => void;
-  handleEmailLoginMode: () => void;
-  handleLogin: (e: React.FormEvent) => Promise<void>;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  isEmailLogin?: boolean;
+  handleGoogle?: () => void;
+  handleEmailLoginMode?: () => void;
+  handleLogin?: (e: React.FormEvent) => Promise<void>;
+  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formData: LoginRequest;
+  type: string;
 };
 
 const LoginInModal: React.FC<LoginInModalProps> = ({
@@ -21,7 +22,8 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
   handleEmailLoginMode,
   handleLogin,
   handleInputChange,
-  formData
+  formData,
+  type
 }) => {
   const nav = useNavigate();
 
@@ -95,7 +97,9 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
                   onChange={handleInputChange}
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 mb-4 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="이메일을 입력하세요."
+                  placeholder={
+                    type === '로그인' ? '이메일을 입력하세요.' : '기존 이메일을 입력하세요.'
+                  }
                 />
               </div>
               <div>
@@ -107,7 +111,9 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
                   onChange={handleInputChange}
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 mb-8 font-normal text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="비밀번호를 입력하세요."
+                  placeholder={
+                    type === '로그인' ? '비밀번호를 입력하세요.' : '기존 비밀번호를 입력하세요.'
+                  }
                 />
               </div>
               <div className="flex flex-col items-center space-y-4 pt-4">
@@ -115,7 +121,7 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
                   type="submit"
                   className="bg-[#3387E5] font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-blue-600 transition-colors duration-300 ease-in-out focus:outline-none"
                 >
-                  로그인
+                  {type === '로그인' ? '로그인' : '통합하기'}
                 </button>
                 <button
                   type="button"
@@ -123,7 +129,7 @@ const LoginInModal: React.FC<LoginInModalProps> = ({
                     closeModal();
                     nav('/signup');
                   }}
-                  className="bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none"
+                  className={`${type === '로그인' ? 'block' : 'hidden'} bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none`}
                 >
                   회원가입
                 </button>

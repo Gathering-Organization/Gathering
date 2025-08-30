@@ -107,3 +107,16 @@ export const googleLogin = async (accessToken: string) => {
     throw error;
   }
 };
+
+export const linkGoogle = async (data: LoginRequest) => {
+  try {
+    const response = await api.post('/auth/link/google', data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error) {
+    console.error('계정 통합 실패:', error);
+    throw error;
+  }
+};
