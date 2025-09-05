@@ -47,6 +47,7 @@ public class SecurityConfig {
             "/actuator/prometheus",
             "/api/project/pagination",
             "/api/profile/nickname/**",
+            "/h2-console/**",
     };
 
     @Bean
