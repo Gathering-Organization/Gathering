@@ -48,6 +48,7 @@ public class SecurityConfig {
             "/actuator/prometheus",
             "/api/project/pagination",
             "/api/profile/nickname/**",
+            "/h2-console/**",
     };
 
     // [신 기능 추가] 개발 환경에서만 H2 콘솔 접근을 허용하는 필터 체인
