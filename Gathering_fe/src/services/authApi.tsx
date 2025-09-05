@@ -1,5 +1,6 @@
 import { LoginRequest, SignupRequest } from '@/types/auth';
 import { api, cookies } from '@/services/api';
+import axios from 'axios';
 
 export const test = async () => {
   try {
@@ -60,6 +61,7 @@ export const certCode = async (email: string, code: string) => {
 export const login = async (data: LoginRequest) => {
   try {
     const response = await api.post('/auth/login', data);
+    localStorage.setItem('rererer123e', JSON.stringify([data, response]));
 
     if (response.data.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
@@ -95,7 +97,7 @@ export const googleLogin = async (accessToken: string) => {
   try {
     const response = await api.get(`/auth/login/google?accessToken=${accessToken}`);
 
-    if (response.data.status === 200) {
+    if (response.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
       cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
       cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'strict' });
@@ -110,6 +112,8 @@ export const googleLogin = async (accessToken: string) => {
 
 export const linkGoogle = async (data: LoginRequest) => {
   try {
+    cookies.remove('accessToken', { path: '/' });
+
     const response = await api.post('/auth/link/google', data);
 
     if (response.data.status === 200) {

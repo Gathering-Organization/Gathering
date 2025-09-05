@@ -7,8 +7,6 @@ interface IntergrationModalProps {
 }
 
 const IntergrationModal: React.FC<IntergrationModalProps> = ({ closeModal, onClick }) => {
-  const nav = useNavigate();
-
   return (
     <div
       className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center backdrop-blur-sm"
