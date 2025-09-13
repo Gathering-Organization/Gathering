@@ -8,6 +8,7 @@ export const getNotification = async (nickname: string) => {
     const response = await api.get(`/notification?nickname=${encodedNickname}`);
 
     if (response.data.status === 200) {
+      console.log(response.data);
       return { success: true, message: response.data.message, data: response.data.data };
     }
   } catch (error: unknown) {
@@ -43,7 +44,7 @@ export const getNotificationUnread = async (nickname: string) => {
 export const readNotification = async (nickname: string, notificationId: number) => {
   try {
     const encodedNickname = encodeURIComponent(nickname);
-    const response = await api.put(
+    const response = await api.patch(
       `/notification/${notificationId}/read?nickname=${encodedNickname}`
     );
 
@@ -64,7 +65,7 @@ export const readNotification = async (nickname: string, notificationId: number)
 export const readAllNotification = async (nickname: string) => {
   try {
     const encodedNickname = encodeURIComponent(nickname);
-    const response = await api.put(`/notification/read-all?nickname=${encodedNickname}`);
+    const response = await api.patch(`/notification/read-all?nickname=${encodedNickname}`);
 
     if (response.data.status === 200) {
       return { success: true, message: response.data.message, data: response.data.data };
