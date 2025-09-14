@@ -48,26 +48,7 @@ public class SecurityConfig {
             "/actuator/prometheus",
             "/api/project/pagination",
             "/api/profile/nickname/**",
-            "/h2-console/**",
     };
-
-    // [신 기능 추가] 개발 환경에서만 H2 콘솔 접근을 허용하는 필터 체인
-    @Bean
-    @Order(0) // 다른 필터 체인보다 먼저 평가되도록 순서를 가장 높게 설정합니다.
-    @Profile("dev") // 'dev' 프로필일 때만 이 Bean을 활성화합니다.
-    public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .securityMatcher("/h2-console/**") // 이 규칙은 /h2-console 경로에만 적용됩니다.
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // /h2-console/** 의 모든 요청을 허용합니다.
-                )
-                .csrf(AbstractHttpConfigurer::disable)
-                // [핵심] X-Frame-Options 헤더 비활성화하여 iframe 렌더링을 허용합니다.
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.disable())
-                )
-                .build();
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
