@@ -127,8 +127,44 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 </details>
 
 ## 6. 프로젝트 시연 GIF
+<details>
+<summary>🔹 모집자 서비스 Flow</summary>
+<details>
+<summary>프로필 정보 등록 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/99ddb914-822c-4eb2-87fd-c6b90bd5ff3c" alt="프로필 정보 등록 방법.gif">
+</details>
+<details>
+<summary>모집글 등록 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/d7b07b9e-5a48-415f-9fce-5f152fa380e1" alt="모집글 등록 방법.gif">
+</details>
+<details>
+<summary>지원자 조회 방법 & 승인/거절 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/9435298d-2514-4a84-8ed4-443e4f4490a7" alt="지원자 조회 방법 & 승인/거절 방법.gif">
+</details>
+</details>
 
-<!--(GIF 링크)-->
+<details>
+<summary>🔹 지원자 서비스 Flow</summary>
+<details>
+<summary>모집자 프로필 조회 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/79b8ca93-e1ba-4b92-9ff3-d03d72e16eec" alt="모집자 프로필 조회 방법.gif">
+</details>
+<details>
+<summary>모집글 지원 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/69b33810-03c8-414a-984a-33681f1b83f1" alt="모집글 지원 방법.gif">
+</details>
+<details>
+<summary>합격 시 채팅 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/343ff0ea-0775-4717-a863-e1334f0dbac7" alt="합격 시 채팅 방법.gif">
+</details>
+</details>
+
 
 ## 7. 프로젝트 전체 아키텍쳐
 ![프로젝트 아키텍처](https://github.com/user-attachments/assets/6beeb8f5-8525-46cc-8247-fc3a3afc29d0)
