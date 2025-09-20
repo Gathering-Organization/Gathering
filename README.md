@@ -19,7 +19,28 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 |                  [@hi2242](https://github.com/hi2242)                            |                 [@ChoiBoKeun1](https://github.com/ChoiBoKeun1)                   |
 |                  [FE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_fe#readme)                            |                 [BE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_be#readme)                   |
 
-
+## 🏆 Awards
+<div align="center">
+<table align="center" border="1" cellpadding="10" cellspacing="0">
+  <thead>
+    <tr>
+      <th>날짜</th>
+      <th>대회명</th>
+      <th>수상내역</th>
+      <th>주최사</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025.08.25</td>
+      <td>Blaybus 회고 공모전</td>
+      <td>우수상(2위)</td>
+      <td>Blaybus</td>
+    </tr>
+  </tbody>
+</table>
+<div />
+  
 ## 🛠️ Tech
 ### Front-End
 <img src="https://skillicons.dev/icons?i=ts,react,nodejs,vite,tailwind,npm&perline="/>
