@@ -20,7 +20,6 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 |                  [FE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_fe#readme)                            |                 [BE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_be#readme)                   |
 
 ## 🏆 Awards
-<div align="center">
 <table align="center" border="1" cellpadding="10" cellspacing="0">
   <thead>
     <tr>
@@ -39,7 +38,6 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
     </tr>
   </tbody>
 </table>
-<div />
   
 ## 🛠️ Tech
 ### Front-End
