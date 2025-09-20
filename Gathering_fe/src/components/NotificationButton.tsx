@@ -1,14 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { notificationState, unreadCountState } from '@/recoil/notification';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { useDropdown } from '@/contexts/DropdownContext';
-import {
-  getNotification,
-  getNotificationUnread,
-  readNotification,
-  readAllNotification
-} from '@/services/notificationApi';
+import { getNotification, readNotification, readAllNotification } from '@/services/notificationApi';
 import { NotificationType } from '@/types/notification';
 import alarmIcon from '@/assets/otherIcons/Alarm.png';
 import { useToast } from '@/contexts/ToastContext';
