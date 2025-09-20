@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationService {
     private static final Long SSE_TIMEOUT = 1800L * 1000; // 30분
-    private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final NotificationRepository notificationRepository;
     private final ProfileRepository profileRepository;
 
@@ -34,51 +34,51 @@ public class NotificationService {
         Long currentUserId = getCurrentUserId();
         
         validateMemberAccess(currentUserId, nickname);
-        Long profileId = getProfileByNickname(nickname).getId();
-        log.info("SSE subscription started for profileId: {}, nickname: {}", profileId, nickname);
+
+        log.info("SSE subscription started for, nickname: {}", nickname);
         SseEmitter emitter = new SseEmitter(SSE_TIMEOUT);
-        emitters.put(profileId, emitter);
+        emitters.put(nickname, emitter);
 
         // [로그 추가] Emitter가 성공적으로 저장되었음을 기록합니다.
-        log.info("New Emitter added for profileId: {}. Total emitters: {}", profileId, emitters.size());
+        log.info("New Emitter added for profileId: {}. Total emitters: {}", nickname, emitters.size());
 
         // Emitter의 생명주기(완료, 타임아웃, 에러) 이벤트를 처리합니다.
         emitter.onCompletion(() -> {
-            emitters.remove(profileId);
+            emitters.remove(nickname);
             // [로그 추가] 연결 완료 시 Emitter 제거를 기록합니다.
-            log.info("Emitter removed for profileId: {} on completion. Total emitters: {}", profileId, emitters.size());
+            log.info("Emitter removed for profileId: {} on completion. Total emitters: {}", nickname, emitters.size());
         });
         emitter.onTimeout(() -> {
-            emitters.remove(profileId);
+            emitters.remove(nickname);
             // [로그 추가] 타임아웃 발생 시 Emitter 제거를 기록합니다.
-            log.warn("Emitter removed for profileId: {} on timeout. Total emitters: {}", profileId, emitters.size());
+            log.warn("Emitter removed for profileId: {} on timeout. Total emitters: {}", nickname, emitters.size());
         });
         emitter.onError(e -> {
-            emitters.remove(profileId);
+            emitters.remove(nickname);
             // [로그 추가] 에러 발생 시 Emitter 제거를 기록합니다.
-            log.error("Emitter removed for profileId: {} on error.", profileId, e);
+            log.error("Emitter removed for profileId: {} on error.", nickname, e);
         });
 
         // 연결 수립을 알리는 최초의 더미 데이터를 전송합니다.
-        sendToClient(emitter, profileId, "connect", "SSE connection established.");
+        sendToClient(emitter, nickname, "connect", "SSE connection established.");
         return emitter;
     }
 
     public void send(Notification notification) {
-        Long receiverId = notification.getReceiver().getId();
+        String receiverNickname = notification.getReceiver().getNickname();
 
         // SseEmitter가 존재하는지 확인
-        if (emitters.containsKey(receiverId)) {
-            SseEmitter emitter = emitters.get(receiverId);
+        if (emitters.containsKey(receiverNickname)) {
+            SseEmitter emitter = emitters.get(receiverNickname);
             NotificationResponse response = NotificationResponse.from(notification);
 
             // 실제 데이터를 보내기 직전에 로그를 남깁니다.
-            log.info(">>>>>> Sending notification to profileId: {}, Data: {}", receiverId, response.getContent());
+            log.info(">>>>>> Sending notification to profileId: {}, Data: {}", receiverNickname, response.getContent());
 
-            sendToClient(emitter, receiverId, "notification", response);
+            sendToClient(emitter, receiverNickname, "notification", response);
         } else {
             // Emitter가 없어서 보내지 못하는 경우도 로그로 남기면 디버깅에 좋습니다.
-            log.warn(">>>>>> No active SSE emitter found for profileId: {}. Notification not sent in real-time.", receiverId);
+            log.warn(">>>>>> No active SSE emitter found for profileId: {}. Notification not sent in real-time.", receiverNickname);
         }
     }
 
@@ -143,15 +143,15 @@ public class NotificationService {
                 .orElseThrow(ProfileNotFoundException::new);
     }
 
-    private void sendToClient(SseEmitter emitter, Long profileId, String eventName, Object data) {
+    private void sendToClient(SseEmitter emitter, String nickname, String eventName, Object data) {
         try {
             emitter.send(SseEmitter.event()
-                    .id(String.valueOf(profileId) + "_" + System.currentTimeMillis())
+                    .id(nickname + "_" + System.currentTimeMillis())
                     .name(eventName)
                     .data(data));
         } catch (IOException e) {
-            emitters.remove(profileId);
-            log.error("Failed to send event to user {}: {}", profileId, e.getMessage());
+            emitters.remove(nickname);
+            log.error("Failed to send event to user {}: {}", nickname, e.getMessage());
         }
     }
 }
