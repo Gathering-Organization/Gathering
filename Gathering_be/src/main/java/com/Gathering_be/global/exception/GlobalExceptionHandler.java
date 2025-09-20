@@ -1,6 +1,7 @@
 package com.Gathering_be.global.exception;
 
 import com.Gathering_be.global.response.ErrorResponse;
+import com.Gathering_be.global.response.ResultResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.ConstraintViolationException;
@@ -210,8 +211,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+    protected ResponseEntity<?> handleBusinessException(BusinessException e) {
         ErrorCode errorCode = e.getErrorCode();
+
+        if (errorCode == ACCOUNT_NEEDS_LINKING) {
+            log.info("Account linking required for email : {}", e.getMessage());
+            return ResponseEntity.ok(ResultResponse.of(errorCode));
+        }
+
         ErrorResponse response = ErrorResponse.of(errorCode, e.getErrors());
         logError(e, response);
 

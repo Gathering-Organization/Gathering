@@ -1,5 +1,6 @@
 package com.Gathering_be.controller;
 
+import com.Gathering_be.dto.request.LinkAccountRequest;
 import com.Gathering_be.dto.request.LoginRequest;
 import com.Gathering_be.dto.request.SignUpRequest;
 import com.Gathering_be.dto.response.TokenResponse;
@@ -49,4 +50,9 @@ public class AuthController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.LOGIN_SUCCESS, tokenResponse));
     }
 
+    @PostMapping("/link/google")
+    public ResponseEntity<ResultResponse> linkGoogleAccount(@RequestBody LinkAccountRequest request) {
+        authService.linkGoogleAccount(request);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.ACCOUNT_LINK_SUCCESS));
+    }
 }
