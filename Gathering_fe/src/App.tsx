@@ -17,7 +17,6 @@ import MyApplication from '@/pages/MyApplication';
 import { ToastProvider } from '@/contexts/ToastContext';
 import Admin from '@/pages/Admin';
 import { RecoilRoot } from 'recoil';
-import { NotificationSSEProvider } from './contexts/SSEContext';
 
 // 0. 회원 정보 관련 사이트
 // - "/profile" : 회원의 프로필 정보를 조회 및 수정하는 Profile 페이지
@@ -45,89 +44,87 @@ const App: React.FC = () => {
   return (
     <>
       <RecoilRoot>
-        <ProfileProvider>
-          <NotificationSSEProvider>
-            <Router>
-              <ToastProvider>
-                <Routes>
-                  <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
-                  <Route element={<Layout />}>
-                    <Route
-                      path="/admin"
-                      element={
-                        <ProtectedRoute>
-                          <Admin />
-                        </ProtectedRoute>
-                      }
-                    />
-                    {/* <Route path="/" element={<Main />} /> */}
-                    <Route path="/SignUp" element={<SignUp />} />
-                    <Route path="/" element={<PostHome />} />
-                    <Route
-                      path="/myPostHome"
-                      element={
-                        <ProtectedRoute>
-                          <MyPostHome />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/myApplication"
-                      element={
-                        <ProtectedRoute>
-                          <MyApplication />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute>
-                          <Profile />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/otherUserProfile/:nickname"
-                      element={
-                        <ProtectedRoute>
-                          <OtherUserProfile />
-                        </ProtectedRoute>
-                      }
-                    />
-                    {/* <Route path="/postHome" element={<PostHome />} /> */}
-                    <Route
-                      path="/posting"
-                      element={
-                        <ProtectedRoute>
-                          <Posting />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/viewPost/:id"
-                      element={
-                        <ProtectedRoute>
-                          <ViewPost />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/postEdit/:id"
-                      element={
-                        <ProtectedRoute>
-                          <PostEdit />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route path="/apply/:id" element={<Apply />} />
-                    <Route path="*" element={<Notfound />} />
-                  </Route>
-                </Routes>
-              </ToastProvider>
-            </Router>
-          </NotificationSSEProvider>
-        </ProfileProvider>
+        <Router>
+          <ProfileProvider>
+            <ToastProvider>
+              <Routes>
+                <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
+                <Route element={<Layout />}>
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute>
+                        <Admin />
+                      </ProtectedRoute>
+                    }
+                  />
+                  {/* <Route path="/" element={<Main />} /> */}
+                  <Route path="/SignUp" element={<SignUp />} />
+                  <Route path="/" element={<PostHome />} />
+                  <Route
+                    path="/myPostHome"
+                    element={
+                      <ProtectedRoute>
+                        <MyPostHome />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/myApplication"
+                    element={
+                      <ProtectedRoute>
+                        <MyApplication />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/otherUserProfile/:nickname"
+                    element={
+                      <ProtectedRoute>
+                        <OtherUserProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  {/* <Route path="/postHome" element={<PostHome />} /> */}
+                  <Route
+                    path="/posting"
+                    element={
+                      <ProtectedRoute>
+                        <Posting />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/viewPost/:id"
+                    element={
+                      <ProtectedRoute>
+                        <ViewPost />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/postEdit/:id"
+                    element={
+                      <ProtectedRoute>
+                        <PostEdit />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/apply/:id" element={<Apply />} />
+                  <Route path="*" element={<Notfound />} />
+                </Route>
+              </Routes>
+            </ToastProvider>
+          </ProfileProvider>
+        </Router>
       </RecoilRoot>
     </>
   );
