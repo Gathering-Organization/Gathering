@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@microsoft/fetch-event-source": "^2.0.1",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
     "embla-carousel": "^8.6.0",
@@ -24,6 +25,7 @@
     "react-router-dom": "^7.1.3",
     "react-spinners": "^0.17.0",
     "react-tailwindcss-datepicker": "^1.7.2",
+    "recoil": "^0.7.7",
     "tailwind-scrollbar-hide": "^2.0.0",
     "tailwindcss": "^3.4.17",
     "vite": "^6.0.5"

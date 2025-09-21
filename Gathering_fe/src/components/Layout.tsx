@@ -3,13 +3,38 @@ import Header from './Header';
 import Footer from './Footer';
 import { useEffect, useState } from 'react';
 import { DropdownProvider } from '@/contexts/DropdownContext';
+import { useProfile } from '@/contexts/ProfileStateContext';
+import { unreadCountState } from '@/recoil/notification';
+import { useSetRecoilState } from 'recoil';
+import useNotificationSSE from '@/hooks/UseNotificationSSE';
+import { getNotificationUnread } from '@/services/notificationApi';
 
 const Layout: React.FC = () => {
   const location = useLocation();
   const hideHeaderPaths = ['/apply/view'];
   const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
 
+  const { myProfile } = useProfile();
+  const nickname = myProfile?.nickname;
+  const setUnreadCount = useSetRecoilState(unreadCountState);
+
   const [showScrollTop, setShowScrollTop] = useState(false);
+  useNotificationSSE(nickname);
+
+  useEffect(() => {
+    if (!nickname) return;
+    const fetchInitialUnreadCount = async () => {
+      try {
+        const result = await getNotificationUnread(nickname);
+        if (result?.success) {
+          setUnreadCount(result.data);
+        }
+      } catch (error) {
+        console.error('초기 안 읽은 알림 개수 조회 실패', error);
+      }
+    };
+    fetchInitialUnreadCount();
+  }, [nickname, setUnreadCount]);
 
   useEffect(() => {
     const handleScroll = () => {

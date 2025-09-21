@@ -90,6 +90,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             handleLogin={handleLogin}
             handleInputChange={handleInputChange}
             formData={formData}
+            type="로그인"
           />
         )}
       </div>
