@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
   const setUnreadCount = useSetRecoilState(unreadCountState);
 
   const [showScrollTop, setShowScrollTop] = useState(false);
-  useNotificationSSE(nickname);
+  // useNotificationSSE(nickname);
 
   useEffect(() => {
     if (!nickname) return;
