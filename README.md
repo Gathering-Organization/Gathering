@@ -187,4 +187,11 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 |      Rename      |         파일, 폴더명 이름 수정          |
 |      Remove      |             파일, 폴더 삭제             |
 |      chore       |            빌드, 패키지 수정            |
+
+## License
+
+This project is licensed under the MIT License.
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=footer" />
+
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=footer" />
