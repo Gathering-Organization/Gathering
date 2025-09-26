@@ -1,6 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" />
 
-## 📕 배운점
+## 📕 배운점 [노션 바로가기](https://diligent-cloudberry-302.notion.site/1fa45ef4e68380088a02e2a1fa1aa23b?pvs=74)
 <!--📕 정규표현식으로 닉네임 유효성 검사-->
 <details>
 <summary>🔹 정규표현식으로 닉네임 유효성 검사</summary>
