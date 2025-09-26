@@ -59,7 +59,7 @@ const LogoutButton: React.FC = () => {
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <button
-        className={`h-[48px] px-3 sm:px-4 focus:outline-none border border-transparent ${
+        className={`h-[48px] px-1 sm:px-2 focus:outline-none border border-transparent ${
           isOpen ? 'border-[#000000]' : ''
         }`}
         onClick={() => setActiveDropdown(activeDropdown === 'menu' ? null : 'menu')}
