@@ -35,14 +35,6 @@ public class NotificationService {
         
         validateMemberAccess(currentUserId, nickname);
 
-        // [윤종근] - 수정 사항
-        if (emitters.containsKey(nickname)) {
-            // 2. 있다면, 기존 Emitter를 가져와서 강제로 연결을 완료(complete)시킵니다.
-            SseEmitter oldEmitter = emitters.get(nickname);
-            oldEmitter.complete();
-            log.warn("Previous emitter for {} was active. It has been completed to prevent resource leak.", nickname);
-        }
-
         log.info("SSE subscription started for, nickname: {}", nickname);
         SseEmitter emitter = new SseEmitter(SSE_TIMEOUT);
         emitters.put(nickname, emitter);

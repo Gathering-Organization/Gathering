@@ -18,7 +18,6 @@ const Layout: React.FC = () => {
   const setUnreadCount = useSetRecoilState(unreadCountState);
 
   const [showScrollTop, setShowScrollTop] = useState(false);
-
   useEffect(() => {
     if (!nickname) return;
     const fetchInitialUnreadCount = async () => {

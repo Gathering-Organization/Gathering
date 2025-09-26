@@ -44,8 +44,8 @@ const App: React.FC = () => {
   return (
     <>
       <RecoilRoot>
-        <ProfileProvider>
-          <Router>
+        <Router>
+          <ProfileProvider>
             <ToastProvider>
               <Routes>
                 <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
@@ -123,8 +123,8 @@ const App: React.FC = () => {
                 </Route>
               </Routes>
             </ToastProvider>
-          </Router>
-        </ProfileProvider>
+          </ProfileProvider>
+        </Router>
       </RecoilRoot>
     </>
   );
