@@ -1,6 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" />
 
-# IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering) Ver 1.1.1
+# IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering) Ver 1.2.0
 
 IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 개발 저장소입니다.
 
@@ -205,6 +205,44 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 |      Rename      |         파일, 폴더명 이름 수정          |
 |      Remove      |             파일, 폴더 삭제             |
 |      chore       |            빌드, 패키지 수정            |
+
+## 9. Version
+<table align="center" border="1" cellpadding="10" cellspacing="0">
+  <thead>
+    <tr>
+      <th>날짜</th>
+      <th>내용</th>
+      <th>Version</th>
+      <th>VersionCode</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025.08.06</td>
+      <td>배포용 프로토타입</td>
+      <td>Ver.1.1.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2025.08.06</td>
+      <td>드롭다운 오류 수정</td>
+      <td>Ver.1.1.1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2025.08.29</td>
+      <td>사용 설명 배너 추가</td>
+      <td>Ver.1.1.2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>2025.09.26</td>
+      <td>알림 기능 추가</td>
+      <td>Ver.1.2.0</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
 
 ## License
 
