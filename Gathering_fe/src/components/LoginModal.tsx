@@ -86,6 +86,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignupClick 
           handleLogin={handleLogin}
           handleInputChange={handleInputChange}
           formData={formData}
+          type="로그인"
         />
       )}
     </div>

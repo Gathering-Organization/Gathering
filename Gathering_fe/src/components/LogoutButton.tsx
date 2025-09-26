@@ -12,7 +12,11 @@ const LogoutButton: React.FC = () => {
   const nav = useNavigate();
   const { showToast } = useToast();
 
-  const { activeDropdown, setActiveDropdown } = useDropdown();
+  const { activeDropdown, setActiveDropdown, registerRef } = useDropdown();
+
+  useEffect(() => {
+    registerRef('menu', dropdownRef);
+  }, [registerRef]);
 
   const isOpen = activeDropdown === 'menu';
 
@@ -47,27 +51,24 @@ const LogoutButton: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener('click', handleClickOutside);
+  //   return () => document.removeEventListener('click', handleClickOutside);
+  // }, []);
 
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <button
-        className={`h-[48px] px-3 sm:px-4 focus:outline-none border border-transparent border-r-[5px] border-b-[5px] rounded-[10px] ${
+        className={`h-[48px] px-1 sm:px-2 focus:outline-none border border-transparent ${
           isOpen ? 'border-[#000000]' : ''
         }`}
         onClick={() => setActiveDropdown(activeDropdown === 'menu' ? null : 'menu')}
       >
         <div className="flex justify-center items-center space-x-3">
-          <div
-            className="w-[28px] h-[28px] rounded-full"
-            style={{ backgroundColor: `#${userColor}` }}
-          />
+          <div className="w-8 h-8 rounded-full" style={{ backgroundColor: `#${userColor}` }} />
           <div className="font-bold hidden sm:block">{parts[0]}</div>
           <img
-            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 transition-transform duration-200 translate-y-[-1.5px] ${isOpen ? 'rotate-180' : ''}`}
             src={triangleArrowIcon}
             alt="Dropdown arrow"
           />

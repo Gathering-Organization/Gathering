@@ -7,7 +7,7 @@ export const techStacks: TechStack[] = [
   { id: 'JAVASCRIPT', title: 'JavaScript' },
   { id: 'TYPESCRIPT', title: 'TypeScript' },
   { id: 'REACT', title: 'React' },
-  { id: 'VUEJS', title: 'Vue.js' },
+  { id: 'VUE', title: 'Vue.js' },
   { id: 'NEXTJS', title: 'Next.js' },
   { id: 'NUXTJS', title: 'Nuxt.js' },
   { id: 'ANGULAR', title: 'Angular' },

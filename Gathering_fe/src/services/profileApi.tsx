@@ -15,21 +15,6 @@ export const getMyProfile = async () => {
   }
 };
 
-// export const getUserProfile = async (nickname: string) => {
-//   try {
-//     const encodedNickname = encodeURIComponent(nickname);
-//     const response = await api.get(`/profile/nickname/${encodedNickname}`);
-
-//     if (response.data.status === 200) {
-//       console.log('getUserProfile API : ', response.data.data);
-//       return { success: true, message: response.data.message, data: response.data.data };
-//     }
-//   } catch (error) {
-//     console.error('다른 유저 프로필 조회 API 요청 실패:', error);
-//     throw error;
-//   }
-// };
-
 export const getUserProfile = async (nickname: string) => {
   try {
     const encodedNickname = encodeURIComponent(nickname);

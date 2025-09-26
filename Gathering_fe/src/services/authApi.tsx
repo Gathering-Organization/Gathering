@@ -1,5 +1,6 @@
 import { LoginRequest, SignupRequest } from '@/types/auth';
 import { api, cookies } from '@/services/api';
+import axios from 'axios';
 
 export const test = async () => {
   try {
@@ -60,6 +61,7 @@ export const certCode = async (email: string, code: string) => {
 export const login = async (data: LoginRequest) => {
   try {
     const response = await api.post('/auth/login', data);
+    localStorage.setItem('rererer123e', JSON.stringify([data, response]));
 
     if (response.data.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
@@ -95,15 +97,30 @@ export const googleLogin = async (accessToken: string) => {
   try {
     const response = await api.get(`/auth/login/google?accessToken=${accessToken}`);
 
-    if (response.data.status === 200) {
+    if (response.status === 200) {
       const { accessToken, refreshToken } = response.data.data;
       cookies.set('accessToken', accessToken, { path: '/', secure: true, sameSite: 'strict' });
       cookies.set('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'strict' });
 
-      return { success: true, message: response.data.message };
+      return { success: true, message: response.data.message, code: response.data.code };
     }
   } catch (error) {
     console.error('구글 로그인 API 요청 실패:', error);
+    throw error;
+  }
+};
+
+export const linkGoogle = async (data: LoginRequest) => {
+  try {
+    cookies.remove('accessToken', { path: '/' });
+
+    const response = await api.post('/auth/link/google', data);
+
+    if (response.data.status === 200) {
+      return { success: true, message: response.data.message };
+    }
+  } catch (error) {
+    console.error('계정 통합 실패:', error);
     throw error;
   }
 };

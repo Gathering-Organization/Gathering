@@ -6,6 +6,7 @@ import SignUpModal from '@/components/SignUpModal';
 import LogoutButton from '@/components/LogoutButton';
 import gatheringLogo from '/gathering_home.svg';
 import writeLogo from '@/assets/otherIcons/post_edit_button.png';
+import NotificationButton from './NotificationButton';
 
 const Header: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
@@ -49,17 +50,17 @@ const Header: React.FC = () => {
                          px-0.5 py-0.5 sm:px-1.5 sm:py-1.5 md:px-4 md:py-1.5"
               onClick={onClickPostingButton}
             >
-              {/* 작은 화면 (md 브레이크포인트 미만)에서 표시될 이미지 아이콘 */}
               <span className="block md:hidden">
-                <img src={writeLogo} alt="모집글 작성" className="h-7 w-7" />{' '}
-                {/* SVG를 writeLogo 이미지로 대체 */}
+                <img src={writeLogo} alt="모집글 작성" className="h-7 w-7" />
               </span>
-              {/* 중간 화면 (md 브레이크포인트 이상)에서 표시될 전체 텍스트 */}
               <span className="hidden md:block text-sm sm:text-base">모집글 작성하기</span>
             </button>
-            {/* {isLoggedIn && <button onClick={() => nav('/profile')}>프로필</button>} */}
+
             {isLoggedIn ? (
-              <LogoutButton />
+              <>
+                <NotificationButton />
+                <LogoutButton />
+              </>
             ) : (
               <LoginModal
                 isOpen={activeModal === 'login'}
