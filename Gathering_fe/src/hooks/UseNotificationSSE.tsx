@@ -18,10 +18,6 @@ const useNotificationSSE = (nickname: string) => {
 
       const accessToken = cookies.get('accessToken');
 
-      // 👇 디버깅을 위해 추가
-      console.log('현재 액세스 토큰 값:', accessToken);
-      console.log('액세스 토큰 타입:', typeof accessToken);
-
       if (!accessToken || typeof accessToken !== 'string') {
         console.error('유효하지 않은 액세스 토큰으로 SSE 연결을 시도하지 않습니다.');
         return;

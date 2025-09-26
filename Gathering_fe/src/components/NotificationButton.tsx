@@ -3,14 +3,20 @@ import { useRecoilState } from 'recoil';
 import { notificationState, unreadCountState } from '@/recoil/notification';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { useDropdown } from '@/contexts/DropdownContext';
-import { getNotification, readNotification, readAllNotification } from '@/services/notificationApi';
+import {
+  getNotification,
+  getNotificationUnread,
+  readNotification,
+  readAllNotification
+} from '@/services/notificationApi';
 import { NotificationType } from '@/types/notification';
-import alarmIcon from '@/assets/otherIcons/Alarm.png';
+import alarmIcon from '@/assets/otherIcons/Notification.png';
 import { useToast } from '@/contexts/ToastContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const NotificationButton: React.FC = () => {
   const { myProfile } = useProfile();
+  const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
   const { activeDropdown, setActiveDropdown, registerRef } = useDropdown();
@@ -19,13 +25,30 @@ const NotificationButton: React.FC = () => {
   const [unreadCount, setUnreadCount] = useRecoilState(unreadCountState);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const nickname = myProfile?.nickname;
 
   useEffect(() => {
     registerRef('notification', dropdownRef);
   }, [registerRef]);
 
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (nickname) {
+        try {
+          const result = await getNotificationUnread(nickname);
+          if (result?.success) {
+            setUnreadCount(result.data);
+          }
+        } catch (error) {
+          console.error('미확인 알림 개수 조회 실패:', error);
+        }
+      }
+    };
+
+    fetchUnreadCount();
+  }, [nickname, location.pathname, setUnreadCount]);
+
   const isOpen = activeDropdown === 'notification';
-  const nickname = myProfile?.nickname;
 
   const handleToggleDropdown = async () => {
     const nextState = !isOpen;
@@ -96,30 +119,36 @@ const NotificationButton: React.FC = () => {
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         onClick={handleToggleDropdown}
-        className="relative p-2 bg-[#B4B4B4] rounded-full hover:bg-gray-400 focus:outline-none"
+        className="relative flex items-center justify-center 
+             bg-[#B4B4B4] rounded-full hover:bg-gray-400 focus:outline-none
+             p-1.5"
       >
-        <img src={alarmIcon} alt="알림" className="h-7 w-7" />
+        <img src={alarmIcon} alt="알림" className="h-[22px] w-[22px] sm:h-6 sm:w-6" />
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 block h-5 w-5 transform -translate-y-1/4 translate-x-1/4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+          <span
+            className="absolute top-0 right-0 block h-4 w-4
+                     transform -translate-y-1/4 translate-x-1/4 
+                     rounded-full bg-red-500 text-white text-[10px]
+                     flex items-center justify-center"
+          >
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
       </button>
 
-      {/* 알림 드롭다운 */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 overflow-hidden animate-fadeDown">
+        <div className="absolute right-0 mt-2 w-[60vw] sm:w-72 md:w-80 bg-white rounded-lg shadow-xl z-50 overflow-hidden animate-fadeDown">
           <div className="p-3 flex justify-between items-center border-b">
-            <h3 className="font-bold text-gray-700">알림</h3>
+            <h3 className="font-bold text-gray-700 text-sm sm:text-base">알림</h3>
             <button
               onClick={handleReadAll}
-              className="text-sm text-blue-500 hover:underline disabled:text-gray-400"
+              className="text-xs sm:text-sm text-blue-500 hover:underline disabled:text-gray-400"
               disabled={unreadCount === 0}
             >
               모두 읽음
             </button>
           </div>
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-[60vh] sm:max-h-96 overflow-y-auto">
             {isLoading ? (
               <div className="p-4 text-center text-gray-500">불러오는 중...</div>
             ) : notifications.length > 0 ? (
@@ -133,17 +162,19 @@ const NotificationButton: React.FC = () => {
                     <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
                   )}
                   <div className={`flex-grow ${item.read ? 'pl-5' : ''}`}>
-                    <p className={`text-sm ${item.read ? 'text-gray-400' : 'text-gray-800'}`}>
+                    <p
+                      className={`text-xs sm:text-sm ${item.read ? 'text-gray-400' : 'text-gray-800'}`}
+                    >
                       {item.content}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-[10px] sm:text-xs text-gray-400 mt-1">
                       {new Date(item.createdAt).toLocaleString('ko-KR')}
                     </p>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="p-4 text-center text-gray-500">새로운 알림이 없습니다.</div>
+              <div className="p-4 text-center text-gray-500 text-sm">새로운 알림이 없습니다.</div>
             )}
           </div>
         </div>

@@ -6,7 +6,6 @@ import SignUpModal from '@/components/SignUpModal';
 import LogoutButton from '@/components/LogoutButton';
 import gatheringLogo from '/gathering_home.svg';
 import writeLogo from '@/assets/otherIcons/post_edit_button.png';
-import alarm from '@/assets/otherIcons/Alarm.png';
 import NotificationButton from './NotificationButton';
 
 const Header: React.FC = () => {
@@ -58,10 +57,10 @@ const Header: React.FC = () => {
             </button>
 
             {isLoggedIn ? (
-              <div>
+              <>
                 <NotificationButton />
                 <LogoutButton />
-              </div>
+              </>
             ) : (
               <LoginModal
                 isOpen={activeModal === 'login'}

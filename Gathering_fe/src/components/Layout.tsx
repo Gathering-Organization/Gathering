@@ -6,7 +6,6 @@ import { DropdownProvider } from '@/contexts/DropdownContext';
 import { useProfile } from '@/contexts/ProfileStateContext';
 import { unreadCountState } from '@/recoil/notification';
 import { useSetRecoilState } from 'recoil';
-import useNotificationSSE from '@/hooks/UseNotificationSSE';
 import { getNotificationUnread } from '@/services/notificationApi';
 
 const Layout: React.FC = () => {
@@ -19,7 +18,6 @@ const Layout: React.FC = () => {
   const setUnreadCount = useSetRecoilState(unreadCountState);
 
   const [showScrollTop, setShowScrollTop] = useState(false);
-  // useNotificationSSE(nickname);
 
   useEffect(() => {
     if (!nickname) return;
