@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" />
+<img width="1" height="1" alt="image" src="https://github.com/user-attachments/assets/7e2e15a8-3bb5-49ff-a13c-4f70bab34ecc" /><img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" />
 
 ## 📕 배운점 [노션 바로가기](https://diligent-cloudberry-302.notion.site/1fa45ef4e68380088a02e2a1fa1aa23b?pvs=74)
 <!--📕 정규표현식으로 닉네임 유효성 검사-->
@@ -1149,8 +1149,643 @@ const handleOpenChat = () => {
 </details>
 
 ---
+## 📕 기술적 고민 [노션 바로가기](https://diligent-cloudberry-302.notion.site/1f245ef4e683805f92dac09e3a6a43b1?pvs=74)
 
-## 📕 기술적 고민
+<!--📕화면 진입 시 API 호출하여 미리 데이터를 준비 vs 버튼을 눌렀을 때 API 호출-->
+<details>
+<summary>🔹 화면 진입 시 API 호출하여 미리 데이터를 준비 vs 버튼을 눌렀을 때 API 호출</summary>
+
+1. 화면 진입 시 API 호출하여 미리 데이터를 준비
+    - 장점
+        - 미리 데이터를 준비하여 렌더링을 바로 해줄 수 있기 때문에 UX에 좋다.
+        - 해당 페이지에 진입하여 버튼을 누를 확률이 매우 높다면 유리한 방식이다.
+    - 단점
+        - 버튼을 누르지 않는 사용자의 경우 불필요한 호출이기 때문에 API 비용이 낭비된다.
+        - 준비하는 데이터가 많다면 필요 없는 소모 시간이 생긴다.
+2. 버튼을 눌렀을 때 API 호출
+    - 장점
+        - 불필요한 요청을 줄일 수 있어서 최적화에 유리하다.
+        - 초기 렌더링이 빠르다.
+    - 단점
+        - 버튼을 눌렀을 때 잠깐의 응답 대기 시간이 필요하다.
+        - 자주 누르는 경우 API를 중복으로 호출하는 문제가 발생한다.
+
+```
+💡 전략 : 2번의 방식을 채택하되 캐싱 방법을 통해 버튼을 두 번째 누를 때부터는 API를 호출하지 않도록 한다. (데이터의 변동이 적은 경우)
+```
+</details>
+
+<!--📕Tailwind css에서 scale 옵션 사용에 따른 글씨 울렁거림 현상-->
+<details>
+<summary>🔹 Tailwind css에서 scale 옵션 사용에 따른 글씨 울렁거림 현상</summary>
+
+- 문제 현상
+    - 버튼이나 어떤 영역에 마우스를 hover 했을 때 UX 향상을 위해 약간 커지도록 만들면 그 안에 내용물들이 울렁거리는 현상이 발생한다.
+    - 보통 버튼 태그에 직접적으로 hover 시 scale 옵션을 넣으면 글씨도 같이 커져서 문제가 발생한다.
+- 해결 방법
+    1. 내용물 or 바깥 태그의 Tailwind css의 옵션에서 will-change-transform 속성 사용
+    2. 태그의 옵션에 style={{ willChange: 'transform' }}를 추가
+        - 장점
+            - 하드웨어 가속을 통해 애니메이션 최적화가 가능하다.
+            - 브라우저에서 미리 변할 속성을 알려주고 부드러운 애니메이션이 가능하도록 한다.
+        - 단점
+            - 너무 자주 사용하면 오히려 페이지 성능이 나빠질 수 있으므로 최후의 수단으로 사용해야한다. (브라우저가 사전 준비에 Resource가 소모되기 때문이다.)
+</details>
+
+<!--📕페이지 리로딩 및 페이지 이동이 필요할 때 화면의 토스트 메시지가 사라지는 현상 (지연 이용 방식 vs 로컬 스토리지 이용 방식)-->
+<details>
+<summary>🔹 페이지 리로딩 및 페이지 이동이 필요할 때 화면의 토스트 메시지가 사라지는 현상 (지연 이용 방식 vs 로컬 스토리지 이용 방식)</summary>
+
+1. 지연 이용 방식 : 의도적으로 setTimeout을 이용하여 페이지 이동과 리로딩을 지연시켜서 토스트 메시지를 사용자에게 충분히 인지시킨다.
+    - 장점
+        - 로컬 스토리지를 이용하지 않아도 돼서 로그인 같은 경우에는 자연스럽게 로그인 스피너를 돌리면서 보여주면 UX상 문제 없어서 좋다.
+        - 코드가 간결하고 홈 화면에서 useEffect를 통해 처리하지 않아도 돼서 홈페이지의 수행시간을 효율적으로 다룰 수 있다.
+    - 단점
+        - 비효율적이고 예외 처리에 취약하다.
+        - 로그인처럼 사용자가 원래 시간이 좀 걸린다고 생각하는 과정은 괜찮지만 로그아웃처럼 바로 수행되는 과정에서는 페이지 이동과 리로딩을 지연시키면 UX상 좋지 않다.
+    - 활용 코드 예시
+    ```tsx
+    useEffect(() => {
+        const handleGoogleLogin = async () => {
+          if (code) {
+            try {
+              const result = await googleLogin(code);
+    
+              if (result?.success) {
+                showToast('로그인 되었습니다.', true);
+                setTimeout(() => {
+                  window.location.href = '/';
+                }, 700);
+              } else {
+                showToast('로그인에 실패했습니다.', false);
+                navigate('/', { replace: true });
+              }
+            } catch (error) {
+              showToast('로그인 처리 중 오류가 발생했습니다.', false);
+              navigate('/', { replace: true });
+            }
+          } else {
+            showToast('Google 인증 코드가 없습니다.', false);
+            navigate('/', { replace: true });
+          }
+        };
+    
+        handleGoogleLogin();
+      }, [code, navigate]);
+    ```
+
+2. 로컬 스토리지 이용 방식 : 로컬 스토리지에 토스트 메시지를 넣어서 이동하는 페이지에서 useEffect를 통해 로컬 스토리지에 해당 토스트 메시지가 있다면 띄워주도록 설계
+    - 장점
+        - 리로딩과 페이지 이동이 있어도 토스트 메시지를 유지해줄 수 있다.
+        - 상대적으로 더 안정적이다.
+    - 단점
+        - 코드의 간결함이 떨어진다.
+        - 수동으로 삭제하는 로직을 넣어 주어야 하는 번거로움이 있다.
+        - 단순히 몇 번의 토스트 메시지로는 수행 시간에 큰 영향이 없지만 용량이 큰 데이터, 빈도가 높은 데이터에 사용하면 영향이 있을 수 있다.
+    - 활용 코드 예시
+    ```tsx
+    // LogoutButton.tsx
+    const handleLogout = async () => {
+      try {
+        const result = await logout();
+    
+        if (result?.success) {
+          localStorage.setItem(
+            'toastMessage',
+            JSON.stringify({
+              message: '로그아웃 되었습니다.',
+              isSuccess: true
+            })
+          );
+          window.location.href = '/'; // 리로딩 및 PostHome으로 이동
+        } else {
+          showToast('로그아웃에 실패했습니다.', false);
+        }
+      } catch {
+        showToast('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.', false);
+      }
+    };
+      
+      
+    // PostHome.tsx
+    useEffect(() => {
+      const toastRaw = localStorage.getItem('toastMessage');
+      if (toastRaw) {
+        try {
+          const toast = JSON.parse(toastRaw);
+          if (toast.message) {
+            showToast(toast.message, toast.isSuccess);
+          }
+        } catch (err) {
+          console.error('Invalid toast data:', err);
+        }
+        localStorage.removeItem('toastMessage'); // 한 번만 보여주기 위해 삭제
+      }
+    }, []);
+    ```
+</details>
+
+<!--📕회원이 아니라면 서비스를 이용하지 못하도록 로그인 모달창으로 유도할 때 발생하는 충돌-->
+<details>
+<summary>🔹 회원이 아니라면 서비스를 이용하지 못하도록 로그인 모달창으로 유도할 때 발생하는 충돌</summary>
+
+- 문제 현상
+    - 모달창이 꺼질 때 nav('/')을 통해 홈으로 이동하는데 회원가입 버튼을 누를 때 회원가입 페이지로 이동하는 nav('/signup')와 충돌하는 문제가 발생한다.
+    - nav('/')를 제거하면 모달창을 닫을 때 해당 페이지가 빈 페이지로 렌더링 된다.
+- 해결 방법
+    - closeModal의 nav('/')가 nav('/signup')보다 먼저 실행되게 해서 홈으로 일단 이동시키고 회원가입 버튼이 눌렸다면 회원가입 페이지로 이동되도록 한다.
+
+<details>
+<summary>closeModal 함수 코드 스니펫</summary>
+
+```tsx
+// ProtectedRoute.tsx
+const closeModal = () => {
+  setIsModalOpen(false);
+  document.body.style.overflow = 'auto';
+  setIsEmailLogin(false);
+  nav('/');
+};
+```
+</details>
+
+<details>
+<summary>회원가입 버튼 코드 (수정 전)</summary>
+
+```tsx
+// LoginInModal.tsx (수정 전)
+<button
+  type="button"
+  onClick={() => {
+    nav('/signup');
+    closeModal();
+  }}
+  className="bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none"
+>
+  회원가입
+</button>
+```
+</details>
+
+<details>
+<summary>closeModal 회원가입 버튼 코드 (수정 후)</summary>
+
+```tsx
+// LoginInModal.tsx (수정 후)
+<button
+  type="button"
+  onClick={() => {
+    closeModal();
+    nav('/signup');
+  }}
+  className="bg-[#000000]/20 font-semibold text-[#FFFFFF] rounded-[16px] text-[18px] w-full max-w-xs px-4 py-1.5 text-center hover:bg-[#000000]/30 transition-colors duration-300 ease-in-out focus:outline-none"
+>
+  회원가입
+</button>
+```
+</details>
+
+</details>
+
+<!--📕로그인 여부를 확인해야 하는 페이지에서 새로고침 시 로그인이 되어있다면 로그인 모달창이 떴다가 사라지는 어색한 문제점-->
+<details>
+<summary>🔹 로그인 여부를 확인해야 하는 페이지에서 새로고침 시 로그인이 되어있다면 로그인 모달창이 떴다가 사라지는 어색한 문제점</summary>
+
+- 문제 현상
+    - **로그인이 되어 있지 않으면** 로그인을 해야 접근할 수 있는 페이지 (ex. 모집글 작성 등)에서 로그인 유도를 위해 모달창을 띄워주려는 의도였지만 **로그인이 되어있는 상태라면** 비동기적으로 프로필 정보를 불러와서 로그인 여부를 확인하는 사이 모달창을 띄웠다가 로그인이 되어있는 것을 확인하고 모달창을 닫아버려서 깜빡이는 듯한 문제가 발생한다.
+- 해결 방법
+    - `protectedRoute.tsx`파일에서 내 프로필의 준비(`isMyProfileLoading)이 True라면 비 로그인 상태에 대한 처리를 해주지 않고 return하도록 조건문을 설정한다.
+</details>
+
+<!--📕접근 권한 조건 판단 후 렌더링 전환 방법-->
+<details>
+<summary>🔹 접근 권한 조건 판단 후 렌더링 전환 방법</summary>
+
+- 문제 현상
+    - 기존 코드로는 현재 로그인된 계정이 관리자인지 판단할 때 로딩 -> 판단 완료(허용 or 제한)이 아니라 일단 접근을 제한하고 `uesEffect`를 통해 관리자라면 허용하도록 화면을 렌더링하고 있다.
+    - 기존 코드 방식으로는 UX상 깜빡이는 듯한 느낌을 줘서 좋지 못하다.
+- 해결 방법
+    - `useEffect`로 정보가 오는 동안 BeatLoader를 사용하고 정보가 오면 관리자인지 판단하여 알맞는 화면을 렌더링한다.
+    ```tsx
+     const [isAuthChecked, setIsAuthChecked] = useState(false);
+     const [isAuthorized, setIsAuthorized] = useState(false);
+      
+     const fetchMemberList = async () => {
+        try {
+          const result = await getMembersAdmin();
+          if (result?.success) {
+            const users = result.data as UserInfo[];
+            setUserList(users);
+            const admins = users.filter(user => user.role === 'ROLE_ADMIN');
+            setAdminList(admins);
+    				
+    				// some을 통해 내 닉네임이 admin 리스트에 존재하는지 판단
+            const isAdmin = admins.some(user => user.nickname === myProfile?.nickname);
+            // setIsAuthorized는 관리자인지 아닌지 여부
+            setIsAuthorized(isAdmin);
+            // setIsAuthChecked는 관리자 여부의 판단이 완료되었는지
+            setIsAuthChecked(true);
+          }
+        } catch (e) {
+          console.error('유저 목록 조회 실패:', e);
+          // 실패해도 관리자 판단은 끝난 것이다.
+          setIsAuthChecked(true);
+        }
+      };
+      
+    // 관리자 권한 확인 중
+    if (!isAuthChecked) {
+      return (
+        <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+          <BeatLoader color="#3387E5" size={20} />
+          <p className="mt-4 text-gray-700 font-semibold">관리자 권한 확인 중입니다...</p>
+        </div>
+      );
+    }
+    
+    // 관리자가 아니라면 띄워줄 화면
+    if (!isAuthorized) {
+      return <div className="text-center mt-20 text-xl font-semibold">접근 권한이 없습니다.</div>;
+    }
+    ```
+</details>
+
+<!--📕Vercel 404 해결 방법-->
+<details>
+<summary>🔹 Vercel 404 해결 방법</summary>
+    
+- 용어 설명
+    - 리다이렉트 : 클라이언트(브라우저)가 요청한 URL에서 다른 URL로 자동으로 이동시키는 것
+    - URI : 리소스를 식별하는 모든 방법 (URL보다 더 큰 개념)
+    - URL : 리소스를 찾는 위치를 지정하는 방법
+```
+	// URI의 예시
+	mailto:hello@example.com
+	urn:isbn:978-3-16-148410-0
+	https://example.com/page
+	
+	// URL의 예시
+	https://example.com/page
+	ftp://example.com/file.txt
+```
+
+- 문제 현상
+<img width="935" height="504" alt="Image" src="https://github.com/user-attachments/assets/ddbeaf60-0fba-41ff-9b7a-d4740558c853" />
+
+1. 프론트엔드에서 구글 로그인을 누르면 `/auth/google/callback`에서 404 에러가 발생한다.
+2. 해당 현상은 `ProtectedRoute.tsx`의 handleGoogle 함수가 실행될 때 URL을 `https://accounts.google.com/o/oauth2/auth?client_id=$%7Bimport.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID%7D&redirect_uri=$%7Bimport.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URI%7D&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email` 로 바꾼다.
+3. 리다이렉트 URI는 `https://gathering.work/auth/google/callback#access_token=XXXXXXXXXXXXXXX&token_type=Bearer&expires_in=3599&scope=email%20profile%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile%20openid&authuser=0&prompt=none` 이다.
+4. 3번의 리다이렉트 URL에서 404 에러가 발생하였다. 즉, `https://gathering.work/auth/google/callback` 에 해당하는 html 파일이 없다는 것이다.
+
+- 구글 로그인 동작 과정
+    - **`GoogleRedirectHandler`** 컴포넌트가 실행되는 것은 서버가 아닌 **사용자의 웹 브라우저 안에서 일어나는 일련의 과정**이다. 이 과정의 핵심 주체는 **React Router 라이브러리**이다.
+    - 전제 : SPA(Single Page Application)의 기본 동작 (React로 만들어진 `gathering.work`는 'SPA'이다.)
+        1. 사용자가 처음 `https://gathering.work`에 접속하면 Vercel 서버는 **단 하나의 HTML 파일**(index.html)과 그에 필요한 JavaScript 파일들을 보내준다.
+        2. 이후 웹사이트 내에서 페이지를 이동하는 것처럼 보이는 모든 것이 실제로는 서버와 페이지를 다시 주고받는 것이 아니라, 처음에 받은 JavaScript(React)가 **화면의 내용물만 동적으로 바꿔치기 하는 것**이다.
+    - **`GoogleRedirectHandler`** 가 실행되는 기술적 순서 (`GoogleRedirectHandler`가 실행되는 것은 아래 4단계의 과정을 거치고 **모든 것이 정상적으로 작동할 때의 의도된 흐름**이다.
+        - [1단계] 라우팅 규칙 등록 (애플리케이션 시작 시)
+            1. 사용자가 웹사이트에 처음 접속하면 브라우저는 `index.html`과 Javascript를 로드한다.
+            2. `App.tsx` 컴포넌트가 실행되면서 그 안에 있는 `<Router>`와 `<Routes>`가 초기화된다.
+            3. 이때, React Router는 일종의 **주소록**을 만든다. 이 주소록에는 아래와 같은 규칙이 기록된다.
+```jsx
+    <Route path="/auth/google/callback" element={<GoogleRedirectHandler />} />
+```
+> 만약 브라우저의 주소창 경로가 /auth/google/callback이 되면 GoogleRedirectHandler 컴포넌트를 화면에 보여줘야 한다.
+
+- [2단계] URL 변경 감지 (Google로 부터의 리다이렉션)
+    1. 사용자가 Google에서 성공적으로 로그인을 마친다.
+    2. Google은 약속대로 사용자의 브라우저를 `https://gathering.work/auth/google/callback#acceess_token=...` 주소로 보낸다. (리다이렉션)
+    3. 이제 사용자의 브라우저 주소창에는 위의 새로운 주소가 표시된다.
+- [3단계] 경로 매칭 (React Router의 역할)
+    1. 우리 웹사이트에서 실행 중이던 React Router는 브라우저의 주소창이 변경된 것을 즉시 감지한다.
+    2. React Router는 현재 경로 (`https://gathering.work/auth/google/callback...`의 경로 부분, 즉 `/auth/google/callback`)를 가져온다.
+    3. 자신이 가지고 있던 주소록(1단계에서 등록한 규칙들)을 뒤져서 현재 경로와 일치하는 규칙이 있는지 찾는다.
+    4. **찾았다! `/auth/google/callback` 규칙과 일치한다**
+- [4단계] 컴포넌트 렌더링 및 실행
+    1. 일치하는 규칙을 찾은 React Router는 그 규칙에 연결된 element인 `<GoogleRedirectHandler />`를 **화면에 렌더링(표시)하라고 React에게 지시**한다.
+    2. `GoogleRedirectHandler` 컴포넌트가 화면에 렌더링되면서 그 안에 있는 모든 코드, 특히 **`useEffect` 훅이 실행**된다.
+    3. `useEffect`는 `window.location.hash`를 통해 주소창의 `#`뒤에 있는 `access_token` 값을 읽어오고 그것을 가지고 백엔드에 최종 로그인 요청을 보내는 후속 작업이 시작된다. <br />
+        a. googleLogin(code) 함수를 호출
+```tsx
+    const response = await api.get(/auth/login/google?accessToken=${accessToken});
+```
+b. `/api/auth/login/google?accessToken=값`으로 api를 호출하도록 구현되어 있고 여기서 백엔드와의 소통이 이루어진다. (만약 코드 실행이 여기까지 왔다면 EC2에서 docker logs를 찍어보면 호출했다는 기록이 있어야 하는데 직접 log를 찍어보니 아무것도 없었다. -> 즉, 여기까지 도달조차 못했다.)
+- 문제에 대한 결론
+    - 앞서했던 설명은 **이미 `index.html`이 로드되어 React 앱이 실행 중인 상태**를 가정한 것이다.
+    - 지금의 `404` 에러는 [3단계]에서 문제가 발생하고 있다. Google에서 돌아올 때 브라우저는 React 앱에게 주소 변경을 알리는 것이 아니라 Vercel 서버에 **새로운 페이지(`/auth/google/callback`)를 주세요.** 라고 요청한다. 하지만 Vercel에는 그런 이름의 실제 파일이 없기 때문에 `index.html`을 로드하여 React Router를 실행시킬 기회조차 없이 `404` 에러를 보내는 것이다.
+- 추가 궁금증 (개발 환경에서는 구글 소셜 로그인이 잘 작동하고 배포 환경에서는 작동하지 않은 이유)
+    - 개발 환경 (Local)
+        1. `npm run dev` 같은 명령어로 실행되는 **로컬 개발 서버 (Vite, Create React APP 등)는 SPA(Single Page Application)를 위해 특별히 설계**되었다.
+        2. 똑똑한 개발 서버는 브라우저가 `/auth/google/callback` 처럼 실제 파일이 없는 주소를 요청하더라도 `404` 에러를 보내지 않는다.
+        3. 대신, "아, 이건 React Router가 처리할 가상의 주소구나!"라고 인지하여 애플리케이션의 유일한 입구인 `index.html`을 먼저 보내준다.
+        4. `index.html`이  로드되면서 React 앱이 실행되고 React Router가 주소 창의 경로를 보고 `GoogleRedirectHandler`를 성공적으로 렌더링한다.
+        5. 결과적으로 `useEffect`가 정상적으로 실행된다.
+    - 운영 환경 (Vercel, `vercel.json`이 없을 때)
+        1. Vercel의 기본 서버는 똑똑하지 않은 매우 정직한 **정적 파일 서버**이다.
+        2. 브라우저가 `/auth/google/callback`을 요청하면 Vercel은 서버에서 `/auth/google/callback.html`이라는 실제 파일을 찾으려고 한다.
+        3. 당연히 그런 파일은 없으므로 Vercel은 `index.html`을 보내줄 생각도 못하고 그냥 `404 NOT_FOUND` 에러 페이지를 보내버린다.
+        4. React 앱 자체가 로드되지 않았으므로 React Router도 `GoogleRedirectHandler`도 실행될 기회조차 없었던 것이다.
+> 따라서 프론트엔드 프로젝트에서 `vercel.json` 파일을 추가하여 Vercle 서버를 똑똑하게 만들어주는 것이 해당 문제의 최종 해결책이다.
+- 해결 방법
+    - 즉, 없는 경로로 리다이렉트 되었을 때 `index.html`로 보내도록 `vercel.json`을 작성해야 한다.
+    - 프로젝트 환경이 백엔드/프론트엔드 모노레포라서 위치 지정에도 신경을 써야한다.
+    - Vercle에서 root directory를 Gathering_fe로 지정해왔으니 **`vercel.json`도 프론트엔드의 root directory(Gahtering_fe)에 위치**시켜야 한다.
+```jsx
+    {
+      "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ]
+    }
+```
+> 그럼에도 `vercel.json`이 적용되지 않는 문제가 있었다.
+- 추가로 발생한 문제에 대한 원인 추정과 해결 방법
+    1. Vercel의 `Framework Preset`과 `vercel.json`의 관계 (라우팅 규칙 적용)
+        1. `Framework Preset : Vite (자동 모드)
+            1. 사용자가 Vercel에 프로젝트를 올리면 Vercel은 **이 프로젝트는 `vite.config.js` 파일에 있으니 Vite 프로젝트구나!** 라고 자동으로 인식한다.
+            2. Vite 프로젝트에 가장 최적화된 **Vite 전용 프리셋(미리 준비된 설정값 모음)** 을 적용한다. 이 프리셋 안에는 빌드 명령어, 결과물 폴더 경로 뿐만 아니라 Vite 기반의 SPA가 잘 작동하도록 하는 **Vercel 자체의 내부 라우팅 규칙**이 포함되어 있다.
+            3. 바로 이 Vercel의 친절한 자동 규칙이 우리가 직접 만든 `vercel.json`의 규칙보다 우선순위가 높거나 충돌하여 `vercel.json`이 무시되는 혀상이 발생하기도 한다.
+        2. `Framework Preset : Other (수동 모드)
+            1. 이 설정을 Other로 바꾸는 것은 Vercle에게 **너의 똑똑한 자동 기능은 필요 없어. 내가 모든 것을 직접 설정할게. 오직 내 `vercel.json` 파일에 적힌 규칙만 그대로 따라줘.** 라고 하는 것과 같다.
+            2. 이렇게 하면 Vercle은 더이상 Vite 전용 프리셋을 적용하지 않고 우리가 제공한 `vercel.json` 파일을 최우선으로 읽고 그 규칙 (**모든 경로를 `index.html`로 보내라**)을 그대로 따르게 된다.
+    2. 도메인 연결 문제 : 이전에 사용했던 "Instant Rollback" 기능 때문에 새로운 코드를 푸시하여 빌드가 성공하더라도 Vercel이 운영 도메인(gathering.work)을 최신 배포 버전에 자동으로 연결해주지 않고 이전의 롤백된 버전을 계속 가리키고 있었다. **(추가 문제에 대한 해결 방법)**
+- 최종 해결
+    1. 프론트엔드 프로젝트의 `Gathering_fe` 폴더 안에 모든 경로를 `index.html`로 보내주는 `vercel.json` 파일을 최종적으로 배치한다.
+    2. Vercel 대시보드의 **Deployments**탭에서 가장 최근에 성공적으로 빌드된 배포 항목을 찾아서 수동으로 **Promote to Production**을 실행하여 운영 도메인을 최신 버전에 강제로 연결한다.
+</details>
+
+<!--📕반응형 웹 디자인 vs 모바일 접근 제한-->
+<details>
+<summary>🔹 반응형 웹 디자인 vs 모바일 접근 제한</summary>
+
+1. 모바일 접근 제한 방식
+    - 구글의 검색 노출에 악영향
+    - 트래픽 손실
+    - UX 상 브랜드 이미지에 악영향
+    - user-agent(서버에 요청을 보내는 디바이스의 식별 정보)나 화면 크기로 접근을 제한해야 하므로 코드가 복잡해질 수 있다. (일부 디바이스나 VPN을 이용하는 경우 막을 수 없다.) 
+2. 반응형 웹 디자인
+    - UX 향상
+    - SEO에 유리
+    - 유지보수 및 확장성에서 장점
+    - 하나의 코드베이스로 모든 화면에 대응 가능
+
+    <details>
+    <summary>반응형 디자인 Tailwind css 코드</summary>
+    
+    - `className="px-2 sm:px-0"` -> 디폴트 값이 px-2이고 sm 이상의 크기에서는 px-0을 적용한다는 의미이다.
+    - 반응형 디자인을 위한 Tailwind css 코드
+    
+    | 유틸리티 | 설명 |
+    | --- | --- |
+    | `sm:` | 640px 이상 |
+    | `md:` | 768px 이상 |
+    | `lg:` | 1024px 이상 |
+    | `xl:` | 1280px 이상 |
+    | `max-w-xs` | 고정 너비 제한 (버튼에 유용) |
+    | `w-full` | 전체 너비 차지 |
+    | `grid-cols-1` | 모바일용 단일 열 |
+    | `md:grid-cols-2` | 태블릿 이상에서 2열로 전환 |
+    
+    </details>
+
+</details>
+
+<!--📕모바일 디자인 Overflow 처리 방법-->
+<details>
+<summary>🔹 모바일 디자인 Overflow 처리 방법</summary>
+
+- 문제 상황
+    - 모집글 보기의 디자인에서 모집 포지션과 사용 기술 스택이 PC에서는 괜찮은데 모바일에서는 Overflow가 발생한다.
+    - 초과되는 내용을 드롭다운(툴팁)으로 보여주는데 이 또한 Overflow가 발생한다.
+    <details>
+    <summary>문제 사진</summary>
+    
+    <img width="366" height="633" alt="Image" src="https://github.com/user-attachments/assets/7eb3eb52-0c1c-4b14-a86f-c82680bb08c0" />
+    </details>
+
+- 해결 방법
+    - PC에서는 모집 포지션의 경우 2개, 사용 스택의 경우 3개가 넘어가면 초과되는 것을 따로 볼 수 있는 드롭다운(툴팁) 버튼이 생기는데 모바일에서 둘 다 1개만 있어도 드롭다운 버튼으로 처리한다.
+    <details>
+    <summary>코드 스니펫</summary>
+
+  ```tsx
+      const isMobile = window.innerWidth < 640;
+    
+      const visibleTechStackLimit = isMobile ? 0 : 3;
+      const visibleTechStacks = data.techStacks.slice(0, visibleTechStackLimit);
+      const extraTechStacksCount = data.techStacks.length - visibleTechStackLimit;
+    
+      const visiblePositionLimit = isMobile ? 0 : 2;
+      const visiblePositions = data.requiredPositions.slice(0, visiblePositionLimit);
+      const extraPositionsCount = data.requiredPositions.length - visiblePositionLimit;
+  ```
+    </details>
+</details>
+
+<!--📕일반 이메일 로그인과 구글 소셜 로그인 계정이 동일할 때 통합 시 발생하는 오류-->
+<details>
+<summary>🔹 일반 이메일 로그인과 구글 소셜 로그인 계정이 동일할 때 통합 시 발생하는 오류</summary>
+
+- 문제 상황
+    <details>
+    <summary>스웨거 사진</summary>
+
+    <img width="1842" height="478" alt="Image" src="https://github.com/user-attachments/assets/9ce8bb2f-b6cc-41f3-9d11-f5a8146ebc00" />
+    </details>
+    <details>
+    <summary>문제 로그 사진</summary>
+
+    <img width="1245" height="490" alt="Image" src="https://github.com/user-attachments/assets/d7db5738-818f-4924-b901-2756a2f311c3" />
+    </details>
+    <details>
+    <summary>response 사진</summary>
+
+    <img width="1651" height="186" alt="Image" src="https://github.com/user-attachments/assets/5b4069a8-95b3-4abd-99bf-90bfccede53c" />
+    </details>
+    <details>
+    <summary>스웨거로 입력했을 때 응답 사진</summary>
+
+    <img width="1801" height="223" alt="image" src="https://github.com/user-attachments/assets/440536ed-db51-483d-bb04-fba813e94a8e" />
+    </details>
+    - 스웨거로 직접 입력했을 때는 통합이 잘 진행되지만 프론트엔드에서 API를 이용할 때는 `401 Error`가 발생한다.
+
+- 문제 원인
+    - 구글 소셜 로그인을 할 때 이미 일반 계정이 있다면 통합 여부를 묻고 통합 과정을 진행한다.
+    - 구글 소셜 로그인을 할 때 Access Token이 쿠키에 저장 되어버렸고 현재 api는 쿠키에 Access Token이 있다면 무조건 요청에 집어넣으므로 API가 토큰을 요구하지 않는데도 넣어줘서 유효하지 않는 토큰이라는 반환을 하게 된다.
+    <img width="782" height="227" alt="Image" src="https://github.com/user-attachments/assets/2f958f9c-8e41-4437-b503-3d2073f922eb" />
+- 해결 방법
+    - 액세스 토큰을 보내지 않는 api를 따로 만들어서 사용하거나 쿠키에 저장된 토큰을 지우고 API를 호출한다면 문제 없이 진행된다.
+    <details>
+    <summary>코드 스니펫</summary>
+
+    ```tsx
+        export const linkGoogle = async (data: LoginRequest) => {
+          try {
+            cookies.remove('accessToken', { path: '/' });
+        
+            const response = await api.post('/auth/link/google', data);
+        
+            if (response.data.status === 200) {
+              return { success: true, message: response.data.message };
+            }
+          } catch (error) {
+            console.error('계정 통합 실패:', error);
+            throw error;
+          }
+        };
+    ```
+    </details>
+
+- 추가 사항
+    - 통합 후 페이지 리로드 코드가 있으면 구글 로그인까지 진행되고 리로드 코드가 없으면 로그인은 되지 않는 이유
+    <details>
+    <summary>코드 스니펫</summary>
+
+    ```tsx
+        import { useEffect, useState, useRef } from 'react';
+        import { useNavigate } from 'react-router-dom';
+        import { googleLogin, linkGoogle } from '@/services/authApi';
+        import { useToast } from '@/contexts/ToastContext';
+        import BeatLoader from 'react-spinners/BeatLoader';
+        import IntergrationModal from '@/components/IntergrationModal';
+        import LoginInModal from '@/components/LoginInModal';
+        import { LoginRequest } from '@/types/auth';
+        
+        const GoogleRedirectHandler: React.FC = () => {
+          const nav = useNavigate();
+          const { showToast } = useToast();
+          const [formData, setFormData] = useState<LoginRequest>({ email: '', password: '' });
+          const [isModalOpen, setIsModalOpen] = useState(false);
+          const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+          const params = new URLSearchParams(window.location.hash.substring(1));
+          const code = params.get('access_token');
+          const didRunRef = useRef(false);
+        
+          const closeModal = () => {
+            setIsModalOpen(false);
+            document.body.style.overflow = 'auto';
+            nav('/');
+          };
+        
+          const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({ ...prev, [name]: value }));
+          };
+        
+          const handleLogin = async (e: React.FormEvent) => {
+            e.preventDefault();
+            try {
+              const result = await linkGoogle(formData);
+              if (result?.success) {
+                localStorage.setItem('isIntegrationCompleted', 'true');
+                window.location.reload();
+                setIsLoginModalOpen(false);
+                document.body.style.overflow = 'auto';
+                nav('/');
+              } else {
+                showToast('계정 통합에 실패했습니다.', false);
+              }
+            } catch {
+              showToast('계정 통합 중 오류가 발생했습니다. 다시 시도해주세요.', false);
+            }
+          };
+        
+          useEffect(() => {
+            if (didRunRef.current) return;
+            didRunRef.current = true;
+        
+            const handleGoogleLogin = async () => {
+              if (code) {
+                try {
+                  const result = await googleLogin(code);
+        
+                  if (result?.code === 'AU010') {
+                    setIsModalOpen(true);
+                    document.body.style.overflow = 'hidden';
+                  } else if (result?.success) {
+                    const isIntegrated = localStorage.getItem('isIntegrationCompleted');
+        
+                    if (isIntegrated) {
+                      localStorage.setItem(
+                        'toastMessage',
+                        JSON.stringify({
+                          message: '계정 통합이 완료되었습니다.',
+                          isSuccess: true
+                        })
+                      );
+                      localStorage.removeItem('isIntegrationCompleted');
+                    } else {
+                      localStorage.setItem(
+                        'toastMessage',
+                        JSON.stringify({
+                          message: '로그인 되었습니다.',
+                          isSuccess: true
+                        })
+                      );
+                    }
+                    window.location.href = '/';
+                  } else {
+                    showToast('로그인에 실패했습니다.', false);
+                    nav('/', { replace: true });
+                  }
+                } catch (error) {
+                  showToast('로그인 처리 중 오류가 발생했습니다.', false);
+                  nav('/', { replace: true });
+                }
+              } else {
+                showToast('Google 인증 코드가 없습니다.', false);
+                nav('/', { replace: true });
+              }
+            };
+        
+            handleGoogleLogin();
+          }, [code, nav]);
+        
+          return (
+            <div>
+              <div className="absolute inset-0 z-50 bg-white bg-opacity-70 flex flex-col justify-center items-center">
+                <BeatLoader color="#3387E5" size={20} />
+                <p className="mt-4 text-gray-700 font-semibold">로그인 중입니다...</p>
+              </div>
+              {isModalOpen && (
+                <IntergrationModal closeModal={closeModal} onClick={() => setIsLoginModalOpen(true)} />
+              )}
+              {isLoginModalOpen && (
+                <LoginInModal
+                  closeModal={() => setIsLoginModalOpen(false)}
+                  type="통합하기"
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                  handleLogin={handleLogin}
+                  isEmailLogin={true}
+                />
+              )}
+            </div>
+          );
+        };
+        
+        export default GoogleRedirectHandler;
+    ```
+    </details>
+    
+    - 통합 과정을 거치고 리로딩을 하면 구글 로그인 과정 URL에서 페이지가 새로고침되면서 useEffect가 다시 실행되고 URL 속 남아있던 구글 인증 코드로 googleLogin 함수를 호출해 로그인을 진행하게 된다.
+    - 하지만 리로딩을 하지 않으면 `nav('/');`을 통해 홈으로 가므로 로그인이 되지 않는다.
+
+</details>
+
+<!--📕드롭다운 Ref의 전역 처리를 통한 오류 해결-->
+<details>
+<summary>🔹 드롭다운 Ref의 전역 처리를 통한 오류 해결</summary>
+
+- 문제 상황
+    - 알림 드롭다운과 프로필 드롭다운이 켜지지 않음
+- 문제 원인
+    - 알림 드롭다운을 누르면 프로필 드롭다운의 외부라 드롭다운이 모두 닫히고 프로필 드롭다운을 누르면 알림 드롭다운의 외부라 드롭다운이 모두 닫히므로 눌러도 드롭다운에 반응이 없다.
+- 해결 방법
+    - 알림과 프로필 드롭다운의 상태를 전역으로 관리하여 하나의 드롭다운을 누를 때 다른 드롭다운의 상태를 확인하여 하나의 드롭다운은 열리도록 처리한다.
+</details>
 
 <!--📕템플릿
 <details>
