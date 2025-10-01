@@ -222,7 +222,7 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 | **React QuillJS**                 | ^2.0.5   | Quill.js React 래퍼                | MIT   |
 | **React Tailwindcss Datepicker**  | ^1.7.2   | Tailwind 스타일 날짜 선택기              | MIT   |
 | **Embla Carousel**                | ^8.6.0   | 캐러셀(슬라이더) 컴포넌트                   | MIT   |
-| **TailwindCSS**                   | ^3.4.17  | 유틸리티 퍼스트 CSS 프레임워크               | MIT   |
+| **TailwindCSS**                   | ^3.4.17  | 유틸리티 퍼스트 CSS 라이브러리               | MIT   |
 | **Tailwind Scrollbar Hide**       | ^2.0.0   | 스크롤바 숨김 플러그인                     | MIT   |
 | **Autoprefixer**                  | ^10.4.20 | CSS 자동 벤더프리픽스 추가                 | MIT   |
 | **PostCSS**                       | ^8.5.1   | CSS 변환 도구                        | MIT   |
