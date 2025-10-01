@@ -206,7 +206,31 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 |      Remove      |             파일, 폴더 삭제             |
 |      chore       |            빌드, 패키지 수정            |
 
-## 9. Version
+## 9. 오픈소스 라이브러리
+| 라이브러리 이름                          | 버전       | 설명 / 역할                          | 라이선스  |
+| --------------------------------- | -------- | -------------------------------- | ----- |
+| **React**                         | ^18.3.1  | UI 컴포넌트 기반 프론트엔드 라이브러리           | MIT   |
+| **React DOM**                     | ^18.3.1  | React DOM 렌더링 지원                 | MIT   |
+| **React Router DOM**              | ^7.1.3   | SPA 라우팅 관리                       | MIT   |
+| **Recoil**                        | ^0.7.7   | 전역 상태 관리                         | MIT   |
+| **Axios**                         | ^1.7.9   | HTTP 클라이언트 (API 통신)              | MIT   |
+| **Framer Motion**                 | ^12.5.0  | 애니메이션 / 모션 효과                    | MIT   |
+| **React Spinners**                | ^0.17.0  | 로딩 스피너 UI                        | MIT   |
+| **React Draggable**               | ^4.4.6   | 드래그 앤 드롭 기능                      | MIT   |
+| **React Cookie**                  | ^7.2.2   | 브라우저 쿠키 관리                       | MIT   |
+| **React Quill**                   | ^2.0.0   | WYSIWYG 에디터 (Quill 기반)           | BSD-3 |
+| **React QuillJS**                 | ^2.0.5   | Quill.js React 래퍼                | MIT   |
+| **React Tailwindcss Datepicker**  | ^1.7.2   | Tailwind 스타일 날짜 선택기              | MIT   |
+| **Embla Carousel**                | ^8.6.0   | 캐러셀(슬라이더) 컴포넌트                   | MIT   |
+| **TailwindCSS**                   | ^3.4.17  | 유틸리티 퍼스트 CSS 프레임워크               | MIT   |
+| **Tailwind Scrollbar Hide**       | ^2.0.0   | 스크롤바 숨김 플러그인                     | MIT   |
+| **Autoprefixer**                  | ^10.4.20 | CSS 자동 벤더프리픽스 추가                 | MIT   |
+| **PostCSS**                       | ^8.5.1   | CSS 변환 도구                        | MIT   |
+| **Vite**                          | ^6.0.5   | 번들러 & 개발 서버                      | MIT   |
+| **@microsoft/fetch-event-source** | ^2.0.1   | SSE(Server-Sent Events) 지원 라이브러리 | MIT   |
+
+
+## 10. Version
 <table align="center" border="1" cellpadding="10" cellspacing="0">
   <thead>
     <tr>
