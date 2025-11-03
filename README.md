@@ -6,7 +6,7 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 
 ## 🌐 사이트
 
-[IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)](https://www.gathering.work)
+[IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)](https://gathering.work)
 
 ## 📧 문의
 
