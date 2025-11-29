@@ -1,6 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" />
 
-# IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering) Ver 1.2.0
+# IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering) Ver 1.2.1
 
 IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 개발 저장소입니다.
 
@@ -263,6 +263,12 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
       <td>2025.09.26</td>
       <td>알림 기능 추가</td>
       <td>Ver.1.2.0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2025.11.29</td>
+      <td>캐러셀 배너 오류 수정</td>
+      <td>Ver.1.2.1</td>
       <td>4</td>
     </tr>
   </tbody>
