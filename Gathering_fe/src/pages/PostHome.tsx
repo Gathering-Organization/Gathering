@@ -21,6 +21,7 @@ import { useToast } from '@/contexts/ToastContext';
 import EmblaCarouselComponent from '@/components/BannerCarousel';
 import banner1 from '/banner1.png';
 import banner2 from '/banner2.png';
+import banner3 from '/banner3.png';
 
 interface DropdownDispatchContextType {
   setSelectedStack: (value: string[]) => void;
@@ -59,17 +60,39 @@ const PostHome: React.FC = () => {
     <div
       onClick={() =>
         window.open(
+          'https://diligent-cloudberry-302.notion.site/2a745ef4e68380c78e13d191347bdf7b?pvs=74',
+          '_blank'
+        )
+      }
+      className="relative cursor-pointer h-48 sm:h-64 rounded-xl overflow-hidden shadow-lg group transform transition-transform duration-300 hover:scale-[1.005] will-change-transform"
+    >
+      <div className="hidden sm:block absolute inset-0">
+        <img src={banner3} alt="사용 설명서 배너" className="w-full h-full object-cover" />
+      </div>
+      <div className="block sm:hidden w-full h-full bg-[#FFD94D]" />
+      <div className="absolute inset-0 flex flex-col items-start justify-center px-4 sm:px-16 md:px-20 text-[#fafbfc] text-left">
+        <h2 className="text-sm sm:text-2xl md:text-3xl font-semibold md:font-bold">
+          게더링(Gathering) 최고의 팀 리더 찾기 이벤트
+        </h2>
+        <p className="text-xs sm:text-sm md:text-lg mt-2 font-normal md:font-medium">
+          이벤트 페이지 보러가기 &gt;&gt;
+        </p>
+      </div>
+    </div>,
+    <div
+      onClick={() =>
+        window.open(
           'https://diligent-cloudberry-302.notion.site/Gathering-25545ef4e6838014a912cd391552ab99?source=copy_link',
           '_blank'
         )
       }
       className="relative cursor-pointer h-48 sm:h-64 rounded-xl overflow-hidden shadow-lg group transform transition-transform duration-300 hover:scale-[1.005] will-change-transform"
     >
-      <div className="hidden sm:block">
+      <div className="hidden sm:block absolute inset-0">
         <img src={banner2} alt="사용 설명서 배너" className="w-full h-full object-cover" />
       </div>
       <div className="block sm:hidden w-full h-full bg-[#3387E5]" />
-      <div className="absolute inset-0 sm:inset-16 flex flex-col items-start justify-center px-4 sm:px-6 md:px-10 text-[#fafbfc] text-left">
+      <div className="absolute inset-0 flex flex-col items-start justify-center px-4 sm:px-16 md:px-20 text-[#fafbfc] text-left">
         <h2 className="text-sm sm:text-2xl md:text-3xl font-semibold md:font-bold">
           사용 방법을 배우면 프로젝트의 매칭 확률이 올라가요!
         </h2>
@@ -83,11 +106,11 @@ const PostHome: React.FC = () => {
       onClick={() => window.open('https://github.com/Gathering-Organization/Gathering', '_blank')}
       className="relative cursor-pointer h-48 sm:h-64 rounded-xl overflow-hidden shadow-lg group transform transition-transform duration-300 hover:scale-[1.005] will-change-transform"
     >
-      <div className="hidden sm:block">
+      <div className="hidden sm:block absolute inset-0">
         <img src={banner1} alt="깃허브 배너" className="w-full h-full object-cover" />
       </div>
       <div className="block sm:hidden w-full h-full bg-[#24292E]" />
-      <div className="absolute inset-0 sm:inset-16 flex flex-col items-start justify-center px-4 sm:px-6 md:px-10 text-[#fafbfc] text-left">
+      <div className="absolute inset-0 flex flex-col items-start justify-center px-4 sm:px-16 md:px-20 text-[#fafbfc] text-left">
         <h2 className="text-sm sm:text-2xl md:text-3xl font-semibold md:font-bold">
           IT 초심자를 위한 팀원 모집 웹서비스, 게더링
         </h2>
