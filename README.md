@@ -22,6 +22,27 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)의 팀 �
 |                                    [@hi2242](https://github.com/hi2242)                                     |                               [@ChoiBoKeun1](https://github.com/ChoiBoKeun1)                                |
 | [FE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_fe#readme) | [BE 배운점, 기술적 고민](https://github.com/Gathering-Organization/Gathering/tree/main/Gathering_be#readme) |
 
+## 🏆 Awards
+
+<table align="center" border="1" cellpadding="10" cellspacing="0">
+  <thead>
+    <tr>
+      <th>날짜</th>
+      <th>대회명</th>
+      <th>수상내역</th>
+      <th>주최사</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025.08.25</td>
+      <td>Blaybus 회고 공모전</td>
+      <td>우수상(2위)</td>
+      <td>Blaybus</td>
+    </tr>
+  </tbody>
+</table>
+  
 ## 🛠️ Tech
 
 ### Front-End
@@ -56,7 +77,7 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 
 ## 3. 프로젝트 Workflows
 
-[![사용자 플로우](https://mermaid.ink/img/pako:eNqVlm9v20Qcx9_K6aZJIMXFzh878SSkNImfUU1qnqyEB1f7kpg6tjnbrNBVykQmbWUSQ3Ro2pqplQoF1AcpbCJIvKL48h44-2I7DgkbeZSTf5_v7983Fx9B3TEwVGHXcu7rfUR80G52bMA-t28DenI5_2ZIx38Dev6cjl_wB7qFPK-JuwC5rmXqyPZB17Qs9VZL1BStXvB84hxg9ZYoKjV5e3EU7puG31eL7mFBdyyHRI_LzbJ4Z0WTYJ0Epo_JQlPTtFJLTDVbmtwQxY2aLbkiif_SRMbAtBO9UquiVVI9uS5t1-ob9cp1qVxtrOr1sI0JspKuGy1NkzJFUWlWV7qW3EOmkY51_vIpffVsNhnS149AOPkOhBdnsz-ndDzlIfUPPu0itYuEwMNEcK3AyyGffaiqalKDIHwMtpN4bH-JLcfFgI7fhL-eRotLpZcpnmY7hhtHnPXMni2YtoAsP4OOV5lmkqpnOfsYzN5ez6bD9Um4-lLb4W-_0Kvv6etnYH76lCH05YQ_a8Sh7UR6n5i4qyMPZ0Ssm1kjCr8rJfGmIeiIGEx1xFTnz0cg_OEmvBjnIZ6qzVnH8xOaLRHzpuNkcTtr8Ji7l4M8jIjeB_RqyFZDR2eAXkzYntZxxQTU-1g_ELwvAkRwQrKB0JO_2PQ-mt1M6PnjdXXfK0ZCD3jcA9AuJYKWaR8A-uJyfvoYhFcP5w-vweyPt_TsfE0Z7XRkLnE-x7ovGCbqETRYjI6ej-cnU1bWaP7jk_-ogpfJqiguG9UD4beX4U_Tpbb4SFeVsuslDVxriN1l9Sw4lsuunnifxffyQgrxLLs8SzqUxT4zHyztM59vN9e4oJtEt3DO30n2zRLpBl3kxr9yZOPl3HG7a8su5ayw855WyKff-d9WWF9FYoWd4uoUuRfe1VDqhdmbYfjz9UYv7OUG7vVNbBkZw1WjW54ze5yR8vbkd-iC2oCkbew77EqIrtHfL9kg6OgmN5hlGhZgj5gGVH0S4AIcYDJA0REeRcod6PfxAHegyr4auIsCy-_Ajn3MMBfZe44zSEjiBL1-cghcA_m4yZeSRmDbwKThBLYPVUmslGMNqB7BQ6jK1S25VimLVVlSlFpNrBTgV1AVyvKWJMuKVK2KSvSHfFyAX8dJpS2pVqvKilKslJRiSSozABum75BP-CtB_GZw_A8gvkK2?type=png)](https://mermaid.live/edit#pako:eNqVlm9v20Qcx9_K6aZJIMXFzh878SSkNImfUU1qnqyEB1f7kpg6tjnbrNBVykQmbWUSQ3Ro2pqplQoF1AcpbCJIvKL48h44-2I7DgkbeZSTf5_v7983Fx9B3TEwVGHXcu7rfUR80G52bMA-t28DenI5_2ZIx38Dev6cjl_wB7qFPK-JuwC5rmXqyPZB17Qs9VZL1BStXvB84hxg9ZYoKjV5e3EU7puG31eL7mFBdyyHRI_LzbJ4Z0WTYJ0Epo_JQlPTtFJLTDVbmtwQxY2aLbkiif_SRMbAtBO9UquiVVI9uS5t1-ob9cp1qVxtrOr1sI0JspKuGy1NkzJFUWlWV7qW3EOmkY51_vIpffVsNhnS149AOPkOhBdnsz-ndDzlIfUPPu0itYuEwMNEcK3AyyGffaiqalKDIHwMtpN4bH-JLcfFgI7fhL-eRotLpZcpnmY7hhtHnPXMni2YtoAsP4OOV5lmkqpnOfsYzN5ez6bD9Um4-lLb4W-_0Kvv6etnYH76lCH05YQ_a8Sh7UR6n5i4qyMPZ0Ssm1kjCr8rJfGmIeiIGEx1xFTnz0cg_OEmvBjnIZ6qzVnH8xOaLRHzpuNkcTtr8Ji7l4M8jIjeB_RqyFZDR2eAXkzYntZxxQTU-1g_ELwvAkRwQrKB0JO_2PQ-mt1M6PnjdXXfK0ZCD3jcA9AuJYKWaR8A-uJyfvoYhFcP5w-vweyPt_TsfE0Z7XRkLnE-x7ovGCbqETRYjI6ej-cnU1bWaP7jk_-ogpfJqiguG9UD4beX4U_Tpbb4SFeVsuslDVxriN1l9Sw4lsuunnifxffyQgrxLLs8SzqUxT4zHyztM59vN9e4oJtEt3DO30n2zRLpBl3kxr9yZOPl3HG7a8su5ayw855WyKff-d9WWF9FYoWd4uoUuRfe1VDqhdmbYfjz9UYv7OUG7vVNbBkZw1WjW54ze5yR8vbkd-iC2oCkbew77EqIrtHfL9kg6OgmN5hlGhZgj5gGVH0S4AIcYDJA0REeRcod6PfxAHegyr4auIsCy-_Ajn3MMBfZe44zSEjiBL1-cghcA_m4yZeSRmDbwKThBLYPVUmslGMNqB7BQ6jK1S25VimLVVlSlFpNrBTgV1AVyvKWJMuKVK2KSvSHfFyAX8dJpS2pVqvKilKslJRiSSozABum75BP-CtB_GZw_A8gvkK2)
+<img width="3840" height="3169" alt="Image" src="https://github.com/user-attachments/assets/39fc670c-3428-4303-b8ab-7ecff5be8bd8" />
 
 ## 4. 프로젝트 기획 의도
 
@@ -124,7 +145,43 @@ IT 초심자를 위한 팀원 모집 웹서비스, 게더링(Gathering)
 
 ## 6. 프로젝트 시연 GIF
 
-<!--(GIF 링크)-->
+<details>
+<summary>🔹 모집자 서비스 Flow</summary>
+<details>
+<summary>프로필 정보 등록 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/99ddb914-822c-4eb2-87fd-c6b90bd5ff3c" alt="프로필 정보 등록 방법.gif">
+</details>
+<details>
+<summary>모집글 등록 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/d7b07b9e-5a48-415f-9fce-5f152fa380e1" alt="모집글 등록 방법.gif">
+</details>
+<details>
+<summary>지원자 조회 방법 & 승인/거절 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/9435298d-2514-4a84-8ed4-443e4f4490a7" alt="지원자 조회 방법 & 승인/거절 방법.gif">
+</details>
+</details>
+
+<details>
+<summary>🔹 지원자 서비스 Flow</summary>
+<details>
+<summary>모집자 프로필 조회 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/79b8ca93-e1ba-4b92-9ff3-d03d72e16eec" alt="모집자 프로필 조회 방법.gif">
+</details>
+<details>
+<summary>모집글 지원 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/69b33810-03c8-414a-984a-33681f1b83f1" alt="모집글 지원 방법.gif">
+</details>
+<details>
+<summary>합격 시 채팅 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/343ff0ea-0775-4717-a863-e1334f0dbac7" alt="합격 시 채팅 방법.gif">
+</details>
+</details>
 
 ## 7. 프로젝트 전체 아키텍쳐
 
